@@ -14,10 +14,10 @@ class MyConsumer(AsyncWebsocketConsumer):
             message = text_data_json['message']
             # TODO:受信したメッセージを処理
             await self.send(text_data=json.dumps({
-                'message': message
+                'key': message
             }))
         except json.JSONDecodeError:
             await self.send(text_data=json.dumps({
-                'message': 'Invalid JSON'
+                'key': 'Invalid JSON'
             }))
 

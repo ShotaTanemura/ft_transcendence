@@ -31,7 +31,6 @@ const ball = {
     color : "WHITE"
 }
 
-// User Paddle
 const user = {
     x : 0, // left side of canvas
     y : (canvas.height - 100)/2, // -100 the height of paddle
@@ -41,7 +40,6 @@ const user = {
     color : "WHITE"
 }
 
-// COM Paddle
 const com = {
     x : canvas.width - 10, // - width of paddle
     y : (canvas.height - 100)/2, // -100 the height of paddle
@@ -51,7 +49,6 @@ const com = {
     color : "WHITE"
 }
 
-// NET
 const net = {
     x : (canvas.width - 2)/2,
     y : 0,
@@ -60,13 +57,11 @@ const net = {
     color : "WHITE"
 }
 
-// draw a rectangle, will be used to draw paddles
 function drawRect(x, y, w, h, color){
     ctx.fillStyle = color;
     ctx.fillRect(x, y, w, h);
 }
 
-// draw circle, will be used to draw the ball
 function drawArc(x, y, r, color){
     ctx.fillStyle = color;
     ctx.beginPath();
@@ -75,19 +70,44 @@ function drawArc(x, y, r, color){
     ctx.fill();
 }
 
-// キーが押されたら反応する関数を定義
+// WebSocket 接続
+const socket = new WebSocket("ws://localhost:8000");
+
+// キーが押されたら、JSON形式でserverに送信
 function handleKeyDown(event) {
     const key = event.key;
-  
-    // Aキーが押されたら、userパドルを上に移動
+    console.log("キーが押されました:", key);
+    if (key !== "a" && key !== "d")
+        return;
+    const jsonData = JSON.stringify
+    ({
+        "key": key,
+    });
+    socket.send(jsonData);
+}
+    // WebSocket 接続時の処理
+socket.onopen = function() {
+    console.log("WebSocket 接続成功");
+};
+
+// メッセージ受信時の処理
+socket.onmessage = function(event) {
+    const data = JSON.parse(event.data);
+    console.log("受信メッセージ:", data);
+    const key = data[key];
     if (key === "a") {
-      user.y -= 30;
+        user.y -= 30;
     }
-    // Dキーが押されたら、userパドルを下に移動
     if (key === "d") {
       user.y += 30;
     }
-}
+};
+
+// エラー発生時の処理
+socket.onerror = function(error) {
+    console.log("WebSocket エラー:", error);
+};
+
 
 // キーが押されたとき、handleKeyDown関数を呼ぶ
 const KEYDOWN = "keydown";
@@ -130,10 +150,8 @@ function collision(ball,paddle){
     return paddle.left < ball.right && paddle.top < ball.bottom && paddle.right > ball.left && paddle.bottom > ball.top;
 }
 
-// update function, the function that does all calculations
 function update(){
     
-    // change the score of players, if the ball goes to the left "ball.x<0" computer win, else if "ball.x > canvas.width" the user win
     if( ball.x - ball.radius < 0 ){
         com.score++;
         // comScore.play();
@@ -144,24 +162,18 @@ function update(){
         resetBall();
     }
     
-    // the ball has a velocity
     ball.x += ball.velocityX;
     ball.y += ball.velocityY;
     
-    // computer plays for itself, and we must be able to beat it
-    // simple AI
     com.y += ((ball.y - (com.y + com.height/2)))*0.1;
     
-    // when the ball collides with bottom and top walls we inverse the y velocity.
     if(ball.y - ball.radius < 0 || ball.y + ball.radius > canvas.height){
         ball.velocityY = -ball.velocityY;
         // wall.play();
     }
     
-    // we check if the paddle hit the user or the com paddle
     let player = (ball.x + ball.radius < canvas.width/2) ? user : com;
     
-    // if the ball hits a paddle
     if(collision(ball,player)){
         // play sound
         // hit.play();
@@ -186,36 +198,21 @@ function update(){
 }
 
 // render function, the function that does al the drawing
-function render(){
-    
-    // clear the canvas
+function render()
+{
     drawRect(0, 0, canvas.width, canvas.height, "dimgray");
-    
-    // draw the user score to the left
     drawText(user.score,canvas.width/4,canvas.height/5);
-    
-    // draw the COM score to the right
     drawText(com.score,3*canvas.width/4,canvas.height/5);
-    
-    // draw the net
-    // drawNet();
-    
-    // draw the user's paddle
     drawRect(user.x, user.y, user.width, user.height, user.color);
-    
-    // draw the COM's paddle
     drawRect(com.x, com.y, com.width, com.height, com.color);
-    
-    // draw the ball
     drawArc(ball.x, ball.y, ball.radius, ball.color);
 }
 function game(){
     update();
     render();
 }
-// number of frames per second
+
 let framePerSecond = 50;
 
-//call the game function 50 times every 1 Sec
 let loop = setInterval(game,1000/framePerSecond);
 
