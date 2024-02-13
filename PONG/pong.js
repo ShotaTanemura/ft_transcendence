@@ -2,33 +2,32 @@
 参考コード: https://github.com/CodeExplainedRepo/Ping-Pong-Game-JavaScript
 */
 
+//TODO:後で修正
+const CANVAS_WIDTH = 800;
+const CANVAS_HEIGHT = 1200;
 
 const data = {
-    ball: {
-      x: canvas.width / 2,
-      y: canvas.width / 2,
-      radius: 10,
-      color: "WHITE",
-    },
-      user: {
-        x: 0,
-        y: 0,
-        width: 10,
-        height: 100,
-        color: "WHITE",
-      },
-      com: {
-        x: 0,
-        y: 0,
-        width: 10,
-        height: 100,
-        color: "WHITE",
-    },
-    canvas: {
-      width: 1200,
-      height: 800,
-    },
-  };
+  ball: {
+    x: CANVAS_WIDTH / 2,
+    y: CANVAS_HEIGHT / 2,
+    radius: 10,
+    color: "WHITE",
+  },
+  user: {
+    x: 0,
+    y: 0,
+    width: 10,
+    height: 100,
+    color: "WHITE",
+  },
+  com: {
+    x: 0,
+    y: 0,
+    width: 10,
+    height: 100,
+    color: "WHITE",
+  },
+};
 
 const PONGURL = "ws://127.0.0.1:8000/ws/pong/";
 const KEYDOWN = "keydown";
@@ -86,9 +85,9 @@ function drawArc(x, y, r, color) {
 
 // render function, the function that does al the drawing
 function render() {
-    drawRect(0, 0, data.canvas.width, data.canvas.height, "dimgray");
-    drawText(data.user.score, data.canvas.width / 4, data.canvas.height / 5);
-    drawText(data.com.score, 3 * data.canvas.width / 4, data.canvas.height / 5);
+    drawRect(0, 0, canvas.width, canvas.height, "dimgray");
+    drawText(data.user.score, canvas.width / 4, canvas.height / 5);
+    drawText(data.com.score, 3 * canvas.width / 4, canvas.height / 5);
     drawRect(data.user.x, data.user.y, data.user.width, data.user.height, data.user.color);
     drawRect(data.com.x, data.com.y, data.com.width, data.com.height, data.com.color);
     drawArc(data.ball.x, data.ball.y, data.ball.radius, data.ball.color);

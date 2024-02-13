@@ -1,5 +1,5 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
-from . import gameLogic
+from .gameLogic import *
 import json
 
 class MyConsumer(AsyncWebsocketConsumer):
