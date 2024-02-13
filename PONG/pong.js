@@ -94,7 +94,7 @@ socket.onopen = function() {
 socket.onmessage = function(event) {
     const data = JSON.parse(event.data);
     console.log("受信メッセージ:", data);
-    const key = data[key];
+    const key = data.key;
     if (key === "a") {
         user.y -= 30;
     }

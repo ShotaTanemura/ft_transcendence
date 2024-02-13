@@ -11,7 +11,7 @@ class MyConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         try:
             text_data_json = json.loads(text_data)
-            message = text_data_json['message']
+            message = text_data_json['key']
             # TODO:受信したメッセージを処理
             await self.send(text_data=json.dumps({
                 'key': message
