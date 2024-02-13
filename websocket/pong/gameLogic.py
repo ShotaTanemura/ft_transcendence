@@ -63,8 +63,6 @@ def collision(ball, paddle):
         and paddle_bottom > ball_top
     )
 
-
-
 def reset_ball():
     # ボールを画面中央に配置
     ball["x"] = canvas.width / 2
@@ -73,7 +71,7 @@ def reset_ball():
     ball["velocityX"] = -ball["velocityX"]
     ball["speed"] = 7
 
-def update():
+def updatePong():
     # ボールが画面外に出た場合の処理
     if ball["x"] - ball["radius"] < 0:
         # コンピューター側のスコアを加算
@@ -119,6 +117,3 @@ def update_player_position(key):
     elif (key == 'ArrowDown' or key == 'd'):
         user["y"] =  MOVE_DISTANCE
     
-def pongLoop(key):
-    update_player_position(key)
-    update()

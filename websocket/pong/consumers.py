@@ -11,7 +11,8 @@ class MyConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
             text_data_json = json.loads(text_data)
-            pongLoop(text_data_json['key'])
+            update_player_position(text_data_json['key'])
+            updatePong()
             game_data = {
                 "ball": ball,
                 "user": user,
