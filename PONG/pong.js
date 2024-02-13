@@ -2,6 +2,8 @@
     参考コード: https://github.com/CodeExplainedRepo/Ping-Pong-Game-JavaScript
 */
 
+const pongUrl = "ws://127.0.0.1:8000/ws/pong/";
+
 // select canvas element
 const canvas = document.getElementById("pong");
 
@@ -71,7 +73,7 @@ function drawArc(x, y, r, color){
 }
 
 // WebSocket 接続
-const socket = new WebSocket("ws://127.0.0.1:8000/ws/somepath/");
+const socket = new WebSocket(pongUrl);
 
 
 // キーが押されたら、JSON形式でserverに送信

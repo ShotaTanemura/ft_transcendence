@@ -1,12 +1,11 @@
+# URLパターンとWebSocketコンシューマーを紐付けるファイルです。
+
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
-import yourapp.routing
+import pong.routing
 
 application = ProtocolTypeRouter({
-    # (http->django views is added by default)
-    'websocket': AuthMiddlewareStack(
-        URLRouter(
-            yourapp.routing.websocket_urlpatterns
-        )
-    ),
+    'websocket': URLRouter(
+            pong.routing.websocket_urlpatterns
+        ),
 })

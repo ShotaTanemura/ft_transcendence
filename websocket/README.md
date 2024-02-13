@@ -6,13 +6,29 @@
 
 `pip install django`
 
-**1. Django Channelsのインストール**
+**Django Channelsのインストール**
 
 `pip install channels`
 
-1. **INSTALLED_APPSに'channels'を追加**
+**Daphneサーバーのインストール**
 
-```jsx
+`pip install daphne`
+
+**WebSocketクライアントツールのインストール (例: wscat)**
+
+`npm install -g wscat`
+
+**Django プロジェクト全体を作成**
+
+`django-admin startproject <project_name> `
+`cd websocket`
+
+**存在するDjangoプロジェクト内に新しいアプリを作成**
+
+`python manage.py startapp <app_name>`
+**INSTALLED_APPSに'channels'を追加**
+websocket/settings.py
+```js
 INSTALLED_APPS = [
     # 既存のDjangoアプリケーション
     'django.contrib.admin',
@@ -26,21 +42,14 @@ INSTALLED_APPS = [
 ]
 ```
 
-3.**ASGI_APPLICATIONの設定**
+**ASGI_APPLICATIONの設定**
 
 `ASGI_APPLICATION = 'yourproject.routing.application`
 
-4.**Djangoプロジェクトのマイグレーション実行**
+**Djangoプロジェクトのマイグレーション実行**
 
 `python manage.py migrate`
 
-5.**Daphneサーバーのインストール**
-
-`pip install daphne`
-
-6.**WebSocketクライアントツールのインストール (例: wscat)**
-
-`npm install -g wscat`
 
 ### 検証
 
@@ -49,3 +58,6 @@ INSTALLED_APPS = [
 `daphne -p 8000 yourproject.asgi:application`
 
 `{"message": "hello"}`
+
+
+`python manage.py startapp yourapp`
