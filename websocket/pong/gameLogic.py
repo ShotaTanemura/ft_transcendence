@@ -65,8 +65,8 @@ def collision(ball, paddle):
 
 def reset_ball():
     # ボールを画面中央に配置
-    ball["x"] = canvas.width / 2
-    ball["y"] = canvas.height / 2
+    ball["x"] = canvas["width"] / 2
+    ball["y"] = canvas["height"] / 2
     # ボール速度を初期値に設定
     ball["velocityX"] = -ball["velocityX"]
     ball["speed"] = 7
