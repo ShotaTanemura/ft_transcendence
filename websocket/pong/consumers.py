@@ -1,4 +1,5 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
+from . import gameLogic
 import json
 
 class MyConsumer(AsyncWebsocketConsumer):
@@ -9,15 +10,14 @@ class MyConsumer(AsyncWebsocketConsumer):
         pass
 
     async def receive(self, text_data):
-        try:
             text_data_json = json.loads(text_data)
-            message = text_data_json['key']
-            # TODO:受信したメッセージを処理
-            await self.send(text_data=json.dumps({
-                'key': message
-            }))
-        except json.JSONDecodeError:
-            await self.send(text_data=json.dumps({
-                'key': 'Invalid JSON'
-            }))
+            pongLoop(text_data_json['key'])
+            game_data = {
+                "ball": ball,
+                "user": user,
+                "com": com,
+                "canvas": canvas,
+            }
+            json_data = json.dumps(game_data)
+            await self.send(text_data=json_data)
 
