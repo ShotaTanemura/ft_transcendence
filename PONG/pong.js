@@ -73,12 +73,11 @@ function drawArc(x, y, r, color){
 // WebSocket 接続
 const socket = new WebSocket("ws://127.0.0.1:8000/ws/somepath/");
 
+
 // キーが押されたら、JSON形式でserverに送信
 function handleKeyDown(event) {
     const key = event.key;
     console.log("キーが押されました:", key);
-    if (key !== "a" && key !== "d")
-        return;
     const jsonData = JSON.stringify
     ({
         "key": key,
@@ -95,10 +94,10 @@ socket.onmessage = function(event) {
     const data = JSON.parse(event.data);
     console.log("受信メッセージ:", data);
     const key = data.key;
-    if (key === "a") {
+    if (key === "a" || key === "ArrowUp") {
         user.y -= 30;
     }
-    if (key === "d") {
+    if (key === "d" || key === "ArrowDown") {
       user.y += 30;
     }
 };
