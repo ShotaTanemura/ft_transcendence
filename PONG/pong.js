@@ -6,7 +6,7 @@
 const CANVAS_WIDTH = 800;
 const CANVAS_HEIGHT = 1200;
 
-const data = {
+data = {
   ball: {
     x: CANVAS_WIDTH / 2,
     y: CANVAS_HEIGHT / 2,
@@ -30,7 +30,6 @@ const data = {
 };
 
 const PONGURL = "ws://127.0.0.1:8000/ws/pong/";
-const KEYDOWN = "keydown";
 
 const socket = new WebSocket(PONGURL);
 
@@ -51,8 +50,9 @@ socket.onopen = function () {
 
 // メッセージ受信時の処理
 socket.onmessage = function (event) {
-    const data = JSON.parse(event.data);
+    data = JSON.parse(event.data);
     console.log("受信メッセージ:", data);
+    render();
 };
 
 // エラー発生時の処理
@@ -62,7 +62,7 @@ socket.onerror = function (error) {
 
 const canvas = document.getElementById("pong");
 const ctx = canvas.getContext('2d');
-document.addEventListener(KEYDOWN, sendKeyToServer);
+document.addEventListener("keypress", sendKeyToServer);
 
 function drawText(text, x, y) {
     ctx.fillStyle = "#FFF";
@@ -71,6 +71,7 @@ function drawText(text, x, y) {
 }
 
 function drawRect(x, y, w, h, color) {
+    
     ctx.fillStyle = color;
     ctx.fillRect(x, y, w, h);
 }
@@ -93,5 +94,3 @@ function render() {
     drawArc(data.ball.x, data.ball.y, data.ball.radius, data.ball.color);
 }
 
-let framePerSecond = 50;
-let loop = setInterval(render, 1000 / framePerSecond);

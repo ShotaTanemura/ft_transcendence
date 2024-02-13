@@ -112,8 +112,9 @@ def updatePong():
 
 
 def update_player_position(key):
+    print(f"キー情報: {key}")
     if (key == 'ArrowUp' or key == 'a'):
-        user["y"] =  MOVE_DISTANCE * -1
+        user["y"] +=  (MOVE_DISTANCE * -1)
     elif (key == 'ArrowDown' or key == 'd'):
-        user["y"] =  MOVE_DISTANCE
+        user["y"] +=  (MOVE_DISTANCE)
     
