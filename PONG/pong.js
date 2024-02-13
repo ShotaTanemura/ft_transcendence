@@ -75,14 +75,23 @@ function drawArc(x, y, r, color){
     ctx.fill();
 }
 
-// listening to the mouse
-canvas.addEventListener("mousemove", getMousePos);
-
-function getMousePos(evt){
-    let rect = canvas.getBoundingClientRect();
-    
-    user.y = evt.clientY - rect.top - user.height/2;
+// キーが押されたら反応する関数を定義
+function handleKeyDown(event) {
+    const key = event.key;
+  
+    // Aキーが押されたら、userパドルを上に移動
+    if (key === "a") {
+      user.y -= 30;
+    }
+    // Dキーが押されたら、userパドルを下に移動
+    if (key === "d") {
+      user.y += 30;
+    }
 }
+
+// キーが押されたとき、handleKeyDown関数を呼ぶ
+const KEYDOWN = "keydown";
+document.addEventListener(KEYDOWN, handleKeyDown);
 
 // when COM or USER scores, we reset the ball
 function resetBall(){
