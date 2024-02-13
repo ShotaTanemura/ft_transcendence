@@ -71,7 +71,7 @@ function drawArc(x, y, r, color){
 }
 
 // WebSocket 接続
-const socket = new WebSocket("ws://localhost:8000");
+const socket = new WebSocket("ws://127.0.0.1:8000/ws/somepath/");
 
 // キーが押されたら、JSON形式でserverに送信
 function handleKeyDown(event) {
