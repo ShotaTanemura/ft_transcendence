@@ -55,7 +55,7 @@ INSTALLED_APPS = [
 
 **DaphneサーバーでのDjangoプロジェクト起動**
 
-`daphne -p 8000 yourproject.asgi:application`
+`daphne -p 8000 websocket.asgi:application`
 
 `{"message": "hello"}`
 
