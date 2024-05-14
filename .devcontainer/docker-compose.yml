@@ -2,8 +2,9 @@ services:
   web:
     container_name: web
     build:
+      context: .
       dockerfile: ./Dockerfile
     working_dir: /workspace/web
     volumes:
-      - ..:/workspace/web:cache
+      - ..:/workspace/web:cached
     tty: true
