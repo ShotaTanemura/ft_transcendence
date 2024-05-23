@@ -6,7 +6,7 @@ import './App.css'
 
 export const PlayersContext = createContext();
 function App() {
-  const [PlayersInfo, setPlayersInfo] = useState();
+  const [PlayersInfo, setPlayersInfo] = useState({});
   const value = {PlayersInfo, setPlayersInfo};
   return (
 	<PlayersContext.Provider value={value}>
