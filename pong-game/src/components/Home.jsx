@@ -4,15 +4,13 @@ import {PlayersContext} from '../App.jsx'
 import { UserNameForm } from './user-name-form.jsx';
 
 export function Home() {
-  const { playersInfo, setPlayersInfo} = useContext(PlayersContext);
+  const { PlayersInfo, setPlayersInfo} = useContext(PlayersContext);
+
   const navigation = useNavigate();
 
   function handlesubmit(e) {         	
 	e.preventDefault();
-	setPlayersInfo({
-	  //TODO 同じニックネームをつけないなどのバリデーションが必要。
-	  player1: document.getElementById('player1').value,
-	})
+	console.log(PlayersInfo);
 	navigation("/tournament");
 	return ;                         	
   }
