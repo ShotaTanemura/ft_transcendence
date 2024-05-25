@@ -1,41 +1,58 @@
-let keys = {};
-
 function startPongGame() {
-    console.log('startPongGame function called');
     const canvas = document.getElementById('pongCanvas');
     const context = canvas.getContext('2d');
 
-    let player1 = { x: 10, y: canvas.height / 2 - 50, width: 10, height: 100, dy: 0 };
-    let player2 = { x: canvas.width - 20, y: canvas.height / 2 - 50, width: 10, height: 100, dy: 0 };
-    let ball = { x: canvas.width / 2, y: canvas.height / 2, radius: 10, dx: 5, dy: 5 };
+    const PLAYER_WIDTH = 10;
+    const PLAYER_HEIGHT = 100;
+    const BALL_RADIUS = 10;
+    const BALL_SPEED = 5;
+    const PLAYER_SPEED = 10;
 
-    document.addEventListener('keydown', (event) => {
-        keys[event.key] = true;
-    });
+    let player1 = createPlayer(10, canvas.height / 2 - PLAYER_HEIGHT / 2);
+    let player2 = createPlayer(canvas.width - 20, canvas.height / 2 - PLAYER_HEIGHT / 2);
+    let ball = createBall(canvas.width / 2, canvas.height / 2);
 
-    document.addEventListener('keyup', (event) => {
-        keys[event.key] = false;
-    });
+    function createPlayer(x, y) {
+        return { x, y, width: PLAYER_WIDTH, height: PLAYER_HEIGHT, dy: 0 };
+    }
 
-    function movePaddles() {
-        if (keys['w'] && player1.y > 0) {
-            player1.dy = -5;
-        } else if (keys['s'] && player1.y < canvas.height - player1.height) {
-            player1.dy = 5;
-        } else {
-            player1.dy = 0;
+    function createBall(x, y) {
+        return { x, y, radius: BALL_RADIUS, dx: BALL_SPEED, dy: BALL_SPEED };
+    }
+
+    function setupEventListeners() {
+        document.addEventListener('keydown', handleKeyDown);
+        document.addEventListener('keyup', handleKeyUp);
+    }
+
+    function handleKeyDown(event) {
+        switch (event.key) {
+            case 'w':
+                player1.dy = -PLAYER_SPEED;
+                break;
+            case 's':
+                player1.dy = PLAYER_SPEED;
+                break;
+            case 'p':
+                player2.dy = -PLAYER_SPEED;
+                break;
+            case ';':
+                player2.dy = PLAYER_SPEED;
+                break;
         }
+    }
 
-        if (keys['ArrowUp'] && player2.y > 0) {
-            player2.dy = -5;
-        } else if (keys['ArrowDown'] && player2.y < canvas.height - player2.height) {
-            player2.dy = 5;
-        } else {
-            player2.dy = 0;
+    function handleKeyUp(event) {
+        switch (event.key) {
+            case 'w':
+            case 's':
+                player1.dy = 0;
+                break;
+            case 'p':
+            case ';':
+                player2.dy = 0;
+                break;
         }
-
-        player1.y += player1.dy;
-        player2.y += player2.dy;
     }
 
     function drawRect(x, y, width, height, color) {
@@ -51,9 +68,16 @@ function startPongGame() {
         context.fill();
     }
 
-    function update() {
-        movePaddles();
+    function updatePlayer(player) {
+        player.y += player.dy;
+        if (player.y < 0) {
+            player.y = 0;
+        } else if (player.y + player.height > canvas.height) {
+            player.y = canvas.height - player.height;
+        }
+    }
 
+    function updateBall() {
         ball.x += ball.dx;
         ball.y += ball.dy;
 
@@ -76,6 +100,12 @@ function startPongGame() {
         }
     }
 
+    function update() {
+        updatePlayer(player1);
+        updatePlayer(player2);
+        updateBall();
+    }
+
     function draw() {
         context.clearRect(0, 0, canvas.width, canvas.height);
         drawRect(player1.x, player1.y, player1.width, player1.height, 'white');
@@ -89,5 +119,6 @@ function startPongGame() {
         requestAnimationFrame(gameLoop);
     }
 
+    setupEventListeners();
     gameLoop();
 }
