@@ -6,10 +6,9 @@ export function Tournament() {
 
   return (
     <>
-	  <h1>{PlayersInfo.player1}</h1>
-	  <h1>{PlayersInfo.player2}</h1>
-	  <h1>{PlayersInfo.player3}</h1>
-	  <h1>{PlayersInfo.player4}</h1>
+		{Object.keys(PlayersInfo).map(index => {
+			return <h1 key={index} >{PlayersInfo[index].name}</h1>
+		})}
 	</>
   );
 }
