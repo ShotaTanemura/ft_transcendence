@@ -1,25 +1,14 @@
+{% load static %}
+
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pong Game</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        canvas {
-            background: black;
-            display: block;
-            margin: 20px auto;
-        }
-    </style>
+    <title>バニラSPA</title>
+    <meta name="viewport" content="width=device-width">
+    <link rel="icon" href="/img/favicon.ico">
+    <script defer src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script defer type="module" src="{% static 'js/application.js' %}"></script>
 </head>
-<body>
-    <div class="container text-center">
-        <h1>Pong Game</h1>
-        <button id="startButton" class="btn btn-primary">Start Game</button>
-        <canvas id="pongCanvas" width="800" height="600"></canvas>
-    </div>
-    {% load static %}
-    <script src="{% static 'js/pong.js' %}"></script>
-</body>
+<body></body>
 </html>
