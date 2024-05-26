@@ -10,7 +10,6 @@ export function Home() {
 
   function handlesubmit(e) {         	
 	e.preventDefault();
-	console.log(PlayersInfo);
 	navigation("/tournament");
 	return ;                         	
   }
