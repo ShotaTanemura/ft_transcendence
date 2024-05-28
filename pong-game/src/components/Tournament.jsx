@@ -43,9 +43,7 @@ export const Tournament = () => {
   }
 
   const handlesubmit = () => {
-    console.log(rounds[0])
-    if (rounds.length === 1) navigate('/pong', { state: rounds[0] });
-    else navigate('/pong', { state: rounds[1] });
+    navigate('/pong', { state: rounds });
   };
 
   // ゲーム終了時の結果を反映するためのモック
