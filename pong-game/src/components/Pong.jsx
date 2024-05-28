@@ -1,5 +1,6 @@
 import { React } from 'react';
 import { useLocation } from 'react-router-dom';
+import PongField from './PongField'
 
 export const Pong = () => {
     function getNextGamePairName(rounds) {
@@ -13,8 +14,7 @@ export const Pong = () => {
 
     return (
         <div>
-            <p>{ pair[0] }</p>
-            <p>{ pair[1] }</p>
+            <PongField playerNames={ pair }></PongField>
         </div>
     );
 };
