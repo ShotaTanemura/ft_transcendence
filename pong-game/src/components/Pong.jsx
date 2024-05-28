@@ -4,8 +4,11 @@ import { useLocation } from 'react-router-dom';
 export const Pong = () => {
     const getNextGamePairName = (rounds) => {
         for (const round of rounds) {
-            if (round.top.winner === true && round.bottom.winner === true) {
-                return [round.top.name, round.bottom.name];
+            for (const game of round) {
+                if (game.top.winner === true && game.bottom.winner === true) {
+                    console.log(game.top.name);
+                    return [game.top.name, game.bottom.name];
+                }
             }
         }
         return null;
