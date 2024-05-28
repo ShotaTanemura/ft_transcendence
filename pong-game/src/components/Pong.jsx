@@ -3,15 +3,9 @@ import { useLocation } from 'react-router-dom';
 
 export const Pong = () => {
     const getNextGamePairName = (rounds) => {
-        for (const round of rounds) {
-            for (const game of round) {
-                if (game.top.winner === true && game.bottom.winner === true) {
-                    console.log(game.top.name);
-                    return [game.top.name, game.bottom.name];
-                }
-            }
-        }
-        return null;
+        const flattenedGames = rounds.flatMap(round => round);
+        const nextGame = flattenedGames.find(game => game.top.winner && game.bottom.winner);
+        return nextGame ? [nextGame.top.name, nextGame.bottom.name] : null
     }
     const location = useLocation();
     const rounds = location.state;
