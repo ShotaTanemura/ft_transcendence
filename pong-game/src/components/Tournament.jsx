@@ -53,7 +53,7 @@ export const Tournament = () => {
   }
 
   const handlesubmit = () => {
-    navigate('/pong', { state: rounds });
+    navigate('/pong');
   };
 
   // ゲーム終了時の結果を反映するためのモック
