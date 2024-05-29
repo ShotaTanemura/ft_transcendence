@@ -14,15 +14,15 @@ export const Tournament = () => {
   // 前の対戦が終わってtournamentに処理が移った時に実行する、トーナメントのアップデートを行うモック
   function MockdiplayTournament() {
     let tmp = [];
-    let next_round_games= [];
-    let new_rounds = gameResults;
+    let nextRoundGames= [];
+    let newRounds = gameResults;
 
   //次の試合の組を計算
     if (gameResults.length === 0) {
       for (const index of Object.keys(playersInfo)) {
         tmp.push(playersInfo[index].name);
         if (tmp.length === 2) { 
-          next_round_games.push({top: {name: tmp[0], score: 0, winner: true }, bottom: {name: tmp[1], score: 0, winner: true}});
+          nextRoundGames.push({top: {name: tmp[0], score: 0, winner: true }, bottom: {name: tmp[1], score: 0, winner: true}});
           tmp = [];
         }
       }
@@ -30,26 +30,26 @@ export const Tournament = () => {
         gameResults[gameResults.length - 1].forEach(element => {
             tmp.push(element.top.winner ? element.top.name : element.bottom.name);
             if (tmp.length === 2) {
-              next_round_games.push({top: {name: tmp[0], score: 0, winner: true }, bottom: {name: tmp[1], score: 0, winner: true}});
+              nextRoundGames.push({top: {name: tmp[0], score: 0, winner: true }, bottom: {name: tmp[1], score: 0, winner: true}});
               tmp = [];
             }
         });
     }
-    if (0 < next_round_games.length) {
-      setGameResults([...gameResults, next_round_games])
-      new_rounds.push(next_round_games);
+    if (0 < nextRoundGames.length) {
+      setGameResults([...gameResults, nextRoundGames])
+      newRounds.push(nextRoundGames);
     }
     //GameResultではまだ描かれていない、未来の試合を追加
-    let num_of_games = next_round_games.length;
-    while (1 < num_of_games) {
-      let extra_round_games = [];
-      for (let i = 0; i < num_of_games; i+=2) {
-        extra_round_games.push({top: {name: "", score: 0, winner: true }, bottom: {name: "", score: 0, winner: true}});
+    let numOfGames = nextRoundGames.length;
+    while (1 < numOfGames) {
+      let extraRoundGames = [];
+      for (let i = 0; i < numOfGames; i+=2) {
+        extraRoundGames.push({top: {name: "", score: 0, winner: true }, bottom: {name: "", score: 0, winner: true}});
       }
-      new_rounds.push(extra_round_games);
-      num_of_games = Math.floor(num_of_games / 2);
+      newRounds.push(extraRoundGames);
+      numOfGames = Math.floor(numOfGames / 2);
     }
-    setRounds(new_rounds);
+    setRounds(newRounds);
   }
 
   const handlesubmit = () => {
