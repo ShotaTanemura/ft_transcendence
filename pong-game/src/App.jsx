@@ -1,21 +1,29 @@
-import {useState, createContext} from 'react';
+import {React, useState, createContext} from 'react';
+import {ReactDOM} from 'react-dom';
 import {BrowserRouter, Link,Routes, Route} from 'react-router-dom';
 import {Home} from './components/Home.jsx'
 import {Tournament} from './components/Tournament.jsx'
 import './App.css'
 
 export const PlayersContext = createContext();
+export const GameResultsContext = createContext();
+
 function App() {
-  const [PlayersInfo, setPlayersInfo] = useState({});
-  const value = {PlayersInfo, setPlayersInfo};
+  const [playersInfo, setPlayersInfo] = useState({});
+  const [gameResults, setGameResults] = useState([]);
+  const playersState = {playersInfo, setPlayersInfo};
+  const gameResultsState = {gameResults, setGameResults};
+
   return (
-	<PlayersContext.Provider value={value}>
-  	  <BrowserRouter>
-	    <Routes>
-	        <Route path={"/"} element={<Home/>}/>
-	        <Route path={"/tournament"} element={<Tournament/>}/>
-	    </Routes>
-	  </BrowserRouter>
+	<PlayersContext.Provider value={playersState}>
+	  <GameResultsContext.Provider  value={gameResultsState}>
+  	    <BrowserRouter>
+	      <Routes>
+	          <Route path={"/"} element={<Home/>}/>
+	          <Route path={"/tournament"} element={<Tournament/>}/>
+	      </Routes>
+	    </BrowserRouter>
+	  </GameResultsContext.Provider>
     </PlayersContext.Provider>
   );
 };

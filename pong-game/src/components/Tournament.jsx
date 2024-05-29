@@ -1,11 +1,11 @@
 import {React, useContext, useState} from 'react';
-import {PlayersContext} from '../App.jsx';
+import {PlayersContext, GameResultsContext} from '../App.jsx';
 import Bracket from './Bracket';
 import './Tournament.css';
 
 export const Tournament = () => {
-  const {PlayersInfo, setPlayersInfo} = useContext(PlayersContext);
-  const [GameResult, setGameResult] = useState([]);
+  const {playersInfo, setPlayersInfo} = useContext(PlayersContext);
+  const {gameResults, setGameResults} = useContext(GameResultsContext);
   const [rounds, setRounds] = useState([]);
   // ここでサーバーにPlayersInfoの順番をシャッフルしてもらう。
 
@@ -13,18 +13,18 @@ export const Tournament = () => {
   function MockdiplayTournament() {
     let tmp = [];
     let next_round_games= [];
-    let new_rounds = GameResult;
+    let new_rounds = gameResults;
 
   //次の試合の組を計算
-    for (const index of Object.keys(PlayersInfo)) {
-      if (PlayersInfo[index].is_advancing) tmp.push(PlayersInfo[index]);
+    for (const index of Object.keys(playersInfo)) {
+      if (playersInfo[index].is_advancing) tmp.push(playersInfo[index]);
       if (tmp.length === 2) { 
         next_round_games.push({top: {name: tmp[0].name, score: 0, winner: true }, bottom: {name: tmp[1].name, score: 0, winner: true}});
         tmp = [];
       }
     }
     if (0 < next_round_games.length) {
-      setGameResult([...GameResult, next_round_games])
+      setGameResults([...gameResults, next_round_games])
       new_rounds.push(next_round_games);
     }
     //GameResultではまだ描かれていない、未来の試合を追加
@@ -42,8 +42,8 @@ export const Tournament = () => {
   // ゲーム終了時の結果を反映するためのモック
   function MockGameFinished() {
     let count = 0;
-    for (const index of Object.keys(PlayersInfo)) {
-      if (PlayersInfo[index].is_advancing)  count++;
+    for (const index of Object.keys(playersInfo)) {
+      if (playersInfo[index].is_advancing)  count++;
       if (count % 2) setPlayersInfo(((players)=>{players[index].is_advancing = false; return players}));
     }
   }
