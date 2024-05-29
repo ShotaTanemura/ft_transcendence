@@ -1,5 +1,6 @@
 import {React, useContext, useState} from 'react';
 import {PlayersContext, GameResultsContext} from '../App.jsx';
+import { useNavigate } from 'react-router-dom';
 import Bracket from './Bracket';
 import './Tournament.css';
 
@@ -7,6 +8,7 @@ export const Tournament = () => {
   const {playersInfo, setPlayersInfo} = useContext(PlayersContext);
   const {gameResults, setGameResults} = useContext(GameResultsContext);
   const [rounds, setRounds] = useState([]);
+  const navigate = useNavigate();
   // ここでサーバーにPlayersInfoの順番をシャッフルしてもらう。
 
   // 前の対戦が終わってtournamentに処理が移った時に実行する、トーナメントのアップデートを行うモック
@@ -49,6 +51,11 @@ export const Tournament = () => {
     }
     setRounds(new_rounds);
   }
+
+  const handlesubmit = () => {
+    navigate('/pong', { state: rounds });
+  };
+
   // ゲーム終了時の結果を反映するためのモック
   function MockGameFinished() {
     let count = 0;
@@ -66,7 +73,7 @@ export const Tournament = () => {
     <div>
       <h1>Pong-Game Tournament</h1>
       <button onClick={MockdiplayTournament}>MockDisplayTournament</button>
-      <button onClick={MockGameFinished}>MockGameFinished</button>
+      <button onClick={handlesubmit}>Start next gaame</button>
       <Bracket rounds={rounds} />
     </div>
   );
