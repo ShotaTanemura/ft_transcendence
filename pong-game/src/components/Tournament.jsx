@@ -16,12 +16,22 @@ export const Tournament = () => {
     let new_rounds = gameResults;
 
   //次の試合の組を計算
-    for (const index of Object.keys(playersInfo)) {
-      if (playersInfo[index].is_advancing) tmp.push(playersInfo[index]);
-      if (tmp.length === 2) { 
-        next_round_games.push({top: {name: tmp[0].name, score: 0, winner: true }, bottom: {name: tmp[1].name, score: 0, winner: true}});
-        tmp = [];
+    if (gameResults.length === 0) {
+      for (const index of Object.keys(playersInfo)) {
+        tmp.push(playersInfo[index].name);
+        if (tmp.length === 2) { 
+          next_round_games.push({top: {name: tmp[0], score: 0, winner: true }, bottom: {name: tmp[1], score: 0, winner: true}});
+          tmp = [];
+        }
       }
+    } else {
+        gameResults[gameResults.length - 1].forEach(element => {
+            tmp.push(element.top.winner ? element.top.name : element.bottom.name);
+            if (tmp.length === 2) {
+              next_round_games.push({top: {name: tmp[0], score: 0, winner: true }, bottom: {name: tmp[1], score: 0, winner: true}});
+              tmp = [];
+            }
+        });
     }
     if (0 < next_round_games.length) {
       setGameResults([...gameResults, next_round_games])
@@ -42,10 +52,14 @@ export const Tournament = () => {
   // ゲーム終了時の結果を反映するためのモック
   function MockGameFinished() {
     let count = 0;
-    for (const index of Object.keys(playersInfo)) {
-      if (playersInfo[index].is_advancing)  count++;
-      if (count % 2) setPlayersInfo(((players)=>{players[index].is_advancing = false; return players}));
+    if (gameResults.length < 1) {
+      console.log("error!")
+      return ;
     }
+    gameResults[gameResults.length - 1].forEach((element) => {
+        element.top.winner = false;
+        element.bottom.score = 100;
+    });
   }
 
   return (
