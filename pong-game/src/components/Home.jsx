@@ -33,9 +33,9 @@ export function Home() {
   return (
     <>
       <div>
-	  	<h1>Welcome to Pong Game!</h1>
-		<UserNameForm handlesubmit={handlesubmit} />
-	  </div>
+	  	  <h1>Welcome to Pong Game!</h1>
+		    <UserNameForm handlesubmit={handlesubmit} />
+	    </div>
     </>
   );
 };

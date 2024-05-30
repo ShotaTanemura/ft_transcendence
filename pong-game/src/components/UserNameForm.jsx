@@ -6,6 +6,8 @@ import { PlayersContext } from '../App.jsx';
 export function UserNameForm(props) {
     const [inputBlocks, setInputBlocks] = useState([1, 2]);
     const { playersInfo, setPlayersInfo} = useContext(PlayersContext);
+    const number_of_max_player = 16;
+    const number_of_minimum_player = 2;
 	function addUserNameInput() {
 		setInputBlocks(prevBlocks => [...prevBlocks, prevBlocks.length + 1]);
 	}
@@ -21,9 +23,9 @@ export function UserNameForm(props) {
         {inputBlocks.map((id) => (
           <UserNameInput key={id} id={id} onInputChange={onInputChange}/>
         ))}
-	    <GameStartButton/>
-        <button type="button" onClick={addUserNameInput}>+click</button>
-        <button type="button" onClick={removeUserNameInput}>-click</button>
+        {inputBlocks.length < number_of_max_player && <button type="button" onClick={addUserNameInput}>+click</button>}
+        {number_of_minimum_player < inputBlocks.length && <button type="button" onClick={removeUserNameInput}>-click</button>}
+	      <GameStartButton/>
       </form>
     );
 }
