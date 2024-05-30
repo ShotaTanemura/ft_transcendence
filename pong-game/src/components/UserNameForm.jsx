@@ -13,7 +13,7 @@ export function UserNameForm(props) {
 		setInputBlocks(prevBlocks => prevBlocks.slice(0, prevBlocks.length - 1));
 	}
   function onInputChange(id, value) {
-    setPlayersInfo(players => {players[id] = {name: value, is_advancing: true}; return players;})
+    setPlayersInfo(players => {players[id] = {name: value.trim(), is_advancing: true}; return players;})
   }
 
     return (
