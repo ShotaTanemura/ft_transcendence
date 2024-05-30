@@ -39,7 +39,6 @@ export const Tournament = () => {
       let nearestPowerOfTwoPlayers = getNearestPowerOfTwo(numberOfPlayers );
       let numberOfAbsentPlayers = nearestPowerOfTwoPlayers - numberOfPlayers;
       let emptyNames = new Array(numberOfAbsentPlayers).fill('');
- 
       let firstRoundGames = [];
       let nextRoundGamesPlayersNames = new Array();
 
@@ -50,7 +49,6 @@ export const Tournament = () => {
         if (numberOfAbsentPlayers === 0) continue;
         if (emptyNames.length !== 0) {
           nextRoundGamesPlayersNames.push(emptyNames.shift());
-          // emptyNames.splice(i, 1);
         }
       }
       for (let i = 0, length = nextRoundGamesPlayersNames.length; i < length; i++) {
