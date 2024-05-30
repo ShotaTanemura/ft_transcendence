@@ -2,7 +2,6 @@ import {React, useContext, useEffect, useState} from 'react';
 import {PlayersContext, GameResultsContext} from '../App.jsx';
 import { useNavigate } from 'react-router-dom';
 import Bracket from './Bracket';
-import VictoryScreen from './VictoryScreen.jsx';
 import './Tournament.css';
 
 export const Tournament = () => {
@@ -18,7 +17,7 @@ export const Tournament = () => {
     return (gameResults[gameResults.length - 1]);
   }
 
-  function MockdisplayTournament() {
+  function displayTournament() {
     let tmp = [];
     let nextRoundGames= [];
     let newRounds = [...gameResults];
@@ -70,7 +69,7 @@ export const Tournament = () => {
   };
 
   useEffect(() => {
-    MockdisplayTournament()
+    displayTournament()
   }, []);
 
   return (
