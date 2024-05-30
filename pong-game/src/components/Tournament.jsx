@@ -24,15 +24,44 @@ export const Tournament = () => {
     let newRounds = [...gameResults];
     let update = true;
 
+    function getNearestPowerOfTwo(num) {
+      let power = 1;
+      while (power < num) {
+        power *= 2;
+      }
+      return power;
+    };
+
   //次の試合の組を計算
     if (gameResults.length === 0) {
-      for (const index of Object.keys(playersInfo)) {
-        tmp.push(playersInfo[index].name);
-        if (tmp.length === 2) { 
-          nextRoundGames.push({top: {name: tmp[0], score: 0, winner: true }, bottom: {name: tmp[1], score: 0, winner: true}});
-          tmp = [];
+      let numberOfPlayers = Object.keys(playersInfo).length;
+      let playerNames = Object.keys(playersInfo).map(id => { return playersInfo[id].name; } );
+      let nearestPowerOfTwoPlayers = getNearestPowerOfTwo(numberOfPlayers );
+      let numberOfAbsentPlayers = nearestPowerOfTwoPlayers - numberOfPlayers;
+      let emptyNames = new Array(numberOfAbsentPlayers).fill('');
+ 
+      let firstRoundGames = [];
+      let nextRoundGamesPlayersNames = new Array();
+
+      for (let i = 0, length = nearestPowerOfTwoPlayers; i < length; i++) {
+        if (playerNames.length !== 0) {
+          nextRoundGamesPlayersNames.push(playerNames.shift());
+        }
+        if (numberOfAbsentPlayers === 0) continue;
+        if (emptyNames.length !== 0) {
+          nextRoundGamesPlayersNames.push(emptyNames.shift());
+          // emptyNames.splice(i, 1);
         }
       }
+      for (let i = 0, length = nextRoundGamesPlayersNames.length; i < length; i++) {
+        let top = {name: nextRoundGamesPlayersNames[i], score: 0, winner: true };
+        if (top.name === '') top.winner = false;
+        let bottom = {name: nextRoundGamesPlayersNames[i+1], score: 0, winner: true };
+        if (bottom.name === '') bottom.winner = false;
+        firstRoundGames.push({top: top, bottom: bottom});
+        i++;
+      }
+      nextRoundGames = [...firstRoundGames];
     } else {
         nextRoundGames = [];
         getCurrentRound().forEach(element => {
@@ -82,7 +111,6 @@ export const Tournament = () => {
     });
   }
 
-  console.log(gameResults);
   return (
     <div>
       <h1>Pong-Game Tournament</h1>
