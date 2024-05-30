@@ -1,10 +1,8 @@
 import {React, useState, useContext} from 'react'
 import {useNavigate} from 'react-router-dom'
-import {PlayersContext} from '../App.jsx'
-import { UserNameForm } from './user-name-form.jsx';
+import { UserNameForm } from './UserNameForm.jsx';
 
 export function Home() {
-  const { PlayersInfo, setPlayersInfo} = useContext(PlayersContext);
 
   const navigation = useNavigate();
 

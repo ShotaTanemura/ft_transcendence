@@ -1,11 +1,11 @@
 import {React, useContext, useState} from 'react'
-import {UserNameInput} from './user-name-input'
-import {GameStartButton} from './game-start-button'
-import { PlayersContext } from '../App';
+import {UserNameInput} from './UserNameInput.jsx'
+import {GameStartButton} from './GameStartButton.jsx'
+import { PlayersContext } from '../App.jsx';
 
 export function UserNameForm(props) {
     const [inputBlocks, setInputBlocks] = useState([1, 2]);
-    const { PlayersInfo, setPlayersInfo} = useContext(PlayersContext);
+    const { playersInfo, setPlayersInfo} = useContext(PlayersContext);
 	function addUserNameInput() {
 		setInputBlocks(prevBlocks => [...prevBlocks, prevBlocks.length + 1]);
 	}

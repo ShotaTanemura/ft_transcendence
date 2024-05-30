@@ -1,6 +1,5 @@
 import {React, Component, useState, useContext} from 'react'
 import {useNavigate} from 'react-router-dom'
-import {PlayersContext} from '../App.jsx'
 
 export function UserNameInput(props) {
     

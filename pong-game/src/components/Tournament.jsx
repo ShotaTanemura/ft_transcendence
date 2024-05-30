@@ -1,60 +1,87 @@
 import {React, useContext, useState} from 'react';
+import {PlayersContext, GameResultsContext} from '../App.jsx';
 import { useNavigate } from 'react-router-dom';
-import {PlayersContext} from '../App.jsx';
 import Bracket from './Bracket';
 import './Tournament.css';
 
 export const Tournament = () => {
-  const {PlayersInfo, setPlayersInfo} = useContext(PlayersContext);
-  const [GameResult, setGameResult] = useState([]);
+  const {playersInfo, setPlayersInfo} = useContext(PlayersContext);
+  const {gameResults, setGameResults} = useContext(GameResultsContext);
   const [rounds, setRounds] = useState([]);
   const navigate = useNavigate();
   // ここでサーバーにPlayersInfoの順番をシャッフルしてもらう。
 
   // 前の対戦が終わってtournamentに処理が移った時に実行する、トーナメントのアップデートを行うモック
+  function getCurrentRound() {
+    if (gameResults.length === 0) return [];
+    return (gameResults[gameResults.length - 1]);
+  }
+
   function MockdiplayTournament() {
     let tmp = [];
-    let next_round_games= [];
-    let new_rounds = GameResult;
+    let nextRoundGames= [];
+    let newRounds = [...gameResults];
+    let update = true;
 
   //次の試合の組を計算
-    for (const index of Object.keys(PlayersInfo)) {
-      if (PlayersInfo[index].is_advancing) tmp.push(PlayersInfo[index]);
-      if (tmp.length === 2) { 
-        next_round_games.push({top: {name: tmp[0].name, score: 0, winner: true }, bottom: {name: tmp[1].name, score: 0, winner: true}});
-        tmp = [];
+    if (gameResults.length === 0) {
+      for (const index of Object.keys(playersInfo)) {
+        tmp.push(playersInfo[index].name);
+        if (tmp.length === 2) { 
+          nextRoundGames.push({top: {name: tmp[0], score: 0, winner: true }, bottom: {name: tmp[1], score: 0, winner: true}});
+          tmp = [];
+        }
       }
+    } else {
+        nextRoundGames = [];
+        getCurrentRound().forEach(element => {
+            if (element.top.winner && element.bottom.winner) update = false;
+            tmp.push(element.top.winner ? element.top.name : element.bottom.name);
+            if (tmp.length === 2) {
+              nextRoundGames.push({top: {name: tmp[0], score: 0, winner: true }, bottom: {name: tmp[1], score: 0, winner: true}});
+              tmp = [];
+            }
+        });
     }
-    if (0 < next_round_games.length) {
-      setGameResult([...GameResult, next_round_games])
-      new_rounds.push(next_round_games);
+
+    if (update && getCurrentRound().length === 1) {
+      console.log("navigate");
+    }
+    if (update && 0 < nextRoundGames.length) {
+      setGameResults([...gameResults, nextRoundGames])
+      newRounds.push(nextRoundGames);
     }
     //GameResultではまだ描かれていない、未来の試合を追加
-    let num_of_games = next_round_games.length;
-    while (1 < num_of_games) {
-      let extra_round_games = [];
-      for (let i = 0; i < num_of_games; i+=2) {
-        extra_round_games.push({top: {name: "", score: 0, winner: true }, bottom: {name: "", score: 0, winner: true}});
+    let numOfGames = update ? nextRoundGames.length : getCurrentRound().length;
+    while (1 < numOfGames) {
+      let extraRoundGames = [];
+      for (let i = 0; i < numOfGames; i+=2) {
+        extraRoundGames.push({top: {name: "", score: 0, winner: true }, bottom: {name: "", score: 0, winner: true}});
       }
-      new_rounds.push(extra_round_games);
-      num_of_games = Math.floor(num_of_games / 2);
+      newRounds.push(extraRoundGames);
+      numOfGames = Math.floor(numOfGames / 2);
     }
-    setRounds(new_rounds);
+    setRounds(newRounds);
   }
 
   const handlesubmit = () => {
-    navigate('/pong', { state: rounds });
+    navigate('/pong');
   };
 
   // ゲーム終了時の結果を反映するためのモック
   function MockGameFinished() {
     let count = 0;
-    for (const index of Object.keys(PlayersInfo)) {
-      if (PlayersInfo[index].is_advancing)  count++;
-      if (count % 2) setPlayersInfo(((players)=>{players[index].is_advancing = false; return players}));
+    if (gameResults.length < 1) {
+      console.log("error!")
+      return ;
     }
+    gameResults[gameResults.length - 1].forEach((element) => {
+        element.top.winner = false;
+        element.bottom.score = 100;
+    });
   }
 
+  console.log(gameResults);
   return (
     <div>
       <h1>Pong-Game Tournament</h1>
