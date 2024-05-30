@@ -17,6 +17,13 @@ export const Tournament = () => {
     if (gameResults.length === 0) return [];
     return (gameResults[gameResults.length - 1]);
   }
+  function getNumberOfSheed() {
+    let numberOfSheed = 1;
+    while (numberOfSheed < Object.keys(playersInfo).length) {
+      numberOfSheed*=2;
+    }
+    return (numberOfSheed - Object.keys(playersInfo).length);
+  }
 
   function MockdiplayTournament() {
     let tmp = [];
@@ -25,11 +32,17 @@ export const Tournament = () => {
     let update = true;
 
   //次の試合の組を計算
+
     if (gameResults.length === 0) {
+      let sheed = getNumberOfSheed();
       for (const index of Object.keys(playersInfo)) {
-        tmp.push(playersInfo[index].name);
+        tmp.push({name: playersInfo[index].name, score:0, winner: true});
+        if (0 < sheed) {
+          tmp.push({name: "", score: 0, winner: false});
+          sheed--;
+        }
         if (tmp.length === 2) { 
-          nextRoundGames.push({top: {name: tmp[0], score: 0, winner: true }, bottom: {name: tmp[1], score: 0, winner: true}});
+          nextRoundGames.push({top: tmp[0], bottom: tmp[1]});
           tmp = [];
         }
       }
