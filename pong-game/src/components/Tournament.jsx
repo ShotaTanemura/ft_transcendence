@@ -12,10 +12,16 @@ export const Tournament = () => {
   // ここでサーバーにPlayersInfoの順番をシャッフルしてもらう。
 
   // 前の対戦が終わってtournamentに処理が移った時に実行する、トーナメントのアップデートを行うモック
+  function getCurrentRound() {
+    if (gameResults.length === 0) return [];
+    return (gameResults[gameResults.length - 1]);
+  }
+
   function MockdiplayTournament() {
     let tmp = [];
     let nextRoundGames= [];
-    let newRounds = gameResults;
+    let newRounds = [...gameResults];
+    let update = true;
 
   //次の試合の組を計算
     if (gameResults.length === 0) {
@@ -27,7 +33,9 @@ export const Tournament = () => {
         }
       }
     } else {
-        gameResults[gameResults.length - 1].forEach(element => {
+        nextRoundGames = [];
+        getCurrentRound().forEach(element => {
+            if (element.top.winner && element.bottom.winner) update = false;
             tmp.push(element.top.winner ? element.top.name : element.bottom.name);
             if (tmp.length === 2) {
               nextRoundGames.push({top: {name: tmp[0], score: 0, winner: true }, bottom: {name: tmp[1], score: 0, winner: true}});
@@ -35,12 +43,16 @@ export const Tournament = () => {
             }
         });
     }
-    if (0 < nextRoundGames.length) {
+
+    if (update && getCurrentRound().length === 1) {
+      console.log("navigate");
+    }
+    if (update && 0 < nextRoundGames.length) {
       setGameResults([...gameResults, nextRoundGames])
       newRounds.push(nextRoundGames);
     }
     //GameResultではまだ描かれていない、未来の試合を追加
-    let numOfGames = nextRoundGames.length;
+    let numOfGames = update ? nextRoundGames.length : getCurrentRound().length;
     while (1 < numOfGames) {
       let extraRoundGames = [];
       for (let i = 0; i < numOfGames; i+=2) {
@@ -69,6 +81,7 @@ export const Tournament = () => {
     });
   }
 
+  console.log(gameResults);
   return (
     <div>
       <h1>Pong-Game Tournament</h1>
