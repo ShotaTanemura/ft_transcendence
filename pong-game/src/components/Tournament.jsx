@@ -1,4 +1,4 @@
-import {React, useContext, useState} from 'react';
+import {React, useContext, useEffect, useState} from 'react';
 import {PlayersContext, GameResultsContext} from '../App.jsx';
 import { useNavigate } from 'react-router-dom';
 import Bracket from './Bracket';
@@ -18,7 +18,7 @@ export const Tournament = () => {
     return (gameResults[gameResults.length - 1]);
   }
 
-  function MockdiplayTournament() {
+  function MockdisplayTournament() {
     let tmp = [];
     let nextRoundGames= [];
     let newRounds = [...gameResults];
@@ -69,26 +69,15 @@ export const Tournament = () => {
     navigate('/pong');
   };
 
-  // ゲーム終了時の結果を反映するためのモック
-  function MockGameFinished() {
-    let count = 0;
-    if (gameResults.length < 1) {
-      console.log("error!")
-      return ;
-    }
-    gameResults[gameResults.length - 1].forEach((element) => {
-        element.top.winner = false;
-        element.bottom.score = 100;
-    });
-  }
+  useEffect(() => {
+    MockdisplayTournament()
+  }, []);
 
-  console.log(gameResults);
   return (
     <div>
       <h1>Pong-Game Tournament</h1>
-      <button onClick={MockdiplayTournament}>MockDisplayTournament</button>
-      <button onClick={handlesubmit}>Start next gaame</button>
       <Bracket rounds={rounds} />
+      <button onClick={handlesubmit}>Start next game</button>
     </div>
   );
 };
