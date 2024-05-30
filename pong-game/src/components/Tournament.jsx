@@ -2,6 +2,7 @@ import {React, useContext, useState} from 'react';
 import {PlayersContext, GameResultsContext} from '../App.jsx';
 import { useNavigate } from 'react-router-dom';
 import Bracket from './Bracket';
+import VictoryScreen from './VictoryScreen.jsx';
 import './Tournament.css';
 
 export const Tournament = () => {
@@ -45,7 +46,7 @@ export const Tournament = () => {
     }
 
     if (update && getCurrentRound().length === 1) {
-      console.log("navigate");
+      navigate("/victory");
     }
     if (update && 0 < nextRoundGames.length) {
       setGameResults([...gameResults, nextRoundGames])

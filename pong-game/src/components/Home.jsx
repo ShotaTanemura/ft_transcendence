@@ -1,6 +1,8 @@
 import {React, useState, useContext} from 'react'
 import {useNavigate} from 'react-router-dom'
 import { UserNameForm } from './UserNameForm.jsx';
+import { GameResultsContext } from '../App.jsx';
+import { PlayersContext } from '../App.jsx';
 
 export function Home() {
 
