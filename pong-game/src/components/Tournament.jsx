@@ -24,42 +24,32 @@ export const Tournament = () => {
     let newRounds = [...gameResults];
     let update = true;
 
-    function getNearestPowerOfTwo(num) {
-      let power = 1;
-      while (power < num) {
-        power *= 2;
+    const getNearestPowerOfTwo = num => {
+      return Math.pow(2, Math.ceil(Math.log2(num)));
+    };
+    
+    const initializeFirstRoundGames = (playersInfo) => {
+      const numberOfPlayers = Object.keys(playersInfo).length;
+      const playerNames = Object.keys(playersInfo).map(id => playersInfo[id].name);
+      const nearestPowerOfTwoPlayers = getNearestPowerOfTwo(numberOfPlayers);
+      const numberOfAbsentPlayers = nearestPowerOfTwoPlayers - numberOfPlayers;
+      const emptyNames = Array(numberOfAbsentPlayers).fill('');
+    
+      const nextRoundGamesPlayersNames = [...playerNames, ...emptyNames];
+    
+      const firstRoundGames = [];
+      for (let i = 0; i < nextRoundGamesPlayersNames.length; i += 2) {
+        const top = { name: nextRoundGamesPlayersNames[i], score: 0, winner: nextRoundGamesPlayersNames[i] !== '' };
+        const bottom = { name: nextRoundGamesPlayersNames[i + 1], score: 0, winner: nextRoundGamesPlayersNames[i + 1] !== '' };
+        firstRoundGames.push({ top, bottom });
       }
-      return power;
+    
+      return firstRoundGames;
     };
 
   //次の試合の組を計算
     if (gameResults.length === 0) {
-      let numberOfPlayers = Object.keys(playersInfo).length;
-      let playerNames = Object.keys(playersInfo).map(id => { return playersInfo[id].name; } );
-      let nearestPowerOfTwoPlayers = getNearestPowerOfTwo(numberOfPlayers );
-      let numberOfAbsentPlayers = nearestPowerOfTwoPlayers - numberOfPlayers;
-      let emptyNames = new Array(numberOfAbsentPlayers).fill('');
-      let firstRoundGames = [];
-      let nextRoundGamesPlayersNames = new Array();
-
-      for (let i = 0, length = nearestPowerOfTwoPlayers; i < length; i++) {
-        if (playerNames.length !== 0) {
-          nextRoundGamesPlayersNames.push(playerNames.shift());
-        }
-        if (numberOfAbsentPlayers === 0) continue;
-        if (emptyNames.length !== 0) {
-          nextRoundGamesPlayersNames.push(emptyNames.shift());
-        }
-      }
-      for (let i = 0, length = nextRoundGamesPlayersNames.length; i < length; i++) {
-        let top = {name: nextRoundGamesPlayersNames[i], score: 0, winner: true };
-        if (top.name === '') top.winner = false;
-        let bottom = {name: nextRoundGamesPlayersNames[i+1], score: 0, winner: true };
-        if (bottom.name === '') bottom.winner = false;
-        firstRoundGames.push({top: top, bottom: bottom});
-        i++;
-      }
-      nextRoundGames = [...firstRoundGames];
+      nextRoundGames = initializeFirstRoundGames(playersInfo);
     } else {
         nextRoundGames = [];
         getCurrentRound().forEach(element => {
