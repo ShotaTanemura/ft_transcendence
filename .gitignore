@@ -160,4 +160,4 @@ cython_debug/
 #.idea/
 
 ## avoid static
-srcs/static/
+pong/static/

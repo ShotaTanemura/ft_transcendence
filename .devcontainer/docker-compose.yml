@@ -22,7 +22,7 @@ services:
       dockerfile: ./Containerfile
     volumes:
       - type: bind
-        source: ../srcs/
+        source: ../pong/
         target: /app/code
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000"]
