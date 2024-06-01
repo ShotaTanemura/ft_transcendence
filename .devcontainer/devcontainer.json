@@ -1,12 +1,12 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/alpine
 {
-    "name": "web",
+    "name": "app",
     "dockerComposeFile": [
         "docker-compose.yml"
     ],
-    "workspaceFolder": "/workspace/web",
-    "service": "web"
+    "workspaceFolder": "/app/code",
+    "service": "app"
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
 	
 	// Features to add to the dev container. More info: https://containers.dev/features.
