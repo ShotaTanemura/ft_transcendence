@@ -3,11 +3,8 @@ export class Component {
 		this.router = router;
 		this.parameters = parameters;
 		this.store = store;
-		init();
 		this.element = Component.createElementFromHTML(this.html, this.cotainerTag);
 		this.element.classList.add('component');
-	}
-	init() {
 	}
 	
 	onEnterForeground(){
