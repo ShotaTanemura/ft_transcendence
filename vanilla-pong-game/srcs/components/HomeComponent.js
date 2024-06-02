@@ -8,10 +8,6 @@ export class HomeComponent extends Component {
 		this.num_of_user = 2;
 		this.userInputs = [];
 
-		//add eventListener of gameStartButton
-		this.gameStartButton = this.findElement("button.playerNameForm");
-		this.gameStartButton.onclick = this.goTournament;
-
 		//add eventListener of addUser
 		this.addUserButton = this.findElement("button.addUser");
 		this.addUserButton.onclick = this.addUser;
@@ -21,6 +17,7 @@ export class HomeComponent extends Component {
 
 		//add 2 user into form
 		this.formElement = this.findElement('form.playerNameForm')
+		this.formElement.onsubmit = this.goTournament;
 		const player_1 = new UserInput(1, router, parameters, state);
 		const player_2 = new UserInput(2, router, parameters, state);
 		this.formElement.insertBefore(player_1.element, this.formElement.querySelector("button.playerNameForm"));
@@ -29,7 +26,8 @@ export class HomeComponent extends Component {
 		this.userInputs.push(player_2);
 	}
 
-	goTournament = () => {
+	goTournament = (event) => {
+		event.preventDefault();
 		let names = []
 		Object.keys(this.router.context.playersInfo).forEach((player_id)=>{
 			names.push(this.router.context.playersInfo[player_id]);
@@ -70,7 +68,7 @@ export class HomeComponent extends Component {
 		return (`
 		<h1>Welcome to Pong Game!</h1>
 		<form class="playerNameForm">
-    	  <button type="button" class="playerNameForm">start Game</button>
+    	  <button type="sumbit" class="playerNameForm">start Game</button>
     	  <button type="button" class="addUser">add</button>
     	  <button type="button" class="removeUser">remove</button>
 		</form>
