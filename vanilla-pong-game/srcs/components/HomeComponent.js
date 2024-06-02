@@ -9,7 +9,7 @@ export class HomeComponent extends Component {
 		this.userInputs = [];
 
 		//add eventListener of gameStartButton
-		this.gameStartButton = this.findElement("button.gameStart");
+		this.gameStartButton = this.findElement("button.playerNameForm");
 		this.gameStartButton.onclick = e => this.router.gonextPage("/tournament");
 
 		//add eventListener of addUser
@@ -23,8 +23,8 @@ export class HomeComponent extends Component {
 		this.formElement = this.findElement('form.playerNameForm')
 		const player_1 = new UserInput(1, route, parameters, store);
 		const player_2 = new UserInput(2, route, parameters, store);
-		this.formElement.appendChild(player_1.element);
-		this.formElement.appendChild(player_2.element);
+		this.formElement.insertBefore(player_1.element, this.formElement.querySelector("button.playerNameForm"));
+		this.formElement.insertBefore(player_2.element, this.formElement.querySelector("button.playerNameForm"));
 		this.userInputs.push(player_1);
 		this.userInputs.push(player_2);
 	}
@@ -36,7 +36,7 @@ export class HomeComponent extends Component {
 		}
 		this.num_of_user++;
 		let newInput =  new UserInput(this.num_of_user, this.route, this.parameters, this.store);
-		this.formElement.appendChild(newInput.element);
+		this.formElement.insertBefore(newInput.element, this.formElement.querySelector("button.playerNameForm"));
 		this.userInputs.push(newInput);
 	}
 
@@ -45,16 +45,16 @@ export class HomeComponent extends Component {
 			alert("You can't play less than 2 players")
 			return ;
 		}
+		this.num_of_user--;
 		this.formElement.removeChild(this.userInputs.at(-1).element);
 		this.userInputs.pop();
-		this.num_of_user--;
 	}
 	
 	get html() {
 		return (`
 		<h1>Welcome to Pong Game!</h1>
-		<form action="" method="" class="playerNameForm">
-    	  <button type="submit" class="gameStart">start Game</button>
+		<form class="playerNameForm">
+    	  <button type="submit" class="playerNameForm">start Game</button>
     	  <button type="button" class="addUser">add</button>
     	  <button type="button" class="removeUser">remove</button>
 		</form>
