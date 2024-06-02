@@ -9,7 +9,7 @@ let router = new Router(document.body, [
 	{
 		path: "/",
 		component: HomeComponent,
-		store: {playersInfo: [], gameResult: []}
+		store: {playersInfo: {}, gameResult: []}
 	},
 	{
 		path: "/tournament",
