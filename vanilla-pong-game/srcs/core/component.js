@@ -1,6 +1,5 @@
 export class Component {
 	constructor(router, parameters, store) {
-		console.log(this.html);
 		this.router = router;
 		this.parameters = parameters;
 		this.store = store;
