@@ -1,8 +1,8 @@
 export class Component {
-	constructor(router, parameters, store) {
+	constructor(router, parameters, state) {
 		this.router = router;
 		this.parameters = parameters;
-		this.store = store;
+		this.state = state;
 		this.element = Component.createElementFromHTML(this.html, this.containerTag);
 		this.element.classList.add('component');
 	}
@@ -15,10 +15,10 @@ export class Component {
 
 	onEnterForeground(){
 	}
-
-	subscribeEventListener(func) {
-		window.onload = func;
-	}	
+	
+	render() {
+		this.element = Component.createElementFromHTML(this.html, this.containerTag);
+	}
 
 	findElement(query) {
 		return this.element.querySelector(query);

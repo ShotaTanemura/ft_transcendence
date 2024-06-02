@@ -2,8 +2,8 @@ import {Component} from '../core/component.js'
 import { UserInput } from './UserInput.js';
 
 export class HomeComponent extends Component {
-	constructor(route, parameters, store) {
-		super(route, parameters, store);
+	constructor(router, parameters, state) {
+		super(router, parameters, state);
 
 		this.num_of_user = 2;
 		this.userInputs = [];
@@ -21,8 +21,8 @@ export class HomeComponent extends Component {
 
 		//add 2 user into form
 		this.formElement = this.findElement('form.playerNameForm')
-		const player_1 = new UserInput(1, route, parameters, store);
-		const player_2 = new UserInput(2, route, parameters, store);
+		const player_1 = new UserInput(1, router, parameters, state);
+		const player_2 = new UserInput(2, router, parameters, state);
 		this.formElement.insertBefore(player_1.element, this.formElement.querySelector("button.playerNameForm"));
 		this.formElement.insertBefore(player_2.element, this.formElement.querySelector("button.playerNameForm"));
 		this.userInputs.push(player_1);
@@ -31,8 +31,8 @@ export class HomeComponent extends Component {
 
 	goTournament = () => {
 		let names = []
-		Object.keys(this.store.playersInfo).forEach((player_id)=>{
-			names.push(this.store.playersInfo[player_id]);
+		Object.keys(this.router.context.playersInfo).forEach((player_id)=>{
+			names.push(this.router.context.playersInfo[player_id]);
 		});
 		
 		// duplicate check
@@ -51,7 +51,7 @@ export class HomeComponent extends Component {
 			return ;
 		}
 		this.num_of_user++;
-		let newInput =  new UserInput(this.num_of_user, this.route, this.parameters, this.store);
+		let newInput =  new UserInput(this.num_of_user, this.router, this.parameters, this.state);
 		this.formElement.insertBefore(newInput.element, this.formElement.querySelector("button.playerNameForm"));
 		this.userInputs.push(newInput);
 	}

@@ -6,26 +6,30 @@ import {GameComponent} from './components/GameComponent.js'
 import {GameResultComponent} from './components/GameResultComponent.js'
 
 let router = new Router(document.body, [
+		{
+			path: "/",
+			component: HomeComponent,
+			state: {playersInfo: {}, gameResult: []}
+		},
+		{
+			path: "/tournament",
+			component: TournamentComponent,
+			state: {}
+		},
+		{
+			path: "/game",
+			component: GameComponent,
+			state: {}
+		},
+		{
+			path: "/gameresult",
+			component: GameResultComponent,
+			state: {}
+		}
+	],
 	{
-		path: "/",
-		component: HomeComponent,
-		store: {playersInfo: {}, gameResult: []}
-	},
-	{
-		path: "/tournament",
-		component: TournamentComponent,
-		store: {}
-	},
-	{
-		path: "/game",
-		component: GameComponent,
-		store: {}
-	},
-	{
-		path: "/gameresult",
-		component: GameResultComponent,
-		store: {}
-	}
-]);
+		playersInfo: {},
+		gameResult: [],
+	});
 
 router.gonextPage(location.pathname);

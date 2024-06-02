@@ -1,8 +1,8 @@
 import {Component} from '../core/component.js'
 
 export class GameComponent extends Component {
-	constructor(route, parameters, store) {
-		super(route, parameters, store);
+	constructor(route, parameters, state) {
+		super(route, parameters, state);
 		this.gameResultButton = this.findElement('button.goResult')
 		this.gameResultButton.onclick = e => this.router.gonextPage("/gameresult");
 	}

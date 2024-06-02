@@ -1,11 +1,12 @@
-// RootingList must be contain component, parameters, store
+// RootingList must be contain component, parameters, state
 import './component.js'
 
 export class Router {
-	constructor(rootElement, routingList) {
+	constructor(rootElement, routingList, context) {
 		this.pageStack = [];
 		this.rootElement = rootElement;
 		this.routingList = routingList;
+		this.context = context;
 		window.addEventListener('popstate', (e) => {
 			if (e.state.depth < this.pageStack.length) {
 				this.onHistoryBack();
@@ -33,7 +34,7 @@ export class Router {
 			console.log('Error: changePage: No such path entry.');
 			return null;
 		}
-		let component = new route.component(this, route.parameters, route.store);
+		let component = new route.component(this, route.parameters, route.state);
 
 		if (0 < this.pageStack.length) {
 			this.getForegroundPage.element.parentNode.removeChild(this.getForegroundPage.element);
@@ -78,7 +79,7 @@ export class Router {
 		if (route === null) {
 			console.log('Error: onHistoryForward: No such path entry.');
 		}
-		let component  = new route.component(this, route.parameters, route.store);
+		let component  = new route.component(this, route.parameters, route.state);
 		this.pageStack.push(component);
 
 		this.rootElement.appendChild(component.element);
@@ -95,7 +96,7 @@ export class Router {
 			return {
 				component: route.component,
 			 	parameters: parameters,
-			 	store: route.store
+			 	state: route.state
 			}
 			 
 		}
