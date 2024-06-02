@@ -1,20 +1,25 @@
 export class Component {
 	constructor(router, parameters, store) {
+		console.log(this.html);
 		this.router = router;
 		this.parameters = parameters;
 		this.store = store;
-		this.element = Component.createElementFromHTML(this.html, this.cotainerTag);
+		this.element = Component.createElementFromHTML(this.html, this.containerTag);
 		this.element.classList.add('component');
 	}
 	
+	get containerTag() {return 'div';}
+	set containerTag(newTag){}
+
+	get html(){}
+	set html(newHtml){}
+
 	onEnterForeground(){
 	}
 
-	get containerTag() {
-		return 'div';
-	}
-
-	get html() {}
+	subscribeEventListener(func) {
+		window.onload = func;
+	}	
 
 	findElement(query) {
 		return this.element.querySelector(query);
@@ -28,6 +33,11 @@ export class Component {
 			}
 			throw 'findElements: Some element of Query are not HTMLElement.';
 		});
+	}
+
+	render() {
+		this.element = Component.createElementFromHTML(this.html, this.containerTag);
+		this.element.classList.add('component');
 	}
 
 	static createElementFromHTML(html, containerTag) {
