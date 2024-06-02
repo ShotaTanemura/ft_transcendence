@@ -34,10 +34,10 @@ export class HomeComponent extends Component {
 			alert("You can't play more than 16 players")
 			return ;
 		}
-		let newInput =  new UserInput();
+		this.num_of_user++;
+		let newInput =  new UserInput(this.num_of_user, this.route, this.parameters, this.store);
 		this.formElement.appendChild(newInput.element);
 		this.userInputs.push(newInput);
-		this.num_of_user++;
 	}
 
 	removeUser = () => {
@@ -54,9 +54,9 @@ export class HomeComponent extends Component {
 		return (`
 		<h1>Welcome to Pong Game!</h1>
 		<form action="" method="" class="playerNameForm">
+    	  <button type="submit" class="gameStart">start Game</button>
     	  <button type="button" class="addUser">add</button>
     	  <button type="button" class="removeUser">remove</button>
-    	  <button type="button" class="gameStart">start Game</button>
 		</form>
 		`)
 	}
