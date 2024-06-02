@@ -46,7 +46,7 @@ export class HomeComponent extends Component {
 	}
 
 	addUser = () => {
-		if (16 < this.num_of_user) {
+		if (16 < this.num_of_user + 1) {
 			alert("You can't play more than 16 players")
 			return ;
 		}
