@@ -7,7 +7,10 @@ export class HomeComponent extends Component {
 		this.gameStartButton.onclick = e => this.router.gonextPage("/tournament");
 	}
 	get html() {
-		return (`<button class="gameStart">start game!</button>`)
+		return (`
+		<h1>Welcome to Pong Game!</h1>
+		<button class="gameStart">start game!</button>
+		`)
 	}
 };
 
