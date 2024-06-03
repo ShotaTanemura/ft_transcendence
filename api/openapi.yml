@@ -8,8 +8,8 @@ servers:
 paths:
    /api/v1/auth/register:
     post:
-      summary: ユーザーによるユーザー登録
-      description: ユーザーによるユーザー登録
+      summary: ユーザー登録
+      description: ユーザー登録
       requestBody:
         content:
           "application/json":
@@ -18,7 +18,7 @@ paths:
         required: true
       responses:
         "201":
-          description: ユーザーによるユーザー登録の成功
+          description: ユーザー登録の成功
           content:
               "application/json":
                 schema:
@@ -29,8 +29,8 @@ paths:
           $ref: "#/components/responses/conflictError"
    /api/v1/auth/token:
     post:
-      summary: ユーザーによる認証用JWTトークンとリフレッシュ用JWTトークンの発行
-      description: ユーザーによる認証用JWTトークンとリフレッシュ用JWTトークンの発行
+      summary: 認証トークンとリフレッシュトークンの発行
+      description: 認証トークンとリフレッシュトークンの発行
       requestBody:
         content:
           "application/json":
@@ -39,12 +39,12 @@ paths:
         required: true
       responses:
         "200":
-          description: ユーザーによる認証用JWTトークンとリフレッシュ用JWTトークン発行の成功
+          description: 認証トークンとリフレッシュトークンの発行の成功
           headers:
             Set-Cookie:
               schema:
                 type: string
-                description: ログイン認証用JWTトークン及びリフレッシュ用JWTトークン
+                description: 認証トークンとリフレッシュトークン
                 example: JWTTOKEN=jwttoken; JWTREFRESH=refresh-jwttoken Secure; HttpOnly 
           content:
               "application/json":
@@ -56,16 +56,16 @@ paths:
           $ref: "#/components/responses/notFoundError"
    /api/v1/auth/token/refresh:
     post:
-      summary: リフレッシュトークンを用いたユーザーによる認証用JWTトークンとリフレッシュ用JWTトークンの発行
-      description: リフレッシュトークンを用いたユーザーによる認証用JWTトークンとリフレッシュ用JWTトークンの発行
+      summary: トークンのリフレッシュ
+      description: トークンのリフレッシュ
       responses:
         "200":
-          description: リフレッシュトークンを用いたユーザーによる認証用JWTトークンとリフレッシュ用JWTトークン発行の成功
+          description: トークンのリフレッシュ成功
           headers:
             Set-Cookie:
               schema:
                 type: string
-                description: ログイン認証用JWTトークン及びリフレッシュ用JWTトークン
+                description: 認証トークンとリフレッシュトークン
                 example: JWTTOKEN=jwttoken; JWTREFRESH=refresh-jwttoken Secure; HttpOnly 
           content:
               "application/json":
@@ -137,7 +137,7 @@ components:
         - password
     postTokenResponse:
       type: object
-      description: ユーザーによる認証用JWTトークンとリフレッシュ用JWTトークン発行の成功
+      description: 認証トークンとリフレッシュトークン発行成功
       properties:
           uuid:
             type: string
@@ -145,7 +145,7 @@ components:
             example: b4cf1ef4-1cab-490b-a32c-f6528f95c796
     postRefreshTokenResponse:
       type: object
-      description: リフレッシュトークンを用いたユーザーによる認証用JWTトークンとリフレッシュ用JWTトークン発行の成功
+      description: トークンのリフレッシュの成功
       properties:
           uuid:
             type: string
