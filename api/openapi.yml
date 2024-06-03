@@ -52,8 +52,8 @@ paths:
                   $ref: "#/components/schemas/postTokenResponse"
         "400":
           $ref: "#/components/responses/badRequest"
-        "409":
-          $ref: "#/components/responses/conflictError"
+        "404":
+          $ref: "#/components/responses/notFoundError"
 components:
   responses:
     badRequest:
@@ -64,6 +64,12 @@ components:
             $ref: "#/components/schemas/errorMessage"
     conflictError:
       description: 重複するリクエスト
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/errorMessage"
+    notFoundError:
+      description: データが見つからない
       content:
         application/json:
           schema:
