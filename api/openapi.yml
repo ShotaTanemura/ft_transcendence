@@ -19,12 +19,6 @@ paths:
       responses:
         "201":
           description: ユーザーによるユーザー登録の成功
-          headers:
-            Set-Cookie:
-              schema:
-                type: string
-                description: ログイン認証用JWTトークン及びリフレッシュ用JWTトークン
-                example: JWTTOKEN=jwttoken; JWTREFRESH=refresh-jwttoken Secure; HttpOnly 
           content:
               "application/json":
                 schema:
