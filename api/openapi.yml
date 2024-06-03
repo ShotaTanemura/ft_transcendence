@@ -6,19 +6,19 @@ info:
 servers:
   - url: http://localhost:8080
 paths:
-   /api/v1/auth/sign-up:
+   /api/v1/auth/register:
     post:
-      summary: ユーザーによるサインアップ
-      description: ユーザーによるサインアップ
+      summary: ユーザーによるユーザー登録
+      description: ユーザーによるユーザー登録
       requestBody:
         content:
           "application/json":
             schema:
-                $ref: "#/components/schemas/postSignUpRequest"
+                $ref: "#/components/schemas/postRegisterRequest"
         required: true
       responses:
         "201":
-          description: ユーザーによるサインアップの成功
+          description: ユーザーによるユーザー登録の成功
           headers:
             Set-Cookie:
               schema:
@@ -28,7 +28,7 @@ paths:
           content:
               "application/json":
                 schema:
-                  $ref: "#/components/schemas/postSignUpResponse"
+                  $ref: "#/components/schemas/postRegisterResponse"
         "400":
           $ref: "#/components/responses/badRequest"
         "409":
@@ -48,7 +48,7 @@ components:
           schema:
             $ref: "#/components/schemas/errorMessage"
   schemas:
-    postSignUpRequest:
+    postRegisterRequest:
       type: object
       properties:
         name:
@@ -67,9 +67,9 @@ components:
         - name
         - email
         - password
-    postSignUpResponse:
+    postRegisterResponse:
       type: object
-      description: サインアップに成功
+      description: ユーザー登録に成功
       properties:
         uuid:
          type: string
@@ -87,7 +87,7 @@ components:
           type: string
           enum:
             - invalidParams # リクエストパラメータのバリデーションに失敗した場合
-            - signUpConflict # ユーザーによるサインアップ時にコンフリクトした場合
+            - registerConflict # ユーザーによるユーザー登録時にコンフリクトした場合
       required:
         - message
         - status
