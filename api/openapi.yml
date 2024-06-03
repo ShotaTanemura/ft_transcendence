@@ -8,8 +8,8 @@ servers:
 paths:
    /api/v1/auth/sign-up:
     post:
-      summary: "ユーザーによるサインアップ"
-      description: "ユーザーによるサインアップ"
+      summary: ユーザーによるサインアップ
+      description: ユーザーによるサインアップ
       requestBody:
         content:
           "application/json":
