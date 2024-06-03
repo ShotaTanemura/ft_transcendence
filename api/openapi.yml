@@ -38,7 +38,7 @@ paths:
               $ref: "#/components/schemas/postTokenRequest"
         required: true
       responses:
-        "201":
+        "200":
           description: ユーザーによる認証用JWTトークンとリフレッシュ用JWTトークン発行の成功
           headers:
             Set-Cookie:
