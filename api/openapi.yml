@@ -33,6 +33,33 @@ paths:
           $ref: "#/components/responses/badRequest"
         "409":
           $ref: "#/components/responses/conflictError"
+   /api/v1/auth/token:
+    post:
+      summary: ユーザーによる認証用JWTトークンとリフレッシュ用JWTトークンの発行
+      description: ユーザーによる認証用JWTトークンとリフレッシュ用JWTトークンの発行
+      requestBody:
+        content:
+          "application/json":
+            schema:
+              $ref: "#/components/schemas/postTokenRequest"
+        required: true
+      responses:
+        "201":
+          description: ユーザーによる認証用JWTトークンとリフレッシュ用JWTトークン発行の成功
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                description: ログイン認証用JWTトークン及びリフレッシュ用JWTトークン
+                example: JWTTOKEN=jwttoken; JWTREFRESH=refresh-jwttoken Secure; HttpOnly 
+          content:
+              "application/json":
+                schema:
+                  $ref: "#/components/schemas/postTokenResponse"
+        "400":
+          $ref: "#/components/responses/badRequest"
+        "409":
+          $ref: "#/components/responses/conflictError"
 components:
   responses:
     badRequest:
@@ -75,7 +102,28 @@ components:
          type: string
          description: 作成されたユーザーのUUID
          example: b4cf1ef4-1cab-490b-a32c-f6528f95c796
-
+    postTokenRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          description: メールアドレス
+          example: example@email.com
+        password:
+          type: string
+          description: パスワード
+          example: p4s$W0rd
+      required:
+        - email
+        - password
+    postTokenResponse:
+      type: object
+      description: ユーザーによる認証用JWTトークンとリフレッシュ用JWTトークン発行の成功
+      properties:
+          uuid:
+            type: string
+            description: トークンが発行されたユーザーのUUID
+            example: b4cf1ef4-1cab-490b-a32c-f6528f95c796
     errorMessage:
       type: object
       properties:
