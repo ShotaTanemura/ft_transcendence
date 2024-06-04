@@ -1,6 +1,6 @@
 import {Component} from '../core/component.js'
 
-export class UserInput extends Component {
+export class UserNameInput extends Component {
     constructor(player_id, router, parameters, state) {
 		super(router, parameters, state);
 		this.player_id = player_id;
