@@ -15,6 +15,14 @@ export class Component {
 
 	onEnterForeground(){
 	}
+
+	getRouteContext(name) {
+		return (this.router.getContext(name));
+	}
+
+	setRouteContext(name, value) {
+		this.router.setContext(name, value);
+	}
 	
 	render() {
 		this.element = Component.createElementFromHTML(this.html, this.containerTag);

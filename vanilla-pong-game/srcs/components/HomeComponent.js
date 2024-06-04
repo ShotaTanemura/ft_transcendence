@@ -29,8 +29,8 @@ export class HomeComponent extends Component {
 	goTournament = (event) => {
 		event.preventDefault();
 		let names = []
-		Object.keys(this.router.context.playersInfo).forEach((player_id)=>{
-			names.push(this.router.context.playersInfo[player_id]);
+		Object.keys(this.getRouteContext("playersInfo")).forEach((player_id)=>{
+			names.push((this.getRouteContext("playersInfo"))[player_id]);
 		});
 		
 		// duplicate check

@@ -9,7 +9,7 @@ export class UserInput extends Component {
 		this.inputElement.oninput = this.updatePlayerName;
 	}
 	updatePlayerName = (e) => {
-		this.router.context.playersInfo[this.player_id] = e.target.value.trim();
+		(this.getRouteContext("playersInfo"))[this.player_id] = e.target.value.trim();
 	}
 
 	get html() {

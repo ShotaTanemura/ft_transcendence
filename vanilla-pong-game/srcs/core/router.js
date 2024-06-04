@@ -16,6 +16,14 @@ export class Router {
 		});
 	}
 	
+	addContext(name, value) {
+		this.context[name] = value;
+	}
+
+	getContext(name) {
+		return (this.context[name]);
+	}
+
 	// 指定したpathに遷移する。
 	gonextPage(path) {
 		return this.changePage(path)		
