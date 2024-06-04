@@ -1,8 +1,7 @@
-from django.urls import path
+from django.urls import path, re_path
 from . import views
 
 urlpatterns = [
 	path('', views.index, name='index'),
-	path('pong/', views.pong, name='pong'),
-	path('profile/', views.profile, name='profile')
+	re_path(r'^.*$', views.index, name='base'),
 ]
