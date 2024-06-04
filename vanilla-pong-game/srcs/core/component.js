@@ -36,7 +36,6 @@ export class Component {
 
 	render() {
 		this.element = Component.createElementFromHTML(this.html, this.containerTag);
-		this.element.classList.add('component');
 	}
 
 	static createElementFromHTML(html, containerTag) {

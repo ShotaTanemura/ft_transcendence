@@ -15,7 +15,7 @@ export class UserInput extends Component {
 	get html() {
 		return (`
         	  <label for=${this.player_id}>Player${this.player_id}:</label>
-              <input class=player_${this.player_id} value="" type=text name="name" required>
+              <input class=player_${this.player_id} value="" type=text name="name" required><br/><br/>
 		`);
 	} 
 }
