@@ -10,7 +10,7 @@ export class HomeComponent extends Component {
 
 	get html() {
 		return (`
-		<h1>Welcome to Pong Game!</h1>
+			<h1>Welcome to Pong Game!</h1>
 		`)
 	}
 };

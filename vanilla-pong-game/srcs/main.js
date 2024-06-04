@@ -4,16 +4,17 @@ import {HomeComponent} from './components/HomeComponent.js'
 import {TournamentComponent} from './components/TournamentComponent.js'
 import {GameComponent} from './components/GameComponent.js'
 import {GameResultComponent} from './components/GameResultComponent.js'
+import {Tournament} from './components/Tournament.js'
 
 let router = new Router(document.body, [
 		{
 			path: "/",
 			component: HomeComponent,
-			state: {playersInfo: {}, gameResult: []}
+			state: {}
 		},
 		{
 			path: "/tournament",
-			component: TournamentComponent,
+			component: Tournament,
 			state: {}
 		},
 		{
@@ -29,7 +30,7 @@ let router = new Router(document.body, [
 	],
 	{
 		playersInfo: {},
-		gameResult: [],
+		gameResults: [],
 	});
 
 router.gonextPage(location.pathname);

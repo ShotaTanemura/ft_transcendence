@@ -31,9 +31,9 @@ export class UserNameForm extends Component {
 			return ;
 		}
 		this.num_of_user++;
-		let newInput =  new UserInput(this.num_of_user, this.router, this.parameters, this.state);
+		let newInput =  new UserNameInput(this.num_of_user, this.router, this.parameters, this.state);
 		this.formElement.insertBefore(newInput.element, this.formElement.querySelector("button.playerNameForm"));
-		this.userInputs.push(newInput);
+		this.userNameInputs.push(newInput);
 	}
 
 	removeUser = () => {
@@ -42,8 +42,8 @@ export class UserNameForm extends Component {
 			return ;
 		}
 		this.num_of_user--;
-		this.formElement.removeChild(this.userInputs.at(-1).element);
-		this.userInputs.pop();
+		this.formElement.removeChild(this.userNameInputs.at(-1).element);
+		this.userNameInputs.pop();
 	}
 
     goTournament = (event) => {
