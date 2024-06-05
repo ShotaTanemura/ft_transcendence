@@ -14,9 +14,6 @@ export class Tournament extends Component {
   };
 
   // 前の対戦が終わってtournamentに処理が移った時に実行する、トーナメントのアップデートを行うモック
-  gonextPage = (path) =>  {
-    this.router.gonextPage(path);
-  }
   getCurrentRound() {
     if (this.gameResults.length === 0) return [];
     return (this.gameResults.at(-1));
@@ -65,7 +62,7 @@ export class Tournament extends Component {
 
     if (update && this.getCurrentRound().length === 1) {
       this.rounds = newRounds;
-      setTimeout(this.gonextPage, 3000, "/gameresult");
+      setTimeout(this.goNextPage, 3000, "/gameresult");
       return ;
     }
     if (update && 0 < nextRoundGames.length) {
@@ -84,7 +81,7 @@ export class Tournament extends Component {
       numOfGames = Math.floor(numOfGames / 2);
     }
     this.rounds = newRounds;
-    setTimeout(this.gonextPage, 3000, "/game");
+    setTimeout(this.goNextPage, 3000, "/game");
   }
 
   get html(){

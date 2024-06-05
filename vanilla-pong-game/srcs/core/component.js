@@ -16,6 +16,11 @@ export class Component {
 	onEnterForeground(){
 	}
 
+
+	goNextPage = (path) => {
+		this.router.gonextPage(path);
+	}
+
 	getRouteContext(name) {
 		return (this.router.getContext(name));
 	}

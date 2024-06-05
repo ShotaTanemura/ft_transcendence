@@ -59,7 +59,7 @@ export class UserNameForm extends Component {
 			alert("Duplicate player name exists")
 			return;
 		}
-		this.router.gonextPage("/tournament");
+		this.goNextPage("/tournament");
 	}
 
 

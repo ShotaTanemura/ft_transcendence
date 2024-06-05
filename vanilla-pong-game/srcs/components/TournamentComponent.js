@@ -4,7 +4,7 @@ export class TournamentComponent extends Component {
 	constructor(route, parameters, state) {
 		super(route, parameters, state);
 		this.goGameButton= this.findElement('button.goGame')
-		this.goGameButton.onclick = e => this.router.gonextPage("/game");
+		this.goGameButton.onclick = this.goNextPage("/game");
 	}
 	get html() {
         return (`

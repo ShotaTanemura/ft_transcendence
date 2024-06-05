@@ -10,11 +10,10 @@ export class GameResultComponent extends Component {
 		this.goHomeButton = this.findElement('button.goHome')
 		this.goHomeButton.onclick = this.goHomePage;
 	}
-	goHomePage = () => {
-		console.log("HoME!");
-		this.router.gonextPage("/");
-	}
 
+	goHomePage = () => {
+		this.goNextPage("/");
+	}
 	get html() {
         return (`
         	<h1>Game Result Component</h1>

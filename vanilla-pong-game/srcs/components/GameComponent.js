@@ -32,7 +32,7 @@ export class GameComponent extends Component {
 			});
 		});
 		this.setRouteContext("gameResults", newGameResult);
-		this.router.gonextPage("/tournament");
+		this.goNextPage("/tournament");
 	}
 
 	MockBottomWin = () => {
@@ -48,7 +48,7 @@ export class GameComponent extends Component {
 			});
 		});
 		this.setRouteContext("gameResults", newGameResult);
-		this.router.gonextPage("/tournament");
+		this.goNextPage("/tournament");
 	}
 
 	get html() {
