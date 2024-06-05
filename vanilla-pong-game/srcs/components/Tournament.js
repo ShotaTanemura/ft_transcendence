@@ -7,8 +7,6 @@ export class Tournament extends Component {
     super(route, parameters, state);
     this.playersInfo = this.getRouteContext("playersInfo");
     this.gameResults = this.getRouteContext("gameResults");
-    this.gameStartButton = this.findElement("button.gameStartButton");
-    this.gameStartButton.onclick = this.gameStart;
     this.rounds = []
     this.displayTournament();
     this.bracket = new Bracket(this.rounds, route, parameters, state);
@@ -16,6 +14,9 @@ export class Tournament extends Component {
   };
 
   // 前の対戦が終わってtournamentに処理が移った時に実行する、トーナメントのアップデートを行うモック
+  gonextPage = (path) =>  {
+    this.router.gonextPage(path);
+  }
   getCurrentRound() {
     if (this.gameResults.length === 0) return [];
     return (this.gameResults.at(-1));
@@ -63,10 +64,13 @@ export class Tournament extends Component {
     }
 
     if (update && this.getCurrentRound().length === 1) {
-      this.route.goNextPage("/gameresult");
+      this.rounds = newRounds;
+      setTimeout(this.gonextPage, 3000, "/gameresult");
+      return ;
     }
     if (update && 0 < nextRoundGames.length) {
       this.gameResults = [...(this.gameResults), nextRoundGames];
+      this.setRouteContext("gameResults", this.gameResults);
       newRounds.push(nextRoundGames);
     }
     //GameResultではまだ描かれていない、未来の試合を追加
@@ -80,16 +84,12 @@ export class Tournament extends Component {
       numOfGames = Math.floor(numOfGames / 2);
     }
     this.rounds = newRounds;
+    setTimeout(this.gonextPage, 3000, "/game");
   }
-
-  gameStart = () => {
-    this.router.gonextPage("/game");
-  };
 
   get html(){
     return (`
         <h1>Pong-Game Tournament</h1>
-        <button class="gameStartButton">Start next game</button>
     `)
   };
 }

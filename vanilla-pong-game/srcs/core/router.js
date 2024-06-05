@@ -16,7 +16,7 @@ export class Router {
 		});
 	}
 	
-	addContext(name, value) {
+	setContext(name, value) {
 		this.context[name] = value;
 	}
 
