@@ -22,15 +22,19 @@ export class GameComponent extends Component {
 	}
 
 	topScored = () => {
-		console.log("kita");
 		this.topPlayerScore++;
 		this.setPlayersScore();
+		if (this.topPlayerScore == 5) {
+			this.gameSet();
+		}
 	}
 
 	bottomScored = () => {
-		console.log("kita");
 		this.bottomPlayerScore++;
 		this.setPlayersScore();
+		if (this.topPlayerScore == 5) {
+			this.gameSet();
+		}
 	}
 
 	setPlayersScore = () => {
@@ -41,6 +45,26 @@ export class GameComponent extends Component {
 		const falttenedResult = gameResults.flatMap(result => result);
 		const Nextgame  = falttenedResult.find((game) => game.top.winner && game.bottom.winner);
 		return Nextgame ? [Nextgame.top.name, Nextgame.bottom.name] : null;
+	};
+
+	gameSet = () => {
+		const newGameResult = this.gameResults.map((round, roundIndex)=>{
+			if (roundIndex !== this.gameResults.length - 1) return round;
+			return round.map((game) => {
+				if (game.top.name === this.nextGamePlayers[0] && game.bottom.name === this.nextGamePlayers[1]) {
+					game.top.score = this.topPlayerScore;
+					game.bottom.score = this.bottomPlayerScore;
+					if (game.top.score < game.bottom.score) {
+						game.top.winner = false;
+					} else {
+						game.bottom.winner = false;
+					}
+				}
+				return game;
+			});
+		});
+		this.setRouteContext("gameResults", newGameResult);
+		this.goNextPage("/tournament");	
 	};
 
 	get html() {
