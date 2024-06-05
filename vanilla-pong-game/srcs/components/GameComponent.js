@@ -9,7 +9,7 @@ export class GameComponent extends Component {
 		this.topPlayerScore = 0;
 		this.bottomPlayerScore = 0;
 
-		this.playersScoreElement = document.createElement("h2");
+		this.playersScoreElement = document.createElement("h1");
 		this.setPlayersScore();
 		this.element.appendChild(this.playersScoreElement);
 
@@ -32,7 +32,7 @@ export class GameComponent extends Component {
 	bottomScored = () => {
 		this.bottomPlayerScore++;
 		this.setPlayersScore();
-		if (this.topPlayerScore == 5) {
+		if (this.bottomPlayerScore === 5) {
 			this.gameSet();
 		}
 	}
@@ -69,7 +69,6 @@ export class GameComponent extends Component {
 
 	get html() {
         return (`
-        	<h1>Game Component</h1>
         `)
 	};
 };
