@@ -7,9 +7,9 @@ export class Bracket extends Component {
     this.tournamentElement = this.findElement("main.tournament")
     this.tournamentChildElements = this.createTounamentObject();
 
-    //TODO This code is a bit redundant.
-    //Adding child nodes to avoid the first element being a div tag is unnecessary.
-    //If there's a better way, it should be rewritten.
+    // TODO This code is a bit redundant.
+    // Adding child nodes to avoid the first element being a div tag is unnecessary.
+    // If there's a better way, it should be rewritten.
     while(this.tournamentChildElements.firstChild) {
       this.tournamentElement.appendChild(this.tournamentChildElements.firstChild);
     } 

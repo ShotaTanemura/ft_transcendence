@@ -9,6 +9,8 @@ export class GameResultComponent extends Component {
 		this.render();
 		this.goHomeButton = this.findElement('button.goHome')
 		this.goHomeButton.onclick = this.goHomePage;
+		this.setRouteContext("playersInfo", {});
+		this.setRouteContext("gameResults", []);
 	}
 
 	goHomePage = () => {
