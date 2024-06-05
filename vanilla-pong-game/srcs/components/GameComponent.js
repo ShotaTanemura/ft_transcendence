@@ -1,63 +1,53 @@
 import {Component} from '../core/component.js'
+import { PongComponent } from './Pong.js';
 
 export class GameComponent extends Component {
 	constructor(route, parameters, state) {
 		super(route, parameters, state);
 		this.gameResults = this.getRouteContext("gameResults");
 		this.nextGamePlayers = this.getNextGamePlayers(this.gameResults);
+		this.topPlayerScore = 0;
+		this.bottomPlayerScore = 0;
 
-		this.TopWinButton = this.findElement('button.TopWin');
-		this.TopWinButton.onclick = this.MockTopWin;
+		this.playersScoreElement = document.createElement("h2");
+		this.setPlayersScore();
+		this.element.appendChild(this.playersScoreElement);
 
-		this.BottomWinButton = this.findElement('button.BottomWin');
-		this.BottomWinButton.onclick = this.MockBottomWin;
+		window.addEventListener("top-scored", this.topScored);
+		window.addEventListener("bottom-scored", this.bottomScored);
+
+		this.pongComponent = new PongComponent(route, parameters, state);
+		this.element.appendChild(this.pongComponent.element);
+		
 	}
+
+	topScored = () => {
+		console.log("kita");
+		this.topPlayerScore++;
+		this.setPlayersScore();
+	}
+
+	bottomScored = () => {
+		console.log("kita");
+		this.bottomPlayerScore++;
+		this.setPlayersScore();
+	}
+
+	setPlayersScore = () => {
+		this.playersScoreElement.textContent = `${this.nextGamePlayers[0]}: ${this.topPlayerScore} - ${this.nextGamePlayers[1]}: ${this.bottomPlayerScore}`
+	};
 
 	getNextGamePlayers = (gameResults) => {
 		const falttenedResult = gameResults.flatMap(result => result);
 		const Nextgame  = falttenedResult.find((game) => game.top.winner && game.bottom.winner);
 		return Nextgame ? [Nextgame.top.name, Nextgame.bottom.name] : null;
-	}
-
-	MockTopWin = () => {
-		console.log("Top Win!");
-		const newGameResult = this.gameResults.map((round, roundIndex)=>{
-			if (roundIndex !== this.gameResults.length - 1) return round;
-			return round.map((game) => {
-				if (game.top.name === this.nextGamePlayers[0] && game.bottom.name === this.nextGamePlayers[1]) {
-					game.top.score = 100;
-					game.bottom.winner = false;
-				}
-				return game;
-			});
-		});
-		this.setRouteContext("gameResults", newGameResult);
-		this.goNextPage("/tournament");
-	}
-
-	MockBottomWin = () => {
-		console.log("Bottom Win!");
-		const newGameResult = this.gameResults.map((round, roundIndex)=>{
-			if (roundIndex !== this.gameResults.length - 1) return round;
-			return round.map((game) => {
-				if (game.top.name === this.nextGamePlayers[0] && game.bottom.name === this.nextGamePlayers[1]) {
-					game.bottom.score = 100;
-					game.top.winner = false;
-				}
-				return game;
-			});
-		});
-		this.setRouteContext("gameResults", newGameResult);
-		this.goNextPage("/tournament");
-	}
+	};
 
 	get html() {
         return (`
         	<h1>Game Component</h1>
-			<button class="TopWin">Top Win!</button>
-			<button class="BottomWin">Bottom Win!</button>
         `)
-	}
+	};
 };
 
 export default GameComponent;

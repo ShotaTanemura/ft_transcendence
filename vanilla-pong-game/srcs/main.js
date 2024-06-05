@@ -5,6 +5,7 @@ import {TournamentComponent} from './components/TournamentComponent.js'
 import {GameComponent} from './components/GameComponent.js'
 import {GameResultComponent} from './components/GameResultComponent.js'
 import {Tournament} from './components/Tournament.js'
+import { PongComponent } from './components/Pong.js'
 
 let router = new Router(document.body, [
 		{
