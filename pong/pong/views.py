@@ -3,6 +3,10 @@ from django.http.response import JsonResponse
 from .models import UserManager
 from .models import User
 from django.views.decorators.csrf import csrf_exempt
+from datetime import datetime, timedelta
+import jwt
+from django.conf import settings
+from django.http.response import HttpResponse
 
 def test(request):
 	return JsonResponse({
@@ -37,3 +41,55 @@ def register(request):
 	return JsonResponse({
 		'uuid': user.uuid
 	}, status=201)
+
+@csrf_exempt
+def create_token(request):
+	if request.method != 'POST':
+		return JsonResponse({
+			'message': 'Method is not allowed',
+			'status': 'invalidParams'
+		}, status=400)
+
+	data = json.loads(request.body)
+
+	if 'email' not in data or 'password' not in data:
+		return JsonResponse({
+			'message': 'Invalid parameters',
+			'status': 'invalidParams'
+		}, status=400)
+
+	user = User.objects.filter(email=data['email']).first()
+
+	if not user or not user.check_password(data['password']):
+		return JsonResponse({
+			'message': 'User not found',
+			'status': 'userNotFound'
+		}, status=404)
+
+	payload = {
+		'uuid': str(user.uuid),
+		'exp': datetime.utcnow() + settings.JWT_AUTH['JWT_EXPIRATION_DELTA'],
+		'iat': datetime.utcnow()
+	}
+	token = jwt.encode(payload, settings.JWT_AUTH['JWT_PRIVATE_KEY'], algorithm=settings.JWT_AUTH['JWT_ALGORITHM'])
+
+	refresh_payload = {
+		'uuid': str(user.uuid),
+		'exp': datetime.utcnow() + settings.JWT_AUTH['JWT_REFRESH_EXPIRATION_DELTA'],
+		'iat': datetime.utcnow()
+	}
+	refresh_token = jwt.encode(payload, settings.JWT_AUTH['JWT_PRIVATE_KEY'], algorithm=settings.JWT_AUTH['JWT_ALGORITHM'])
+	
+	response = JsonResponse({'uuid': user.uuid}, content_type='application/json')
+
+
+	# HTTPS実装後に有効化する
+	# response.set_cookie('token', token, httponly=True, secure=True)
+	# response.set_cookie('refresh_token', refresh_token, httponly=True, secure=True)
+	response.set_cookie('token', token, httponly=True)
+	response.set_cookie('refresh_token', refresh_token, httponly=True)
+
+	print(response.cookies)
+
+	return response
+
