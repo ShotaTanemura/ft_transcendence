@@ -1,8 +1,11 @@
 export class Component {
+	#router
+	#parameters
+	#state
 	constructor(router, parameters, state) {
-		this.router = router;
-		this.parameters = parameters;
-		this.state = state;
+		this.#router = router;
+		this.#parameters = parameters;
+		this.#state = state;
 		this.element = Component.createElementFromHTML(this.html, this.containerTag);
 		this.element.classList.add('component');
 	}
@@ -18,15 +21,15 @@ export class Component {
 
 
 	goNextPage = (path) => {
-		this.router.gonextPage(path);
+		this.#router.gonextPage(path);
 	}
 
 	getRouteContext(name) {
-		return (this.router.getContext(name));
+		return (this.#router.getContext(name));
 	}
 
 	setRouteContext(name, value) {
-		this.router.setContext(name, value);
+		this.#router.setContext(name, value);
 	}
 	
 	render() {
