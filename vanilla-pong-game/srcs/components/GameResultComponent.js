@@ -18,8 +18,9 @@ export class GameResultComponent extends Component {
 	}
 	get html() {
         return (`
-        	<h1>Game Result Component</h1>
+        	<h1>Tournament Result!</h1>
 			<h1>Conguratulation ${this.tournamentWinnerName}!<h1>
+			<br/><br/>
 			<button class="goHome btn btn-primary">Go Home!</button>
         `)
 	}
