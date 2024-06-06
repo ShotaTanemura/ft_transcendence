@@ -6,7 +6,7 @@ info:
 servers:
   - url: http://localhost:8080
 paths:
-   /api/v1/auth/register:
+   /pong/api/v1/auth/register:
     post:
       summary: ユーザー登録
       description: ユーザー登録
@@ -27,7 +27,7 @@ paths:
           $ref: "#/components/responses/badRequest"
         "409":
           $ref: "#/components/responses/conflictError"
-   /api/v1/auth/token:
+   /pong/api/v1/auth/token:
     post:
       summary: 認証トークンとリフレッシュトークンの発行
       description: 認証トークンとリフレッシュトークンの発行
@@ -54,7 +54,7 @@ paths:
           $ref: "#/components/responses/badRequest"
         "404":
           $ref: "#/components/responses/notFoundError"
-   /api/v1/auth/token/refresh:
+   /pong/api/v1/auth/token/refresh:
     post:
       summary: トークンのリフレッシュ
       description: トークンのリフレッシュ
