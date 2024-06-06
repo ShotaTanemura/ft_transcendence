@@ -94,12 +94,11 @@ class UserTokenTest(TestCase):
 		response = self.client.post(reverse('pong:token'), data=data, content_type='application/json')
 		self.assertEqual(response.status_code, 200)
 		self.assertEqual(response.json()['uuid'], str(user.uuid))
-		self.assertIn(response.headers, 'Set-Cookie')
 		
-		cookie = response.headers['Set-Cookie']
+		cookie = response.cookies
 		token = self.extract_token_from_cookie(cookie)
 		try:
-			decoded_token = jwt.decode(token, settings.SECRET_KEY, algorithms=['RS256'])
+			decoded_token = jwt.decode(token, settings.JWT_AUTH['JWT_PUBLIC_KEY'], algorithms=['RS256'])
 		except jwt.ExpiredSignatureError:
 			self.fail('Token is expired')
 		except jwt.InvalidTokenError:
