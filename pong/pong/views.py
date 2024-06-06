@@ -4,6 +4,11 @@ from .models import UserManager
 from .models import User
 from django.views.decorators.csrf import csrf_exempt
 
+def test(request):
+	return JsonResponse({
+		'message': 'Hello, world!'
+	})
+
 @csrf_exempt
 def register(request):
 
