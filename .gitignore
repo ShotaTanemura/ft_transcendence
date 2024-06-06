@@ -166,3 +166,5 @@ pong/static/
 node_modules/
 package-lock.json
 
+# ignore Authorization keys
+*.pem
