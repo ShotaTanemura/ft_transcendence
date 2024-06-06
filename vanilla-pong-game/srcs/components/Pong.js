@@ -169,7 +169,6 @@ export class PongComponent extends Component {
 
     get html() {
         return (`
-            <h1> Pong Game!</h1>
             <main class="game">
               <canvas width="750" height="585" class="ponggame"></canvas>
             </main>

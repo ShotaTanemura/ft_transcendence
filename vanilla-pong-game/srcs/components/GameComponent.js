@@ -64,7 +64,8 @@ export class GameComponent extends Component {
 			});
 		});
 		this.setRouteContext("gameResults", newGameResult);
-		this.goNextPage("/tournament");	
+		this.element.removeChild(this.pongComponent.element);
+		setTimeout(this.goNextPage, 2000,"/tournament");
 	};
 
 	get html() {
