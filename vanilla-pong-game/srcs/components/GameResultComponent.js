@@ -20,7 +20,7 @@ export class GameResultComponent extends Component {
         return (`
         	<h1>Game Result Component</h1>
 			<h1>Conguratulation ${this.tournamentWinnerName}!<h1>
-			<button class="goHome">Go Home!</button>
+			<button class="goHome btn btn-primary">Go Home!</button>
         `)
 	}
 };

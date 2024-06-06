@@ -9,7 +9,7 @@ export class GameComponent extends Component {
 		this.topPlayerScore = 0;
 		this.bottomPlayerScore = 0;
 
-		this.playersScoreElement = document.createElement("h1");
+		this.playersScoreElement = Object.assign(document.createElement("h1"), {className: "d-flex justify-content-center"});
 		this.setPlayersScore();
 		this.element.appendChild(this.playersScoreElement);
 
@@ -63,8 +63,9 @@ export class GameComponent extends Component {
 				return game;
 			});
 		});
-		this.setRouteContext("gameResults", newGameResult);
 		this.element.removeChild(this.pongComponent.element);
+		this.playersScoreElement.classList.add("align-items-center");
+		this.setRouteContext("gameResults", newGameResult);
 		setTimeout(this.goNextPage, 2000,"/tournament");
 	};
 

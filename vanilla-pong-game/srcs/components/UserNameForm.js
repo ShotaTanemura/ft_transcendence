@@ -66,9 +66,9 @@ export class UserNameForm extends Component {
     get html() {
         return (`
             <form class="playerNameForm">
-    	      <button type="sumbit" class="playerNameForm">start Game</button>
-    	      <button type="button" class="addUser">add</button>
-    	      <button type="button" class="removeUser">remove</button>
+    	      <button type="sumbit" class="playerNameForm btn btn-primary">start Game</button>
+    	      <button type="button" class="addUser btn">add</button>
+    	      <button type="button" class="removeUser btn">remove</button>
 		    </form>
         `)
     }

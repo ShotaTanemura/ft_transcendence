@@ -23,7 +23,7 @@ export class Bracket extends Component {
           //create Top Player Element
           roundElement.appendChild(Object.assign(document.createElement('li'), {className: "spacer", innerHTML: "&nbsp;"}));
           let topPlayerElement = document.createElement('li');
-          topPlayerElement.className = `game game-top ${game.top.winner ? 'winner' : ''}`;
+          topPlayerElement.className = `game game-top ${game.top.winner ? 'winner' : 'loser'}`;
           topPlayerElement.innerHTML = `${game.top.name} <span>${game.top.score}</span>`
           roundElement.appendChild(topPlayerElement);
 
@@ -31,7 +31,7 @@ export class Bracket extends Component {
 
           //create Bottom Player Element;
           let bottomPlayerElement = document.createElement('li');
-          bottomPlayerElement.className = `game game-top ${game.bottom.winner ? 'winner' : ''}`;
+          bottomPlayerElement.className = `game game-top ${game.bottom.winner ? 'winner' : 'loser'}`;
           bottomPlayerElement.innerHTML = `${game.bottom.name} <span>${game.bottom.score}</span>`;
           roundElement.appendChild(bottomPlayerElement);
           roundElement.appendChild(Object.assign(document.createElement('li'), {className: "spacer", innerHTML: "&nbsp;"}));

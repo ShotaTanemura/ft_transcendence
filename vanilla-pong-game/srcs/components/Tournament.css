@@ -39,6 +39,11 @@ main{
     li.game.winner{
       font-weight:bold;
     }
+
+    li.game.loser {
+      color: red;
+    }
+
     li.game span{
       float:right;
       margin-right:5px;

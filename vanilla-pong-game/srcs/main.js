@@ -6,8 +6,10 @@ import {GameComponent} from './components/GameComponent.js'
 import {GameResultComponent} from './components/GameResultComponent.js'
 import {Tournament} from './components/Tournament.js'
 import { PongComponent } from './components/Pong.js'
+import './scss/style.scss'
+import * as bootstrap from 'bootstrap'
 
-let router = new Router(document.body, [
+let router = new Router(document.getElementById("app"), [
 		{
 			path: "/",
 			component: HomeComponent,
