@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 from .models import User
 
-class UserViewsTest(TestCase):
+class UserRegisterTest(TestCase):
 	def test_register_normal(self):
 		data = {
 			'name': 'ユーザー名',
