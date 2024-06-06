@@ -26,7 +26,7 @@ def register(request):
 			'status': 'invalidParams'
 		}, status=400)
 
-	if User.objects.filter(name=data['name']).exists():
+	if User.objects.filter(name=data['name']).exists() or User.objects.filter(email=data['email']).exists():
 		return JsonResponse({
 			'message': 'User already exists',
 			'status': 'registerConflict'
