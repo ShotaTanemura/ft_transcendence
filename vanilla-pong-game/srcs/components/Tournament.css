@@ -38,10 +38,12 @@ main{
   
     li.game.winner{
       font-weight:bold;
+      border-bottom:5px solid black;
     }
 
     li.game.loser {
       color: red;
+      border-bottom:5px solid red;
     }
 
     li.game span{
@@ -49,16 +51,8 @@ main{
       margin-right:5px;
     }
   
-    li.game-top{
-      border-bottom:1px solid #aaa;
-    }
-  
     li.game-spacer{ 
-      border-right:1px solid #aaa;
-      min-height:40px;
-    }
-  
-    li.game-bottom{ 
-      border-top:1px solid #aaa;
+      border-right:5px solid black;
+      min-height:50px;
     }
   
