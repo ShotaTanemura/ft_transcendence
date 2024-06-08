@@ -4,6 +4,7 @@ from .models import User
 import jwt
 from django.conf import settings
 from http.cookies import SimpleCookie
+from datetime import datetime, timedelta
 
 class UserRegisterTest(TestCase):
 	def test_register_normal(self):
@@ -140,3 +141,64 @@ class UserTokenTest(TestCase):
 		self.assertEqual(response.status_code, 404)
 		self.assertEqual(response.json()['message'], 'User not found')
 		self.assertEqual(response.json()['status'], 'userNotFound')
+
+class UserRefreshTokenTest(TestCase):
+    def test_refresh_token_normal(self):
+        user = User.objects.create_user(name='ユーザー名', email='example@email.com', password='p4s$W0rd')
+        refresh_token_payload = {
+            'uuid': str(user.uuid),
+            'exp': datetime.utcnow() + settings.JWT_AUTH['JWT_REFRESH_EXPIRATION_DELTA'],
+            'iat': datetime.utcnow()
+        }
+        refresh_token = jwt.encode(refresh_token_payload, settings.JWT_AUTH['JWT_PRIVATE_KEY'], algorithm=settings.JWT_AUTH['JWT_ALGORITHM'])
+
+        self.client.cookies['refresh_token'] = refresh_token
+        response = self.client.post(reverse('pong:refresh'), content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['uuid'], str(user.uuid))
+
+        token = response.client.cookies['token'].value
+        try:
+            decoded_token = jwt.decode(token, settings.JWT_AUTH['JWT_PUBLIC_KEY'], algorithms=['RS256'])
+        except jwt.ExpiredSignatureError:
+            self.fail('Token is expired')
+        except jwt.InvalidTokenError:
+            self.fail('Token is invalid')
+        self.assertIn('uuid', decoded_token)
+        self.assertIn('exp', decoded_token)
+        self.assertIn('iat', decoded_token)
+        self.assertEqual(decoded_token['uuid'], str(user.uuid))
+
+        new_refresh_token = response.client.cookies['refresh_token'].value
+        try:
+            decoded_refresh_token = jwt.decode(new_refresh_token, settings.JWT_AUTH['JWT_PUBLIC_KEY'], algorithms=['RS256'])
+        except jwt.ExpiredSignatureError:
+            self.fail('Refresh token is expired')
+        except jwt.InvalidTokenError:
+            self.fail('Refresh token is invalid')
+        self.assertIn('uuid', decoded_refresh_token)
+        self.assertIn('exp', decoded_refresh_token)
+        self.assertIn('iat', decoded_refresh_token)
+        self.assertEqual(decoded_refresh_token['uuid'], str(user.uuid))
+
+    def test_refresh_token_expired(self):
+        user = User.objects.create_user(name='ユーザー名', email='example@email.com', password='p4s$W0rd')
+        expired_refresh_token_payload = {
+            'uuid': str(user.uuid),
+            'exp': datetime.utcnow() - timedelta(seconds=1),
+            'iat': datetime.utcnow() - timedelta(days=30)
+        }
+        expired_refresh_token = jwt.encode(expired_refresh_token_payload, settings.JWT_AUTH['JWT_PRIVATE_KEY'], algorithm=settings.JWT_AUTH['JWT_ALGORITHM'])
+        self.client.cookies['refresh_token'] = expired_refresh_token
+        response = self.client.post(reverse('pong:refresh'), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()['message'], 'Refresh token has expired')
+        self.assertEqual(response.json()['status'], 'invalidParams')
+
+    def test_refresh_token_invalid(self):
+        user = User.objects.create_user(name='ユーザー名', email='example@email.com', password='p4s$W0rd')
+        self.client.cookies['refresh_token'] = 'invalid_token'
+        response = self.client.post(reverse('pong:refresh'), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()['message'], 'Invalid refresh token')
+        self.assertEqual(response.json()['status'], 'invalidParams')
