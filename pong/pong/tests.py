@@ -96,11 +96,22 @@ class UserTokenTest(TestCase):
 			self.fail('Token is expired')
 		except jwt.InvalidTokenError:
 			self.fail('Token is invalid')
-
 		self.assertIn('uuid', decoded_token)
 		self.assertIn('exp', decoded_token)
 		self.assertIn('iat', decoded_token)
 		self.assertEqual(decoded_token['uuid'], str(user.uuid))
+
+		refresh_token = response.client.cookies['refresh_token'].value
+		try:
+			decoded_refresh_token = jwt.decode(refresh_token, settings.JWT_AUTH['JWT_PUBLIC_KEY'], algorithms=['RS256'])
+		except jwt.ExpiredSignatureError:
+			self.fail('Refresh token is expired')
+		except jwt.InvalidTokenError:
+			self.fail('Refresh token is invalid')
+		self.assertIn('uuid', decoded_refresh_token)
+		self.assertIn('exp', decoded_refresh_token)
+		self.assertIn('iat', decoded_refresh_token)
+		self.assertEqual(decoded_refresh_token['uuid'], str(user.uuid))
 
 	def test_token_no_email(self):
 		data = {
