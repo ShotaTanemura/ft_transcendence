@@ -79,10 +79,8 @@ def create_token(request):
 		'iat': datetime.utcnow()
 	}
 	refresh_token = jwt.encode(payload, settings.JWT_AUTH['JWT_PRIVATE_KEY'], algorithm=settings.JWT_AUTH['JWT_ALGORITHM'])
-	
+
 	response = JsonResponse({'uuid': user.uuid}, content_type='application/json')
-
-
 	# HTTPS実装後に有効化する
 	# response.set_cookie('token', token, httponly=True, secure=True)
 	# response.set_cookie('refresh_token', refresh_token, httponly=True, secure=True)
@@ -90,4 +88,63 @@ def create_token(request):
 	response.set_cookie('refresh_token', refresh_token, httponly=True)
 
 	return response
+
+@csrf_exempt
+def refresh_token(request):
+	if request.method != 'POST':
+		return JsonResponse({
+			'message': 'Method is not allowed',
+			'status': 'invalidParams'
+		}, status=400)
+
+	refresh_token = request.COOKIES.get('refresh_token')
+	if not refresh_token:
+		return JsonResponse({
+			'message': 'Refresh token not provided',
+			'status': 'invalidParams'
+		}, status=400)
+
+	try:
+		refresh_payload = jwt.decode(refresh_token, settings.JWT_AUTH['JWT_PUBLIC_KEY'], algorithms=[settings.JWT_AUTH['JWT_ALGORITHM']])
+	except jwt.ExpiredSignatureError:
+		return JsonResponse({
+			'message': 'Refresh token has expired',
+			'status': 'invalidParams'
+		}, status=400)
+	except jwt.InvalidTokenError:
+		return JsonResponse({
+			'message': 'Invalid refresh token',
+			'status': 'invalidParams'
+		}, status=400)
+
+	user = User.objects.filter(uuid=refresh_payload['uuid']).first()
+	if not user:
+		return JsonResponse({
+			'message': 'User not found',
+			'status': 'userNotFound'
+		}, status=404)
+
+	new_payload = {
+		'uuid': str(user.uuid),
+		'exp': datetime.utcnow() + settings.JWT_AUTH['JWT_EXPIRATION_DELTA'],
+		'iat': datetime.utcnow()
+	}
+	new_token = jwt.encode(new_payload, settings.JWT_AUTH['JWT_PRIVATE_KEY'], algorithm=settings.JWT_AUTH['JWT_ALGORITHM'])
+
+	new_refresh_payload = {
+		'uuid': str(user.uuid),
+		'exp': datetime.utcnow() + settings.JWT_AUTH['JWT_REFRESH_EXPIRATION_DELTA'],
+		'iat': datetime.utcnow()
+	}
+	new_refresh_token = jwt.encode(new_refresh_payload, settings.JWT_AUTH['JWT_PRIVATE_KEY'], algorithm=settings.JWT_AUTH['JWT_ALGORITHM'])
+
+	response = JsonResponse({'uuid': user.uuid}, content_type='application/json')
+	# HTTPS実装後に有効化する
+	# response.set_cookie('token', new_token, httponly=True, secure=True)
+	# response.set_cookie('refresh_token', new_refresh_token, httponly=True, secure=True)
+	response.set_cookie('token', new_token, httponly=True)
+	response.set_cookie('refresh_token', new_refresh_token, httponly=True)
+
+	return response
+
 
