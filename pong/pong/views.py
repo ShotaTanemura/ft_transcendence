@@ -89,7 +89,5 @@ def create_token(request):
 	response.set_cookie('token', token, httponly=True)
 	response.set_cookie('refresh_token', refresh_token, httponly=True)
 
-	print(response.cookies)
-
 	return response
 
