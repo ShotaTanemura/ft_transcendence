@@ -3,6 +3,7 @@ from django.urls import reverse
 from .models import User
 import jwt
 from django.conf import settings
+from http.cookies import SimpleCookie
 
 class UserRegisterTest(TestCase):
 	def test_register_normal(self):
@@ -78,13 +79,6 @@ class UserRegisterTest(TestCase):
 		self.assertEqual(response.status_code, 409)
 
 class UserTokenTest(TestCase):
-	def extract_token_from_cookie(self, cookie):
-		parts = cookie.split(';')
-		for part in parts:
-			if 'token' in part:
-				return part.split('=')[1]
-		return None
-
 	def test_token_normal(self):
 		user = User.objects.create_user(name='ユーザー名', email='example@email.com', password='p4s$W0rd')
 		data = {
@@ -94,15 +88,15 @@ class UserTokenTest(TestCase):
 		response = self.client.post(reverse('pong:token'), data=data, content_type='application/json')
 		self.assertEqual(response.status_code, 200)
 		self.assertEqual(response.json()['uuid'], str(user.uuid))
-		
-		cookie = response.cookies
-		token = self.extract_token_from_cookie(cookie)
+
+		token = response.client.cookies['token'].value
 		try:
 			decoded_token = jwt.decode(token, settings.JWT_AUTH['JWT_PUBLIC_KEY'], algorithms=['RS256'])
 		except jwt.ExpiredSignatureError:
 			self.fail('Token is expired')
 		except jwt.InvalidTokenError:
 			self.fail('Token is invalid')
+
 		self.assertIn('uuid', decoded_token)
 		self.assertIn('exp', decoded_token)
 		self.assertIn('iat', decoded_token)
