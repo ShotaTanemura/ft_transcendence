@@ -1,7 +1,7 @@
 import {Component} from '../core/component.js'
 import { UserNameForm } from './UserNameForm.js';
 
-export class HomeComponent extends Component {
+export class Home extends Component {
 	constructor(router, parameters, state) {
 		super(router, parameters, state);
 			let userNameForm = new UserNameForm(router, parameters, state);
@@ -16,4 +16,4 @@ export class HomeComponent extends Component {
 	}
 };
 
-export default HomeComponent;
+export default Home;

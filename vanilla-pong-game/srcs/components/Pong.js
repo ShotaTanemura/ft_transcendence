@@ -1,7 +1,7 @@
 import { Component } from "../core/component";
 import './Pong.css';
 
-export class PongComponent extends Component {
+export class Pong extends Component {
 
     constructor(router, parameters, state) {
         super(router, parameters, state);

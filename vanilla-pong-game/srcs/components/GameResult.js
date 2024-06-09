@@ -1,7 +1,7 @@
 import {Component} from '../core/component.js'
 import Tournament from './Tournament.js';
 
-export class GameResultComponent extends Component {
+export class GameResult extends Component {
 	constructor(route, parameters, state) {
 		super(route, parameters, state);
 		this.finalMatch = (this.getRouteContext("gameResults").at(-1))[0];
@@ -27,4 +27,4 @@ export class GameResultComponent extends Component {
 	}
 };
 
-export default GameResultComponent;
+export default GameResult;

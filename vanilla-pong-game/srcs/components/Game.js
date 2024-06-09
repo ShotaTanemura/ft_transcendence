@@ -1,7 +1,7 @@
 import {Component} from '../core/component.js'
-import { PongComponent } from './Pong.js';
+import { Pong } from './Pong.js';
 
-export class GameComponent extends Component {
+export class Game extends Component {
 	constructor(route, parameters, state) {
 		super(route, parameters, state);
 		this.gameResults = this.getRouteContext("gameResults");
@@ -16,7 +16,7 @@ export class GameComponent extends Component {
 		window.addEventListener("top-scored", this.topScored);
 		window.addEventListener("bottom-scored", this.bottomScored);
 
-		this.pongComponent = new PongComponent(route, parameters, state);
+		this.pongComponent = new Pong(route, parameters, state);
 		this.element.appendChild(this.pongComponent.element);
 		
 	}
@@ -75,4 +75,4 @@ export class GameComponent extends Component {
 	};
 };
 
-export default GameComponent;
+export default Game;
