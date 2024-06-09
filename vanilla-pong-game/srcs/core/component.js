@@ -18,7 +18,7 @@ export class Component {
 
 
 	goNextPage = (path) => {
-		this.router.gonextPage(path);
+		this.router.goNextPage(path);
 	}
 
 	getRouteContext(name) {

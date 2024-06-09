@@ -36,4 +36,4 @@ let router = new Router(document.getElementById("app"), [
 		gameResults: [],
 	});
 
-router.gonextPage(location.pathname);
+router.goNextPage(location.pathname);

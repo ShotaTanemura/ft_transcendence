@@ -10,7 +10,7 @@ export class Tournament extends Component {
     this.rounds = []
     this.displayTournament();
     this.bracket = new Bracket(this.rounds, route, parameters, state);
-    this.element.insertBefore(this.bracket.element, this.gameStartButton);
+    this.element.appendChild(this.bracket.element);
   };
 
   // 前の対戦が終わってtournamentに処理が移った時に実行する、トーナメントのアップデートを行うモック

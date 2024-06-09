@@ -25,7 +25,7 @@ export class Router {
 	}
 
 	// 指定したpathに遷移する。
-	gonextPage(path) {
+	goNextPage(path) {
 		return this.changePage(path)		
 	}
 

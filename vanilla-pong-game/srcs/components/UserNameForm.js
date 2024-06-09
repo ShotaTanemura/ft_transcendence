@@ -4,7 +4,7 @@ import { UserNameInput } from './UserNameInput.js';
 export class UserNameForm extends Component {
 	constructor(router, parameters, state) {
 		super(router, parameters, state);
-		this.num_of_user = 2;
+		this.numOfUser = 2;
 		this.userNameInputs = [];
 
 		//add eventListener of addUser
@@ -26,22 +26,22 @@ export class UserNameForm extends Component {
     }
 
 	addUser = () => {
-		if (16 < this.num_of_user + 1) {
+		if (16 < this.numOfUser + 1) {
 			alert("You can't play more than 16 players")
 			return ;
 		}
-		this.num_of_user++;
-		let newInput =  new UserNameInput(this.num_of_user, this.router, this.parameters, this.state);
+		this.numOfUser++;
+		let newInput =  new UserNameInput(this.numOfUser, this.router, this.parameters, this.state);
 		this.formElement.insertBefore(newInput.element, this.formElement.querySelector("button.playerNameForm"));
 		this.userNameInputs.push(newInput);
 	}
 
 	removeUser = () => {
-		if (2 == this.num_of_user)	{
+		if (2 == this.numOfUser)	{
 			alert("You can't play less than 2 players")
 			return ;
 		}
-		this.num_of_user--;
+		this.numOfUser--;
 		this.formElement.removeChild(this.userNameInputs.at(-1).element);
 		this.userNameInputs.pop();
 	}

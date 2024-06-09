@@ -4,8 +4,8 @@ import { UserNameForm } from './UserNameForm.js';
 export class HomeComponent extends Component {
 	constructor(router, parameters, state) {
 		super(router, parameters, state);
-			let useNameForm = new UserNameForm(router, parameters, state);
-			this.element.appendChild(useNameForm.element);
+			let userNameForm = new UserNameForm(router, parameters, state);
+			this.element.appendChild(userNameForm.element);
 	}
 
 	get html() {
