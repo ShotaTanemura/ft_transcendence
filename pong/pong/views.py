@@ -13,6 +13,30 @@ def test(request):
 		'message': 'Hello, world!'
 	})
 
+def create_token_response(uuid):
+	new_payload = {
+		'uuid': str(uuid),
+		'exp': datetime.utcnow() + settings.JWT_AUTH['JWT_EXPIRATION_DELTA'],
+		'iat': datetime.utcnow()
+	}
+	new_token = jwt.encode(new_payload, settings.JWT_AUTH['JWT_PRIVATE_KEY'], algorithm=settings.JWT_AUTH['JWT_ALGORITHM'])
+
+	new_refresh_payload = {
+		'uuid': str(uuid),
+		'exp': datetime.utcnow() + settings.JWT_AUTH['JWT_REFRESH_EXPIRATION_DELTA'],
+		'iat': datetime.utcnow()
+	}
+	new_refresh_token = jwt.encode(new_refresh_payload, settings.JWT_AUTH['JWT_PRIVATE_KEY'], algorithm=settings.JWT_AUTH['JWT_ALGORITHM'])
+
+	response = JsonResponse({'uuid': uuid}, content_type='application/json')
+	# HTTPS実装後に有効化する
+	# response.set_cookie('token', new_token, httponly=True, secure=True)
+	# response.set_cookie('refresh_token', new_refresh_token, httponly=True, secure=True)
+	response.set_cookie('token', new_token, httponly=True)
+	response.set_cookie('refresh_token', new_refresh_token, httponly=True)
+
+	return response
+
 @csrf_exempt
 def register(request):
 
@@ -65,29 +89,9 @@ def create_token(request):
 			'message': 'User not found',
 			'status': 'userNotFound'
 		}, status=404)
+	
+	return create_token_response(user.uuid)
 
-	payload = {
-		'uuid': str(user.uuid),
-		'exp': datetime.utcnow() + settings.JWT_AUTH['JWT_EXPIRATION_DELTA'],
-		'iat': datetime.utcnow()
-	}
-	token = jwt.encode(payload, settings.JWT_AUTH['JWT_PRIVATE_KEY'], algorithm=settings.JWT_AUTH['JWT_ALGORITHM'])
-
-	refresh_payload = {
-		'uuid': str(user.uuid),
-		'exp': datetime.utcnow() + settings.JWT_AUTH['JWT_REFRESH_EXPIRATION_DELTA'],
-		'iat': datetime.utcnow()
-	}
-	refresh_token = jwt.encode(payload, settings.JWT_AUTH['JWT_PRIVATE_KEY'], algorithm=settings.JWT_AUTH['JWT_ALGORITHM'])
-
-	response = JsonResponse({'uuid': user.uuid}, content_type='application/json')
-	# HTTPS実装後に有効化する
-	# response.set_cookie('token', token, httponly=True, secure=True)
-	# response.set_cookie('refresh_token', refresh_token, httponly=True, secure=True)
-	response.set_cookie('token', token, httponly=True)
-	response.set_cookie('refresh_token', refresh_token, httponly=True)
-
-	return response
 
 @csrf_exempt
 def refresh_token(request):
@@ -124,27 +128,4 @@ def refresh_token(request):
 			'status': 'userNotFound'
 		}, status=404)
 
-	new_payload = {
-		'uuid': str(user.uuid),
-		'exp': datetime.utcnow() + settings.JWT_AUTH['JWT_EXPIRATION_DELTA'],
-		'iat': datetime.utcnow()
-	}
-	new_token = jwt.encode(new_payload, settings.JWT_AUTH['JWT_PRIVATE_KEY'], algorithm=settings.JWT_AUTH['JWT_ALGORITHM'])
-
-	new_refresh_payload = {
-		'uuid': str(user.uuid),
-		'exp': datetime.utcnow() + settings.JWT_AUTH['JWT_REFRESH_EXPIRATION_DELTA'],
-		'iat': datetime.utcnow()
-	}
-	new_refresh_token = jwt.encode(new_refresh_payload, settings.JWT_AUTH['JWT_PRIVATE_KEY'], algorithm=settings.JWT_AUTH['JWT_ALGORITHM'])
-
-	response = JsonResponse({'uuid': user.uuid}, content_type='application/json')
-	# HTTPS実装後に有効化する
-	# response.set_cookie('token', new_token, httponly=True, secure=True)
-	# response.set_cookie('refresh_token', new_refresh_token, httponly=True, secure=True)
-	response.set_cookie('token', new_token, httponly=True)
-	response.set_cookie('refresh_token', new_refresh_token, httponly=True)
-
-	return response
-
-
+	return create_token_response(user.uuid)
