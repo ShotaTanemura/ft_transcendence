@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import datetime
+import os
+from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'pong',
 ]
 
 MIDDLEWARE = [
@@ -126,3 +130,19 @@ STATIC_ROOT = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# 追加
+AUTH_USER_MODEL = 'pong.User'
+PRIVATE_KEY_PATH = os.path.join(BASE_DIR, 'keys', 'private_key.pem')
+PUBLIC_KEY_PATH = os.path.join(BASE_DIR, 'keys', 'public_key.pem')
+with open(PRIVATE_KEY_PATH, 'r') as f:
+    PRIVATE_KEY = f.read()
+with open(PUBLIC_KEY_PATH, 'r') as f:
+    PUBLIC_KEY = f.read()
+JWT_AUTH = {
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=1),
+    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=30),
+    'JWT_PRIVATE_KEY': PRIVATE_KEY,
+    'JWT_PUBLIC_KEY': PUBLIC_KEY,
+    'JWT_ALGORITHM': 'RS256',
+}
