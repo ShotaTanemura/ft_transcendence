@@ -143,19 +143,20 @@ class UserTokenTest(TestCase):
 		self.assertEqual(response.json()['status'], 'userNotFound')
 
 class UserRefreshTokenTest(TestCase):
-    def test_refresh_token_normal(self):
-        user = User.objects.create_user(name='ユーザー名', email='example@email.com', password='p4s$W0rd')
-        refresh_token_payload = {
-            'uuid': str(user.uuid),
+    def setUp(self):
+        self.user = User.objects.create_user(name='ユーザー名', email='example@email.com', password='p4s$W0rd')
+        self.refresh_token_payload = {
+            'uuid': str(self.user.uuid),
             'exp': datetime.utcnow() + settings.JWT_AUTH['JWT_REFRESH_EXPIRATION_DELTA'],
             'iat': datetime.utcnow()
         }
-        refresh_token = jwt.encode(refresh_token_payload, settings.JWT_AUTH['JWT_PRIVATE_KEY'], algorithm=settings.JWT_AUTH['JWT_ALGORITHM'])
+        self.refresh_token = jwt.encode(self.refresh_token_payload, settings.JWT_AUTH['JWT_PRIVATE_KEY'], algorithm=settings.JWT_AUTH['JWT_ALGORITHM'])
 
-        self.client.cookies['refresh_token'] = refresh_token
+    def test_refresh_token_normal(self):
+        self.client.cookies['refresh_token'] = self.refresh_token
         response = self.client.post(reverse('pong:refresh'), content_type='application/json')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()['uuid'], str(user.uuid))
+        self.assertEqual(response.json()['uuid'], str(self.user.uuid))
 
         token = response.client.cookies['token'].value
         try:
@@ -167,7 +168,7 @@ class UserRefreshTokenTest(TestCase):
         self.assertIn('uuid', decoded_token)
         self.assertIn('exp', decoded_token)
         self.assertIn('iat', decoded_token)
-        self.assertEqual(decoded_token['uuid'], str(user.uuid))
+        self.assertEqual(decoded_token['uuid'], str(self.user.uuid))
 
         new_refresh_token = response.client.cookies['refresh_token'].value
         try:
@@ -179,12 +180,11 @@ class UserRefreshTokenTest(TestCase):
         self.assertIn('uuid', decoded_refresh_token)
         self.assertIn('exp', decoded_refresh_token)
         self.assertIn('iat', decoded_refresh_token)
-        self.assertEqual(decoded_refresh_token['uuid'], str(user.uuid))
+        self.assertEqual(decoded_refresh_token['uuid'], str(self.user.uuid))
 
     def test_refresh_token_expired(self):
-        user = User.objects.create_user(name='ユーザー名', email='example@email.com', password='p4s$W0rd')
         expired_refresh_token_payload = {
-            'uuid': str(user.uuid),
+            'uuid': str(self.user.uuid),
             'exp': datetime.utcnow() - timedelta(seconds=1),
             'iat': datetime.utcnow() - timedelta(days=30)
         }
@@ -196,7 +196,6 @@ class UserRefreshTokenTest(TestCase):
         self.assertEqual(response.json()['status'], 'invalidParams')
 
     def test_refresh_token_invalid(self):
-        user = User.objects.create_user(name='ユーザー名', email='example@email.com', password='p4s$W0rd')
         self.client.cookies['refresh_token'] = 'invalid_token'
         response = self.client.post(reverse('pong:refresh'), content_type='application/json')
         self.assertEqual(response.status_code, 400)
