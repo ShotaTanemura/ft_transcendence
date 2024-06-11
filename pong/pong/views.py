@@ -7,7 +7,10 @@ from datetime import datetime, timedelta
 import jwt
 from django.conf import settings
 from django.http.response import HttpResponse
+from pong.middleware.auth import jwt_exempt
 
+@jwt_exempt
+@csrf_exempt
 def test(request):
 	return JsonResponse({
 		'message': 'Hello, world!'
@@ -37,6 +40,7 @@ def create_token_response(uuid):
 
 	return response
 
+@jwt_exempt
 @csrf_exempt
 def register(request):
 
@@ -66,6 +70,7 @@ def register(request):
 		'uuid': user.uuid
 	}, status=201)
 
+@jwt_exempt
 @csrf_exempt
 def create_token(request):
 	if request.method != 'POST':
@@ -92,7 +97,7 @@ def create_token(request):
 	
 	return create_token_response(user.uuid)
 
-
+@jwt_exempt
 @csrf_exempt
 def refresh_token(request):
 	if request.method != 'POST':
