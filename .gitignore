@@ -168,3 +168,9 @@ package-lock.json
 
 # ignore Authorization keys
 *.pem
+
+# ignore VIM swap files
+*.swp
+
+# ignore Makefile(tmp)
+Makefile
