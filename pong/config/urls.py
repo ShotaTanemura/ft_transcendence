@@ -21,5 +21,6 @@ from pong.views import test
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('pong/', include('pong.urls')),
+    path('realtime/', include('realtime.urls')),
     path('', test, name='test'),
 ]
