@@ -1,10 +1,58 @@
+version: '3'
 services:
   web:
-    container_name: web
     build:
-      context: .
-      dockerfile: ./Dockerfile
-    working_dir: /workspace/web
+      context: ./requirements/Nginx/
+      dockerfile: ./Containerfile
+    ports:
+      - "8000:80"
     volumes:
-      - ..:/workspace/web:cached
-    tty: true
+      - type: bind
+        source: ./requirements/Nginx/conf.d/default.conf
+        target: /etc/nginx/conf.d/default.conf
+    depends_on:
+      app:
+        condition: service_healthy
+    env_file:
+      - .env
+
+  app:
+    build:
+      context: ./requirements/Django/
+      dockerfile: ./Containerfile
+    volumes:
+      - type: bind
+        source: ../pong/
+        target: /app/code
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+
+  db:
+    build:
+      context: ./requirements/Postgres/
+      dockerfile: ./Containerfile
+    ports:
+      - "5432:5432"
+    volumes:
+      - type: volume
+        source: db_data
+        target: /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER:-postgres}"]
+      interval: 5s
+      timeout: 5s 
+      retries: 5
+    env_file:
+      - .env
+
+
+volumes:
+  db_data:

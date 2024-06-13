@@ -1,0 +1,169 @@
+openapi: '3.0.2'
+info:
+  title: Pong API
+  description: "Pong用のAPIです"
+  version: '1.0'
+servers:
+  - url: http://localhost:8080
+paths:
+   /pong/api/v1/auth/register:
+    post:
+      summary: ユーザー登録
+      description: ユーザー登録
+      requestBody:
+        content:
+          "application/json":
+            schema:
+                $ref: "#/components/schemas/postRegisterRequest"
+        required: true
+      responses:
+        "201":
+          description: ユーザー登録の成功
+          content:
+              "application/json":
+                schema:
+                  $ref: "#/components/schemas/postRegisterResponse"
+        "400":
+          $ref: "#/components/responses/badRequest"
+        "409":
+          $ref: "#/components/responses/conflictError"
+   /pong/api/v1/auth/token:
+    post:
+      summary: 認証トークンとリフレッシュトークンの発行
+      description: 認証トークンとリフレッシュトークンの発行
+      requestBody:
+        content:
+          "application/json":
+            schema:
+              $ref: "#/components/schemas/postTokenRequest"
+        required: true
+      responses:
+        "200":
+          description: 認証トークンとリフレッシュトークンの発行の成功
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                description: 認証トークンとリフレッシュトークン
+                example: JWTTOKEN=jwttoken; JWTREFRESH=refresh-jwttoken Secure; HttpOnly 
+          content:
+              "application/json":
+                schema:
+                  $ref: "#/components/schemas/postTokenResponse"
+        "400":
+          $ref: "#/components/responses/badRequest"
+        "404":
+          $ref: "#/components/responses/notFoundError"
+   /pong/api/v1/auth/token/refresh:
+    post:
+      summary: トークンのリフレッシュ
+      description: トークンのリフレッシュ
+      responses:
+        "200":
+          description: トークンのリフレッシュ成功
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                description: 認証トークンとリフレッシュトークン
+                example: JWTTOKEN=jwttoken; JWTREFRESH=refresh-jwttoken Secure; HttpOnly 
+          content:
+              "application/json":
+                schema:
+                  $ref: "#/components/schemas/postRefreshTokenResponse"
+        "400":
+          $ref: "#/components/responses/badRequest"
+components:
+  responses:
+    badRequest:
+      description: リクエスト内容が不正
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/errorMessage"
+    conflictError:
+      description: 重複するリクエスト
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/errorMessage"
+    notFoundError:
+      description: データが見つからない
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/errorMessage"
+  schemas:
+    postRegisterRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: ユーザー名
+          example: ユーザー名
+        email:
+          type: string
+          description: メールアドレス
+          example: example@email.com
+        password:
+          type: string
+          description: パスワード
+          example: p4s$W0rd
+      required:
+        - name
+        - email
+        - password
+    postRegisterResponse:
+      type: object
+      description: ユーザー登録に成功
+      properties:
+        uuid:
+         type: string
+         description: 作成されたユーザーのUUID
+         example: b4cf1ef4-1cab-490b-a32c-f6528f95c796
+    postTokenRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          description: メールアドレス
+          example: example@email.com
+        password:
+          type: string
+          description: パスワード
+          example: p4s$W0rd
+      required:
+        - email
+        - password
+    postTokenResponse:
+      type: object
+      description: 認証トークンとリフレッシュトークン発行成功
+      properties:
+          uuid:
+            type: string
+            description: トークンが発行されたユーザーのUUID
+            example: b4cf1ef4-1cab-490b-a32c-f6528f95c796
+    postRefreshTokenResponse:
+      type: object
+      description: トークンのリフレッシュの成功
+      properties:
+          uuid:
+            type: string
+            description: トークンが発行されたユーザーのUUID
+            example: b4cf1ef4-1cab-490b-a32c-f6528f95c796
+    errorMessage:
+      type: object
+      properties:
+        message:
+          description: エラーメッセージ
+          type: string
+        status:
+          description: エラーステータス
+          type: string
+          enum:
+            - invalidParams # リクエストパラメータのバリデーションに失敗した場合
+            - registerConflict # ユーザーによるユーザー登録時にコンフリクトした場合
+            - userNotFound # ユーザーが見つからない場合
+      required:
+        - message
+        - status

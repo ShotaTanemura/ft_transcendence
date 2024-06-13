@@ -1,0 +1,10 @@
+ main{
+    height: 100%;
+    margin: 0;
+  }
+  .ponggame{
+    background: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
