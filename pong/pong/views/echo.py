@@ -4,7 +4,7 @@ from pong.middleware.auth import jwt_exempt
 
 @jwt_exempt
 @csrf_exempt
-def test(request):
+def echo(request):
 	return JsonResponse({
 		'message': 'Hello, world!'
 	})

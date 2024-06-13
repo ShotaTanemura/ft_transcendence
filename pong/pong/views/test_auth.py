@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
-from .models import User
+from pong.models import User
 import jwt
 from django.conf import settings
 from http.cookies import SimpleCookie
