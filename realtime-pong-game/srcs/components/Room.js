@@ -16,13 +16,35 @@ export class Room extends Component {
 		+ "/");
 
 		//register event handler
+		this.gameSocket.onopen = (e) => {
+			console.log("open");
+			this.gameSocket.send(JSON.stringify({
+				"type": "socket-connected",
+				'displayName': this.displayName,
+            }));
+		}
+
 		this.gameSocket.onmessage = (e) => {
             const data = JSON.parse(e.data);
-			console.log(data);
-            document.querySelector('#chat-log').value += (data.displayName + ': ' + data.message + '\n');
+			console.log(data.type);
+			switch (data.type){
+				case "user_connected":
+            		document.querySelector('#chat-log').value += ("#Hoooo! " + data.displayName +' is connected\n');
+					break;
+				case "user_disconnected":
+            		document.querySelector('#chat-log').value += ("#Oops! " + data.displayName +' is disconnected\n');
+					break;
+				case "chat_message": 
+            		document.querySelector('#chat-log').value += (data.displayName + ': ' + data.message + '\n');
+					break;
+			}
         };
 
         this.gameSocket.onclose = (e) => {
+			this.gameSocket.send(JSON.stringify({
+				"type": "socket-disconnected",
+				'displayName': this.displayName,
+            }));
             console.error('Chat socket closed unexpectedly');
         };
 
@@ -38,6 +60,7 @@ export class Room extends Component {
             const message = messageInputDom.value;
 
             this.gameSocket.send(JSON.stringify({
+				"type": "message",
 				'displayName': this.displayName,
                 'message': message
             }));
