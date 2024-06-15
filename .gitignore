@@ -174,3 +174,6 @@ package-lock.json
 
 # ignore Makefile(tmp)
 Makefile
+
+# ignore DB migration file
+migrations/
