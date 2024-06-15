@@ -6,7 +6,7 @@ export class Room extends Component {
 
 		//get global context
 		this.roomID = this.router.getContext("roomID");
-		this.displayName= this.router.getContext("displayName");
+		this.displayName = this.router.getContext("displayName");
 
 		//creating websocket
 		this.gameSocket = new WebSocket("ws://"
@@ -18,7 +18,8 @@ export class Room extends Component {
 		//register event handler
 		this.gameSocket.onmessage = (e) => {
             const data = JSON.parse(e.data);
-            document.querySelector('#chat-log').value += (data.message + '\n');
+			console.log(data);
+            document.querySelector('#chat-log').value += (data.displayName + ': ' + data.message + '\n');
         };
 
         this.gameSocket.onclose = (e) => {
@@ -35,7 +36,9 @@ export class Room extends Component {
         this.findElement('#chat-message-submit').onclick = (e) => {
             const messageInputDom = document.querySelector('#chat-message-input');
             const message = messageInputDom.value;
+
             this.gameSocket.send(JSON.stringify({
+				'displayName': this.displayName,
                 'message': message
             }));
             messageInputDom.value = '';
