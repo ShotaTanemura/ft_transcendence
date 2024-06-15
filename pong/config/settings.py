@@ -136,12 +136,13 @@ STATIC_ROOT = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# 
+# For Websocket
 CHANNEL_LAYERS = {
     'default': {
         "BACKEND": "channels.layers.InMemoryChannelLayer"
     },
 }
+
 # 追加
 AUTH_USER_MODEL = 'pong.User'
 PRIVATE_KEY_PATH = os.path.join(BASE_DIR, 'keys', 'private_key.pem')
