@@ -19,5 +19,5 @@ let router = new Router(document.getElementById("app"), [
 	}
 );
 
-router.goNextPage(location.pathname);
+router.goNextPage("/");
 
