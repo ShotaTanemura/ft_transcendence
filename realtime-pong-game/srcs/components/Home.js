@@ -9,7 +9,6 @@ export class Home extends Component {
 
 	submitForm = (e) => {
 		e.preventDefault();
-		console.log(e.submitter.name)
 		if (e.submitter.name === "create-room")
 			this.router.setContext("isHost", true);
 		else

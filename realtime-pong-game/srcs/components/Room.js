@@ -25,7 +25,6 @@ export class Room extends Component {
 
 		this.gameSocket.onmessage = (e) => {
             const data = JSON.parse(e.data);
-			console.log(data.type);
 			switch (data.type){
 				case "user_connected":
             		document.querySelector('#chat-log').value += ("#Hoooo! " + data.displayName +' is connected\n');

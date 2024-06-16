@@ -15,7 +15,6 @@ export class Signin extends Component {
             },
             body: JSONData
         });
-        console.log(response);
         const data = await response.json();
         if (!response.ok) {
             throw Error(data.status);
