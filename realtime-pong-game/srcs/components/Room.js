@@ -17,7 +17,6 @@ export class Room extends Component {
 
 		//register event handler
 		this.gameSocket.onopen = (e) => {
-			console.log("open");
 			this.gameSocket.send(JSON.stringify({
 				"type": "socket-connected",
 				'displayName': this.displayName,

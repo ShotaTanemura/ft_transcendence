@@ -9,6 +9,11 @@ export class Home extends Component {
 
 	submitForm = (e) => {
 		e.preventDefault();
+		console.log(e.submitter.name)
+		if (e.submitter.name === "create-room")
+			this.router.setContext("isHost", true);
+		else
+			this.router.setContext("isHost", false);
 		this.router.setContext("displayName", e.target.elements["display-name"].value);
 		this.router.setContext("roomID", e.target.elements["room-id"].value);
 		this.router.goNextPage("/room");
@@ -22,7 +27,8 @@ export class Home extends Component {
 				<input id="display-name" name="display-name" type="text" size="20" required><br>
 				<label for="room-id">Room ID</label>
 				<input id="room-id" type="number" min="1000" max="9999" required><br>
-				<input id="entering-room-submit" type="submit" value="Go to Room">
+				<input id="create-room-submit" name="create-room" type="submit" value="create Room">
+				<input id="join-room-submit" name="join-room" type="submit" value="join Room">
 			</form>
 			
 		`);
