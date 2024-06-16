@@ -15,8 +15,8 @@ class RoomQuerySelect(models.QuerySet):
         return self.filter(condition).order_by(order).distrinct();
 
 class Room(models.Model):
-    host = models.ForeignKey(User, on_delete=models.CASCADE)
-    winner = models.ForeignKey(User, on_delete=models.CASCADE)
+    host = models.ForeignKey(User, on_delete=models.CASCADE, related_name="host")
+    winner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="winner")
     name = models.CharField(gettext_lazy('Room name'), max_length=64)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(gettext_lazy('Created time'), default=timezone.now)
@@ -51,8 +51,8 @@ class UserRooms(models.Model):
 
 class MatchInfo(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
-    user1 = models.ForeignKey(User, on_delete=models.CASCADE)
-    user2 = models.ForeignKey(User, on_delete=models.CASCADE)
+    user1 = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user1")
+    user2 = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user2")
     user1_score = models.IntegerField(default=0)
     user2_score = models.IntegerField(default=0)
     created_at = models.DateTimeField(gettext_lazy('Created time'), default=timezone.now)
