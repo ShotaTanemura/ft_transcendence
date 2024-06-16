@@ -8,27 +8,24 @@ export class Signup extends Component {
     constructor(router, params, state) {
         super(router, params, state);
         this.findElement("form.signup-form").onsubmit = this.onSignup;
+        this.findElement("#go_to_signin").onclick= this.goSignin;
     }
 
     fetchPOSTData = async (JSONData) => {
-        try {
-            const response = await fetch("/pong/api/v1/auth/register", {
-                method: "POST",
-                headers: {
+        const response = await fetch("/pong/api/v1/auth/register", {
+            method: "POST",
+            headers: {
                 'Content-Type': 'application/json'
-                },
-                body: JSONData
-            });
-            const data = await response.json();
-            if (!response.ok) {
-                throw Error(data.status);
-            }
-        } catch(error) {
-            //Go To Error Page !
+            },
+            body: JSONData
+        });
+        const data = await response.json();
+        if (!response.ok) {
+            throw Error(data.status);
         }
     }
 
-    onSignup = (event) => {
+    onSignup = async (event) => {
         event.preventDefault();
         if (event.target.password.value != event.target.confirm_password.value){
             alert("Passwords do not match");
@@ -40,8 +37,16 @@ export class Signup extends Component {
             "email": event.target.email.value,
             "password": event.target.password.value
         });
-        this.fetchPOSTData(signupJSON);
-        //Go to Login Page!
+        try {
+            await this.fetchPOSTData(signupJSON);
+            this.router.goNextPage("/signin");
+        } catch(error) {
+            alert(error);
+        }
+    }
+
+    goSignin = () => {
+        this.router.goNextPage("/signin");
     }
 
     get html() {
@@ -70,6 +75,8 @@ export class Signup extends Component {
                     <button>submit</button>
                 <ul/>
             </form>
+            <label for="go_to_signin">You've already had account ?</label>
+            <button id="go_to_signin" name="go_to_signin" type="button">signin</button>
         `);
     }
 }
