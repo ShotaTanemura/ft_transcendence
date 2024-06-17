@@ -143,7 +143,7 @@ def verify_token(request):
 			'status': 'invalidParams'
 		}, status=400)
 
-	user = getUserByJWT(request)
+	user = getUserByJwt(request)
 	if not user:
 		return JsonResponse({
 			'message': 'unauthorized',
