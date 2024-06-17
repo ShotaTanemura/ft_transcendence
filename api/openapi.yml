@@ -164,6 +164,7 @@ components:
             - invalidParams # リクエストパラメータのバリデーションに失敗した場合
             - registerConflict # ユーザーによるユーザー登録時にコンフリクトした場合
             - userNotFound # ユーザーが見つからない場合
+            - unauthorized # 認証が失敗した場合
       required:
         - message
         - status
