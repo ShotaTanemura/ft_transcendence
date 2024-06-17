@@ -44,4 +44,4 @@ class JWTAuthenticationMiddleware:
 				'message': 'unauthorized',
 				'status': 'unauthorized'
 			}, status=401)
-		return user
+		return None
