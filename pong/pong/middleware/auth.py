@@ -13,6 +13,21 @@ def jwt_exempt(view_func):
 	_wrapped_view_func.jwt_exempt = True
 	return _wrapped_view_func
 
+def getUserByJWT(request):
+	token = request.COOKIES.get('token')
+	if not token:
+		return None
+	try:
+		payload = jwt.decode(token, settings.JWT_AUTH['JWT_PUBLIC_KEY'], algorithms=[settings.JWT_AUTH['JWT_ALGORITHM']])
+	except jwt.ExpiredSignatureError:
+		return None
+	except jwt.InvalidTokenError:
+		return None
+
+	user = User.objects.filter(uuid=payload['uuid']).first()
+	if not user:
+		return None
+	return user
 
 class JWTAuthenticationMiddleware:
 
