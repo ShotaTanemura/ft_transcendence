@@ -13,6 +13,18 @@ def jwt_exempt(view_func):
 	_wrapped_view_func.jwt_exempt = True
 	return _wrapped_view_func
 
+def getUserByJwt(request):
+	token = request.COOKIES.get('token')
+	if not token:
+		return None
+	try:
+		payload = jwt.decode(token, settings.JWT_AUTH['JWT_PUBLIC_KEY'], algorithms=[settings.JWT_AUTH['JWT_ALGORITHM']])
+	except jwt.ExpiredSignatureError or jwt.InvalidTokenError:
+		return None
+	user = User.objects.filter(uuid=payload['uuid']).first()
+	if not user:
+		return None
+	return user
 
 class JWTAuthenticationMiddleware:
 
@@ -26,31 +38,10 @@ class JWTAuthenticationMiddleware:
 		if getattr(view_func, 'jwt_exempt', False):
 			return None
 
-		token = request.COOKIES.get('token')
-		if not token:
-			return JsonResponse({
-				'message': 'Forbidden',
-				'status': 'Forbidden'
-			}, status=403)
-
-		try:
-			payload = jwt.decode(token, settings.JWT_AUTH['JWT_PUBLIC_KEY'], algorithms=[settings.JWT_AUTH['JWT_ALGORITHM']])
-		except jwt.ExpiredSignatureError:
-			return JsonResponse({
-				'message': 'Forbidden',
-				'status': 'Forbidden'
-			}, status=403)
-		except jwt.InvalidTokenError:
-			return JsonResponse({
-				'message': 'Forbidden',
-				'status': 'Forbidden'
-			}, status=403)
-
-		user = User.objects.filter(uuid=payload['uuid']).first()
+		user = getUserByJwt(request)
 		if not user:
 			return JsonResponse({
-				'message': 'Forbidden',
-				'status': 'Forbidden'
-			}, status=403)
-
+				'message': 'unauthorized',
+				'status': 'unauthorized'
+			}, status=401)
 		return None
