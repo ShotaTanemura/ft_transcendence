@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 import jwt
 from django.conf import settings
 from django.http.response import HttpResponse
-from pong.middleware.auth import jwt_exempt, getUserByJWT
+from pong.middleware.auth import jwt_exempt, getUserByJwt
 
 @jwt_exempt
 @csrf_exempt
