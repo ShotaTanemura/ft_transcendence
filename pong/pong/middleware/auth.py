@@ -41,31 +41,10 @@ class JWTAuthenticationMiddleware:
 		if getattr(view_func, 'jwt_exempt', False):
 			return None
 
-		token = request.COOKIES.get('token')
-		if not token:
-			return JsonResponse({
-				'message': 'Forbidden',
-				'status': 'Forbidden'
-			}, status=403)
-
-		try:
-			payload = jwt.decode(token, settings.JWT_AUTH['JWT_PUBLIC_KEY'], algorithms=[settings.JWT_AUTH['JWT_ALGORITHM']])
-		except jwt.ExpiredSignatureError:
-			return JsonResponse({
-				'message': 'Forbidden',
-				'status': 'Forbidden'
-			}, status=403)
-		except jwt.InvalidTokenError:
-			return JsonResponse({
-				'message': 'Forbidden',
-				'status': 'Forbidden'
-			}, status=403)
-
-		user = User.objects.filter(uuid=payload['uuid']).first()
+		user = getUserByJWT(request)
 		if not user:
 			return JsonResponse({
-				'message': 'Forbidden',
-				'status': 'Forbidden'
-			}, status=403)
-
-		return None
+				'message': 'unauthorized',
+				'status': 'unauthorized'
+			}, status=401)
+		return user
