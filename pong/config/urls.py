@@ -16,10 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from pong.views import test
+from pong.views.echo import echo
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('pong/', include('pong.urls')),
-    path('', test, name='test'),
+    path('', echo, name='echo'),
 ]
