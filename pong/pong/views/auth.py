@@ -150,4 +150,6 @@ def verify_token(request):
 			'status': 'unauthorized'
 		}, status=401)
 
-	return JsonResponse({'uuid': str(user.uuid)}, status=200)
+	return JsonResponse({
+		'uuid': str(user.uuid)
+	}, status=200)
