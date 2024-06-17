@@ -151,6 +151,14 @@ components:
             type: string
             description: トークンが発行されたユーザーのUUID
             example: b4cf1ef4-1cab-490b-a32c-f6528f95c796
+    postTokenVerifyResponse:
+      type: object
+      description: トークンの検証成功
+      properties:
+          uuid:
+            type: string
+            description: ユーザーのUUID
+            example: b4cf1ef4-1cab-490b-a32c-f6528f95c796
     errorMessage:
       type: object
       properties:
