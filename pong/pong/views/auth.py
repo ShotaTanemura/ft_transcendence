@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 import jwt
 from django.conf import settings
 from django.http.response import HttpResponse
-from pong.middleware.auth import jwt_exempt
+from pong.middleware.auth import jwt_exempt, getUserByJwt
 
 @jwt_exempt
 @csrf_exempt
@@ -134,3 +134,22 @@ def refresh_token(request):
 		}, status=404)
 
 	return create_token_response(user.uuid)
+
+@csrf_exempt
+def verify_token(request):
+	if request.method != 'POST':
+		return JsonResponse({
+			'message': 'Method is not allowed',
+			'status': 'invalidParams'
+		}, status=400)
+
+	user = getUserByJwt(request)
+	if not user:
+		return JsonResponse({
+			'message': 'unauthorized',
+			'status': 'unauthorized'
+		}, status=401)
+
+	return JsonResponse({
+		'uuid': str(user.uuid)
+	}, status=200)

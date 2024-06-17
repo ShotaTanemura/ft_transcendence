@@ -201,3 +201,39 @@ class UserRefreshTokenTest(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()['message'], 'Invalid refresh token')
         self.assertEqual(response.json()['status'], 'invalidParams')
+
+class UserVerifyTokenTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(name='ユーザー名', email='example@email.com', password='p4s$W0rd')
+        self.token_payload = {
+            'uuid': str(self.user.uuid),
+            'exp': datetime.utcnow() + settings.JWT_AUTH['JWT_EXPIRATION_DELTA'],
+            'iat': datetime.utcnow()
+        }
+        self.token = jwt.encode(self.token_payload, settings.JWT_AUTH['JWT_PRIVATE_KEY'], algorithm=settings.JWT_AUTH['JWT_ALGORITHM'])
+        self.refresh_token_payload = {
+            'uuid': str(self.user.uuid),
+            'exp': datetime.utcnow() + settings.JWT_AUTH['JWT_REFRESH_EXPIRATION_DELTA'],
+            'iat': datetime.utcnow()
+        }
+        self.refresh_token = jwt.encode(self.refresh_token_payload, settings.JWT_AUTH['JWT_PRIVATE_KEY'], algorithm=settings.JWT_AUTH['JWT_ALGORITHM'])
+        self.client.cookies['token'] = self.token
+        self.client.cookies['refresh_token'] = self.refresh_token
+
+    def test_verify_token_normal(self):
+        response = self.client.post(reverse('pong:verify'), content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['uuid'], str(self.user.uuid))
+
+    def test_token_expired(self):
+        expired_token_payload = {
+            'uuid': str(self.user.uuid),
+            'exp': datetime.utcnow() - timedelta(seconds=1),
+            'iat': datetime.utcnow() - timedelta(days=30)
+        }
+        expired_token = jwt.encode(expired_token_payload, settings.JWT_AUTH['JWT_PRIVATE_KEY'], algorithm=settings.JWT_AUTH['JWT_ALGORITHM'])
+        self.client.cookies['token'] = expired_token
+        response = self.client.post(reverse('pong:verify'), content_type='application/json')
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.json()['message'], 'unauthorized')
+        self.assertEqual(response.json()['status'], 'unauthorized')
