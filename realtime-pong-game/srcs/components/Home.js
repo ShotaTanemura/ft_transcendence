@@ -1,7 +1,9 @@
 import {Component} from "../core/component.js"
+import { Load } from "./Load.js";
 
 export class Home extends Component {
 	constructor(router, parameters, state) {
+		new Load(router, parameters, state).onload()
 		super(router, parameters, state);
 		this.findElement("form.entering-room-form").onsubmit = this.submitForm;
 		

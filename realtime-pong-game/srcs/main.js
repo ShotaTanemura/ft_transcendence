@@ -33,5 +33,5 @@ let router = new Router(document.getElementById("app"), [
 	}
 );
 
-router.goNextPage("/signin");
+router.goNextPage("/");
 
