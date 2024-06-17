@@ -73,6 +73,19 @@ paths:
                   $ref: "#/components/schemas/postRefreshTokenResponse"
         "400":
           $ref: "#/components/responses/badRequest"
+   /pong/api/v1/auth/token/verify:
+    post:
+      summary: トークンの検証
+      description: トークンの検証
+      responses:
+        "200":
+          description: トークンの検証成功
+          content:
+              "application/json":
+                schema:
+                  $ref: "#/components/schemas/postTokenVerifyResponse"
+        "401":
+          $ref: "#/components/responses/badRequest"
 components:
   responses:
     badRequest:
