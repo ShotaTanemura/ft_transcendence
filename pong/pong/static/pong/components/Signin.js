@@ -1,9 +1,9 @@
 import { Component } from "../core/component.js";
 
-export class Hoge extends Component {
+export class Signin extends Component {
 	constructor(router, params, state) {
 		super(router, params, state);
-		this.findElement("form.sign-up-form").onsubmit = this.onSubmit;
+		this.findElement("form.signup-form").onsubmit = this.onSubmit;
 	}
 
 	onSubmit = async (event) => {
@@ -35,17 +35,17 @@ export class Hoge extends Component {
 	get html() {
 		return `
 			<div>
-				<h1>HOGE</h1>
-				<form class="sign-up-form">
+				<h1>Signup</h1>
+				<form class="signup-form">
 					<label for="username">Username</label>
-				   <input type=text placeholder="user name" id="username" name="username" required></input><br/>
-				   <label for="password">Password</label>
-				   <input type=password placeholder="enter password" id="password" name="password" required></input><br/>
-				   <label for="repeat-password">Repeat Password</label>
-				   <input type=password placeholder="repeat password" id="repeat-password" name="repeat-password" required></input><br/>
-				   <label for="email">email</label>
-				   <input type=email placeholder="email"id="email" name="email" required></input><br/>
-				   <button class="form-submit" type=submit>sign up</button>
+					<input type=text placeholder="username" id="username" name="username" required></input><br/>
+					<label for="password">Password</label>
+					<input type=password placeholder="enter password" id="password" name="password" required></input><br/>
+					<label for="repeat-password">Repeat Password</label>
+					<input type=password placeholder="repeat password" id="repeat-password" name="repeat-password" required></input><br/>
+					<label for="email">Email</label>
+					<input type=email placeholder="email"id="email" name="email" required></input><br/>
+					<button class="form-submit" type=submit>sign up</button>
 				</form>
 			</div>
 		`;
