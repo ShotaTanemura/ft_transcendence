@@ -17,20 +17,28 @@ export class Signup extends Component {
 			return;
 		}
 		const data = {"name": username, "password": password, "email": email};
-		const response = await fetch("/pong/api/v1/auth/register", {
-			method: "POST",
-			mode: "cors",
-			cache: "no-cache",
-			credentials: "same-origin",
-			headers: {
-			  "Content-Type": "application/json",
-			},
-			redirect: "follow",
-			referrerPolicy: "no-referrer",
-			body: JSON.stringify(data),
-		  });
-		console.log(response.json());
-		this.router.goNextPage("/");
+		await new Promise((resolve) => {
+			const response = fetch("/pong/api/v1/auth/register", {
+				method: "POST",
+				mode: "cors",
+				cache: "no-cache",
+				credentials: "same-origin",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				redirect: "follow",
+				referrerPolicy: "no-referrer",
+				body: JSON.stringify(data),
+			});
+			resolve(response);
+		}).then((response) => {
+			if (!response.ok) {
+				alert("Failed to signup.");
+				return;
+			}
+			console.log(response.json());
+			this.router.goNextPage("/");
+		});
 	}
 
 	get html() {
