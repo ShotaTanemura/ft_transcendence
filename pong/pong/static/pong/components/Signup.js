@@ -30,6 +30,7 @@ export class Signup extends Component {
 			body: JSON.stringify(data),
 		  });
 		console.log(response.json());
+		this.router.goNextPage("/");
 	}
 
 	get html() {
