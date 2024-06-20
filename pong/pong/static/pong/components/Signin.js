@@ -3,38 +3,36 @@ import { Component } from "../core/component.js";
 export class Signin extends Component {
     constructor(router, params, state) {
         super(router, params, state);
-        this.findElement("form.signin-form").onsubmit = this.onSignin;
-        this.findElement("#go_to_signup").onclick = this.goSignup
+        this.findElement("form.signin-form").onsubmit = this.handleSignin;
+        this.findElement("#go-signup").onclick = this.goSignup
     }
 
-    fetchPOSTData = async (JSONData) => {
+    handleSignin = async (event) => {
+        event.preventDefault();
+        const signinJson = JSON.stringify({
+            "email": event.target.email.value,
+            "password": event.target.password.value
+        });
+        try {
+            await this.generateToken(signinJson);
+            this.router.goNextPage("/home");
+        } catch (error) {
+            alert(error);
+        }
+    }
+
+    generateToken = async (jsonData) => {
         const response = await fetch("/pong/api/v1/auth/token", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSONData
+            body: jsonData
         });
         console.log(response);
         const data = await response.json();
         if (!response.ok) {
             throw Error(data.status);
-        }
-    }
-
-    onSignin = async (event) => {
-        event.preventDefault();
-        const signinJSON = JSON.stringify({
-            "email": event.target.email.value,
-            "password": event.target.password.value
-        });
-
-        try {
-            await this.fetchPOSTData(signinJSON);
-            // signin後の仮ページ
-            this.router.goNextPage("/home");
-        } catch (error) {
-            alert(error);
         }
     }
 
@@ -57,8 +55,8 @@ export class Signin extends Component {
                 <button type="submit">signin</button>
             </form>
             </br>
-            <label for="go_to_signup">You don't have account ?</label>
-            <button id="go_to_signup" name="go_to_signup" type="button">signup</button>
+            <label for="go-signup">You don't have account ?</label>
+            <button id="go-signup" name="go-signup" type="button">signup</button>
         `)
 
     }
