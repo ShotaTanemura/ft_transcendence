@@ -5,5 +5,5 @@ from django.shortcuts import render
 
 @jwt_exempt
 @csrf_exempt
-def echo(request):
+def index(request):
 	return render(request, 'pong/index.html')
