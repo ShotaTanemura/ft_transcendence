@@ -1,6 +1,6 @@
 import { Component } from "../core/component.js";
 
-export class Signin extends Component {
+export class Signup extends Component {
 	constructor(router, params, state) {
 		super(router, params, state);
 		this.findElement("form.signup-form").onsubmit = this.onSubmit;
