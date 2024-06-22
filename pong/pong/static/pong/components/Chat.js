@@ -1,6 +1,4 @@
-
 import { Component } from "../core/component.js";
-// import './Chat.css';
 
 export class Chat extends Component {
 	constructor(router, params, state) {
