@@ -1,7 +1,7 @@
 html, body {
     height: 100%;
     margin: 0;
-    font-size: 16px;
+    font-size: 1rem;
     font-family: Arial, sans-serif;
 }
 
@@ -9,17 +9,22 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    
 }
 
-.chat-container {
+.pearent-container {
     display: flex;
     height: 90vh;
+    width: 90vw;
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+/* messages */
 .messages-container {
-    width: 18.75rem;
+    width: 30rem;
     border: 0.0625rem solid #e0e0e0;
-    border-radius: 0.5rem;
     overflow: hidden;
     height: 100%;
     display: flex;
@@ -35,7 +40,7 @@ body {
     width: 100%;
     padding: 0.5rem;
     border: 0.0625rem solid #ddd;
-    border-radius: 1.25rem;
+    border-radius: 1rem;
     font-size: 0.875rem;
 }
 
@@ -44,7 +49,7 @@ body {
     flex-grow: 1;
 }
 
-.message {
+.user-message {
     display: flex;
     align-items: center;
     padding: 0.625rem;
@@ -52,7 +57,7 @@ body {
     position: relative;
 }
 
-.message:last-child {
+.user-message:last-child {
     border-bottom: none;
 }
 
@@ -103,4 +108,184 @@ body {
     position: absolute;
     right: 0.625rem;
     top: 0.625rem;
+}
+/* chat */
+.chat {
+    display: flex;
+    flex-direction: column;
+    /* width: 60rem; */
+    width: 100%;
+    height: 100%;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid #ccc;
+    background-color: #f5f5f5;
+}
+
+.header img {
+    border-radius: 50%;
+    width: 3rem;
+    height: 3rem;
+    margin-right: 1rem;
+}
+
+.header .info {
+    flex-grow: 1;
+}
+
+.header .info h2 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.header .info p {
+    margin: 0;
+    color: green;
+    font-size: 0.9rem;
+}
+
+.header .call-button {
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+}
+
+.chat-messages {
+    flex-grow: 1;
+    padding: 1rem;
+    overflow-y: auto;
+}
+
+.message {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.message img {
+    border-radius: 50%;
+    width: 2.5rem;
+    height: 2.5rem;
+    margin-right: 1rem;
+}
+
+.message.sent {
+    justify-content: flex-end;
+}
+
+.message.sent .text {
+    background-color: #4a90e2;
+    color: white;
+    border-radius: 1rem 1rem 0 1rem;
+    padding: 0.75rem 1rem;
+    max-width: 70%;
+}
+
+.message.received .text {
+    background-color: #f1f1f1;
+    border-radius: 1rem 1rem 1rem 0;
+    padding: 0.75rem 1rem;
+    max-width: 70%;
+}
+
+.input-area {
+    display: flex;
+    padding: 1rem;
+    border-top: 1px solid #ccc;
+    background-color: #f5f5f5;
+}
+
+.input-area input {
+    flex-grow: 1;
+    border: 1px solid #ccc;
+    border-radius: 1rem;
+    padding: 0.5rem 1rem;
+    margin-right: 1rem;
+}
+
+.input-area button {
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 1rem;
+    cursor: pointer;
+}
+
+/* directory */
+.dir-container {
+    width: 30rem;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    overflow: hidden;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.header h2 {
+    margin: 0;
+}
+
+.header .options {
+    cursor: pointer;
+}
+
+.section {
+    margin-bottom: 1rem;
+}
+
+.section h3 {
+    margin: 0;
+    margin-bottom: 0.5rem;
+}
+
+.section .items {
+    max-height: 35vh;
+    overflow-y: auto;
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.item img {
+    border-radius: 50%;
+    width: 3rem;
+    height: 3rem;
+    margin-right: 1rem;
+}
+
+.item .info {
+    flex-grow: 1;
+}
+
+.item .info h4 {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.item .info p {
+    margin: 0;
+    color: #666;
+    font-size: 0.875rem;
+}
+
+.item .download {
+    cursor: pointer;
+    color: #4a90e2;
 }
