@@ -4,7 +4,6 @@ import { Home } from './components/Home.js'
 import { Game} from './components/Game.js'
 import { GameResult } from './components/GameResult.js'
 import { Tournament } from './components/Tournament.js'
-import { Chat } from './components/Chat.js'
 import { Pong } from './components/Pong.js'
 // import './scss/style.scss'
 import * as bootstrap from 'bootstrap'
@@ -30,11 +29,6 @@ let router = new Router(document.getElementById("app"), [
 			component: GameResult,
 			state: {}
 		},
-		{
-			path: "/chat",
-			component: Chat,
-			state: {}
-		}
 	],
 	{
 		playersInfo: {},
