@@ -7,22 +7,183 @@ export class Chat extends Component {
 
 	get html() {
 		return (`
-            <main class="chat-container">
-				<div class="container">
-					<div class="sidebar">
-					<p>Chat</p>
+            <div class="chat-container">
+				<div class="messages-container">
+						<div class="search-bar">
+							<input type="text" placeholder="Search messages">
+						</div>
+						<div class="messages">
+							<div class="message">
+								<img src="static/pong/images/snapchat.svg" alt="Profile Image" class="profile-img">
+								<div class="message-content">
+									<p class="name">Elmer Laverty</p>
+									<p class="text">Haha oh man 🔥</p>
+									<div class="tags">
+										<span class="tag question">Question</span>
+										<span class="tag help-wanted">Help wanted</span>
+									</div>
+								</div>
+								<span class="time">12m</span>
+							</div>
+							<div class="message">
+								<img src="static/pong/images/snapchat.svg" alt="Profile Image" class="profile-img">
+								<div class="message-content">
+									<p class="name">Elmer Laverty</p>
+									<p class="text">Haha oh man 🔥</p>
+									<div class="tags">
+										<span class="tag question">Question</span>
+										<span class="tag help-wanted">Help wanted</span>
+									</div>
+								</div>
+								<span class="time">12m</span>
+							</div>
+							<div class="message">
+								<img src="static/pong/images/snapchat.svg" alt="Profile Image" class="profile-img">
+								<div class="message-content">
+									<p class="name">Elmer Laverty</p>
+									<p class="text">Haha oh man 🔥</p>
+									<div class="tags">
+										<span class="tag question">Question</span>
+										<span class="tag help-wanted">Help wanted</span>
+									</div>
+								</div>
+								<span class="time">12m</span>
+							</div>
+							<div class="message">
+								<img src="static/pong/images/snapchat.svg" alt="Profile Image" class="profile-img">
+								<div class="message-content">
+									<p class="name">Elmer Laverty</p>
+									<p class="text">Haha oh man 🔥</p>
+									<div class="tags">
+										<span class="tag question">Question</span>
+										<span class="tag help-wanted">Help wanted</span>
+									</div>
+								</div>
+								<span class="time">12m</span>
+							</div>
+							<div class="message">
+								<img src="static/pong/images/snapchat.svg" alt="Profile Image" class="profile-img">
+								<div class="message-content">
+									<p class="name">Elmer Laverty</p>
+									<p class="text">Haha oh man 🔥</p>
+									<div class="tags">
+										<span class="tag question">Question</span>
+										<span class="tag help-wanted">Help wanted</span>
+									</div>
+								</div>
+								<span class="time">12m</span>
+							</div>
+							<div class="message">
+								<img src="static/pong/images/snapchat.svg" alt="Profile Image" class="profile-img">
+								<div class="message-content">
+									<p class="name">Elmer Laverty</p>
+									<p class="text">Haha oh man 🔥</p>
+									<div class="tags">
+										<span class="tag question">Question</span>
+										<span class="tag help-wanted">Help wanted</span>
+									</div>
+								</div>
+								<span class="time">12m</span>
+							</div>
+							<div class="message">
+								<img src="static/pong/images/snapchat.svg" alt="Profile Image" class="profile-img">
+								<div class="message-content">
+									<p class="name">Elmer Laverty</p>
+									<p class="text">Haha oh man 🔥</p>
+									<div class="tags">
+										<span class="tag question">Question</span>
+										<span class="tag help-wanted">Help wanted</span>
+									</div>
+								</div>
+								<span class="time">12m</span>
+							</div>
+							<div class="message">
+								<img src="static/pong/images/snapchat.svg" alt="Profile Image" class="profile-img">
+								<div class="message-content">
+									<p class="name">Elmer Laverty</p>
+									<p class="text">Haha oh man 🔥</p>
+									<div class="tags">
+										<span class="tag question">Question</span>
+										<span class="tag help-wanted">Help wanted</span>
+									</div>
+								</div>
+								<span class="time">12m</span>
+							</div>
+							<div class="message">
+								<img src="static/pong/images/snapchat.svg" alt="Profile Image" class="profile-img">
+								<div class="message-content">
+									<p class="name">Elmer Laverty</p>
+									<p class="text">Haha oh man 🔥</p>
+									<div class="tags">
+										<span class="tag question">Question</span>
+										<span class="tag help-wanted">Help wanted</span>
+									</div>
+								</div>
+								<span class="time">12m</span>
+							</div>
+							<div class="message">
+								<img src="static/pong/images/snapchat.svg" alt="Profile Image" class="profile-img">
+								<div class="message-content">
+									<p class="name">Elmer Laverty</p>
+									<p class="text">Haha oh man 🔥</p>
+									<div class="tags">
+										<span class="tag question">Question</span>
+										<span class="tag help-wanted">Help wanted</span>
+									</div>
+								</div>
+								<span class="time">12m</span>
+							</div>
+							<div class="message">
+								<img src="static/pong/images/snapchat.svg" alt="Profile Image" class="profile-img">
+								<div class="message-content">
+									<p class="name">Elmer Laverty</p>
+									<p class="text">Haha oh man 🔥</p>
+									<div class="tags">
+										<span class="tag question">Question</span>
+										<span class="tag help-wanted">Help wanted</span>
+									</div>
+								</div>
+								<span class="time">12m</span>
+							</div>
+							<div class="message">
+								<img src="static/pong/images/snapchat.svg" alt="Profile Image" class="profile-img">
+								<div class="message-content">
+									<p class="name">Elmer Laverty</p>
+									<p class="text">Haha oh man 🔥</p>
+									<div class="tags">
+										<span class="tag question">Question</span>
+										<span class="tag help-wanted">Help wanted</span>
+									</div>
+								</div>
+								<span class="time">12m</span>
+							</div>
+							<div class="message">
+								<img src="static/pong/images/snapchat.svg" alt="Profile Image" class="profile-img">
+								<div class="message-content">
+									<p class="name">Elmer Laverty</p>
+									<p class="text">Haha oh man 🔥</p>
+									<div class="tags">
+										<span class="tag question">Question</span>
+										<span class="tag help-wanted">Help wanted</span>
+									</div>
+								</div>
+								<span class="time">12m</span>
+							</div>
+							<div class="message">
+								<img src="static/pong/images/snapchat.svg" alt="Profile Image" class="profile-img">
+								<div class="message-content">
+									<p class="name">Elmer Laverty</p>
+									<p class="text">Haha oh man 🔥</p>
+									<div class="tags">
+										<span class="tag question">Question</span>
+										<span class="tag help-wanted">Help wanted</span>
+									</div>
+								</div>
+								<span class="time">12m</span>
+							</div>
+						</div>
 					</div>
-					<div class="messages">
-						<p>Messages</p>
-					</div>
-					<div class="chat-window">
-						<p>Chat Window</p>
-					</div>
-					<div class="directory">
-						<p>Directory</p>
-					</div>
-				</div>
-            </main>
+            </div>
 		`)
 	}
 }
