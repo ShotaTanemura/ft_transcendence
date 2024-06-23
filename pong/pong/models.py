@@ -67,8 +67,8 @@ class ApiToken42(models.Model):
 	salt = models.CharField(unique=True, blank=False)
 
 	def save(self, *args, **kwargs):
-        if not self.token:
-            raise ValueError("Token must be provided before saving.")
+		if not self.token:
+			raise ValueError("Token must be provided before saving.")
 		self.salt = encryption.generate_salt()
-        self.token = encryption.encrypt_data(self.token, self.salt)
-        super(ApiToken42, self).save(*args, **kwargs)
+		self.token = encryption.encrypt_data(self.token, self.salt)
+		super(ApiToken42, self).save(*args, **kwargs)
