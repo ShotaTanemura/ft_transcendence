@@ -61,7 +61,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 	class Meta:
 		db_table = 'users'
 
-class ApiToken42(models.model):
+class ApiToken42(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE, db_column='uuid', related_name='api_tokens_42')
 	token = models.CharField(unique=True, blank=False)
 	salt = models.CharField(unique=True, blank=False)
