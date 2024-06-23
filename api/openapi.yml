@@ -31,6 +31,13 @@ paths:
     get:
       summary: 42OAuthによるAPIトークンの保存とユーザー登録
       description: 42OAuthによるAPIトークンの保存とユーザー登録
+      parameters:
+        - name: code
+          in: query
+          required: true
+          schema:
+            type: string
+            example: code
       responses:
         "201":
           description: APIトークンの取得とユーザー登録の成功
