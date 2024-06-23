@@ -15,5 +15,6 @@ users {
 ft_api_tokens {
     string uuid FK
     string token
+    string salt
 }
 ```
