@@ -1,6 +1,9 @@
 from django.db import models
 import uuid
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+from django.db import models
+from pong.utils import encryption
+
 
 class UserManager(BaseUserManager):
 	def create_user(self, name, email, password, **extra_fields):
@@ -57,3 +60,15 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 	class Meta:
 		db_table = 'users'
+
+class ApiToken42(models.model):
+	user = models.ForeignKey(User, on_delete=models.CASCADE, db_column='uuid', related_name='api_tokens_42')
+	token = models.CharField(unique=True, blank=False)
+	salt = models.CharField(unique=True, blank=False)
+
+	def save(self, *args, **kwargs):
+        if not self.token:
+            raise ValueError("Token must be provided before saving.")
+		self.salt = encryption.generate_salt()
+        self.token = encryption.encrypt_data(self.token, self.salt)
+        super(ApiToken42, self).save(*args, **kwargs)
