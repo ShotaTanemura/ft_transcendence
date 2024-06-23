@@ -114,6 +114,11 @@ def callback_42(request):
 	login = data_user_info['login']
 	email = data_user_info['email']
 	random_password = base64.urlsafe_b64encode(os.urandom(16)).decode('utf-8')
+	if User.objects.filter(name=login, email=email).first():
+		return JsonResponse({
+			'message': 'User already exists',
+			'status': 'registerConflict'
+		}, status=409)
 	user = User.objects.create_user(name=login, email=email, password=random_password)
 	ApiToken42.objects.create(user=user, token=access_token)
 	return JsonResponse({
