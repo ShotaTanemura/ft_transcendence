@@ -107,6 +107,8 @@ paths:
                     $ref: "#/components/schemas/getUserResponse"
           "400":
             $ref: "#/components/responses/badRequest"
+          "404":
+            $ref: "#/components/responses/notFoundError"
 components:
   responses:
     badRequest:
