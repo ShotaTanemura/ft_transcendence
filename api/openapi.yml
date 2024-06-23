@@ -86,6 +86,21 @@ paths:
                   $ref: "#/components/schemas/postTokenVerifyResponse"
         "401":
           $ref: "#/components/responses/badRequest"
+   /pong/api/v1/users/{uuid}:
+      get:
+        summary: ユーザー情報取得
+        description: ユーザー情報取得
+        responses:
+          "200":
+            description: ユーザー情報取得成功
+            content:
+                "application/json":
+                  schema:
+                    $ref: "#/components/schemas/getUserResponse"
+          "400":
+            $ref: "#/components/responses/badRequest"
+          "404":
+            $ref: "#/components/responses/notFoundError"
 components:
   responses:
     badRequest:
@@ -172,6 +187,22 @@ components:
             type: string
             description: ユーザーのUUID
             example: b4cf1ef4-1cab-490b-a32c-f6528f95c796
+    getUserResponse:
+      type: object
+      description: ユーザー情報取得成功
+      properties:
+        name:
+          type: string
+          description: ユーザー名
+          example: ユーザー名
+        email:
+          type: string
+          description: メールアドレス
+          example: example@email.com
+        uuid:
+          type: string
+          description: ユーザーのUUID
+          example: b4cf1ef4-1cab-490b-a32c-f6528f95c796
     errorMessage:
       type: object
       properties:
