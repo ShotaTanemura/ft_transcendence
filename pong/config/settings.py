@@ -147,3 +147,4 @@ JWT_AUTH = {
     'JWT_PUBLIC_KEY': PUBLIC_KEY,
     'JWT_ALGORITHM': 'RS256',
 }
+PEPPER = os.getenv('PEPPER')
