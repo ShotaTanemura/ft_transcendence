@@ -45,7 +45,7 @@ paths:
               schema:
                 type: string
                 description: 認証トークンとリフレッシュトークン
-                example: JWTTOKEN=jwttoken; JWTREFRESH=refresh-jwttoken Secure; HttpOnly 
+                example: JWTTOKEN=jwttoken; JWTREFRESH=refresh-jwttoken Secure; HttpOnly
           content:
               "application/json":
                 schema:
