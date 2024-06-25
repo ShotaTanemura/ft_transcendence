@@ -35,11 +35,19 @@ body, html {
     text-align: center;
 }
 
+#playersImage {
+	position: absolute;
+	margin-bottom: 10px;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+}
 
-/* #timerCanvas
-{
-	width: 100px;   /* 円の幅 */
-	height: 100px;  /* 円の高さ */
-	border: 5px solid black;  /* 太い枠線 */
-	border-radius: 50%;  /* 円にするための設定 */
-} */
+#playersImage img {
+    max-width: 30%;
+    height: auto;
+}
+
+.player1 {
+    right: 10px; 画面の右から10pxの位置に配置
+}
