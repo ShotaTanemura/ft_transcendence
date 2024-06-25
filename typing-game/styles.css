@@ -10,6 +10,16 @@ body, html {
 	text-align: center;
 }
 
+.correct {
+    color: red;
+    font-weight: bold;
+}
+
+.incorrect {
+    color: gray;
+    font-weight: bold;
+}
+
 
 .button {
 	padding: 20px 40px; /* ボタンの内側の余白を大きくする */
@@ -24,3 +34,12 @@ body, html {
     font-size: 1.5em;
     text-align: center;
 }
+
+
+/* #timerCanvas
+{
+	width: 100px;   /* 円の幅 */
+	height: 100px;  /* 円の高さ */
+	border: 5px solid black;  /* 太い枠線 */
+	border-radius: 50%;  /* 円にするための設定 */
+} */

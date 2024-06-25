@@ -1,19 +1,18 @@
 const inputHandler = (function() {
-    const inputField = uiController.getInputField();
+    const inputDisplay = document.getElementById("inputDisplay");
 
-    inputField.addEventListener("input", () => {
-		console.log("Input: ", inputField.value);
-        if (inputField.value === gameController.getCurrentWord()) {
+    function handleInput(value) {
+        const currentWord = gameController.getCurrentWord();
+        if (value === currentWord) {
             gameController.handleCorrectInput();
+            inputDisplay.textContent = ''; // 正解したら表示をクリア
         }
-    });
-
-    function resetInput() {
-        inputField.value = "";
-        inputField.focus();
     }
 
     return {
-        resetInput
+        handleInput,
+        resetInput: () => {
+            inputDisplay.textContent = "";
+        }
     };
 })();

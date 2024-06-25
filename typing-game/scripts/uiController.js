@@ -5,28 +5,63 @@ const uiController = (function() {
     const gameDiv = document.getElementById("game");
     const resultDiv = document.getElementById("result");
     const wordDiv = document.getElementById("word");
-    const inputField = document.getElementById("input");
+    const inputDisplay = document.getElementById("inputDisplay");
     const timerDiv = document.getElementById("timer");
     const scoreDiv = document.getElementById("score");
     const finalScoreDiv = document.getElementById("finalScore");
 
+    let inputLength; // 現在の入力文字数を追跡するための変数
+
+    function enableTextInput() {
+        document.addEventListener('keydown', handleKeyDown);
+    }
+
+    function disableTextInput() {
+        document.removeEventListener('keydown', handleKeyDown);
+    }
+
+    function handleKeyDown(event) {
+        const currentWord = gameController.getCurrentWord();
+        event.preventDefault();
+        // 正解
+        if (event.key.length === 1 && event.key === currentWord[inputLength]) {
+            // 正解の文字色に変更
+            wordDiv.children[inputLength].classList.remove('incorrect');
+            wordDiv.children[inputLength].classList.add('correct');
+            inputLength++;
+
+            // 入力内容の処理
+            inputHandler.handleInput(currentWord.substring(0, inputLength));
+        }
+    }
+
     startButton.addEventListener("click", () => {
         startDiv.classList.add("hidden");
         gameDiv.classList.remove("hidden");
+        enableTextInput(); // キー入力を有効にする
         gameController.startGame();
+        inputLength = 0; // ゲーム開始時に入力文字数をリセット
     });
 
     restartButton.addEventListener("click", () => {
         resultDiv.classList.add("hidden");
         startDiv.classList.remove("hidden");
+        disableTextInput(); // キー入力を無効にする
     });
 
     function displayWord(word) {
-        wordDiv.textContent = word;
+        wordDiv.innerHTML = ''; // 前の単語をクリア
+        for (let char of word) {
+            const span = document.createElement('span');
+            span.textContent = char;
+            span.classList.add('incorrect');
+            wordDiv.appendChild(span);
+        }
+		inputLength = 0;
     }
 
     function updateTimer(time) {
-        timerDiv.textContent = time; // タイマーの表示を更新
+        timerDiv.textContent = time;
     }
 
     function updateScore(score) {
@@ -37,6 +72,7 @@ const uiController = (function() {
         gameDiv.classList.add("hidden");
         resultDiv.classList.remove("hidden");
         finalScoreDiv.textContent = "スコア: " + score;
+        disableTextInput(); // キー入力を無効にする
     }
 
     return {
@@ -44,6 +80,7 @@ const uiController = (function() {
         updateTimer,
         updateScore,
         showResult,
-        getInputField: () => inputField
+        enableTextInput,
+        disableTextInput
     };
 })();
