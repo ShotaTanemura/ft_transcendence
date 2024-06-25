@@ -9,7 +9,7 @@ const uiController = (function() {
     const timerDiv = document.getElementById("timer");
     const scoreDiv = document.getElementById("score");
     const finalScoreDiv = document.getElementById("finalScore");
-	const amount = 3; // 制限時間の短縮量
+	const amount = 2; // ぺナルティ時間の増加量
 
     let inputLength; // 現在の入力文字数を追跡するための変数
 

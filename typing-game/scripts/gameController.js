@@ -4,6 +4,7 @@ const gameController = (function() {
     let score;
     let currentWord;
     let maxTime = 15; // 初期タイマー値
+    let penaltyTime; // ペナルティ時間を追跡するための変数
     const canvas = document.getElementById('timerCanvas');
     const ctx = canvas.getContext('2d');
     // TODO: 別ファイルで単語を管理する
@@ -12,6 +13,7 @@ const gameController = (function() {
     function startGame() {
         score = 0;
         timeLeft = maxTime;
+        penaltyTime = 0; // ペナルティ時間をリセット
         uiController.updateScore(score);
         nextWord();
         startTimer();
@@ -20,11 +22,10 @@ const gameController = (function() {
     function nextWord() {
         // 制限時間の短縮
         if (score % 4 == 0 && score != 0 && maxTime > 5)
-            maxTime -= 0.5;
+            maxTime -= 1;
         currentWord = words[Math.floor(Math.random() * words.length)];
         console.log("Next word: ", currentWord); // デバッグ用ログ
         uiController.displayWord(currentWord);
-        startTimer();
         inputHandler.resetInput();
     }
 
@@ -35,7 +36,7 @@ const gameController = (function() {
 
     function updateTimer(currentTime) {
         const elapsed = (currentTime - startTime) / 1000; // 経過時間
-        timeLeft = maxTime - elapsed;
+        timeLeft = maxTime - elapsed - penaltyTime; // ペナルティ時間を考慮
         uiController.updateTimer(timeLeft.toFixed(1)); // タイマー更新
         drawTimer(timeLeft); // 残り時間に応じて円グラフを描画
 
@@ -54,7 +55,9 @@ const gameController = (function() {
         score++;
         uiController.updateScore(score);
         timeLeft = maxTime;
+        penaltyTime = 0; // ペナルティ時間をリセット
         nextWord();
+        startTimer(); // タイマーをリセット
     }
 
     function getCurrentWord() {
@@ -62,9 +65,8 @@ const gameController = (function() {
     }
 
     function reduceTime(amount) {
-		console.log("Incorrect input: ", event.key);
-        timeLeft -= amount;
-        if (timeLeft < 0) {
+        penaltyTime += amount; // ペナルティ時間を加算
+        if (timeLeft - amount <= 0) {
             timeLeft = 0;
             endGame();
         }
