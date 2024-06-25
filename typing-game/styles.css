@@ -2,6 +2,19 @@
     display: none;
 }
 
+.centered {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh; /* ビューポートの高さに合わせる */
+    text-align: center;
+}
+
+#startButton {
+    font-size: 2em; /* ボタンのサイズを大きくする */
+    padding: 20px 40px; /* ボタンの内側の余白を大きくする */
+}
 
 #timer {
     font-size: 2em;

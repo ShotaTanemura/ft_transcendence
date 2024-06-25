@@ -6,16 +6,17 @@
     <title>タイピングゲーム</title>
     <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="centered">
     <div id="start">
         <button id="startButton">スタート</button>
     </div>
     <div id="game" class="hidden">
-        <div id="word"></div>
-        <input type="text" id="input" autofocus>
-        <div id="timer">10</div>
-        <div id="score">0</div>
         <div id="bomb">💣</div>
+        <div id="timer">10</div>
+        <div id="word"></div>
+		<div id="romaji"></div>
+        <input type="text" id="input" autofocus>
+        <div id="score">0</div>
     </div>
     <div id="result" class="hidden">
         <div id="finalScore"></div>

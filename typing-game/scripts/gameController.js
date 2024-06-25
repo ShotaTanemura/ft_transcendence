@@ -4,6 +4,7 @@ const gameController = (function() {
     let score;
     let currentWord;
     const maxTime = 10; // 初期タイマー値
+	// TODO: 別ファイルで単語を管理する
     const words = ["apple", "banana", "cherry", "grape", "elderberry"];
 
     function startGame() {
