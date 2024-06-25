@@ -3,9 +3,9 @@ const gameController = (function() {
     let timeLeft;
     let score;
     let currentWord;
-    const maxTime = 15; // 初期タイマー値
+    let maxTime = 15; // 初期タイマー値
 	const canvas = document.getElementById('timerCanvas');
-	   const ctx = canvas.getContext('2d');
+	const ctx = canvas.getContext('2d');
 	// TODO: 別ファイルで単語を管理する
     const words = ["apple", "banana", "cherry", "grape", "elderberry"];
 
@@ -17,7 +17,10 @@ const gameController = (function() {
         startTimer();
     }
 	
-    function nextWord() {
+    function nextWord() {\
+		// 制限時間の短縮
+		if (score % 4 == 0 && score != 0 && maxTime > 5)
+			maxTime -= 0.5;
 		currentWord = words[Math.floor(Math.random() * words.length)];
 		console.log("Next word: ", currentWord); // デバッグ用ログ
         uiController.displayWord(currentWord);
