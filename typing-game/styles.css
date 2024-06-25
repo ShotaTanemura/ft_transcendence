@@ -2,34 +2,25 @@
     display: none;
 }
 
-.centered {
+body, html {
+	height: 100%;
+    font-size: 1.2em; /* 全体のフォントサイズを大きくする */
+    display: flex;
+    justify-content: center;
+	text-align: center;
+}
+
+
+.button {
+	padding: 20px 40px; /* ボタンの内側の余白を大きくする */
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 100vh; /* ビューポートの高さに合わせる */
     text-align: center;
 }
 
-#startButton {
-    font-size: 2em; /* ボタンのサイズを大きくする */
-    padding: 20px 40px; /* ボタンの内側の余白を大きくする */
-}
-
-#timer {
-    font-size: 2em;
-}
-
-#word {
+#timer, #word, #score, #input {
     font-size: 1.5em;
-}
-
-#bomb {
-    font-size: 3em;
-}
-
-#input {
-    font-size: 1.2em;
-    width: 100%;
-    box-sizing: border-box;
+    text-align: center;
 }
