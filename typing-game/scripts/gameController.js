@@ -21,6 +21,7 @@ const gameController = (function() {
 		currentWord = words[Math.floor(Math.random() * words.length)];
 		console.log("Next word: ", currentWord); // デバッグ用ログ
         uiController.displayWord(currentWord);
+		startTimer();
         inputHandler.resetInput();
     }
 	
