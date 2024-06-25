@@ -9,6 +9,7 @@ const uiController = (function() {
     const timerDiv = document.getElementById("timer");
     const scoreDiv = document.getElementById("score");
     const finalScoreDiv = document.getElementById("finalScore");
+	const amount = 3; // 制限時間の短縮量
 
     let inputLength; // 現在の入力文字数を追跡するための変数
 
@@ -32,6 +33,8 @@ const uiController = (function() {
 
             // 入力内容の処理
             inputHandler.handleInput(currentWord.substring(0, inputLength));
+        } else if (event.key.length === 1) {
+            gameController.reduceTime(amount);
         }
     }
 
@@ -57,7 +60,7 @@ const uiController = (function() {
             span.classList.add('incorrect');
             wordDiv.appendChild(span);
         }
-		inputLength = 0;
+        inputLength = 0; // 新しい単語を表示する際に入力文字数をリセット
     }
 
     function updateTimer(time) {
