@@ -27,28 +27,6 @@ paths:
           $ref: "#/components/responses/badRequest"
         "409":
           $ref: "#/components/responses/conflictError"
-   /pong/api/v1/auth/callback/42:
-    get:
-      summary: 42OAuthによるAPIトークンの保存とユーザー登録
-      description: 42OAuthによるAPIトークンの保存とユーザー登録
-      parameters:
-        - name: code
-          in: query
-          required: true
-          schema:
-            type: string
-            example: code
-      responses:
-        "201":
-          description: APIトークンの取得とユーザー登録の成功
-          content:
-              "application/json":
-                schema:
-                  $ref: "#/components/schemas/getCallback42Response"
-        "400":
-          $ref: "#/components/responses/badRequest"
-        "409":
-          $ref: "#/components/responses/conflictError"
    /pong/api/v1/auth/token:
     post:
       summary: 認証トークンとリフレッシュトークンの発行
