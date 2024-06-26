@@ -13,7 +13,7 @@ const uiController = (function() {
     const finalScoreDiv = document.getElementById("finalScore");
 	const amount = 2; // ぺナルティ時間の増加量
 
-    let inputLength; // 現在の入力文字数を追跡するための変数
+    let inputLength;
 
     function enableTextInput() {
         document.addEventListener('keydown', handleKeyDown);
@@ -43,15 +43,15 @@ const uiController = (function() {
     startButton.addEventListener("click", () => {
         startDiv.classList.add("hidden");
         gameDiv.classList.remove("hidden");
-        enableTextInput(); // キー入力を有効にする
+        enableTextInput();
         gameController.startGame();
-        inputLength = 0; // ゲーム開始時に入力文字数をリセット
+        inputLength = 0;
     });
 
     restartButton.addEventListener("click", () => {
         resultDiv.classList.add("hidden");
         startDiv.classList.remove("hidden");
-        disableTextInput(); // キー入力を無効にする
+        disableTextInput();
     });
 
     function displayWord(word) {
@@ -62,7 +62,7 @@ const uiController = (function() {
             span.classList.add('incorrect');
             wordDiv.appendChild(span);
         }
-        inputLength = 0; // 新しい単語を表示する際に入力文字数をリセット
+        inputLength = 0;
     }
 
     function updateTimer(time) {
@@ -77,7 +77,7 @@ const uiController = (function() {
         gameDiv.classList.add("hidden");
         resultDiv.classList.remove("hidden");
         finalScoreDiv.textContent = "スコア: " + score;
-        disableTextInput(); // キー入力を無効にする
+        disableTextInput();
     }
 
     return {

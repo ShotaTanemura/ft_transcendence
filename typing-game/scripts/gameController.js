@@ -37,13 +37,9 @@ const gameController = (function () {
 
   function nextWord() {
     // 制限時間の短縮
-    if (score % 4 == 0 && score != 0 && maxTime > 5) {
-      maxTime -= 0.5;
+    if (score % 4 == 0 && score != 0 && maxTime > 3) {
+      maxTime -= 1;
     }
-
-    // デバッグ用ログ: words配列の内容と長さを出力
-    console.log("Words array: ", words);
-    console.log("Words array length: ", words.length);
 
     if (words.length > 0) {
       currentWord = words[Math.floor(Math.random() * words.length)];
