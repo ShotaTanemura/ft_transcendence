@@ -3,42 +3,37 @@ import { Component } from "../core/component.js";
 export class Signup extends Component {
 	constructor(router, params, state) {
 		super(router, params, state);
-		this.findElement("form.signup-form").onsubmit = this.onSubmit;
+		this.findElement("form.signup-form").onsubmit = this.handleSignup;
 	}
 
-	onSubmit = async (event) => {
+	handleSignup = async (event) => {
 		event.preventDefault();
-		let username = this.findElement("#username").value;
-		let password = this.findElement("#password").value;
-		let repeatPassword = this.findElement("#repeat-password").value;
-		let email = this.findElement("#email").value;
-		if (password !== repeatPassword) {
-			alert("password and repeat password are not same.");
-			return;
-		}
-		const data = {"name": username, "password": password, "email": email};
-		await new Promise((resolve) => {
-			const response = fetch("/pong/api/v1/auth/register", {
-				method: "POST",
-				mode: "cors",
-				cache: "no-cache",
-				credentials: "same-origin",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				redirect: "follow",
-				referrerPolicy: "no-referrer",
-				body: JSON.stringify(data),
-			});
-			resolve(response);
-		}).then((response) => {
-			if (!response.ok) {
-				alert("Failed to signup.");
-				return;
-			}
-			console.log(response.json());
-			this.router.goNextPage("/");
+		const signupJson = JSON.stringify({
+			"name": event.target.username.value,
+			"password": event.target.password.value,
+			"email": event.target.email.value,
 		});
+		try {
+			await this.registerUser(signupJson);
+			this.router.goNextPage("/");
+		} catch (error) {
+			alert(error);
+		}
+	}
+
+	registerUser = async (jsonData) => {
+		const response = await fetch("/pong/api/v1/auth/register", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: jsonData,
+		});
+		console.log(response);
+		const data = await response.json();
+		if (!response.ok) {
+			throw Error(data.status);
+		}
 	}
 
 	get html() {
