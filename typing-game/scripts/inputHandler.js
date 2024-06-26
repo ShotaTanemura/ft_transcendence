@@ -1,3 +1,5 @@
+import { gameController } from "./gameController.js";
+
 const inputHandler = (function() {
     const inputDisplay = document.getElementById("inputDisplay");
 
@@ -16,3 +18,5 @@ const inputHandler = (function() {
         }
     };
 })();
+
+export { inputHandler };

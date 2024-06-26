@@ -1,3 +1,6 @@
+import { gameController } from './gameController.js';
+import { inputHandler } from './inputHandler.js';
+
 const uiController = (function() {
     const startButton = document.getElementById("startButton");
     const restartButton = document.getElementById("restartButton");
@@ -5,7 +8,6 @@ const uiController = (function() {
     const gameDiv = document.getElementById("game");
     const resultDiv = document.getElementById("result");
     const wordDiv = document.getElementById("word");
-    const inputDisplay = document.getElementById("inputDisplay");
     const timerDiv = document.getElementById("timer");
     const scoreDiv = document.getElementById("score");
     const finalScoreDiv = document.getElementById("finalScore");
@@ -87,3 +89,5 @@ const uiController = (function() {
         disableTextInput
     };
 })();
+
+export { uiController };
