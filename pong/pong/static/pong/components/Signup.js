@@ -40,6 +40,12 @@ export class Signup extends Component {
 		return `
 			<div>
 				<h1>Signup</h1>
+				<form 
+					action="/pong/oauth/42"
+					method="GET"
+					class="form-42oauth">
+					<button class="form-42oauth" type=submit>42 Signup</button>
+				</form>
 				<form class="signup-form">
 					<label for="username">Username</label>
 					<input type=text placeholder="username" id="username" name="username" required></input><br/>
