@@ -1,11 +1,19 @@
-import json
+import json, jwt, django
+from channels.db import database_sync_to_async
+from django.conf import settings
+from pong.models import User
 from channels.generic.websocket import AsyncWebsocketConsumer
+from pong.middleware.auth import getUuidByToken
 
 class GameConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
         self.room_group_name = "chat_%s" % self.room_name
 
+        uuid = getUuidByToken(self.scope["cookies"]["token"])
+        user = await self.getUserByUuid(uuid)
+        print("user")
+        print(user)
         # Join room group
         await self.channel_layer.group_add(
             self.room_group_name, self.channel_name
@@ -65,3 +73,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({"type": "user_disconnected", "displayName": displayName}))
+
+    @database_sync_to_async
+    def getUserByUuid(self, uuid):
+        return (User.objects.filter(uuid=uuid).first())
