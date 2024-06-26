@@ -75,58 +75,6 @@ def register(request):
 
 @jwt_exempt
 @csrf_exempt
-def callback_42(request):
-	if request.method != 'GET':
-		return JsonResponse({
-			'message': 'Method is not allowed',
-			'status': 'invalidParams'
-		}, status=400)
-	code = request.GET.get('code', None)
-	if not code:
-		return JsonResponse({
-			'message': 'Invalid parameters',
-			'status': 'invalidParams'
-		}, status=400)
-	params = {
-		'grant_type': 'authorization_code',
-		'client_id': settings.CLIENT_ID_42API,
-		'client_secret': settings.CLIENT_SECRET_42API,
-		'code': code,
-		'redirect_uri': 'http://localhost:8000/pong/api/v1/auth/callback/42',
-	}
-	response_token = requests.post('https://api.intra.42.fr/oauth/token', params=params)
-	if response_token.status_code != 200:
-		return JsonResponse({
-			'message': 'Invalid code',
-			'status': 'invalidParams'
-		}, status=400)
-	access_token = response_token.json()['access_token']
-	headers = {
-		'Authorization': 'Bearer ' + access_token,
-	}
-	response_user_info = requests.get('https://api.intra.42.fr/v2/me', headers=headers)
-	if response_user_info.status_code != 200:
-			return JsonResponse({
-				'message': 'Invalid access token',
-				'status': 'invalidParams'
-			}, status=400)
-	data_user_info = response_user_info.json()
-	login = data_user_info['login']
-	email = data_user_info['email']
-	random_password = base64.urlsafe_b64encode(os.urandom(16)).decode('utf-8')
-	if User.objects.filter(name=login, email=email).first():
-		return JsonResponse({
-			'message': 'User already exists',
-			'status': 'registerConflict'
-		}, status=409)
-	user = User.objects.create_user(name=login, email=email, password=random_password)
-	ApiToken42.objects.create(user=user, token=access_token)
-	return JsonResponse({
-		'uuid': user.uuid
-	}, status=201)
-
-@jwt_exempt
-@csrf_exempt
 def create_token(request):
 	if request.method != 'POST':
 		return JsonResponse({
