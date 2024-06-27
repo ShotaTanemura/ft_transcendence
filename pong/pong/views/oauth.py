@@ -26,7 +26,7 @@ def create_token_response(uuid):
 		'iat': datetime.utcnow()
 	}
 	new_refresh_token = jwt.encode(new_refresh_payload, settings.JWT_AUTH['JWT_PRIVATE_KEY'], algorithm=settings.JWT_AUTH['JWT_ALGORITHM'])
-	response = HttpResponseRedirect(redirect_to='/index/home')
+	response = HttpResponseRedirect(redirect_to='/home')
 	# HTTPS実装後に有効化する
 	# response.set_cookie('token', new_token, httponly=True, secure=True)
 	# response.set_cookie('refresh_token', new_refresh_token, httponly=True, secure=True)
