@@ -3,7 +3,7 @@ from django.http.response import JsonResponse, HttpResponseRedirect
 from django.conf import settings
 from django.urls import reverse
 from pong.middleware.auth import jwt_exempt
-from pong.models import User, ApiToken42
+from pong.models import User
 from datetime import datetime, timedelta
 import requests
 import base64
@@ -77,5 +77,4 @@ def callback_42(request):
 	if User.objects.filter(name=login, email=email).first():
 		return HttpResponseRedirect(redirect_to='/signup#userAlreadyExists')
 	user = User.objects.create_user(name=login, email=email, password=random_password)
-	ApiToken42.objects.create(user=user, token=access_token)
 	return create_token_response(user.uuid)
