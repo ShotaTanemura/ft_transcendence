@@ -4,6 +4,18 @@ export class Signup extends Component {
 	constructor(router, params, state) {
 		super(router, params, state);
 		this.findElement("form.signup-form").onsubmit = this.handleSignup;
+		switch (window.location.hash) {
+			case '#methodNotAllowed':
+				window.alert('リクエストメソッドが不適切です');
+			case '#failedToGetCode':
+				window.alert('認証コードの取得に失敗しました');
+			case '#failedToGetToken':
+				window.alert('認証トークンの取得に失敗しました');
+			case '#failedToGetUserInfo':
+				window.alert('ユーザー情報の取得に失敗しました');
+			case '#userAlreadyExists':
+				window.alert('既に存在するユーザーです');
+		}
 	}
 
 	handleSignup = async (event) => {
@@ -40,6 +52,12 @@ export class Signup extends Component {
 		return `
 			<div>
 				<h1>Signup</h1>
+				<form 
+					action="/pong/oauth/42"
+					method="GET"
+					class="form-42oauth">
+					<button class="form-42oauth" type=submit>42 Signup</button>
+				</form>
 				<form class="signup-form">
 					<label for="username">Username</label>
 					<input type=text placeholder="username" id="username" name="username" required></input><br/>
