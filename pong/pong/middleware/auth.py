@@ -13,7 +13,7 @@ def jwt_exempt(view_func):
 	_wrapped_view_func.jwt_exempt = True
 	return _wrapped_view_func
 
-def getUserByJwt(request):
+def get_user_by_jwt(request):
 	token = request.COOKIES.get('token')
 	if not token:
 		return None
@@ -25,7 +25,7 @@ def getUserByJwt(request):
 	if not user:
 		return None
 
-def getUuidByToken(token):
+def get_uuid_by_token(token):
 	if not token:
 		return None
 	try:
@@ -46,7 +46,7 @@ class JWTAuthenticationMiddleware:
 		if getattr(view_func, 'jwt_exempt', False):
 			return None
 
-		user = getUserByJwt(request)
+		user = get_user_by_jwt(request)
 		if not user:
 			return JsonResponse({
 				'message': 'unauthorized',

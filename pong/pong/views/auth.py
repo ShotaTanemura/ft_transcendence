@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 import jwt
 from django.conf import settings
 from django.http.response import HttpResponse
-from pong.middleware.auth import jwt_exempt, getUserByJwt
+from pong.middleware.auth import jwt_exempt, get_user_by_jwt
 
 @jwt_exempt
 @csrf_exempt
@@ -143,7 +143,7 @@ def verify_token(request):
 			'status': 'invalidParams'
 		}, status=400)
 
-	user = getUserByJwt(request)
+	user = get_user_by_jwt(request)
 	if not user:
 		return JsonResponse({
 			'message': 'unauthorized',

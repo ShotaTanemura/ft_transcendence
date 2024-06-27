@@ -3,23 +3,27 @@ from channels.db import database_sync_to_async
 from django.conf import settings
 from pong.models import User
 from channels.generic.websocket import AsyncWebsocketConsumer
-from pong.middleware.auth import getUuidByToken
+from pong.middleware.auth import get_uuid_by_token
+from django.utils import timezone
+from realtime.models import Room, UserRoomMapping
 
-class GameConsumer(AsyncWebsocketConsumer):
+class RoomConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
         self.room_group_name = "chat_%s" % self.room_name
 
-        uuid = getUuidByToken(self.scope["cookies"]["token"])
-        user = await self.getUserByUuid(uuid)
-        print("user")
-        print(user)
-        # Join room group
-        await self.channel_layer.group_add(
-            self.room_group_name, self.channel_name
-        )
-        
-        await self.accept()
+        uuid = get_uuid_by_token(self.scope["cookies"]["token"])
+        if uuid == None:
+            self.close()
+        else:
+            if await database_sync_to_async(Room.objects.get_active_room_by_name)(room_name=self.room_name) == None:
+                await database_sync_to_async(Room.objects.add_room)(room_name=self.room_name, host_uuid=uuid)
+            await database_sync_to_async(UserRoomMapping.objects.join_room)(room_name=self.room_name, user_uuid=uuid)
+            print(await database_sync_to_async(UserRoomMapping.objects.get_user_names_of_room)(room_name=self.room_name))
+            await self.channel_layer.group_add(
+                self.room_group_name, self.channel_name
+            )
+            await self.accept()
 
     async def disconnect(self, close_code):
         # Leave room group
@@ -73,7 +77,3 @@ class GameConsumer(AsyncWebsocketConsumer):
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({"type": "user_disconnected", "displayName": displayName}))
-
-    @database_sync_to_async
-    def getUserByUuid(self, uuid):
-        return (User.objects.filter(uuid=uuid).first())

@@ -41,6 +41,9 @@ class UserManager(BaseUserManager):
 		# createuserを呼び出しているため同じ値が必要
 		return self.create_user(name, email, password, **extra_fields)
 
+	def get_user_from_uuid(self, uuid):
+		return (User.objects.filter(uuid=uuid).first())
+
 class User(AbstractBaseUser, PermissionsMixin):
 	uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 	name = models.CharField(unique=True, blank=False, max_length=20)
