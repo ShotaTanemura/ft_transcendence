@@ -4,6 +4,18 @@ export class Signup extends Component {
 	constructor(router, params, state) {
 		super(router, params, state);
 		this.findElement("form.signup-form").onsubmit = this.handleSignup;
+		switch (window.location.hash) {
+			case '#methodNotAllowed':
+				window.alert('リクエストメソッドが不適切です');
+			case '#failedToGetCode':
+				window.alert('認証コードの取得に失敗しました');
+			case '#failedToGetToken':
+				window.alert('認証トークンの取得に失敗しました');
+			case '#failedToGetUserInfo':
+				window.alert('ユーザー情報の取得に失敗しました');
+			case '#userAlreadyExists':
+				window.alert('既に存在するユーザーです');
+		}
 	}
 
 	handleSignup = async (event) => {
