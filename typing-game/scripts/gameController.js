@@ -37,19 +37,14 @@ const gameController = (function () {
 
   function nextWord() {
     // 制限時間の短縮
-    if (score % 4 == 0 && score != 0 && maxTime > 3) {
+    if (score % 4 === 0 && score !== 0 && maxTime > 3) {
       maxTime -= 1;
     }
 
-    if (words.length > 0) {
-      currentWord = words[Math.floor(Math.random() * words.length)];
-      console.log("Next word: ", currentWord); // デバッグ用ログ
-      uiController.displayWord(currentWord);
-      inputHandler.resetInput();
-    } else {
-      console.error("No words available.");
-      endGame();
-    }
+    currentWord = words[Math.floor(Math.random() * words.length)];
+    console.log("Next word: ", currentWord); // デバッグ用ログ
+    uiController.displayWord(currentWord);
+    inputHandler.resetInput();
   }
 
   function startTimer() {
@@ -60,8 +55,8 @@ const gameController = (function () {
   function updateTimer(currentTime) {
     const elapsed = (currentTime - startTime) / 1000; // 経過時間
     timeLeft = maxTime - elapsed - penaltyTime; // ペナルティ時間を考慮
-    uiController.updateTimer(timeLeft.toFixed(1)); // タイマー更新
-    drawTimer(timeLeft); // 残り時間に応じて円グラフを描画
+    uiController.updateTimer(timeLeft.toFixed(1));
+    drawTimer(timeLeft);
 
     if (timeLeft > 0) {
       requestAnimationFrame(updateTimer);
@@ -79,7 +74,7 @@ const gameController = (function () {
     score++;
     uiController.updateScore(score);
     timeLeft = maxTime;
-    penaltyTime = 0; // ペナルティ時間をリセット
+    penaltyTime = 0;
     nextWord();
     startTimer(); // タイマーをリセット
   }
