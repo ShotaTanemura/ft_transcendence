@@ -1,0 +1,53 @@
+.hidden {
+    display: none;
+}
+
+body, html {
+	height: 100%;
+    font-size: 1.2em; /* 全体のフォントサイズを大きくする */
+    display: flex;
+    justify-content: center;
+	text-align: center;
+}
+
+.correct {
+    color: red;
+    font-weight: bold;
+}
+
+.incorrect {
+    color: gray;
+    font-weight: bold;
+}
+
+
+.button {
+	padding: 20px 40px; /* ボタンの内側の余白を大きくする */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+#timer, #word, #score, #input {
+    font-size: 1.5em;
+    text-align: center;
+}
+
+#playersImage {
+	position: absolute;
+	margin-bottom: 10px;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+}
+
+#playersImage img {
+    max-width: 30%;
+    height: auto;
+}
+
+.player1 {
+    right: 10px; 画面の右から10pxの位置に配置
+}
