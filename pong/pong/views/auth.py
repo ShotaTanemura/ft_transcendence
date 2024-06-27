@@ -1,7 +1,7 @@
 import json
 from django.http.response import JsonResponse
 from pong.models import UserManager
-from pong.models import User, ApiToken42
+from pong.models import User
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime, timedelta
 from django.conf import settings
