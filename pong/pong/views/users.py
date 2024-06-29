@@ -23,7 +23,7 @@ def get_user(request, uuid):
 		return JsonResponse({
 			'message': 'User not found',
 			'status': 'userNotFound'
-		}, status=404) 
+		}, status=404)
 
 	return JsonResponse({
 		'uuid': user.uuid,

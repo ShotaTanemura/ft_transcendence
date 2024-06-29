@@ -94,7 +94,7 @@ def create_token(request):
 			'message': 'User not found',
 			'status': 'userNotFound'
 		}, status=404)
-	
+
 	return create_token_response(user.uuid)
 
 @jwt_exempt
