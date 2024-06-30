@@ -4,7 +4,6 @@ import { Signup } from './pages/Signup.js'
 import { Signin } from './pages/Signin.js'
 import { Home } from './pages/Home.js'
 import { Chat } from './pages/Chat.js'
-import { Profile } from './pages/Profile.js'
 
 let router = new Router(document.getElementById("app"), [
 		{
@@ -25,11 +24,6 @@ let router = new Router(document.getElementById("app"), [
 		{
 			path: "/chat",
 			component: Chat,
-			state: {}
-		},
-		{
-			path: "/profile",
-			component: Profile,
 			state: {}
 		},
 	],

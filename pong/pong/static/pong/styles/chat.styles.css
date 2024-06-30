@@ -222,8 +222,7 @@ body {
 /* directory */
 .dir-container {
     width: 30rem;
-    border: 1px solid #ccc;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border: 0.0625rem solid #e0e0e0;
     padding: 1rem;
     overflow: hidden;
 }
