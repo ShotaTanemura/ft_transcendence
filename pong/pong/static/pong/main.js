@@ -3,6 +3,7 @@ import { Router } from './core/router.js'
 import { Signup } from './components/Signup.js'
 import { Signin } from './components/Signin.js'
 import { Home } from './components/Home.js'
+import { Profile } from './components/Profile.js'
 
 let router = new Router(document.getElementById("app"), [
 		{
@@ -20,6 +21,11 @@ let router = new Router(document.getElementById("app"), [
 			component: Home,
 			state: {}
 		},
+		{
+			path: "/profile",
+			component: Profile,
+			state: {}
+		}
 	],
 	{
 		playersInfo: {},
