@@ -5,7 +5,7 @@ import { Game} from './components/Game.js'
 import { GameResult } from './components/GameResult.js'
 import { Tournament } from './components/Tournament.js'
 import { Pong } from './components/Pong.js'
-import './scss/style.scss'
+// import './scss/style.scss'
 import * as bootstrap from 'bootstrap'
 
 let router = new Router(document.getElementById("app"), [
@@ -28,7 +28,7 @@ let router = new Router(document.getElementById("app"), [
 			path: "/gameresult",
 			component: GameResult,
 			state: {}
-		}
+		},
 	],
 	{
 		playersInfo: {},
