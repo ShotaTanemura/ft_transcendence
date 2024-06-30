@@ -147,3 +147,6 @@ JWT_AUTH = {
     'JWT_PUBLIC_KEY': PUBLIC_KEY,
     'JWT_ALGORITHM': 'RS256',
 }
+
+MEDIA_URL = '/img/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'pong/static/img')
