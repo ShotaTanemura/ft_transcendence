@@ -10,6 +10,9 @@ services:
       - type: bind
         source: ./requirements/Nginx/conf.d/default.conf
         target: /etc/nginx/conf.d/default.conf
+      - type: bind
+        source: ../pong/pong/static
+        target: /usr/share/nginx/html/static
     depends_on:
       app:
         condition: service_healthy
