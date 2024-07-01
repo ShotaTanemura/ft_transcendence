@@ -1,9 +1,9 @@
 import './core/component.js'
 import { Router } from './core/router.js'
-import { Signup } from './pages/Signup.js'
-import { Signin } from './pages/Signin.js'
-import { Home } from './pages/Home.js'
-import { Chat } from './pages/Chat.js'
+import { Signup } from './components/Signup.js'
+import { Signin } from './components/Signin.js'
+import { Home } from './components/Home.js'
+import { Chat } from './components/Chat.js'
 
 let router = new Router(document.getElementById("app"), [
 		{
