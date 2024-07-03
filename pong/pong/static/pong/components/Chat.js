@@ -110,7 +110,7 @@ export class Chat extends Component {
 //     `).join('');
 
 //     return (`
-//         <div class="pearent-container">
+//         <div class="parent-containerr">
 //             <div class="messages-container">
 //                 <div class="search-bar">
 //                     <input type="text" placeholder="Search messages">
