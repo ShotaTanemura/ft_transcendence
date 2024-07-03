@@ -37,7 +37,7 @@ def create_token_response(uuid):
 
 @jwt_exempt
 @csrf_exempt
-def oauth42(request):
+def oauth_42(request):
 	if request.method != 'GET':
 		return JsonResponse({
 			'message': 'Method is not allowed',
