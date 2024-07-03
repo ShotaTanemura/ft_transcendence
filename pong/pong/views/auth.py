@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 from django.conf import settings
 from django.http.response import HttpResponse
 from pong.middleware.auth import jwt_exempt, getUserByJwt
+from pong.utils.create_response import create_token_response
 import requests
 import jwt
 import base64
@@ -18,30 +19,6 @@ def test(request):
 	return JsonResponse({
 		'message': 'Hello, world!'
 	})
-
-def create_token_response(uuid):
-	new_payload = {
-		'uuid': str(uuid),
-		'exp': datetime.utcnow() + settings.JWT_AUTH['JWT_EXPIRATION_DELTA'],
-		'iat': datetime.utcnow()
-	}
-	new_token = jwt.encode(new_payload, settings.JWT_AUTH['JWT_PRIVATE_KEY'], algorithm=settings.JWT_AUTH['JWT_ALGORITHM'])
-
-	new_refresh_payload = {
-		'uuid': str(uuid),
-		'exp': datetime.utcnow() + settings.JWT_AUTH['JWT_REFRESH_EXPIRATION_DELTA'],
-		'iat': datetime.utcnow()
-	}
-	new_refresh_token = jwt.encode(new_refresh_payload, settings.JWT_AUTH['JWT_PRIVATE_KEY'], algorithm=settings.JWT_AUTH['JWT_ALGORITHM'])
-
-	response = JsonResponse({'uuid': uuid}, content_type='application/json')
-	# HTTPS実装後に有効化する
-	# response.set_cookie('token', new_token, httponly=True, secure=True)
-	# response.set_cookie('refresh_token', new_refresh_token, httponly=True, secure=True)
-	response.set_cookie('token', new_token, httponly=True)
-	response.set_cookie('refresh_token', new_refresh_token, httponly=True)
-
-	return response
 
 @jwt_exempt
 @csrf_exempt
@@ -98,7 +75,7 @@ def create_token(request):
 			'status': 'userNotFound'
 		}, status=404)
 	
-	return create_token_response(user.uuid)
+	return create_token_response(user.uuid, JsonResponse({'uuid': user.uuid}, content_type='application/json'))
 
 @jwt_exempt
 @csrf_exempt
@@ -136,7 +113,7 @@ def refresh_token(request):
 			'status': 'userNotFound'
 		}, status=404)
 
-	return create_token_response(user.uuid)
+	return create_token_response(user.uuid, JsonResponse({'uuid': user.uuid}, content_type='application/json'))
 
 @csrf_exempt
 def verify_token(request):
