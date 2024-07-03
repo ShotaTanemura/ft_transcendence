@@ -19,11 +19,13 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 django_asgi_app = application = get_asgi_application()
 
 # import consumers here
+from realtime_game.consumers import RealtimeGameConsumer 
+from pong.middleware.auth import ChannelsJWTAuthenticationMiddleware
 
 application = ProtocolTypeRouter({
     "http": django_asgi_app,
     "websocket": AllowedHostsOriginValidator(
-        AuthMiddlewareStack(
+        ChannelsJWTAuthenticationMiddleware(
             URLRouter([
                 #path("chat/admin/", AdminChatConsumer.as_asgi()),
                 #path("chat/", PublicChatConsumer.as_asgi()), 

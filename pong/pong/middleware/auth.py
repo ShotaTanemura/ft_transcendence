@@ -1,9 +1,11 @@
 from django.http.response import JsonResponse
 from django.conf import settings
-import jwt
+from django.contrib.auth.models import AnonymousUser
+import jwt, re
 from pong.models import User
 from datetime import datetime, timedelta
 from functools import wraps
+from channels.db import database_sync_to_async
 
 
 def jwt_exempt(view_func):
@@ -13,8 +15,8 @@ def jwt_exempt(view_func):
 	_wrapped_view_func.jwt_exempt = True
 	return _wrapped_view_func
 
-def getUserByJwt(request):
-	token = request.COOKIES.get('token')
+@database_sync_to_async
+def getUserByToken(token):
 	if not token:
 		return None
 	try:
@@ -23,8 +25,12 @@ def getUserByJwt(request):
 		return None
 	user = User.objects.filter(uuid=payload['uuid']).first()
 	if not user:
-		return None
+		return None 
 	return user
+	
+def getUserByJwt(request):
+	token = request.COOKIES.get('token')
+	return getUserByToken(token)
 
 class JWTAuthenticationMiddleware:
 
@@ -45,3 +51,19 @@ class JWTAuthenticationMiddleware:
 				'status': 'unauthorized'
 			}, status=401)
 		return None
+
+class ChannelsJWTAuthenticationMiddleware:
+
+    def __init__(self, app):
+        self.app = app
+
+    async def __call__(self, scope, receive, send):
+        headers = dict(scope['headers'])
+        match = re.search(r'token=([^\s;]+)', headers[b'cookie'].decode('utf-8'))
+        if not match:
+            return None
+        token = match.group(1)
+        scope['user'] = await getUserByToken(token)
+        if scope['user'] == None:
+            scope['user'] == AnonymousUser()
+        return await self.app(scope, receive, send)
