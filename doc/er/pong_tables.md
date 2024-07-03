@@ -21,7 +21,7 @@ rooms {
 
 room_status {
     string uuid PK
-    string name "public, private, archived, locked, maintenance"
+    string name "public, private, archived, locked"
 }
 
 user_room {
