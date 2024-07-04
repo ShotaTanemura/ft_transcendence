@@ -1,7 +1,8 @@
 from django.http.response import JsonResponse
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
-import jwt, re
+import jwt
+import re
 from pong.models import User
 from datetime import datetime, timedelta
 from functools import wraps
