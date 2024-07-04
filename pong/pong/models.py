@@ -46,8 +46,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 	name = models.CharField(unique=True, blank=False, max_length=20)
 	email = models.EmailField(unique=True, blank=False)
 	is_staff = models.BooleanField(default=False)
-	icon = models.ImageField(upload_to='user_icons/', blank=True, null=True, default='/static/pong/img/test.jpeg')
-
+	icon = models.ImageField(upload_to='user_icons/', blank=True, null=True, default='static/pong/img/test.jpeg')
 	objects = UserManager()
 
 	USERNAME_FIELD = 'name'

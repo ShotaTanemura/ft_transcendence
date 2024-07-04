@@ -148,5 +148,4 @@ JWT_AUTH = {
     'JWT_ALGORITHM': 'RS256',
 }
 
-MEDIA_URL = '/img/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'pong/static/img')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static/pong/img/')
