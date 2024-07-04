@@ -16,5 +16,3 @@ class SampleConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data=None, bytes_data=None):
         print(text_data)
 
-    async def disconnect(self, close_code):
-        await self.close()

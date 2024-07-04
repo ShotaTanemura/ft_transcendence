@@ -15,7 +15,6 @@ def jwt_exempt(view_func):
 	_wrapped_view_func.jwt_exempt = True
 	return _wrapped_view_func
 
-@database_sync_to_async
 def getUserByToken(token):
 	if not token:
 		return None
@@ -59,11 +58,16 @@ class ChannelsJWTAuthenticationMiddleware:
 
     async def __call__(self, scope, receive, send):
         headers = dict(scope['headers'])
-        match = re.search(r'token=([^\s;]+)', headers[b'cookie'].decode('utf-8'))
-        if not match:
-            return None
-        token = match.group(1)
-        scope['user'] = await getUserByToken(token)
-        if scope['user'] == None:
-            scope['user'] == AnonymousUser()
+        try:
+            match = re.search(r'token=([^\s;]+)', headers[b'cookie'].decode('utf-8'))
+            if not match:
+                scope['user'] = AnonymousUser()
+                return await self.app(scope, receive, send)
+            token = match.group(1)
+            scope['user'] = await database_sync_to_async(getUserByToken)(token)
+            if scope['user'] == None:
+                scope['user'] = AnonymousUser()
+                return await self.app(scope, receive, send)
+        except:
+            scope['user'] = AnonymousUser()
         return await self.app(scope, receive, send)
