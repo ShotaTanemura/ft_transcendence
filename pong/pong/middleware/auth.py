@@ -16,7 +16,7 @@ def jwt_exempt(view_func):
 	_wrapped_view_func.jwt_exempt = True
 	return _wrapped_view_func
 
-def getUserByToken(token):
+def getUserByJwt(token):
 	if not token:
 		return None
 	try:
@@ -25,12 +25,12 @@ def getUserByToken(token):
 		return None
 	user = User.objects.filter(uuid=payload['uuid']).first()
 	if not user:
-		return None 
+		return None
 	return user
 	
-def getUserByJwt(request):
+def getUserByJwtCookie(request):
 	token = request.COOKIES.get('token')
-	return getUserByToken(token)
+	return getUserByJwt(token)
 
 class JWTAuthenticationMiddleware:
 
@@ -44,7 +44,7 @@ class JWTAuthenticationMiddleware:
 		if getattr(view_func, 'jwt_exempt', False):
 			return None
 
-		user = getUserByJwt(request)
+		user = getUserByJwtCookie(request)
 		if not user:
 			return JsonResponse({
 				'message': 'unauthorized',
@@ -65,10 +65,12 @@ class ChannelsJWTAuthenticationMiddleware:
                 scope['user'] = AnonymousUser()
                 return await self.app(scope, receive, send)
             token = match.group(1)
-            scope['user'] = await database_sync_to_async(getUserByToken)(token)
+            scope['user'] = await database_sync_to_async(getUserByJwt)(token)
             if scope['user'] == None:
                 scope['user'] = AnonymousUser()
                 return await self.app(scope, receive, send)
-        except:
+            return await self.app(scope, receive, send)
+        except Exception as e:
+            print(f"Exception: {e}")
             scope['user'] = AnonymousUser()
-        return await self.app(scope, receive, send)
+            return await self.app(scope, receive, send)
