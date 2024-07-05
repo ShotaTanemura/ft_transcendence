@@ -27,7 +27,7 @@ def redirect_to_oauth():
 
 @jwt_exempt
 @csrf_exempt
-def oauth_42(request):
+def oauth_42_signup(request):
 	if request.method != 'GET':
 		return JsonResponse({
 			'message': 'Method is not allowed',

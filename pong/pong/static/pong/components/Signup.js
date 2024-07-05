@@ -58,7 +58,7 @@ export class Signup extends Component {
 			<div>
 				<h1>Signup</h1>
 				<form 
-					action="/pong/oauth/42"
+					action="/pong/oauth/42/signup"
 					method="GET"
 					class="form-42oauth">
 					<button class="form-42oauth" type=submit>42 Signup</button>
