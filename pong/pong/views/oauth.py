@@ -16,8 +16,8 @@ import os
 def redirect_to_oauth():
     base_url = 'https://api.intra.42.fr/oauth/authorize'
     params = {
-        'client_id': CLIENT_ID_42API,
-        'redirect_uri': OAUTH_CALLBACK_42API,
+        'client_id': settings.CLIENT_ID_42API,
+        'redirect_uri': settings.OAUTH_CALLBACK_42API,
         'response_type': 'code',
     }
     query_string = urlencode(params)
