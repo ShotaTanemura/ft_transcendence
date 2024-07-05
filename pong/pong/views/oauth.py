@@ -48,7 +48,7 @@ def callback_42(request):
 		'client_id': settings.CLIENT_ID_42API,
 		'client_secret': settings.CLIENT_SECRET_42API,
 		'code': code,
-		'redirect_uri': 'http://localhost:8080/pong/oauth/callback/42',
+		'redirect_uri': settings.OAUTH_CALLBACK_42API,
 	}
 	response_token = requests.post('https://api.intra.42.fr/oauth/token', params=params)
 	if response_token.status_code != 200:
