@@ -147,6 +147,9 @@ JWT_AUTH = {
     'JWT_PUBLIC_KEY': PUBLIC_KEY,
     'JWT_ALGORITHM': 'RS256',
 }
+PEPPER = os.getenv('PEPPER')
+CLIENT_ID_42API = os.getenv('CLIENT_ID_42API')
+CLIENT_SECRET_42API = os.getenv('CLIENT_SECRET_42API')
 
 # channelsのためのlayerの追加　
 CHANNEL_LAYERS = {
