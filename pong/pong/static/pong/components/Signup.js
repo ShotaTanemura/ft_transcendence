@@ -7,14 +7,19 @@ export class Signup extends Component {
 		switch (window.location.hash) {
 			case '#methodNotAllowed':
 				window.alert('リクエストメソッドが不適切です');
+				break;
 			case '#failedToGetCode':
 				window.alert('認証コードの取得に失敗しました');
+				break;
 			case '#failedToGetToken':
 				window.alert('認証トークンの取得に失敗しました');
+				break;
 			case '#failedToGetUserInfo':
 				window.alert('ユーザー情報の取得に失敗しました');
+				break;
 			case '#userAlreadyExists':
 				window.alert('既に存在するユーザーです');
+				break;
 		}
 	}
 
