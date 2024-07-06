@@ -12,7 +12,4 @@ urlpatterns = [
     path('api/v1/auth/token/refresh', auth.refresh_token, name='refresh'),
     path('api/v1/auth/token/verify', auth.verify_token, name='verify'),
     path('api/v1/users/<uuid:uuid>', users.get_user, name='get_user'),
-]
-
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

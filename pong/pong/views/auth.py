@@ -8,6 +8,7 @@ import jwt
 from django.conf import settings
 from django.http.response import HttpResponse
 from pong.middleware.auth import jwt_exempt, getUserByJwt
+import os
 
 @jwt_exempt
 @csrf_exempt
@@ -43,31 +44,37 @@ def create_token_response(uuid):
 @jwt_exempt
 @csrf_exempt
 def register(request):
-
 	if request.method != 'POST':
 		return JsonResponse({
 			'message': 'Method is not allowed',
 			'status': 'invalidParams'
 		}, status=400)
 
-	data = json.loads(request.body)
+	name = request.POST.get('name')
+	email = request.POST.get('email')
+	password = request.POST.get('password')
+	icon = request.FILES.get('icon')
 
-	if 'name' not in data or 'email' not in data or 'password' not in data:
+	if not all([name, email, password]):
 		return JsonResponse({
 			'message': 'Invalid parameters',
 			'status': 'invalidParams'
 		}, status=400)
 
-	if User.objects.filter(name=data['name']).exists() or User.objects.filter(email=data['email']).exists():
+	if User.objects.filter(name=name).exists() or User.objects.filter(email=email).exists():
 		return JsonResponse({
 			'message': 'User already exists',
 			'status': 'registerConflict'
 		}, status=409)
 
-	user = User.objects.create_user(name=data['name'], email=data['email'], password=data['password'])
+	user = User.objects.create_user(name=name, email=email, password=password)
+
+	if icon:
+		user.icon = icon
+		user.save()
 
 	return JsonResponse({
-		'uuid': user.uuid
+		'uuid': str(user.uuid)
 	}, status=201)
 
 @jwt_exempt
