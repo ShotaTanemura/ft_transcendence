@@ -6,12 +6,13 @@ from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime, timedelta
 from django.conf import settings
 from django.http.response import HttpResponse
-from pong.middleware.auth import jwt_exempt, getUserByJwt
+from pong.middleware.auth import jwt_exempt, getUserByJwtCookie
 from pong.utils.create_response import create_token_response
 import requests
 import jwt
 import base64
 import os
+
 
 @jwt_exempt
 @csrf_exempt
@@ -123,7 +124,7 @@ def verify_token(request):
 			'status': 'invalidParams'
 		}, status=400)
 
-	user = getUserByJwt(request)
+	user = getUserByJwtCookie(request)
 	if not user:
 		return JsonResponse({
 			'message': 'unauthorized',
