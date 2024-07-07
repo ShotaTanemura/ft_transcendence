@@ -51,12 +51,14 @@ class RoomManager:
     # add user to Room
     async def on_user_connected(self, user):
         with self.instance_lock:
-            if len(self.participants) == self.max_of_participants:
+            if self.room_state != RoomState.Queueing:
                 return (False, "exceed the limit of users")
             if user in self.participants:
                 return (False, "user already exists in this room")
             self.participants.append(user)
             self.participants_state[user] = ParticipantsState.Not_In_Place
+            if len(self.participants) == self.max_of_participants:
+                self.room_state = RoomState.Ready
             await self.send_messege_to_group("send_room_information", {"type": "room-information", "contents": "add-user", "user": user.name})
         return (True, "")
 
@@ -68,7 +70,13 @@ class RoomManager:
             if len(self.participants) == 0:
                 self.__class__.remove_instance(self.room_name)
         return (True, "")
-                
+    
+    # handle message from client
+    # select what to do considering both of room state and user state
+    async def on_receive_user_message(self, user, message):
+        print(message)
+    
+    # send message to Group that belogs to this room
     async def send_messege_to_group(self, method_type, content):
         await self.channel_layer.group_send(
             self.room_name,

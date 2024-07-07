@@ -30,7 +30,7 @@ class PlayerConsumer(AsyncWebsocketConsumer):
             return
 
     async def receive(self, text_data=None, bytes_data=None):
-        print(text_data)
+        await self.room_manager.on_receive_user_message(self.user, text_data)
 
     async def disconnect(self, close_code):
         await self.room_manager.on_user_disconnected(self.user)
