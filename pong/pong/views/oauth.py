@@ -98,7 +98,7 @@ def callback_42(request):
 		
 	if action == 'signup':
 		random_password = base64.urlsafe_b64encode(os.urandom(16)).decode('utf-8')
-		if User.objects.filter(name=login, email=email).exists():
+		if User.objects.filter(name=login).exists or User.objects.filter(email=email).exists():
 			return HttpResponseRedirect(redirect_to=f'/{path}#userAlreadyExists')
 		user = User.objects.create_user(name=login, email=email, password=random_password)
 	else:  # action == 'signin'
