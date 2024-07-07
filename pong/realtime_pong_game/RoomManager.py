@@ -2,12 +2,25 @@ import json
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from threading import Lock
+from enum import Enum, auto
 
-# Room State
-# - waiting
-# - ready
-# - matching
-# - in-game
+class RoomState(Enum):
+    Queueing = auto()
+    Ready = auto()
+    Matching = auto()
+    Pending = auto()
+    In_Game = auto()
+    Finished = auto()
+
+class ParticipantsState(Enum):
+    Not_In_Place = auto()
+    Ready = auto()
+    In_Game_1 = auto()
+    In_Game_2 = auto()
+    Qualified = auto()
+    Eliminated = auto()
+    
+
 class RoomManager:
     room_instances = {}
     lock = Lock()
