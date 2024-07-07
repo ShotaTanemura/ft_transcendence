@@ -6,19 +6,21 @@ from pong.middleware.auth import jwt_exempt
 from pong.models import User
 from pong.utils.create_response import create_token_response
 from datetime import datetime, timedelta
-from urllib.parse import urlencode
+from urllib.parse import urlencode, quote, unquote
 import requests
 import base64
 import json
 import jwt
 import os
 
-def redirect_to_oauth():
+def redirect_to_oauth(action):
     base_url = 'https://api.intra.42.fr/oauth/authorize'
+    state = quote(json.dumps({'action': action}))
     params = {
         'client_id': settings.CLIENT_ID_42API,
         'redirect_uri': settings.OAUTH_CALLBACK_42API,
         'response_type': 'code',
+		'state': state,
     }
     query_string = urlencode(params)
     url = f"{base_url}?{query_string}"
@@ -33,7 +35,17 @@ def oauth_42_signup(request):
 			'message': 'Method is not allowed',
 			'status': 'invalidParams'
 		}, status=400)
-	return redirect_to_oauth()
+	return redirect_to_oauth(action='signup')
+
+@jwt_exempt
+@csrf_exempt
+def oauth_42_signin(request):
+	if request.method != 'GET':
+		return JsonResponse({
+			'message': 'Method is not allowed',
+			'status': 'invalidParams'
+		}, status=400)
+	return redirect_to_oauth(action='signin')
 
 @jwt_exempt
 @csrf_exempt

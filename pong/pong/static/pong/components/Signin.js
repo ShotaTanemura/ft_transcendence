@@ -44,6 +44,12 @@ export class Signin extends Component {
         return (`
             <h1>Signin</h1>
             <br/>
+            <form 
+                action="/pong/oauth/42/signin"
+                method="GET"
+                class="form-42oauth">
+                <button class="form-42oauth" type=submit>42 Signin</button>
+            </form>
             <form class="signin-form">
                 <label for="email">email: </label>
                 <input id="email" name="email" placeholder="email" type="email" max="320" required/>

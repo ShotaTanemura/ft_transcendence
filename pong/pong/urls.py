@@ -8,5 +8,6 @@ urlpatterns = [
     path('api/v1/auth/token/refresh', auth.refresh_token, name='refresh'),
     path('api/v1/auth/token/verify', auth.verify_token, name='verify'),
     path('oauth/42/signup', oauth.oauth_42_signup, name='oauth42_signup'),
+    path('oauth/42/signin', oauth.oauth_42_signin, name='oauth42_signin'),
     path('oauth/callback/42', oauth.callback_42, name='callback42'),
 ]
