@@ -38,11 +38,14 @@ class RoomManager:
         with cls.lock:
             cls.room_instances.pop(room_name)
 
+    # TODO allow to set max_of_participants
     def __init__(self, room_name):
         self.instance_lock = Lock()
+        self.room_state = RoomState.Queueing
         self.room_name = room_name
         self.channel_layer = get_channel_layer()
         self.participants = []
+        self.participants_state = dict()
         self.max_of_participants = 2
 
     # add user to Room
@@ -53,6 +56,7 @@ class RoomManager:
             if user in self.participants:
                 return (False, "user already exists in this room")
             self.participants.append(user)
+            self.participants_state[user] = ParticipantsState.Not_In_Place
             await self.send_messege_to_group("send_room_information", {"type": "room-information", "contents": "add-user", "user": user.name})
         return (True, "")
 
