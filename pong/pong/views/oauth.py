@@ -50,11 +50,25 @@ def oauth_42_signin(request):
 @jwt_exempt
 @csrf_exempt
 def callback_42(request):
+	state = request.GET.get('state')
+	if not state:
+		return HttpResponseRedirect(redirect_to='/#invalidParameters')
+		
+	state_data = json.loads(unquote(state))
+	action = state_data.get('action', None)
+		
+	if action not in ['signup', 'signin']:
+		return HttpResponseRedirect(redirect_to='/#invalidParameters')
+		
+	path = 'signup' if action == 'signup' else ''
+		
 	if request.method != 'GET':
-		return HttpResponseRedirect(redirect_to='/signup#methodNotAllowed')
-	code = request.GET.get('code', None)
+		return HttpResponseRedirect(redirect_to=f'/{path}#methodNotAllowed')
+		
+	code = request.GET.get('code')
 	if not code:
-		return HttpResponseRedirect(redirect_to='/signup#failedToGetCode')
+		return HttpResponseRedirect(redirect_to=f'/{path}#failedToGetCode')
+		
 	params = {
 		'grant_type': 'authorization_code',
 		'client_id': settings.CLIENT_ID_42API,
@@ -62,21 +76,34 @@ def callback_42(request):
 		'code': code,
 		'redirect_uri': settings.OAUTH_CALLBACK_42API,
 	}
-	response_token = requests.post('https://api.intra.42.fr/oauth/token', params=params)
+		
+	response_token = requests.post('https://api.intra.42.fr/oauth/token', data=params)
 	if response_token.status_code != 200:
-		return HttpResponseRedirect(redirect_to='/signup#failedToGetToken')
-	access_token = response_token.json()['access_token']
+		return HttpResponseRedirect(redirect_to=f'/{path}#failedToGetToken')
+		
+	access_token = response_token.json().get('access_token')
 	headers = {
-		'Authorization': 'Bearer ' + access_token,
+		'Authorization': f'Bearer {access_token}',
 	}
+		
 	response_user_info = requests.get('https://api.intra.42.fr/v2/me', headers=headers)
 	if response_user_info.status_code != 200:
-			return HttpResponseRedirect(redirect_to='/signup#failedToGetUserInfo')
+		return HttpResponseRedirect(redirect_to=f'/{path}#failedToGetUserInfo')
+		
 	data_user_info = response_user_info.json()
-	login = data_user_info['login']
-	email = data_user_info['email']
-	random_password = base64.urlsafe_b64encode(os.urandom(16)).decode('utf-8')
-	if User.objects.filter(name=login, email=email).first():
-		return HttpResponseRedirect(redirect_to='/signup#userAlreadyExists')
-	user = User.objects.create_user(name=login, email=email, password=random_password)
+	login = data_user_info.get('login', None)
+	email = data_user_info.get('email', None)
+	if (not login) or (not email):
+		return HttpResponseRedirect(redirect_to=f'/{path}#failedToGetUserInfo')		
+		
+	if action == 'signup':
+		random_password = base64.urlsafe_b64encode(os.urandom(16)).decode('utf-8')
+		if User.objects.filter(name=login, email=email).exists():
+			return HttpResponseRedirect(redirect_to=f'/{path}#userAlreadyExists')
+		user = User.objects.create_user(name=login, email=email, password=random_password)
+	else:  # action == 'signin'
+		user = User.objects.filter(name=login, email=email).first()
+		if not user:
+			return HttpResponseRedirect(redirect_to='/#userDoesNotExist')
+		
 	return create_token_response(user.uuid, HttpResponseRedirect(redirect_to='/home'))

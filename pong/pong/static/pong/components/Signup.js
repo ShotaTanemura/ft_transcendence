@@ -11,7 +11,10 @@ export class Signup extends Component {
 			case '#failedToGetCode':
 				window.alert('認証コードの取得に失敗しました');
 				break;
-			case '#failedToGetToken':
+			case '#invalidParameters':
+				window.alert('パラメーターが不正です');
+				break;
+				case '#failedToGetToken':
 				window.alert('認証トークンの取得に失敗しました');
 				break;
 			case '#failedToGetUserInfo':
