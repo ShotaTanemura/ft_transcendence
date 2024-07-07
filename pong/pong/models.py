@@ -6,10 +6,8 @@ class UserManager(BaseUserManager):
 	def create_user(self, name, email, password, icon=None, **extra_fields):
 		if not name:
 			raise ValueError('UserIDを入力してください')
-
 		if not email:
 			raise ValueError('メールアドレスを入力してください')
-
 		if not password:
 			raise ValueError('パスワードを入力してください')
 
@@ -17,10 +15,9 @@ class UserManager(BaseUserManager):
 		user = self.model(
 			name = name,
 			email = email,
+			icon = icon,
 			**extra_fields
 		)
-		if icon:
-			user.icon = icon
 
 		user.set_password(password)
 		user.save(using=self._db)

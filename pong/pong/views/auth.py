@@ -53,7 +53,7 @@ def register(request):
 	name = request.POST.get('name')
 	email = request.POST.get('email')
 	password = request.POST.get('password')
-	icon = request.FILES.get('icon')
+	icon = request.FILES.get('icon', None)
 
 	if not all([name, email, password]):
 		return JsonResponse({
@@ -67,11 +67,7 @@ def register(request):
 			'status': 'registerConflict'
 		}, status=409)
 
-	user = User.objects.create_user(name=name, email=email, password=password)
-
-	if icon:
-		user.icon = icon
-		user.save()
+	user = User.objects.create_user(name=name, email=email, password=password, icon=icon)
 
 	return JsonResponse({
 		'uuid': str(user.uuid)

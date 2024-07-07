@@ -19,7 +19,8 @@ export class Profile extends Component {
             this.updateProfileUI(user);
         } catch (error) {
             console.error('Failed to load user profile:', error);
-			this.router.goNextPage("/signin");
+            // アラート出してから
+			this.router.goNextPage("/");
         }
     }
 
@@ -47,7 +48,7 @@ export class Profile extends Component {
         this.findElement("#username").textContent = user.name;
         this.findElement("#email").textContent = user.email;
         this.findElement("#user-icon").src = user.icon;
-        console.log(user.icon, user.icon.url);
+        console.log(user.icon);
     }
 
     async get_user_from_uuid(uuid) {
@@ -72,7 +73,7 @@ export class Profile extends Component {
     get html() {
         return (`
             <h1>プロフィールページ</h1>
-            <img id="user-icon"> 
+            <img id="user-icon">
             <p><strong>UserID:</strong> <span id="user-id"></span></p>
             <p><strong>Username:</strong> <span id="username"></span></p>
             <p><strong>E-mail:</strong> <span id="email"></span></p>
