@@ -21,5 +21,6 @@ from pong.views.index import index
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('pong/', include('pong.urls')),
+    path('chat/', include('chat.urls')),
     re_path(r'^.*$', index, name='index'),
 ]
