@@ -27,7 +27,7 @@ def getUserByJwt(token):
 	if not user:
 		return None
 	return user
-	
+
 def getUserByJwtCookie(request):
 	token = request.COOKIES.get('token')
 	return getUserByJwt(token)
