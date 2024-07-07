@@ -14,7 +14,7 @@ export class Signup extends Component {
 			case '#invalidParameters':
 				window.alert('パラメーターが不正です');
 				break;
-				case '#failedToGetToken':
+			case '#failedToGetToken':
 				window.alert('認証トークンの取得に失敗しました');
 				break;
 			case '#failedToGetUserInfo':
@@ -22,6 +22,8 @@ export class Signup extends Component {
 				break;
 			case '#userAlreadyExists':
 				window.alert('既に存在するユーザーです');
+				break;
+			default:
 				break;
 		}
 	}

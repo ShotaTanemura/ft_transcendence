@@ -27,6 +27,8 @@ export class Signin extends Component {
             case '#userDoesNotExist':
                 window.alert('該当するユーザーが存在しません');
                 break;
+            default:
+                break;
             }
     }
 
