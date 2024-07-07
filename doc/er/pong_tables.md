@@ -42,7 +42,7 @@ messages {
 }
 
 users ||--o{ user_room : ""
-rooms ||--o{ user_room : ""
+rooms ||--|{ user_room : ""
 rooms ||--o{ messages : ""
 users ||--o{ messages : ""
 rooms ||--|| room_status : ""
