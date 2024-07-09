@@ -24,7 +24,7 @@ def redirect_to_oauth(action):
     }
     query_string = urlencode(params)
     url = f"{base_url}?{query_string}"
-    
+
     return HttpResponseRedirect(url)
 
 @jwt_exempt

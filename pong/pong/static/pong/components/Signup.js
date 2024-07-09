@@ -51,7 +51,6 @@ export class Signup extends Component {
         const response = await fetch("/pong/api/v1/auth/register", {
             method: "POST",
             body: formData,
-            // Content-Type ヘッダーは設定しない（ブラウザが自動的に設定する）
         });
         console.log(response);
         const data = await response.json();
