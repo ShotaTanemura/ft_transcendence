@@ -150,7 +150,9 @@ JWT_AUTH = {
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
 PEPPER = os.getenv('PEPPER')
+OAUTH_CALLBACK_42API = os.getenv('OAUTH_CALLBACK_42API')
 CLIENT_ID_42API = os.getenv('CLIENT_ID_42API')
 CLIENT_SECRET_42API = os.getenv('CLIENT_SECRET_42API')
 
