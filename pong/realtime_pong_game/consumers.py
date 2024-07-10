@@ -26,7 +26,7 @@ class PlayerConsumer(AsyncWebsocketConsumer):
         is_success, error_message = await self.room_manager.on_user_connected(self.user)
         # TODO send error message before close
         if not is_success:
-            self.close()
+            await self.close()
             return
 
     async def receive(self, text_data=None, bytes_data=None):
@@ -37,7 +37,7 @@ class PlayerConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_discard(self.room_name, self.channel_name)
 
     async def send_room_information(self, event):
-        await self.send(text_data=event["contents"])
+        await self.send(text_data=json.dumps(event["contents"]))
         
     async def send_player_information(self, contents):
         await self.send(text_data=contents)
