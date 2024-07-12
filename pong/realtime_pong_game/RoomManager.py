@@ -1,9 +1,12 @@
 import json
+import asyncio
 import random
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from threading import Lock
 from enum import Enum, auto
+
+import time
 
 class RoomState(Enum):
     Queuing = "queuing"
@@ -63,17 +66,14 @@ class RoomManager:
             self.participants_state[user] = ParticipantsState.Not_In_Place
             if len(self.participants) == self.max_of_participants:
                 self.room_state = RoomState.Ready
-                await self.send_messege_to_group("send_room_information", {"sender": "room-manager", "type": "all-participants-connected"})
-            await self.send_messege_to_group("send_room_information", {"sender": "room-manager", "type": "new-participants-connected", "contents": [participant.name for participant in self.participants]})
+                await self.send_messege_to_group("send_room_information", {"sender": "room-manager", "type": "all-participants-connected", "contents": [participant.name for participant in self.participants]})
         return (True, "")
 
     # delete user from Room
     async def on_user_disconnected(self, user):
         with self.instance_lock:
-            if self.room_state != RoomState.Queuing:
-                return
-            if user in self.participants:
-                self.participants.remove(user)
+            #TODO don't delete user when the game has already started.
+            self.participants.remove(user)
             if len(self.participants) == 0:
                 self.__class__.remove_instance(self.room_name)
         return (True, "")
@@ -88,56 +88,32 @@ class RoomManager:
             }
         )
     
-    # score winner name 
-    #def matching(self):
-    #    random.shuffle(self.participants)
-    #    new_round = []
-    #    for index in range(0, len(self.participants), 2):
-    #        new_round.push([{"player": self.participants[index], "score": -1, "qualified": True}, {"player": self.participants[index + 1], "score": -1, "qualified": True}])
-    #    self.game_results.push(new_round)
+    async def on_receive_user_message(self, participant, message):
+        # TODO send error if sender is not participants
+        # TODO confirm the syntax is good
+        message_json = json.loads(message)
+        if self.room_state == RoomState.Ready:
+            await self.user_became_ready_for_game(participant, message_json)
+        elif self.room_state == RoomState.In_Game:
+            await self.handle_game_action(participant, message_json)
+        #elif self.room_state == RoomState.Finished:
+        #    print("do something")
 
-    ## handle message from client
-    ## select what to do considering both of room state and user state
-    #async def on_receive_user_message(self, participant, message):
-    #    with self.instance_lock:
-    #        # TODO send error if sender is not participants
-    #        # TODO confirm the syntax is good
-    #        message_json = json.loads(message)
-    #        # when Queuing
-    #        if self.room_state == RoomState.Ready:
-    #            await self.receive_user_message_in_ready(participant, message_json)
-    #        # when Matching
-    #        elif self.room_state == RoomState.Matching:
-    #            await self.receive_user_message_in_matching(participant, message_json)
-    #        # when Pending
-    #        #elif self.room_state == RoomState.Pending:
-    #        #   await receive_user_message_in_pending(participants, message_json)
-    #        # when In_Game
-    #        #elif receive_user_message_in_game(participants, message_json):
-    #        # when Finished
-    #        # receive_user_message_in_finished(participants, message_json):
-    #        # else: do nothing
+    async def user_became_ready_for_game(self, participant, message_json):
+        with self.instance_lock:
+            #TODO validate the contents of message_json
+            self.participants_state[participant] = ParticipantsState.Ready
+            if all(ParticipantsState.Ready == self.participants_state[key] for key in self.participants_state):
+                self.room_state = RoomState.In_Game
+                asyncio.new_event_loop().run_in_executor(None, self.game_dispatcher, 1)
 
-    ## change room_state to Matching, create tournament and send torunament result to client if all participants ready
-    #async def receive_user_message_in_ready(self, participant, message_json):
-    #    # TODO veridate message_json
-    #    # TODO add this room to db
-    #    self.participants_state[participant] = ParticipantsState.Ready
-    #    if all(participant_state == ParticipantsState.Ready for participant_state in list(self.participants_state.values())):
-    #        self.matching()
-    #        self.room_state = RoomState.Matching
-    #        self.send_messege_to_group("send_room_information", {"sender": "room_manager", "type": "current_trounament_state", "contents": self.game_results})
-
-    ## change room_state to pending if all participants see the tournament
-    ## send next game player wheather you're ready
-    #async def receive_user_message_in_matching(self, participant, message_json):
-    #    # TODO veridate message_json
-    #    self.participants_state[participant] = ParticipantsState.Observer
-    #    if all(participant_state == ParticipantsState.Observer for participant_state in list(self.participants_state.values())):
-    #        self.set_next_game_infromation()
-    #        self.send_messege_to_group("send_room_information", {"sender": "room_manager", "type": "participant_state", "contents": [{attendee.name : self.participants_state[attendee]} for attendee in self.participants]})
-    
-    ## change room_state to in-game if two player is ready
-    ## change participants_state to obserber or in-game
-    ## async def receive_user_message_in_pending(participants, message_json)
+    def game_dispatcher(self, sec):
+        for i in range(1, 30):
+            print(f'time {i} elapsed')
+            time.sleep(sec)
+        print('sleep ended')
+        #TODO update db to record match result
         
+    async def handle_game_action(self, participant, message_json):
+        with self.instance_lock:
+            print(f'participant {participant} sent {message_json}')

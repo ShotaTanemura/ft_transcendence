@@ -15,11 +15,17 @@ export class GameHome extends Component {
 	}
 
 	onWebSocketClose = (event) => {
-		console.log("close!");
+		this.goNextPage("/error");
 	}
 
 	onMessage = (event) => {
-		console.log(event);
+		const message = JSON.parse(event.data);
+		switch (message.type) {
+			case 'all-participants-connected':
+				this.setRouteContext("participants", message.contents);
+				this.goNextPage("/game-room");
+		}
+		
 	}
 
 	submitForm = (e) => {

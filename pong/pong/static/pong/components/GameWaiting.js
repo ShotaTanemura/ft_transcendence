@@ -6,16 +6,12 @@ export class GameWaiting extends Component {
 		new Load(router, parameters, state).onload()
 		super(router, parameters, state);
         this.connection = this.getRouteContext("WebSocket");
-        document.addEventListener("keydown", this.onKeyDown);
 	}
-
-    onKeyDown = (event) => {
-        this.connection.send(event.key);
-    }
 
     get html() {
         return (`
             <h1>waiting other paricipants...</h1>
+            <h1>Don't reload this page.</h1>
         `)
     }
 }
