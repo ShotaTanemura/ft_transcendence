@@ -5,6 +5,7 @@ from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from threading import Lock
 from enum import Enum, auto
+from realtime_pong_game.PongGame import PongGame
 
 import time
 
@@ -48,6 +49,7 @@ class RoomManager:
     def __init__(self, room_name):
         self.instance_lock = Lock()
         self.channel_layer = get_channel_layer()
+        self.pong_game = PongGame(room_name)
         self.room_name = room_name
         self.room_state = RoomState.Queuing
         self.participants = []
@@ -108,10 +110,7 @@ class RoomManager:
                 asyncio.new_event_loop().run_in_executor(None, self.game_dispatcher, 1)
 
     def game_dispatcher(self, sec):
-        for i in range(1, 30):
-            print(f'time {i} elapsed')
-            time.sleep(sec)
-        print('sleep ended')
+        self.pong_game.execute()
         #TODO update db to record match result
         
     async def handle_game_action(self, participant, message_json):

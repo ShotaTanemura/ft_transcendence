@@ -38,6 +38,6 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 
     async def send_room_information(self, event):
         await self.send(text_data=json.dumps(event["contents"]))
-        
-    async def send_player_information(self, contents):
-        await self.send(text_data=contents)
+
+    async def send_game_information(self, event):
+        await self.send(text_data=json.dumps(event["contents"])) 
