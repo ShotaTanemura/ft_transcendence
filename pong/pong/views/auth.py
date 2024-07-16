@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime, timedelta
 from django.conf import settings
 from django.http.response import HttpResponse
-from pong.middleware.auth import jwt_exempt, getUserByJwtCookie, getUserByJwt
+from pong.middleware.auth import jwt_exempt, getJwtPayloadCookie
 from pong.utils.create_response import create_token_response
 import requests
 import jwt
@@ -77,7 +77,7 @@ def create_token(request):
 			'message': 'User not found',
 			'status': 'userNotFound'
 		}, status=404)
-	
+
 	return create_token_response(user.uuid, JsonResponse({'uuid': user.uuid}, content_type='application/json'))
 
 @jwt_exempt
@@ -126,13 +126,14 @@ def verify_token(request):
 			'status': 'invalidParams'
 		}, status=400)
 
-	user = getUserByJwtCookie(request)
-	if not user:
+	payload = getJwtPayloadCookie(request)
+	uuid = payload.get('uuid', None)
+	if not payload or not uuid:
 		return JsonResponse({
 			'message': 'unauthorized',
 			'status': 'unauthorized'
 		}, status=401)
 
 	return JsonResponse({
-		'uuid': str(user.uuid)
+		'uuid': str(uuid)
 	}, status=200)
