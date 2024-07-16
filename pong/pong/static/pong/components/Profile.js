@@ -44,7 +44,6 @@ export class Profile extends Component {
     }
 
     updateProfileUI(user) {
-        this.findElement("#user-id").textContent = user.uuid;
         this.findElement("#username").textContent = user.name;
         this.findElement("#email").textContent = user.email;
         this.findElement("#user-icon").src = user.icon;
@@ -74,7 +73,6 @@ export class Profile extends Component {
         return (`
             <h1>プロフィールページ</h1>
             <img id="user-icon">
-            <p><strong>UserID:</strong> <span id="user-id"></span></p>
             <p><strong>Username:</strong> <span id="username"></span></p>
             <p><strong>E-mail:</strong> <span id="email"></span></p>
         `);
