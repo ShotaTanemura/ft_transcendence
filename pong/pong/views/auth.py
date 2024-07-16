@@ -4,10 +4,15 @@ from pong.models import UserManager
 from pong.models import User
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime, timedelta
-import jwt
 from django.conf import settings
 from django.http.response import HttpResponse
-from pong.middleware.auth import jwt_exempt, getUserByJwt
+from pong.middleware.auth import jwt_exempt, getUserByJwtCookie, getUserByJwt
+from pong.utils.create_response import create_token_response
+import requests
+import jwt
+import base64
+import os
+
 
 @jwt_exempt
 @csrf_exempt
@@ -16,58 +21,36 @@ def test(request):
 		'message': 'Hello, world!'
 	})
 
-def create_token_response(uuid):
-	new_payload = {
-		'uuid': str(uuid),
-		'exp': datetime.utcnow() + settings.JWT_AUTH['JWT_EXPIRATION_DELTA'],
-		'iat': datetime.utcnow()
-	}
-	new_token = jwt.encode(new_payload, settings.JWT_AUTH['JWT_PRIVATE_KEY'], algorithm=settings.JWT_AUTH['JWT_ALGORITHM'])
-
-	new_refresh_payload = {
-		'uuid': str(uuid),
-		'exp': datetime.utcnow() + settings.JWT_AUTH['JWT_REFRESH_EXPIRATION_DELTA'],
-		'iat': datetime.utcnow()
-	}
-	new_refresh_token = jwt.encode(new_refresh_payload, settings.JWT_AUTH['JWT_PRIVATE_KEY'], algorithm=settings.JWT_AUTH['JWT_ALGORITHM'])
-
-	response = JsonResponse({'uuid': uuid}, content_type='application/json')
-	# HTTPS実装後に有効化する
-	# response.set_cookie('token', new_token, httponly=True, secure=True)
-	# response.set_cookie('refresh_token', new_refresh_token, httponly=True, secure=True)
-	response.set_cookie('token', new_token, httponly=True)
-	response.set_cookie('refresh_token', new_refresh_token, httponly=True)
-
-	return response
-
 @jwt_exempt
 @csrf_exempt
 def register(request):
-
 	if request.method != 'POST':
 		return JsonResponse({
 			'message': 'Method is not allowed',
 			'status': 'invalidParams'
 		}, status=400)
 
-	data = json.loads(request.body)
+	name = request.POST.get('name')
+	email = request.POST.get('email')
+	password = request.POST.get('password')
+	icon = request.FILES.get('icon', None)
 
-	if 'name' not in data or 'email' not in data or 'password' not in data:
+	if not all([name, email, password]):
 		return JsonResponse({
 			'message': 'Invalid parameters',
 			'status': 'invalidParams'
 		}, status=400)
 
-	if User.objects.filter(name=data['name']).exists() or User.objects.filter(email=data['email']).exists():
+	if User.objects.filter(name=name).exists() or User.objects.filter(email=email).exists():
 		return JsonResponse({
 			'message': 'User already exists',
 			'status': 'registerConflict'
 		}, status=409)
 
-	user = User.objects.create_user(name=data['name'], email=data['email'], password=data['password'])
+	user = User.objects.create_user(name=name, email=email, password=password, icon=icon)
 
 	return JsonResponse({
-		'uuid': user.uuid
+		'uuid': str(user.uuid)
 	}, status=201)
 
 @jwt_exempt
@@ -94,8 +77,8 @@ def create_token(request):
 			'message': 'User not found',
 			'status': 'userNotFound'
 		}, status=404)
-
-	return create_token_response(user.uuid)
+	
+	return create_token_response(user.uuid, JsonResponse({'uuid': user.uuid}, content_type='application/json'))
 
 @jwt_exempt
 @csrf_exempt
@@ -133,7 +116,7 @@ def refresh_token(request):
 			'status': 'userNotFound'
 		}, status=404)
 
-	return create_token_response(user.uuid)
+	return create_token_response(user.uuid, JsonResponse({'uuid': user.uuid}, content_type='application/json'))
 
 @csrf_exempt
 def verify_token(request):
@@ -143,7 +126,7 @@ def verify_token(request):
 			'status': 'invalidParams'
 		}, status=400)
 
-	user = getUserByJwt(request)
+	user = getUserByJwtCookie(request)
 	if not user:
 		return JsonResponse({
 			'message': 'unauthorized',

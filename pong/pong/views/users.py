@@ -29,4 +29,5 @@ def get_user(request, uuid):
 		'uuid': user.uuid,
 		'name': user.name,
 		'email': user.email,
+		'icon': user.icon.url,
 	}, status=200)

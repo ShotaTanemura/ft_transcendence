@@ -19,7 +19,8 @@ export class Profile extends Component {
             this.updateProfileUI(user);
         } catch (error) {
             console.error('Failed to load user profile:', error);
-			this.router.goNextPage("/signin");
+            // アラート出してから
+			this.router.goNextPage("/");
         }
     }
 
@@ -31,6 +32,7 @@ export class Profile extends Component {
                 credentials: 'include'
             });
             const data = await response.json();
+            console.log(data);
             if (!response.ok) {
                 throw new Error(data.message || 'Failed to verify token');
             }
@@ -57,6 +59,7 @@ export class Profile extends Component {
                 credentials: 'include'
             });
             const data = await response.json();
+            console.log(data);
             if (!response.ok) {
                 throw new Error(data.message || 'Failed to fetch user data');
             }
@@ -74,7 +77,6 @@ export class Profile extends Component {
             <p><strong>UserID:</strong> <span id="user-id"></span></p>
             <p><strong>Username:</strong> <span id="username"></span></p>
             <p><strong>E-mail:</strong> <span id="email"></span></p>
-            <img src="/static/pong/img/test.jpeg">
         `);
     }
 }
