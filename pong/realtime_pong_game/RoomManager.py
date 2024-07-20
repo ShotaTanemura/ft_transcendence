@@ -118,6 +118,7 @@ class RoomManager:
         self.pong_game.execute()
         #TODO update db to record match result
         print("match ended")
+        async_to_sync(self.send_messege_to_group)("send_room_information", {"sender": "room-manager", "type": "GameEnd"})
         
     async def handle_game_action(self, participant, message_json):
         if self.participants_state[participant] == ParticipantsState.In_Game_1:

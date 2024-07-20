@@ -44,7 +44,7 @@ class PongGame:
         while self.player1_score < 5 and self.player2_score < 5:
             print(f'player1: {self.player1_score} player2: {self.player2_score}')
             time.sleep(2)
-            asyncio.run(self.run())
+            async_to_sync(self.run)()
             self.ball = Ball(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
     
     async def run(self):
