@@ -2,6 +2,7 @@ name: ruff
 on: push
 jobs:
   ruff:
+    name: syntax-check-python
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
