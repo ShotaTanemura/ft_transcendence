@@ -151,12 +151,17 @@ OAUTH_CALLBACK_42API = os.getenv('OAUTH_CALLBACK_42API')
 CLIENT_ID_42API = os.getenv('CLIENT_ID_42API')
 CLIENT_SECRET_42API = os.getenv('CLIENT_SECRET_42API')
 
+REDIS_HOST = 'redis'
+REDIS_PORT = 6379
+REDIS_DB = 0
+REDIS_URL = f'redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}'
+
 # channelsのためのlayerの追加　
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("redis", 6379)],
+            "hosts": [("redis", REDIS_PORT)],
         },
     },
 }

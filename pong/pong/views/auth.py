@@ -8,6 +8,7 @@ from django.conf import settings
 from django.http.response import HttpResponse
 from pong.middleware.auth import jwt_exempt, getJwtPayloadCookie
 from pong.utils.create_response import create_token_response
+from pong.utils.redis_client import redis_client
 import requests
 import jwt
 import base64
@@ -131,7 +132,31 @@ def verify_token(request):
 			'message': 'unauthorized',
 			'status': 'unauthorized'
 		}, status=401)
+	token = request.COOKIES.get('token')
+	if redis_client.exists(token):
+		return JsonResponse({
+			'message': 'unauthorized',
+			'status': 'unauthorized'
+		}, status=401)
+	return JsonResponse({
+		'uuid': str(uuid)
+	}, status=200)
 
+@csrf_exempt
+def revoke_token(request):
+	if request.method != 'POST':
+		return JsonResponse({
+			'message': 'Method is not allowed',
+			'status': 'invalidParams'
+		}, status=400)
+	token = request.COOKIES.get('token', None)
+	payload = getJwtPayloadCookie(request)
+	exp = payload['exp']
+	uuid = payload['uuid']
+	current_time = datetime.utcnow()
+	exp_time = datetime.utcfromtimestamp(exp)
+	ttl = int((exp_time - current_time).total_seconds())
+	redis_client.setex(token, ttl, 'blacklisted')
 	return JsonResponse({
 		'uuid': str(uuid)
 	}, status=200)
