@@ -29,7 +29,7 @@ export class Signin extends Component {
                 break;
             default:
                 break;
-            }
+        }
     }
 
     handleSignin = async (event) => {
