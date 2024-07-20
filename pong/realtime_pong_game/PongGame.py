@@ -85,9 +85,21 @@ class PongGame:
 
     # recieve player message
     async def recieve_player1_input(self, message_json):
-        print(message_json)
+        if self.player1_paddle.position - PADDLE_SIZE / 2 < 0 or SCREEN_HEIGHT < self.player1_paddle.position + PADDLE_SIZE / 2:
+            return 
+        if message_json["contents"] == "up":
+            self.player1_paddle.position += 5
+        elif message_json["contents"] == "down":
+            self.player1_paddle.position -= 5
+
     async def recieve_player2_input(self, message_json):
-        print(message_json)
+        if self.player2_paddle.position - PADDLE_SIZE / 2 < 0 or SCREEN_HEIGHT < self.player2_paddle.position + PADDLE_SIZE / 2:
+            return
+        if message_json["contents"] == "up":
+            self.player2_paddle.position += 5
+        elif message_json["contents"] == "down":
+            self.player2_paddle.position -= 5
+    
     # send message to Group that belogs to this room
     async def send_messege_to_group(self, method_type, content):
         await self.channel_layer.group_send(
