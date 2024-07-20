@@ -107,12 +107,18 @@ class RoomManager:
             self.participants_state[participant] = ParticipantsState.Ready
             if all(ParticipantsState.Ready == self.participants_state[key] for key in self.participants_state):
                 self.room_state = RoomState.In_Game
+                #TODO change this allocation when you implement tournament
+                self.participants_state[self.participants[0]] = ParticipantsState.In_Game_1
+                self.participants_state[self.participants[1]] = ParticipantsState.In_Game_2
                 asyncio.new_event_loop().run_in_executor(None, self.game_dispatcher, 1)
 
     def game_dispatcher(self, sec):
         self.pong_game.execute()
         #TODO update db to record match result
+        print("match ended")
         
     async def handle_game_action(self, participant, message_json):
-        with self.instance_lock:
-            print(f'participant {participant} sent {message_json}')
+        if self.participants_state[participant] == ParticipantsState.In_Game_1:
+            await self.pong_game.recieve_player1_input(message_json)
+        elif self.participants_state[participant] == ParticipantsState.In_Game_2:
+            await self.pong_game.recieve_player2_input(message_json)
