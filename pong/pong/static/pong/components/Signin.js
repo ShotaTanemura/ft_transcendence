@@ -5,6 +5,31 @@ export class Signin extends Component {
         super(router, params, state);
         this.findElement("form.signin-form").onsubmit = this.handleSignin;
         this.findElement("#go-signup").onclick = this.goSignup
+		switch (window.location.hash) {
+			case '#methodNotAllowed':
+				window.alert('リクエストメソッドが不適切です');
+				break;
+			case '#failedToGetCode':
+				window.alert('認証コードの取得に失敗しました');
+				break;
+			case '#invalidParameters':
+				window.alert('パラメーターが不正です');
+				break;
+				case '#failedToGetToken':
+				window.alert('認証トークンの取得に失敗しました');
+				break;
+			case '#failedToGetUserInfo':
+				window.alert('ユーザー情報の取得に失敗しました');
+				break;
+			case '#userAlreadyExists':
+				window.alert('既に存在するユーザーです');
+				break;
+            case '#userDoesNotExist':
+                window.alert('該当するユーザーが存在しません');
+                break;
+            default:
+                break;
+        }
     }
 
     handleSignin = async (event) => {
@@ -44,6 +69,12 @@ export class Signin extends Component {
         return (`
             <h1>Signin</h1>
             <br/>
+            <form 
+                action="/pong/oauth/42/signin"
+                method="GET"
+                class="form-42oauth">
+                <button class="form-42oauth" type=submit>42 Signin</button>
+            </form>
             <form class="signin-form">
                 <label for="email">email: </label>
                 <input id="email" name="email" placeholder="email" type="email" max="320" required/>
