@@ -11,9 +11,10 @@ services:
         source: ./requirements/Nginx/conf.d/default.conf
         target: /etc/nginx/conf.d/default.conf
       - type: bind
-        source: ../typing-game
-        target: /var/www/html
-
+        source: ../pong/pong/static
+        target: /usr/share/nginx/html/static
+        # source: ../typing-game
+        # target: /var/www/html
     depends_on:
       app:
         condition: service_healthy
@@ -36,13 +37,20 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      redis:
+          condition: service_healthy
     env_file:
       - .env
 
+  redis:
+    image: "redis:7.4-rc2"
+    ports:
+      - "6379:6379"
+    healthcheck:
+        test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+
   db:
-    build:
-      context: ./requirements/Postgres/
-      dockerfile: ./Containerfile
+    image: "postgres:15.2"
     ports:
       - "5432:5432"
     volumes:
