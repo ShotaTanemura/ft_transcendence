@@ -109,7 +109,9 @@ class RoomManager:
                 self.room_state = RoomState.In_Game
                 #TODO change this allocation when you implement tournament
                 self.participants_state[self.participants[0]] = ParticipantsState.In_Game_1
+                await self.send_messege_to_group("send_individual_information", {"participant": str(self.participants[0].uuid), "contents": {"sender": "room-manager", "type": "player-number", "player": "player1"}})
                 self.participants_state[self.participants[1]] = ParticipantsState.In_Game_2
+                await self.send_messege_to_group("send_individual_information", {"participant": str(self.participants[1].uuid), "contents": {"sender": "room-manager", "type": "player-number", "player": "player2"}})
                 asyncio.new_event_loop().run_in_executor(None, self.game_dispatcher, 1)
 
     def game_dispatcher(self, sec):

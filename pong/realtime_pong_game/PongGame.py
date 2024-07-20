@@ -57,7 +57,7 @@ class PongGame:
             if is_scored:
                 self.evaluate_and_update_score(player_name)
                 break
-            await self.send_messege_to_group("send_game_information", {"ball": {"x_position": self.ball.x_position, "y_position": self.ball.y_position}, "player1_paddle": self.player1_paddle.position, "player2_paddle": self.player2_paddle.position})
+            await self.send_messege_to_group("send_game_information", {"sender": "PongGame", "type": "GameProperty", "contents" :{"ball": {"x_position": self.ball.x_position, "y_position": self.ball.y_position}, "player1_paddle": self.player1_paddle.position, "player2_paddle": self.player2_paddle.position}})
 
     def evaluate_and_update_score(self, player_name):
         if player_name == "player1":

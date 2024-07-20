@@ -38,6 +38,12 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 
     async def send_room_information(self, event):
         await self.send(text_data=json.dumps(event["contents"]))
+        if event["contents"]["type"] == "GameEnd":
+            self.close()
+
+    async def send_individual_information(self, event):
+        if event["contents"]["participant"] == str(self.user.uuid):
+            await self.send(text_data=json.dumps(event["contents"]["contents"]))
 
     async def send_game_information(self, event):
         await self.send(text_data=json.dumps(event["contents"])) 
