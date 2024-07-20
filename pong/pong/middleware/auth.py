@@ -4,6 +4,7 @@ from django.contrib.auth.models import AnonymousUser
 import jwt
 import re
 from pong.models import User
+from pong.utils.redis_client import redis_client
 from datetime import datetime, timedelta
 from functools import wraps
 from channels.db import database_sync_to_async
@@ -56,6 +57,12 @@ class JWTAuthenticationMiddleware:
 			return None
 
 		if not getJwtPayloadCookie(request):
+			return JsonResponse({
+				'message': 'unauthorized',
+				'status': 'unauthorized'
+			}, status=401)
+		token = request.COOKIES.get('token')
+		if redis_client.exists(token):
 			return JsonResponse({
 				'message': 'unauthorized',
 				'status': 'unauthorized'
