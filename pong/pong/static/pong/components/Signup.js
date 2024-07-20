@@ -28,58 +28,61 @@ export class Signup extends Component {
 		}
 	}
 
-	handleSignup = async (event) => {
-		event.preventDefault();
-		const signupJson = JSON.stringify({
-			"name": event.target.username.value,
-			"password": event.target.password.value,
-			"email": event.target.email.value,
-		});
-		try {
-			await this.registerUser(signupJson);
-			this.router.goNextPage("/");
-		} catch (error) {
-			alert(error);
-		}
-	}
+    handleSignup = async (event) => {
+        event.preventDefault();
+        const form = event.target;
+        const formData = new FormData(form);
 
-	registerUser = async (jsonData) => {
-		const response = await fetch("/pong/api/v1/auth/register", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: jsonData,
-		});
-		console.log(response);
-		const data = await response.json();
-		if (!response.ok) {
-			throw Error(data.status);
-		}
-	}
+        if (formData.get('password') !== form['repeat-password'].value) {
+            alert("Passwords do not match!");
+            return;
+        }
+        formData.delete('repeat-password');
 
-	get html() {
-		return `
-			<div>
-				<h1>Signup</h1>
+        try {
+            await this.registerUser(formData);
+            this.router.goNextPage("/");
+        } catch (error) {
+            alert(error);
+        }
+    }
+
+    registerUser = async (formData) => {
+        const response = await fetch("/pong/api/v1/auth/register", {
+            method: "POST",
+            body: formData,
+        });
+        console.log(response);
+        const data = await response.json();
+        if (!response.ok) {
+            throw Error(data.status);
+        }
+    }
+
+    get html() {
+        return `
+            <div>
+                <h1>Signup</h1>
 				<form 
 					action="/pong/oauth/42/signup"
 					method="GET"
 					class="form-42oauth">
 					<button class="form-42oauth" type=submit>42 Signup</button>
 				</form>
-				<form class="signup-form">
-					<label for="username">Username</label>
-					<input type=text placeholder="username" id="username" name="username" required></input><br/>
-					<label for="password">Password</label>
-					<input type=password placeholder="enter password" id="password" name="password" required></input><br/>
-					<label for="repeat-password">Repeat Password</label>
-					<input type=password placeholder="repeat password" id="repeat-password" name="repeat-password" required></input><br/>
-					<label for="email">Email</label>
-					<input type=email placeholder="email"id="email" name="email" required></input><br/>
-					<button class="form-submit" type=submit>sign up</button>
-				</form>
-			</div>
-		`;
-	}
+                <form class="signup-form" enctype="multipart/form-data">
+                    <label for="username">Username</label>
+                    <input type="text" placeholder="username" id="username" name="name" required><br/>
+                    <label for="password">Password</label>
+                    <input type="password" placeholder="enter password" id="password" name="password" required><br/>
+                    <label for="repeat-password">Repeat Password</label>
+                    <input type="password" placeholder="repeat password" id="repeat-password" name="repeat-password" required><br/>
+                    <label for="email">Email</label>
+                    <input type="email" placeholder="email" id="email" name="email" required><br/>
+                    <label for="icon">Icon</label>
+                    <input type="file" id="icon" name="icon" accept="image/*"><br/>
+                    <button class="form-submit" type="submit">sign up</button>
+                </form>
+            </div>
+        `;
+    }
 }
