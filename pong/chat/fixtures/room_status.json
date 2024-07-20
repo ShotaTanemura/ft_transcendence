@@ -1,0 +1,30 @@
+[
+  {
+    "model": "chat.RoomStatus",
+    "pk": 1,
+    "fields": {
+      "status": "public"
+    }
+  },
+  {
+    "model": "chat.RoomStatus",
+    "pk": 2,
+    "fields": {
+      "status": "private"
+    }
+  },
+  {
+    "model": "chat.RoomStatus",
+    "pk": 3,
+    "fields": {
+      "status": "activeed"
+    }
+  },
+  {
+    "model": "chat.RoomStatus",
+    "pk": 4,
+    "fields": {
+      "status": "locked"
+    }
+  }
+]
