@@ -12,8 +12,6 @@ import time
 class RoomState(Enum):
     Queuing = "queuing"
     Ready = "ready"
-    Matching = "matching"
-    Pending = "pending"
     In_Game = "in-game"
     Finished = "finished"
 
@@ -24,15 +22,11 @@ class ParticipantsState(Enum):
     In_Game_2 = "in-game2"
     Observer = "observer"
 
-class ParticipantResultState(Enum):
-    Qualified = "qualified"
-    Eliminated = "elimineted"
-
 class RoomManager:
     room_instances = dict()
     lock = Lock()
 
-    # create RoomModel
+    # get or create RoomManager instance
     @classmethod
     def get_instance(cls, room_name):
         with cls.lock:
@@ -40,6 +34,7 @@ class RoomManager:
                 cls.room_instances[room_name] = cls(room_name)
             return cls.room_instances[room_name]
 
+    # remove RoomManager instance
     @classmethod
     def remove_instance(cls, room_name):
         with cls.lock:
@@ -74,7 +69,8 @@ class RoomManager:
     # delete user from Room
     async def on_user_disconnected(self, user):
         with self.instance_lock:
-            #TODO don't delete user when the game has already started.
+            if self.room_state == RoomState.In_Game:
+                return 
             self.participants.remove(user)
             if len(self.participants) == 0:
                 self.__class__.remove_instance(self.room_name)
@@ -90,16 +86,15 @@ class RoomManager:
             }
         )
     
+    # event handler when receiving user message
     async def on_receive_user_message(self, participant, message):
         # TODO send error if sender is not participants
-        # TODO confirm the syntax is good
+        # TODO confirm the message syntax is good
         message_json = json.loads(message)
         if self.room_state == RoomState.Ready:
             await self.user_became_ready_for_game(participant, message_json)
         elif self.room_state == RoomState.In_Game:
             await self.handle_game_action(participant, message_json)
-        #elif self.room_state == RoomState.Finished:
-        #    print("do something")
 
     async def user_became_ready_for_game(self, participant, message_json):
         with self.instance_lock:
@@ -107,11 +102,10 @@ class RoomManager:
             self.participants_state[participant] = ParticipantsState.Ready
             if all(ParticipantsState.Ready == self.participants_state[key] for key in self.participants_state):
                 self.room_state = RoomState.In_Game
-                #TODO change this allocation when you implement tournament
+                #TODO change this allocation when implementing tournament
+                await self.send_messege_to_group("send_room_information", {"sender": "room-manager", "type": "all-participants-ready"})
                 self.participants_state[self.participants[0]] = ParticipantsState.In_Game_1
-                await self.send_messege_to_group("send_individual_information", {"participant": str(self.participants[0].uuid), "contents": {"sender": "room-manager", "type": "player-number", "player": "player1"}})
                 self.participants_state[self.participants[1]] = ParticipantsState.In_Game_2
-                await self.send_messege_to_group("send_individual_information", {"participant": str(self.participants[1].uuid), "contents": {"sender": "room-manager", "type": "player-number", "player": "player2"}})
                 asyncio.new_event_loop().run_in_executor(None, self.game_dispatcher, 1)
 
     def game_dispatcher(self, sec):

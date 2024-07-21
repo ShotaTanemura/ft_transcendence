@@ -24,6 +24,9 @@ export class GameHome extends Component {
 			case 'all-participants-connected':
 				this.setRouteContext("participants", message.contents);
 				this.goNextPage("/game-room");
+				break;
+			case 'all-participants-ready':
+				this.goNextPage("/pong");
 		}
 		
 	}

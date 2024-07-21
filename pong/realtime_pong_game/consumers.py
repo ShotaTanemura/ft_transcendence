@@ -6,16 +6,16 @@ from realtime_pong_game.RoomManager import RoomManager
 class PlayerConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
+        # register group name
+        self.room_name = "room_" + self.scope["url_route"]["kwargs"]["room_name"]
+        # get Room instance
+        self.room_manager = RoomManager.get_instance(self.room_name)
         # verify user
         if self.scope["user"] == AnonymousUser():
             await self.close()
             return
         # register user
         self.user = self.scope["user"]
-        # register group name
-        self.room_name = "room_" + self.scope["url_route"]["kwargs"]["room_name"]
-        # get Room instance
-        self.room_manager = RoomManager.get_instance(self.room_name)
         # accept connection first
         await self.accept()
         # add user to group
@@ -30,20 +30,17 @@ class PlayerConsumer(AsyncWebsocketConsumer):
             return
 
     async def receive(self, text_data=None, bytes_data=None):
+        # deliver message to room manager
+        # TODO This part occasionally throws an error indicating that the class member variable roommanager
         await self.room_manager.on_receive_user_message(self.user, text_data)
 
     async def disconnect(self, close_code):
-        await self.room_manager.on_user_disconnected(self.user)
+        if self.room_manager:
+            await self.room_manager.on_user_disconnected(self.user)
         await self.channel_layer.group_discard(self.room_name, self.channel_name)
 
     async def send_room_information(self, event):
         await self.send(text_data=json.dumps(event["contents"]))
-        if event["contents"]["type"] == "GameEnd":
-            await self.close()
-
-    async def send_individual_information(self, event):
-        if event["contents"]["participant"] == str(self.user.uuid):
-            await self.send(text_data=json.dumps(event["contents"]["contents"]))
 
     async def send_game_information(self, event):
         await self.send(text_data=json.dumps(event["contents"])) 

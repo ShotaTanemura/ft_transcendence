@@ -7,6 +7,7 @@ import { GameHome } from './components/GameHome.js'
 import { GameRoom } from './components/GameRoom.js'
 import { GameWaiting } from './components/GameWaiting.js'
 import { Error } from './components/Error.js'
+import { Pong } from './components/Pong.js'
 
 let router = new Router(document.getElementById("app"), [
 		{
@@ -44,6 +45,11 @@ let router = new Router(document.getElementById("app"), [
 			component: GameWaiting,
 			state: {}
 
+		},
+		{
+			path: "/pong",
+			component: Pong,
+			state: {}
 		}
 	],
 	{
