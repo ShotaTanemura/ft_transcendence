@@ -48,11 +48,13 @@ class PongGame:
         self.player1_score = 0
         self.player2_score = 0
     
-    def execute(self):
+    def execute(self, player1_name, player2_name):
         while self.player1_score < 5 and self.player2_score < 5:
+            async_to_sync(self.send_messege_to_group)("send_game_information", {"sender": "PongGame", "type": "ScoreChanged", "contents": {"player1": {"name": player1_name, "score": self.player1_score}, "player2": {"name": player2_name, "score": self.player2_score}}})
             time.sleep(2)
-            async_to_sync(self.run)()
             self.ball = Ball(FIELD_WIDTH / 2, FIELD_HEIGHT / 2)
+            async_to_sync(self.run)()
+        async_to_sync(self.send_messege_to_group)("send_game_information", {"sender": "PongGame", "type": "GameEnded", "contents": {"player1": {"name": player1_name, "score": self.player1_score}, "player2": {"name": player2_name, "score": self.player2_score}}})
         
     async def run(self):
         running = True
