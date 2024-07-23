@@ -13,6 +13,8 @@ RUN python -m venv /app/.venv && \
 	. /app/.venv/bin/activate && \
 	pip install -r requirements.txt
 
+RUN echo 'source /app/.venv/bin/activate' >> ~/.bashrc
+
 COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh
 
 RUN chmod +x /usr/local/bin/entrypoint.sh
