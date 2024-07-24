@@ -1,0 +1,11 @@
+name: ruff
+on: push
+jobs:
+  ruff:
+    name: syntax-check-python
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: chartboost/ruff-action@v1
+        with:
+          args: 'format --check'
