@@ -1,4 +1,4 @@
-import {Component} from "../core/component.js"
+import { Component } from "../core/component.js"
 import { Load } from "./Load.js";
 
 export class GameHome extends Component {
@@ -10,23 +10,26 @@ export class GameHome extends Component {
 	}
 
 	onWebSocketOpen = (event) => {
-		console.log("open!");
 		this.goNextPage("/game-waiting");
 	}
 
 	onWebSocketClose = (event) => {
-		this.goNextPage("/error");
+		this.goNextPage("/game-home");
 	}
 
 	onMessage = (event) => {
 		const message = JSON.parse(event.data);
 		switch (message.type) {
+			case 'waiting-for-other-participants':
+				this.goNextPage("/game-waiting");
+				break;
 			case 'all-participants-connected':
 				this.setRouteContext("participants", message.contents);
 				this.goNextPage("/game-room");
 				break;
 			case 'all-participants-ready':
 				this.goNextPage("/pong");
+				break;
 		}
 		
 	}

@@ -45,15 +45,21 @@ export class Pong extends Component {
     onMessage = (event) => {
 		  const message = JSON.parse(event.data);
       switch (message.type){
-        case "GameObjectLocation":
+        case "game-objects-moved":
           this.ball.x = message.contents.ball.x_position;
           this.ball.y = message.contents.ball.y_position;
           this.leftPaddle.y = message.contents.player1_paddle;
           this.rightPaddle.y = message.contents.player2_paddle;
           break;
-        case "PlayerScored":
+        case "player-scored":
+          document.getElementById("player1-name").innerHTML = message.contents.player1.name
+          document.getElementById("player1-score").innerHTML = message.contents.player1.score
+          document.getElementById("player2-name").innerHTML = message.contents.player2.name
+          document.getElementById("player2-score").innerHTML = message.contents.player2.score
           break;
-        case "GameEnded":
+        case "game-ended":
+          this.connection.close();
+          this.goNextPage("/game-home");
           break;
 
       }
@@ -82,6 +88,17 @@ export class Pong extends Component {
     get html() {
         return (`
             <main class="game">
+              <div class="container">
+                <div class="player1">
+                  <span id="player1-name" class="name">Player 1</span> 
+                  &nbsp;
+                  <span class="score">Score: <span id="player1-score">0</span></span>
+                </div>
+                <div class="player2">
+                  <span id="player2-name" class="name">Player 2</span>
+                  <span class="score">Score: <span id="player2-score">0</span></span>
+                </div>
+              </div>
               <canvas width="1500" height="585" class="ponggame"></canvas>
             </main>
         `)

@@ -50,11 +50,11 @@ class PongGame:
     
     def execute(self, player1_name, player2_name):
         while self.player1_score < 5 and self.player2_score < 5:
-            async_to_sync(self.send_messege_to_group)("send_game_information", {"sender": "PongGame", "type": "ScoreChanged", "contents": {"player1": {"name": player1_name, "score": self.player1_score}, "player2": {"name": player2_name, "score": self.player2_score}}})
+            async_to_sync(self.send_messege_to_group)("send_game_information", {"sender": "PongGame", "type": "player-scored", "contents": {"player1": {"name": player1_name, "score": self.player1_score}, "player2": {"name": player2_name, "score": self.player2_score}}})
             time.sleep(2)
             self.ball = Ball(FIELD_WIDTH / 2, FIELD_HEIGHT / 2)
             async_to_sync(self.run)()
-        async_to_sync(self.send_messege_to_group)("send_game_information", {"sender": "PongGame", "type": "GameEnded", "contents": {"player1": {"name": player1_name, "score": self.player1_score}, "player2": {"name": player2_name, "score": self.player2_score}}})
+        async_to_sync(self.send_messege_to_group)("send_game_information", {"sender": "PongGame", "type": "game-ended", "contents": {"player1": {"name": player1_name, "score": self.player1_score}, "player2": {"name": player2_name, "score": self.player2_score}}})
         
     async def run(self):
         running = True
@@ -67,7 +67,7 @@ class PongGame:
             if is_scored:
                 self.evaluate_and_update_score(player_name)
                 break
-            await self.send_messege_to_group("send_game_information", {"sender": "PongGame", "type": "GameObjectLocation", "contents" :{"ball": {"x_position": self.ball.x_position, "y_position": self.ball.y_position}, "player1_paddle": self.player1_paddle.position, "player2_paddle": self.player2_paddle.position}})
+            await self.send_messege_to_group("send_game_information", {"sender": "PongGame", "type": "game-objects-moved", "contents" :{"ball": {"x_position": self.ball.x_position, "y_position": self.ball.y_position}, "player1_paddle": self.player1_paddle.position, "player2_paddle": self.player2_paddle.position}})
 
     def evaluate_and_update_score(self, player_name):
         if player_name == "player1":
