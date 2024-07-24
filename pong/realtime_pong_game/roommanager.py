@@ -5,7 +5,7 @@ from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from threading import Lock
 from enum import Enum, auto
-from realtime_pong_game.PongGame import PongGame
+from realtime_pong_game.ponggame import PongGame
 
 import time
 
@@ -70,6 +70,7 @@ class RoomManager:
     async def on_user_disconnected(self, user):
         with self.instance_lock:
             #TODO send message when RoomState is ready
+            
             if self.room_state == RoomState.In_Game:
                 return 
             self.participants.remove(user)

@@ -1,7 +1,7 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.contrib.auth.models import AnonymousUser
-from realtime_pong_game.RoomManager import RoomManager
+from realtime_pong_game.roommanager import RoomManager
 
 class PlayerConsumer(AsyncWebsocketConsumer):
 
