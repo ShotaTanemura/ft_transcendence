@@ -110,9 +110,9 @@ paths:
           "404":
             $ref: "#/components/responses/notFoundError"
    /pong/api/v1/users/{uuid}/icon:
-      patch:
-        summary: ユーザーアイコン画像アップデート
-        description: ユーザーアイコン画像アップデート
+      post:
+        summary: ユーザーアイコン画像アップロード
+        description: ユーザーアイコン画像アップロード
         parameters:
           - name: uuid
             in: path
@@ -133,11 +133,11 @@ paths:
           required: true
         responses:
           "201":
-            description: ユーザーアイコン画像のアップデート完了
+            description: ユーザーアイコン画像のアップロード完了
             content:
                 "application/json":
                   schema:
-                    $ref: "#/components/schemas/patchUserResponse"
+                    $ref: "#/components/schemas/postUserIconResponse"
           "400":
             $ref: "#/components/responses/badRequest"
           "404":
@@ -252,7 +252,7 @@ components:
           type: string
           description: メールアドレス
           example: example@email.com
-    patchUserResponse:
+    postUserIconResponse:
       properties:
         uuid:
           type: string
