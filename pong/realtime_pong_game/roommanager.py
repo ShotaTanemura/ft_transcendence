@@ -63,7 +63,10 @@ class RoomManager:
             self.participants_state[user] = ParticipantsState.Not_In_Place
             if len(self.participants) == self.max_of_participants:
                 self.room_state = RoomState.Ready
-                await self.send_messege_to_group("send_room_information", {"sender": "room-manager", "type": "all-participants-connected", "contents": [participant.name for participant in self.participants]})
+                await self.send_messege_to_group("send_room_information",\
+                    {"sender": "room-manager",\
+                    "type": "all-participants-connected",\
+                    "contents": [participant.name for participant in self.participants]})
         return (True, "")
 
     # delete user from Room
@@ -105,16 +108,19 @@ class RoomManager:
             if all(ParticipantsState.Ready == self.participants_state[key] for key in self.participants_state):
                 self.room_state = RoomState.In_Game
                 #TODO change this allocation when implementing tournament
-                await self.send_messege_to_group("send_room_information", {"sender": "room-manager", "type": "all-participants-ready"})
+                await self.send_messege_to_group("send_room_information",\
+                    {"sender": "room-manager", "type": "all-participants-ready"})
                 self.participants_state[self.participants[0]] = ParticipantsState.In_Game_1
                 self.participants_state[self.participants[1]] = ParticipantsState.In_Game_2
-                asyncio.new_event_loop().run_in_executor(None, self.game_dispatcher, self.participants[0].name, self.participants[1].name)
+                asyncio.new_event_loop().run_in_executor(None, self.game_dispatcher,\
+                    self.participants[0].name, self.participants[1].name)
 
     def game_dispatcher(self, player1_name, player2_name):
         self.pong_game.execute(player1_name=player1_name, player2_name=player2_name)
         #TODO update db to record match result
         self.room_state = RoomState.Finished
-        async_to_sync(self.send_messege_to_group)("send_room_information", {"sender": "room-manager", "type": "GameEnd"})
+        async_to_sync(self.send_messege_to_group)("send_room_information",\
+            {"sender": "room-manager", "type": "game-ended"})
         
     async def handle_game_action(self, participant, message_json):
         if self.participants_state[participant] == ParticipantsState.In_Game_1:
