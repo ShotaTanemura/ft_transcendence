@@ -21,13 +21,20 @@ django_asgi_app = application = get_asgi_application()
 from pong.middleware.auth import ChannelsJWTAuthenticationMiddleware
 from realtime_pong_game.consumers import PlayerConsumer
 
-application = ProtocolTypeRouter({
-    "http": django_asgi_app,
-    "websocket": AllowedHostsOriginValidator(
-        ChannelsJWTAuthenticationMiddleware(
-            URLRouter([
-                re_path(r"realtime-pong/(?P<room_name>\w+)/$", PlayerConsumer.as_asgi()),
-            ])
-        )
-    ),
-})
+application = ProtocolTypeRouter(
+    {
+        "http": django_asgi_app,
+        "websocket": AllowedHostsOriginValidator(
+            ChannelsJWTAuthenticationMiddleware(
+                URLRouter(
+                    [
+                        re_path(
+                            r"realtime-pong/(?P<room_name>\w+)/$",
+                            PlayerConsumer.as_asgi(),
+                        ),
+                    ]
+                )
+            )
+        ),
+    }
+)

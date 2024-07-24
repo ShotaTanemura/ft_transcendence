@@ -3,8 +3,8 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from django.contrib.auth.models import AnonymousUser
 from realtime_pong_game.roommanager import RoomManager
 
-class PlayerConsumer(AsyncWebsocketConsumer):
 
+class PlayerConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         # register group name
         self.room_name = "room_" + self.scope["url_route"]["kwargs"]["room_name"]
@@ -19,9 +19,7 @@ class PlayerConsumer(AsyncWebsocketConsumer):
         # accept connection first
         await self.accept()
         # add user to group
-        await self.channel_layer.group_add(
-            self.room_name, self.channel_name
-        )
+        await self.channel_layer.group_add(self.room_name, self.channel_name)
         # add user to Room
         is_success, error_message = await self.room_manager.on_user_connected(self.user)
         # TODO send error message before close
@@ -42,4 +40,4 @@ class PlayerConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps(event["contents"]))
 
     async def send_game_information(self, event):
-        await self.send(text_data=json.dumps(event["contents"])) 
+        await self.send(text_data=json.dumps(event["contents"]))
