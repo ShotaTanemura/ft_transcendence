@@ -125,8 +125,11 @@ paths:
           content:
             "multipart/form-data":
               schema:
-                type: string
-                format: binary"
+                type: object
+                properties:
+                  icon:
+                    type: string
+                    format: binary
           required: true
         responses:
           "201":
