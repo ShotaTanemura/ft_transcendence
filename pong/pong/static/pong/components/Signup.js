@@ -44,7 +44,7 @@ export class Signup extends Component {
 		}
 
         let formData = new FormData();
-        const fileField = document.querySelector('input[type="file"]');
+        const fileField = event.target.icon;
 
         formData.append('icon', fileField.files[0]);
 
