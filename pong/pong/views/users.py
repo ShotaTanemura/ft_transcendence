@@ -3,6 +3,7 @@ from pong.models import User, UserIconUpdateForm
 from django.views.decorators.csrf import csrf_exempt
 from pong.middleware.auth import jwt_exempt
 
+
 @csrf_exempt
 def get_user(request, uuid):
     if request.method != "GET":
@@ -27,6 +28,7 @@ def get_user(request, uuid):
         status=200,
     )
 
+
 @csrf_exempt
 @jwt_exempt
 def user_icon(request, uuid):
@@ -38,10 +40,9 @@ def user_icon(request, uuid):
     icon = request.FILES.get("icon", None)
 
     if not icon:
-        return JsonResponse({
-            'message': 'Invalid parameters',
-            'status': 'invalidParams'
-        }, status=400)
+        return JsonResponse(
+            {"message": "Invalid parameters", "status": "invalidParams"}, status=400
+        )
 
     user = User.objects.filter(uuid=uuid).first()
 
@@ -53,11 +54,10 @@ def user_icon(request, uuid):
     form = UserIconUpdateForm(request.POST, request.FILES, instance=user)
 
     if not form.is_valid():
-        return JsonResponse({
-            'message': 'Invalid parameters',
-            'status': 'invalidParams'
-        }, status=400)
-    
+        return JsonResponse(
+            {"message": "Invalid parameters", "status": "invalidParams"}, status=400
+        )
+
     form.save()
 
     return JsonResponse(

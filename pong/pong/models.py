@@ -58,6 +58,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     class Meta:
         db_table = "users"
 
+
 class UserIconUpdateForm(forms.ModelForm):
     class Meta:
         model = get_user_model()
