@@ -13,8 +13,6 @@ services:
       - type: bind
         source: ../pong/pong/static
         target: /usr/share/nginx/html/static
-        # source: ../typing-game
-        # target: /var/www/html
     depends_on:
       app:
         condition: service_healthy
