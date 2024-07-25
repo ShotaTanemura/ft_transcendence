@@ -5,6 +5,8 @@ from django.contrib.auth.models import (
     PermissionsMixin,
     BaseUserManager,
 )
+from django import forms
+from django.contrib.auth import get_user_model
 
 
 class UserManager(BaseUserManager):
@@ -55,3 +57,9 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     class Meta:
         db_table = "users"
+
+
+class UserIconUpdateForm(forms.ModelForm):
+    class Meta:
+        model = get_user_model()
+        fields = ["icon"]

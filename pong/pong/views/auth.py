@@ -24,29 +24,26 @@ def register(request):
             {"message": "Method is not allowed", "status": "invalidParams"}, status=400
         )
 
-    name = request.POST.get("name")
-    email = request.POST.get("email")
-    password = request.POST.get("password")
-    icon = request.FILES.get("icon", None)
+    data = json.loads(request.body)
 
-    if not all([name, email, password]):
+    if "name" not in data or "email" not in data or "password" not in data:
         return JsonResponse(
             {"message": "Invalid parameters", "status": "invalidParams"}, status=400
         )
 
     if (
-        User.objects.filter(name=name).exists()
-        or User.objects.filter(email=email).exists()
+        User.objects.filter(name=data["name"]).exists()
+        or User.objects.filter(email=data["email"]).exists()
     ):
         return JsonResponse(
             {"message": "User already exists", "status": "registerConflict"}, status=409
         )
 
     user = User.objects.create_user(
-        name=name, email=email, password=password, icon=icon
+        name=data["name"], email=data["email"], password=data["password"]
     )
 
-    return JsonResponse({"uuid": str(user.uuid)}, status=201)
+    return JsonResponse({"uuid": user.uuid}, status=201)
 
 
 @jwt_exempt
