@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>タイピングゲーム</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <div id="start">
+    <button id="startButton" class="button">スタート</button>
+  </div>
+  <div id="game" class="hidden">
+    <div id="timer">10</div>
+    <div id="word"></div>
+    <div id="inputDisplay"></div>
+    <!-- 入力された文字を表示するための要素 -->
+    <div id="score">0</div>
+    <canvas id="timerCanvas" width="200" height="200"></canvas>
+  </div>
+  <div id="result" class="hidden">
+    <div id="finalScore"></div>
+    <button id="restartButton" class="button">リスタート</button>
+  </div>
+  <div id="playersImage">
+    <img
+      src="img/person-use-notePc.png"
+      alt="Image of player"
+      class="player1"
+    />
+  </div>
+  <!-- <script src="scripts/gameController.js" type="module"></script>
+  <script src="scripts/loadWords.js" type="module"></script>
+  <script src="scripts/uiController.js" type="module"></script>
+  <script src="scripts/inputHandler.js" type="module"></script>
+  <script src="scripts/main.js" type="module"></script> -->
+</html>
