@@ -93,48 +93,62 @@ class UserIconTest(TestCase):
         self.client.cookies["refresh_token"] = self.refresh_token
 
     def test_user_icon_post_normal(self):
-        image = Image.new('RGB', (100, 100), color = 'red')
-        tmp_file = tempfile.NamedTemporaryFile(suffix='.jpg')
+        image = Image.new("RGB", (100, 100), color="red")
+        tmp_file = tempfile.NamedTemporaryFile(suffix=".jpg")
         image.save(tmp_file)
         tmp_file.seek(0)
-        
-        with open(tmp_file.name, 'rb') as img:
-            response = self.client.post(reverse('pong:user_icon', kwargs={'uuid': str(self.user.uuid)}), {'icon': img}, format='multipart')
+
+        with open(tmp_file.name, "rb") as img:
+            response = self.client.post(
+                reverse("pong:user_icon", kwargs={"uuid": str(self.user.uuid)}),
+                {"icon": img},
+                format="multipart",
+            )
 
         self.assertEqual(response.status_code, 200)
         self.user.refresh_from_db()
-        self.assertTrue(self.user.icon.name.startswith('uploads/'))
+        self.assertTrue(self.user.icon.name.startswith("uploads/"))
 
     def test_user_icon_post_no_file(self):
-        response = self.client.post(reverse('pong:user_icon', kwargs={'uuid': str(self.user.uuid)}))
+        response = self.client.post(
+            reverse("pong:user_icon", kwargs={"uuid": str(self.user.uuid)})
+        )
 
         self.assertEqual(response.status_code, 400)
         self.user.refresh_from_db()
-        self.assertFalse(self.user.icon.name.startswith('uploads/'))
+        self.assertFalse(self.user.icon.name.startswith("uploads/"))
 
     def test_user_icon_post_invalid_data(self):
-        image = 'string'
-        
-        response = self.client.post(reverse('pong:user_icon', kwargs={'uuid': str(self.user.uuid)}), {'icon': image}, format="multipart")
+        image = "string"
+
+        response = self.client.post(
+            reverse("pong:user_icon", kwargs={"uuid": str(self.user.uuid)}),
+            {"icon": image},
+            format="multipart",
+        )
 
         self.assertEqual(response.status_code, 400)
         self.user.refresh_from_db()
-        self.assertFalse(self.user.icon.name.startswith('uploads/'))
+        self.assertFalse(self.user.icon.name.startswith("uploads/"))
 
     def test_user_icon_post_user_not_found(self):
-        image = Image.new('RGB', (100, 100), color = 'red')
-        tmp_file = tempfile.NamedTemporaryFile(suffix='.jpg')
+        image = Image.new("RGB", (100, 100), color="red")
+        tmp_file = tempfile.NamedTemporaryFile(suffix=".jpg")
         image.save(tmp_file)
         tmp_file.seek(0)
-        
-        with open(tmp_file.name, 'rb') as img:
-            response = self.client.post(reverse('pong:user_icon', kwargs={'uuid': str(uuid.uuid4())}), {'icon': img}, format='multipart')
+
+        with open(tmp_file.name, "rb") as img:
+            response = self.client.post(
+                reverse("pong:user_icon", kwargs={"uuid": str(uuid.uuid4())}),
+                {"icon": img},
+                format="multipart",
+            )
 
         self.assertEqual(response.status_code, 404)
         self.user.refresh_from_db()
-        self.assertFalse(self.user.icon.name.startswith('uploads/'))
+        self.assertFalse(self.user.icon.name.startswith("uploads/"))
 
     def tearDown(self):
-            if self.user.icon:
-                if os.path.exists(self.user.icon.path):
-                    os.remove(self.user.icon.path)
+        if self.user.icon:
+            if os.path.exists(self.user.icon.path):
+                os.remove(self.user.icon.path)
