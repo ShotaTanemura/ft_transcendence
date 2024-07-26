@@ -88,6 +88,10 @@ def refresh_token(request):
             status=400,
         )
 
+    if redis_client.exists(refresh_token):
+        return JsonResponse(
+            {"message": "unauthorized", "status": "unauthorized"}, status=401
+        )
     try:
         refresh_payload = jwt.decode(
             refresh_token,
