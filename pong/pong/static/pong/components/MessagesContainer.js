@@ -23,12 +23,24 @@ export class MessagesContainer extends Component {
 
             form.addEventListener('submit', async (event) => {
                 event.preventDefault();
-                const formData = new FormData(form);
+                const chatroomName = document.querySelector('#chatroomName').value;
+                const password = document.querySelector('#password').value;
+                const status = document.querySelector('#status').value;
+
+                const formData = {
+                    name: chatroomName,
+                    password: password,
+                    status: status
+                };
+
                 const response = await fetch('/chat/api/v1/create_chat_room', {
                     method: 'POST',
-                    body: formData,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData),
                 });
-                console.log(response);
+
                 const data = await response.json();
                 if (response.ok) {
                     alert('Chatroom created successfully!');
@@ -75,6 +87,16 @@ export class MessagesContainer extends Component {
                     <form id="createChatroomForm">
                         <label for="chatroomName">Chatroom Name</label>
                         <input type="text" id="chatroomName" name="name" required>
+                        
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" required>
+
+                        <label for="status">Status</label>
+                        <select id="status" name="status" required>
+                            <option value="public">Public</option>
+                            <option value="private">Private</option>
+                        </select>
+
                         <button type="submit">Create</button>
                     </form>
                 </div>
@@ -82,6 +104,7 @@ export class MessagesContainer extends Component {
         `);
     }
 }
+
 
 
 

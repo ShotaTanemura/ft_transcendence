@@ -21,7 +21,10 @@ def create_chat_room(request):
     try:
         user = verify_user(request)
 
-        
+        logger.info("create_chat_room")
+        data = json.loads(request.body)
+        logger.info(data)
+
         return JsonResponse(
             {"message": "created chat room", "status": "Created"}, status=201
         )

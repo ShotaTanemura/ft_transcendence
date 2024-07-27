@@ -4,7 +4,7 @@ from pong.models import User
 
 
 class RoomStatus(models.Model):
-    room = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.AutoField(primary_key=True)
     status = models.CharField(max_length=20, blank=False, null=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
