@@ -1,6 +1,10 @@
 from django.db import models
 import uuid
 from pong.models import User
+from django.db.utils import IntegrityError
+from logging import getLogger
+
+logger = getLogger(__name__)
 
 
 class RoomStatus(models.Model):
@@ -25,6 +29,35 @@ class RoomStatus(models.Model):
         ordering = ["-created_at"]
 
 
+class RoomsManager(models.Manager):
+    def create_room(self, name, password, status, user):
+        if not name:
+            raise ValueError("nameを入力してください")
+        if not password:
+            raise ValueError("passwordを入力してください")
+        try:
+            room_status = RoomStatus.objects.get(status=status)
+            room = self.model(name=name, password=password, room_status_id=room_status)
+            room.save(using=self._db)
+
+            logger.info(room)
+            logger.info(user)
+            user_room = UserRooms(user_id=user, room_id=room)
+            user_room.save(using=self._db)
+
+            return room
+        except IntegrityError as e:
+            logger.error(e)
+            if "duplicate key value violates unique constraint" in str(e):
+                raise ValueError("同じ名前の部屋が既に存在します")
+            else:
+                raise e
+
+    def get_rooms(self):
+        rooms = self.model.objects.all()
+        return rooms
+
+
 class Rooms(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(unique=True, blank=False, max_length=20)
@@ -34,18 +67,10 @@ class Rooms(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    objects = RoomsManager()
+
     def __str__(self):
         return self.name
-
-    class RoomsManager(models.Manager):
-        def create_room(self, name, password):
-            room = self.model(name=name, password=password)
-            room.save(using=self._db)
-            return room
-
-        def get_rooms(self):
-            rooms = self.model.objects.all()
-            return rooms
 
     class Meta:
         db_table = "rooms"
@@ -59,12 +84,6 @@ class UserRooms(models.Model):
     room_id = models.ForeignKey(Rooms, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-    class UserRoomsManager(models.Manager):
-        def create_user_room(self, user_id, room_id):
-            user_room = self.model(user_id=user_id, room_id=room_id)
-            user_room.save(using=self._db)
-            return user_room
 
     class Meta:
         db_table = "user_rooms"

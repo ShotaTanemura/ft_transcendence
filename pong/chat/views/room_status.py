@@ -15,11 +15,10 @@ from chat.models import RoomStatus
 
 logger = getLogger(__name__)
 
+
 def serialize_room_status(room_status):
-    return {
-        "id": room_status.id,
-        "status": room_status.status
-    }
+    return {"id": room_status.id, "status": room_status.status}
+
 
 @jwt_exempt
 @csrf_exempt
@@ -28,7 +27,8 @@ def room_status(request):
         user = verify_user(request)
         if request.method != "GET":
             return JsonResponse(
-                {"message": "Method is not allowed", "status": "invalidParams"}, status=400
+                {"message": "Method is not allowed", "status": "invalidParams"},
+                status=400,
             )
         logger.info("create_chat_room")
 
@@ -37,10 +37,10 @@ def room_status(request):
         logger.info(serialized_status)
 
         return JsonResponse(
-            {"message": "success", "status": "OK", "room_statuses": serialized_status}, 
-            status=200
+            {"message": "success", "status": "OK", "room_statuses": serialized_status},
+            status=200,
         )
-    
+
     except AppError as e:
         logger.error(e)
         return JsonResponse(e.to_dict(), status=e.status_code)
