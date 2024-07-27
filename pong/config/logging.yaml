@@ -1,0 +1,31 @@
+version: 1
+disable_existing_loggers: False
+formatters:
+  standard:
+    format: "[%(asctime)s] [%(levelname)s] : [%(funcName)s] %(message)s"
+handlers:
+  file:
+    class: logging.handlers.RotatingFileHandler
+    level: DEBUG
+    formatter: standard
+    filename: logs/development.log
+    maxBytes: 5000000 # 5MB
+    backupCount: 10
+  console_stdout:
+    class: logging.StreamHandler
+    level: DEBUG
+    formatter: standard
+    stream: ext://sys.stdout
+  console_stderr:
+    class: logging.StreamHandler
+    level: ERROR
+    formatter: standard
+    stream: ext://sys.stderr
+root:
+  level: DEBUG
+  handlers: [file, console_stdout, console_stderr]
+loggers:
+  werkzeug:
+    level: DEBUG
+    handlers: [file, console_stdout, console_stderr]
+    propagate: False
