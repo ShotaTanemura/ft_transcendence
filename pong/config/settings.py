@@ -177,9 +177,8 @@ import logging.config
 import yaml
 
 LOGGING_CONFIG = None
-conf_file_path = 'config/logging.yaml'
+conf_file_path = "config/logging.yaml"
 
 with open(conf_file_path, "r") as f:
     conf = yaml.safe_load(f.read())
 logging.config.dictConfig(conf)
-
