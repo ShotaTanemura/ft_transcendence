@@ -1,8 +1,8 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.contrib.auth.models import AnonymousUser
 
-class SampleConsumer(AsyncWebsocketConsumer):
 
+class SampleConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         if self.scope["user"] == AnonymousUser():
             await self.close()
@@ -15,4 +15,3 @@ class SampleConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data=None, bytes_data=None):
         print(text_data)
-
