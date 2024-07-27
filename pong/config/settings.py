@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "pong",
-    'chat.apps.ChatConfig',
+    "chat.apps.ChatConfig",
 ]
 
 MIDDLEWARE = [
