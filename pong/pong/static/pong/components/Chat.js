@@ -6,6 +6,18 @@ import { DirectoryContainer } from "./DirectoryContainer.js";
 export class Chat extends Component {
     constructor(router, params, state) {
         super(router, params, state);
+        this.verifyJwtToken();
+    }
+
+    verifyJwtToken = async () => {
+        const response = await fetch("/pong/api/v1/auth/token/verify", {
+            method: "POST",
+        });
+        console.log(response);
+        const data = await response.json();
+        if (!response.ok) {
+            this.router.goNextPage("/");
+        }
     }
 
     get html() {

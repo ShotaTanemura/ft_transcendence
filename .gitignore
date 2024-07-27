@@ -168,3 +168,4 @@ package-lock.json
 
 # ignore Authorization keys
 *.pem
+*.png
