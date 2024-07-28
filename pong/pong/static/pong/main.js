@@ -3,11 +3,11 @@ import { Router } from './core/router.js'
 import { Signup } from './components/Signup.js'
 import { Signin } from './components/Signin.js'
 import { Home } from './components/Home.js'
-import { GameHome } from './components/GameHome.js'
-import { GameRoom } from './components/GameRoom.js'
-import { GameWaiting } from './components/GameWaiting.js'
+import { PongGameHome } from './components/PongGameHome.js'
+import { PongGameRoom } from './components/PongGameRoom.js'
+import { PongGameWaiting } from './components/PongGameWaiting.js'
+import { PongGame } from './components/PongGame.js'
 import { Error } from './components/Error.js'
-import { Pong } from './components/Pong.js'
 import { Profile } from './components/Profile.js'
 
 let router = new Router(document.getElementById("app"), [
@@ -32,24 +32,24 @@ let router = new Router(document.getElementById("app"), [
 			state: {}
 		},
 		{
-			path: "/game-home",
-			component: GameHome,
+			path: "/pong-game-home",
+			component: PongGameHome,
 			state: {}
 		},
 		{
-			path: "/game-room",
-			component: GameRoom,
+			path: "/pong-game-room",
+			component: PongGameRoom,
 			state: {}
 		},
 		{
-			path: "/game-waiting",
-			component: GameWaiting,
+			path: "/pong-game-waiting",
+			component: PongGameWaiting,
 			state: {}
 
 		},
 		{
-			path: "/pong",
-			component: Pong,
+			path: "/pong-game",
+			component: PongGame,
 			state: {}
 		},
 		{

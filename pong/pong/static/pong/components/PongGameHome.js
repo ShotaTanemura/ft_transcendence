@@ -1,7 +1,7 @@
 import { Component } from "../core/component.js"
 import { Load } from "./Load.js";
 
-export class GameHome extends Component {
+export class PongGameHome extends Component {
 	constructor(router, parameters, state) {
 		new Load(router, parameters, state).onload()
 		super(router, parameters, state);
@@ -10,25 +10,25 @@ export class GameHome extends Component {
 	}
 
 	onWebSocketOpen = (event) => {
-		this.goNextPage("/game-waiting");
+		this.goNextPage("/pong-game-waiting");
 	}
 
 	onWebSocketClose = (event) => {
-		this.goNextPage("/game-home");
+		this.goNextPage("/pong-game-home");
 	}
 
 	onMessage = (event) => {
 		const message = JSON.parse(event.data);
 		switch (message.type) {
 			case 'waiting-for-other-participants':
-				this.goNextPage("/game-waiting");
+				this.goNextPage("/pong-game-waiting");
 				break;
 			case 'all-participants-connected':
 				this.setRouteContext("participants", message.contents);
-				this.goNextPage("/game-room");
+				this.goNextPage("/pong-game-room");
 				break;
 			case 'all-participants-ready':
-				this.goNextPage("/pong");
+				this.goNextPage("/pong-game");
 				break;
 		}
 		
@@ -58,5 +58,4 @@ export class GameHome extends Component {
 	}
 }
 
-export default GameHome;
-
+export default PongGameHome;

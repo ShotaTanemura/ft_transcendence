@@ -11,7 +11,7 @@ export class Home extends Component {
 	}
 
 	goRealtime = () => {
-		this.router.goNextPage("/game-home");
+		this.router.goNextPage("/pong-game-home");
 	}
 
     verifyJwtToken = async () => {

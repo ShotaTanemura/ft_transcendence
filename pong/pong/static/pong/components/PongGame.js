@@ -1,6 +1,6 @@
 import { Component } from "../core/component.js";
 
-export class Pong extends Component {
+export class PongGame extends Component {
 
     constructor(router, parameters, state) {
         super(router, parameters, state);
