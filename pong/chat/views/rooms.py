@@ -15,8 +15,10 @@ from chat.models import Rooms
 
 logger = getLogger(__name__)
 
+
 def serialize_rooms(room):
     return {"uuid": str(room.uuid), "name": room.name}
+
 
 @jwt_exempt
 @csrf_exempt
@@ -28,9 +30,9 @@ def search_rooms(request):
                 {"message": "Method is not allowed", "status": "invalidParams"},
                 status=400,
             )
-        query = request.GET.get('query', '') 
+        query = request.GET.get("query", "")
         logger.info("search_rooms")
-        
+
         # if query:
         #     rooms = Rooms.objects.filter(name__icontains=query)
         # else:
@@ -52,6 +54,7 @@ def search_rooms(request):
         logger.error(e)
         return JsonResponse({"message": e}, status=500)
 
+
 def rooms(request):
     try:
         user = verify_user(request)
@@ -60,9 +63,9 @@ def rooms(request):
                 {"message": "Method is not allowed", "status": "invalidParams"},
                 status=400,
             )
-        query = request.GET.get('query', '') 
+        query = request.GET.get("query", "")
         logger.info("search_rooms")
-        
+
         # if query:
         #     rooms = Rooms.objects.filter(name__icontains=query)
         # else:
