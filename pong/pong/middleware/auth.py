@@ -60,6 +60,16 @@ class JWTAuthenticationMiddleware:
         return self.get_response(request)
 
     def process_view(self, request, view_func, view_args, view_kwargs):
+        #TODO Not knowing how to access the application server
+        #     through authentication with Prometheus, 
+        #     so I've made it so that requests to the /metrics path
+        #     bypass JWT authentication and are accessible to anyone.
+        #     Of course, the server's metrics should not be accessible
+        #     to everyone, so we need to find a better solution.
+        exempt_paths = ['/metrics']  # Add paths to be exempted
+        if any(request.path.startswith(path) for path in exempt_paths):
+            return None
+
         if getattr(view_func, "jwt_exempt", False):
             return None
 
