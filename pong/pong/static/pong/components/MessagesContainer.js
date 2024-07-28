@@ -6,6 +6,22 @@ export class MessagesContainer extends Component {
         this.initEventListeners();
     }
 
+    async fetchMessages() {
+        try {
+            const response = await fetch('http://localhost:8001/chat/api/v1/rooms');
+            const data = await response.json();
+            if (response.ok) {
+                return data.rooms;
+            } else {
+                console.error('Failed to fetch messages:', data.message);
+                return [];
+            }
+        } catch (error) {
+            console.error('Error fetching messages:', error);
+            return [];
+        }
+    }
+
     async fetchRoomStatuses() {
         try {
             const response = await fetch('http://localhost:8001/chat/api/v1/room_status');
@@ -38,7 +54,7 @@ export class MessagesContainer extends Component {
             const response = await fetch(`http://localhost:8001/chat/api/v1/rooms?query=${encodeURIComponent(query)}`);
             const data = await response.json();
             if (response.ok) {
-                return data.rooms
+                return data.rooms;
             } else {
                 console.error('Failed to search messages:', data.rooms);
                 return [];
@@ -51,28 +67,31 @@ export class MessagesContainer extends Component {
 
     async handleSearch(event) {
         const query = event.target.value;
-        if (event.key === 'Enter' && query.length > 0) {
-            const rooms = await this.searchMessages(query);
-            this.updateMessages(rooms);
-        }
+        const rooms = await this.searchMessages(query);
+        this.updateMessages(rooms);
     }
 
     updateMessages(messages) {
-        console.log("test");
-        console.log(messages);
         const messagesContainer = document.querySelector('.messages');
         messagesContainer.innerHTML = messages.map(message => `
             <div class="user-message">
                 <img src="static/pong/images/snapchat.svg" alt="Profile Image" class="profile-img">
                 <div class="message-content">
                     <p class="name">${message.name}</p>
-               </div>
+                </div>
             </div>
         `).join('');
     }
 
+    async initMessages() {
+        const messages = await this.fetchMessages();
+        this.updateMessages(messages);
+    }
+
     initEventListeners() {
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
+            await this.initMessages();
+            
             const createChatroomButton = document.querySelector('.create-chatroom-button');
             const modal = document.querySelector('#createChatroomModal');
             const closeModalButton = document.querySelector('.close-modal');
@@ -122,21 +141,6 @@ export class MessagesContainer extends Component {
     }
 
     get html() {
-        const messages = Array(10).fill(`
-            <div class="user-message">
-                <img src="static/pong/images/snapchat.svg" alt="Profile Image" class="profile-img">
-                <div class="message-content">
-                    <p class="name">Masahito Arai</p>
-                    <p class="text">Haha oh man 🔥</p>
-                    <div class="tags">
-                        <span class="tag question">Question</span>
-                        <span class="tag help-wanted">Help wanted</span>
-                    </div>
-                </div>
-                <span class="time">12m</span>
-            </div>
-        `).join('');
-
         return (`
             <div class="messages-container">
                 <div class="create-chatroom">
@@ -145,9 +149,7 @@ export class MessagesContainer extends Component {
                 <div class="search-bar">
                     <input type="text" placeholder="Search Chatroom">
                 </div>
-                <div class="messages">
-                    ${messages}
-                </div>
+                <div class="messages"></div>
             </div>
             <div id="createChatroomModal" class="modal">
                 <div class="modal-content">
@@ -171,5 +173,3 @@ export class MessagesContainer extends Component {
         `);
     }
 }
-
-
