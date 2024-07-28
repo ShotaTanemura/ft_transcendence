@@ -34,10 +34,10 @@ export class GameHome extends Component {
 		
 	}
 
-	submitForm = (e) => {
-		e.preventDefault();
-		this.setRouteContext("roomID", e.target.elements["room-id"].value);
-		const socketPath = "ws://" + window.location.hostname + ":" + window.location.port + "/realtime-pong/" + e.target.elements["room-id"].value + "/";
+	submitForm = (event) => {
+		event.preventDefault();
+		this.setRouteContext("roomID", event.target.elements["room-id"].value);
+		const socketPath = "ws://" + window.location.hostname + ":" + window.location.port + "/realtime-pong/" + event.target.elements["room-id"].value + "/";
 		const connection = new WebSocket(socketPath);
 		this.setRouteContext("WebSocket", connection);
 		connection.onopen = this.onWebSocketOpen;
@@ -59,3 +59,4 @@ export class GameHome extends Component {
 }
 
 export default GameHome;
+
