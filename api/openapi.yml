@@ -109,6 +109,39 @@ paths:
             $ref: "#/components/responses/badRequest"
           "404":
             $ref: "#/components/responses/notFoundError"
+   /pong/api/v1/users/{uuid}/icon:
+      post:
+        summary: ユーザーアイコン画像アップロード
+        description: ユーザーアイコン画像アップロード
+        parameters:
+          - name: uuid
+            in: path
+            description: ユーザーのUUID
+            required: true
+            schema:
+              type: string
+            example: b4cf1ef4-1cab-490b-a32c-f6528f95c796
+        requestBody:
+          content:
+            "multipart/form-data":
+              schema:
+                type: object
+                properties:
+                  icon:
+                    type: string
+                    format: binary
+          required: true
+        responses:
+          "201":
+            description: ユーザーアイコン画像のアップロード完了
+            content:
+                "application/json":
+                  schema:
+                    $ref: "#/components/schemas/postUserIconResponse"
+          "400":
+            $ref: "#/components/responses/badRequest"
+          "404":
+            $ref: "#/components/responses/notFoundError"
 components:
   responses:
     badRequest:
@@ -219,6 +252,24 @@ components:
           type: string
           description: メールアドレス
           example: example@email.com
+    postUserIconResponse:
+      properties:
+        uuid:
+          type: string
+          description: ユーザーのUUID
+          example: b4cf1ef4-1cab-490b-a32c-f6528f95c796
+        name:
+          type: string
+          description: ユーザー名
+          example: ユーザー名
+        email:
+          type: string
+          description: メールアドレス
+          example: example@email.com
+        icon:
+          type: string
+          description: ユーザーアイコン画像のパス
+          example: icon
     errorMessage:
       type: object
       properties:
