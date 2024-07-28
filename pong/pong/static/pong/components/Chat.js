@@ -6,14 +6,15 @@ import { DirectoryContainer } from "./DirectoryContainer.js";
 export class Chat extends Component {
     constructor(router, params, state) {
         super(router, params, state);
-        this.containerSelector = ".parent-container";
         this.state = {
             selectedRoom: null,
         };
-
+        
         this.verifyJwtToken();
         this.handleRoomSelect = this.handleRoomSelect.bind(this);
         this.setState = this.setState.bind(this); 
+        this.render();
+        this.containerSelector = ".parent-container";
     }
 
     verifyJwtToken = async () => {
@@ -27,24 +28,19 @@ export class Chat extends Component {
     }
 
     setState(newState) {
-        console.log("Chat setState 呼び出し:", newState);
         super.setState(newState);
     }
 
     handleRoomSelect(room) {
-        console.log("handleRoomSelect 呼び出し:", this.state.selectedRoom);
-        console.log("選択された部屋:", room);
         this.setState({ selectedRoom: room });
     }
 
-    render() {
-        console.log("Chat render 呼び出し");
-        super.render();
-    }
 
     get html() {
         return (`
             <div class="parent-container">
+                ${this.state.selectedRoom}
+                <h1>hoge</h1>
                 ${new MyRoomsContainer(this.router, this.params, this.state, this.handleRoomSelect).html}
                 ${new ChatContainer(this.router, this.params,this.state, this.state.selectedRoom).html}
                 ${new DirectoryContainer(this.router, this.params, this.state).html}

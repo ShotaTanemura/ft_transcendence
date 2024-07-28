@@ -1,14 +1,12 @@
 import { Component } from "../core/component.js";
 
 export class ChatContainer extends Component {
-    constructor(router, params, state,selectedRoom) {
+    constructor(router, params, state, selectedRoom) {
         super(router, params, state);
         this.selectedRoom = selectedRoom;
-        console.log("ChatContainer constructor called with selectedRoom:", selectedRoom);
     }
 
     get html() {
-        console.log("ChatContainer get html called with selectedRoom:", this.selectedRoom);
         if (!this.selectedRoom) {
             return `<div class="chat">ルームを選択してください。</div>`;
         }
