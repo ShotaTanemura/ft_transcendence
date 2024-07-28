@@ -2,7 +2,8 @@ export class Component {
 	constructor(router, parameters, state) {
 		this.router = router;
 		this.parameters = parameters;
-		this.state = state;
+        this.state = state || {};
+        this.containerSelector = null;
 		this.element = Component.createElementFromHTML(this.html, this.containerTag);
 		this.element.classList.add('component');
 	}
@@ -15,7 +16,11 @@ export class Component {
 
 	onEnterForeground(){
 	}
-
+    
+    setState(newState) {
+        this.state = { ...this.state, ...newState };
+        this.render();
+    }
 
 	goNextPage = (path) => {
 		this.router.goNextPage(path);
@@ -45,10 +50,6 @@ export class Component {
 			}
 			throw 'findElements: Some element of Query are not HTMLElement.';
 		});
-	}
-
-	render() {
-		this.element = Component.createElementFromHTML(this.html, this.containerTag);
 	}
 
 	static createElementFromHTML(html, containerTag) {

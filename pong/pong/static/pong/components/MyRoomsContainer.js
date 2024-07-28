@@ -1,8 +1,9 @@
 import { Component } from "../core/component.js";
 
 export class MyRoomsContainer extends Component {
-    constructor(router, params, state) {
+    constructor(router, params, state, onRoomSelect) {
         super(router, params, state);
+        this.onRoomSelect = onRoomSelect;
         this.initEventListeners();
     }
 
@@ -73,14 +74,22 @@ export class MyRoomsContainer extends Component {
 
     updateMessages(myrooms) {
         const myroomsContainer = document.querySelector('.myrooms');
-        myroomsContainer.innerHTML = myrooms.map(message => `
-            <div class="user-message">
+        myroomsContainer.innerHTML = myrooms.map(room => `
+            <div class="myroom" data-room-id="${room.uuid}">
                 <img src="static/pong/images/snapchat.svg" alt="Profile Image" class="profile-img">
                 <div class="message-content">
-                    <p class="name">${message.name}</p>
+                    <p class="name">${room.name}</p>
                 </div>
             </div>
         `).join('');
+
+        myroomsContainer.querySelectorAll('.myroom').forEach(roomElement => {
+            roomElement.addEventListener('click', () => {
+                const roomId = roomElement.getAttribute('data-room-id');
+                const selectedRoom = myrooms.find(room => room.uuid === roomId);
+                this.onRoomSelect(selectedRoom);
+            });
+        });
     }
 
     async initMessages() {
