@@ -21,8 +21,8 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-/* messages */
-.messages-container {
+/* myrooms */
+.myrooms-container {
     width: 30rem;
     border: 0.0625rem solid #e0e0e0;
     overflow: hidden;
@@ -44,7 +44,7 @@ body {
     font-size: 0.875rem;
 }
 
-.messages {
+.myrooms {
     overflow-y: auto;
     flex-grow: 1;
 }

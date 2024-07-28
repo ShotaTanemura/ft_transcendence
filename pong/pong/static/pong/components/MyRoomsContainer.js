@@ -1,6 +1,6 @@
 import { Component } from "../core/component.js";
 
-export class MessagesContainer extends Component {
+export class MyRoomsContainer extends Component {
     constructor(router, params, state) {
         super(router, params, state);
         this.initEventListeners();
@@ -13,11 +13,11 @@ export class MessagesContainer extends Component {
             if (response.ok) {
                 return data.rooms;
             } else {
-                console.error('Failed to fetch messages:', data.message);
+                console.error('Failed to fetch myrooms:', data.message);
                 return [];
             }
         } catch (error) {
-            console.error('Error fetching messages:', error);
+            console.error('Error fetching myrooms:', error);
             return [];
         }
     }
@@ -56,11 +56,11 @@ export class MessagesContainer extends Component {
             if (response.ok) {
                 return data.rooms;
             } else {
-                console.error('Failed to search messages:', data.rooms);
+                console.error('Failed to search myrooms:', data.rooms);
                 return [];
             }
         } catch (error) {
-            console.error('Error searching messages:', error);
+            console.error('Error searching myrooms:', error);
             return [];
         }
     }
@@ -71,9 +71,9 @@ export class MessagesContainer extends Component {
         this.updateMessages(rooms);
     }
 
-    updateMessages(messages) {
-        const messagesContainer = document.querySelector('.messages');
-        messagesContainer.innerHTML = messages.map(message => `
+    updateMessages(myrooms) {
+        const myroomsContainer = document.querySelector('.myrooms');
+        myroomsContainer.innerHTML = myrooms.map(message => `
             <div class="user-message">
                 <img src="static/pong/images/snapchat.svg" alt="Profile Image" class="profile-img">
                 <div class="message-content">
@@ -84,8 +84,8 @@ export class MessagesContainer extends Component {
     }
 
     async initMessages() {
-        const messages = await this.fetchMessages();
-        this.updateMessages(messages);
+        const myrooms = await this.fetchMessages();
+        this.updateMessages(myrooms);
     }
 
     initEventListeners() {
@@ -142,14 +142,14 @@ export class MessagesContainer extends Component {
 
     get html() {
         return (`
-            <div class="messages-container">
+            <div class="myrooms-container">
                 <div class="create-chatroom">
                     <button class="create-chatroom-button">Create Chatroom</button>
                 </div>
                 <div class="search-bar">
                     <input type="text" placeholder="Search Chatroom">
                 </div>
-                <div class="messages"></div>
+                <div class="myrooms"></div>
             </div>
             <div id="createChatroomModal" class="modal">
                 <div class="modal-content">
