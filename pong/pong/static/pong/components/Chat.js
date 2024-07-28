@@ -5,16 +5,15 @@ import { DirectoryContainer } from "./DirectoryContainer.js";
 
 export class Chat extends Component {
     constructor(router, params, state) {
-        super(router, params, state);
+        super(router, params, state, '.parent-container');
         this.state = {
             selectedRoom: null,
         };
-        
+
         this.verifyJwtToken();
         this.handleRoomSelect = this.handleRoomSelect.bind(this);
-        this.setState = this.setState.bind(this); 
+        this.setState = this.setState.bind(this);
         this.render();
-        this.containerSelector = ".parent-container";
     }
 
     verifyJwtToken = async () => {
@@ -27,22 +26,28 @@ export class Chat extends Component {
         }
     }
 
-    setState(newState) {
-        super.setState(newState);
+    setState(newState, callback) {
+        const prevState = { ...this.state };
+        this.state = { ...this.state, ...newState };
+        this.update(prevState, this.state);
+        if (callback) callback();
+        this.render();
     }
 
     handleRoomSelect(room) {
-        this.setState({ selectedRoom: room });
+        this.setState({ selectedRoom: room }, () => {
+            console.log("Room selected (after):", this.state.selectedRoom);
+        });
+		this.render();
     }
 
-
     get html() {
+        const selectedRoomName = this.state.selectedRoom ? this.state.selectedRoom.name : "No room selected";
         return (`
             <div class="parent-container">
-                ${this.state.selectedRoom}
-                <h1>hoge</h1>
+                ${selectedRoomName}
                 ${new MyRoomsContainer(this.router, this.params, this.state, this.handleRoomSelect).html}
-                ${new ChatContainer(this.router, this.params,this.state, this.state.selectedRoom).html}
+                ${new ChatContainer(this.router, this.params, this.state, this.state.selectedRoom).html}
                 ${new DirectoryContainer(this.router, this.params, this.state).html}
             </div>
         `);

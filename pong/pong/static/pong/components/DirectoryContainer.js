@@ -2,7 +2,7 @@ import { Component } from "../core/component.js";
 
 export class DirectoryContainer extends Component {
     constructor(router, params, state) {
-        super(router, params, state);
+        super(router, params, state, '.directory-container');
         this.initEventListeners();
     }
 

@@ -2,29 +2,33 @@ export class Component {
 	constructor(router, parameters, state, containerSelector) {
 		this.router = router;
 		this.parameters = parameters;
-        this.state = state || {};
-        this.containerSelector = containerSelector || '#app';
+		this.state = state || {};
+		this.containerSelector = containerSelector;
 		this.element = Component.createElementFromHTML(this.html, this.containerTag);
 		this.element.classList.add('component');
 	}
 
-	get containerTag() {return 'div';}
-	set containerTag(newTag){}
+	get containerTag() {
+		return 'div';
+	}
+	set containerTag(newTag) {}
 
-	get html(){ return this._html || ''; }
-	set html(newHtml){
+	get html() {
+		return this._html || '';
+	}
+	set html(newHtml) {
 		console.log("Setting new HTML:", newHtml);
 		this._html = newHtml;
 		this.render();
 	}
 
-	onEnterForeground(){
-	}
+	onEnterForeground() {}
 
-    setState(newState) {
-        this.state = { ...this.state, ...newState };
-        this.render();
-    }
+	setState(newState) {
+		const prevState = { ...this.state };
+		this.state = { ...this.state, ...newState };
+		this.update(prevState, this.state);
+	}
 
 	goNextPage = (path) => {
 		this.router.goNextPage(path);
@@ -39,19 +43,32 @@ export class Component {
 	}
 
 	render() {
+		console.log("Rendering component:", this.html);
 		this.element = Component.createElementFromHTML(this.html, this.containerTag);
 		
-		if (this.containerSelector) {
-			const container = document.querySelector(this.containerSelector);
-			if (container) {
-				container.innerHTML = '';
-				container.appendChild(this.element);
-			} else {
-				console.error(`Container element with selector "${this.containerSelector}" not found`);
+		// if (this.containerSelector) {
+		// 	const container = document.querySelector(this.containerSelector);
+		// 	if (container) {
+		// 		console.log("Rendering component in container:", this.containerSelector);
+		// 		container.innerHTML = '';
+		// 		container.appendChild(this.element);
+		// 	} else {
+		// 		console.warn(`Container ${this.containerSelector} not found. Appending to body instead.`);
+		// 	}
+		// } else {
+		// 	console.log("No containerSelector provided. Appending to body.");
+		// }
+	}
+
+	update(prevState, newState) {
+		const changedKeys = Object.keys(newState).filter(key => newState[key] !== prevState[key]);
+		changedKeys.forEach(key => {
+			const newValue = newState[key];
+			const element = this.findElement(`[data-state-key="${key}"]`);
+			if (element) {
+				element.textContent = newValue;
 			}
-		} else {
-			console.error("Container selector not provided");
-		}
+		});
 	}
 
 	findElement(query) {
@@ -61,7 +78,7 @@ export class Component {
 	findElements(query) {
 		let nodeList = this.element.querySelectorAll(query);
 		return Array.from(nodeList, (element) => {
-			if (element instanceof HTMLElement)	{
+			if (element instanceof HTMLElement) {
 				return (element);
 			}
 			throw 'findElements: Some element of Query are not HTMLElement.';
@@ -69,13 +86,13 @@ export class Component {
 	}
 
 	static createElementFromHTML(html, containerTag) {
-		let new_element = document.createElement(containerTag);
-		new_element.innerHTML = html.trim();
-		// first_element = new_element.firstChild;だと最初の要素のみしか追加されない。
-		let first_element = new_element;
-		if (first_element instanceof HTMLElement) {
-			return first_element;
+		let newElement = document.createElement(containerTag);
+		newElement.innerHTML = html.trim();
+		let firstElement = newElement;
+		// let firstElement = newElement.firstElementChild;
+		if (firstElement instanceof HTMLElement) {
+			return firstElement;
 		}
-		throw 'createElementFromHTML: First element of new_element is not HTMLElement.';
+		throw 'createElementFromHTML: First element of newElement is not HTMLElement.';
 	}
 }

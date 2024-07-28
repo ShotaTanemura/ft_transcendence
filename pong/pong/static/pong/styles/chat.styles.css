@@ -49,6 +49,12 @@ body {
     flex-grow: 1;
 }
 
+.myroom.selected {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc; 
+}
+
+
 .myroom {
     display: flex;
     align-items: center;

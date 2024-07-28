@@ -2,8 +2,9 @@ import { Component } from "../core/component.js";
 
 export class ChatContainer extends Component {
     constructor(router, params, state, selectedRoom) {
-        super(router, params, state);
+        super(router, params, state, '.chat');
         this.selectedRoom = selectedRoom;
+        console.log("this.html", this.html);
     }
 
     get html() {
