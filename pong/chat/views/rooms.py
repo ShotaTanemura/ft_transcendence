@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 import jwt
 from django.conf import settings
 from django.http.response import HttpResponse
+from django.db.models import Q
 from pong.middleware.auth import jwt_exempt, getUserByJwt
 from chat.views.auth import verify_user
 from logging import getLogger
@@ -33,11 +34,10 @@ def search_rooms(request):
         query = request.GET.get("query", "")
         logger.info("search_rooms")
 
-        # if query:
-        #     rooms = Rooms.objects.filter(name__icontains=query)
-        # else:
-        #     rooms = Rooms.objects.all()
-        rooms = Rooms.objects.all()
+        if query:
+            rooms = Rooms.objects.filter(name__icontains=query)
+        else:
+            rooms = Rooms.objects.all()
         response_rooms = [serialize_rooms(room) for room in rooms]
 
         logger.info(response_rooms)
@@ -63,14 +63,19 @@ def rooms(request):
                 {"message": "Method is not allowed", "status": "invalidParams"},
                 status=400,
             )
+
         query = request.GET.get("query", "")
         logger.info("search_rooms")
 
-        # if query:
-        #     rooms = Rooms.objects.filter(name__icontains=query)
-        # else:
-        #     rooms = Rooms.objects.all()
-        rooms = Rooms.objects.all()
+        if query:
+            rooms = Rooms.objects.filter(
+                Q(userrooms__user_id_id=user.uuid) & Q(name__icontains=query)
+            ).select_related("room_status_id")
+        else:
+            rooms = Rooms.objects.filter(
+                userrooms__user_id_id=user.uuid
+            ).select_related("room_status_id")
+
         response_rooms = [serialize_rooms(room) for room in rooms]
 
         logger.info(response_rooms)
@@ -85,4 +90,4 @@ def rooms(request):
         return JsonResponse(e.to_dict(), status=e.status_code)
     except Exception as e:
         logger.error(e)
-        return JsonResponse({"message": e}, status=500)
+        return JsonResponse({"message": str(e)}, status=500)
