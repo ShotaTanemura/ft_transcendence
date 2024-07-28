@@ -6,14 +6,14 @@ formatters:
 handlers:
   file:
     class: logging.handlers.RotatingFileHandler
-    level: DEBUG
+    level: INFO
     formatter: standard
     filename: logs/development.log
     maxBytes: 5000000 # 5MB
     backupCount: 10
   console_stdout:
     class: logging.StreamHandler
-    level: DEBUG
+    level: INFO
     formatter: standard
     stream: ext://sys.stdout
   console_stderr:
@@ -22,10 +22,10 @@ handlers:
     formatter: standard
     stream: ext://sys.stderr
 root:
-  level: DEBUG
+  level: INFO
   handlers: [file, console_stdout, console_stderr]
 loggers:
   werkzeug:
-    level: DEBUG
+    level: INFO
     handlers: [file, console_stdout, console_stderr]
     propagate: False
