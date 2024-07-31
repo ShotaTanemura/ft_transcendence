@@ -28,35 +28,65 @@ export class Signup extends Component {
 		}
 	}
 
-    handleSignup = async (event) => {
-        event.preventDefault();
-        const form = event.target;
-        const formData = new FormData(form);
+	handleSignup = async (event) => {
+		event.preventDefault();
+		const signupJson = JSON.stringify({
+			"name": event.target.username.value,
+			"password": event.target.password.value,
+			"email": event.target.email.value,
+		});
+		let response;
+		try {
+			response = await this.registerUser(signupJson);
+		} catch (error) {
+            alert(error);
+			return ;
+		}
 
-        if (formData.get('password') !== form['repeat-password'].value) {
-            alert("Passwords do not match!");
-            return;
-        }
-        formData.delete('repeat-password');
+        const fileField = event.target.icon;
+		if (0 >= fileField.files.length) {
+			this.router.goNextPage("/");
+			return ;
+		}
+        let formData = new FormData();
+
+        formData.append('icon', fileField.files[0]);
 
         try {
-            await this.registerUser(formData);
+			await this.uploadIcon(response.uuid, formData);            
             this.router.goNextPage("/");
-        } catch (error) {
-            alert(error);
-        }
-    }
+		} catch (error) {
+			alert(error);
+		}
+	}
 
-    registerUser = async (formData) => {
-        const response = await fetch("/pong/api/v1/auth/register", {
-            method: "POST",
-            body: formData,
+	registerUser = async (jsonData) => {
+		const response = await fetch("/pong/api/v1/auth/register", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: jsonData,
+		});
+		console.log(response);
+		const data = await response.json();
+		if (!response.ok) {
+			throw Error(data.status);
+		}
+        return data;
+	}
+
+    uploadIcon = async (uuid, formData) => {
+        const response = await fetch(`/pong/api/v1/users/${uuid}/icon`, {
+			method: "POST",
+			body: formData,
         });
-        console.log(response);
-        const data = await response.json();
-        if (!response.ok) {
-            throw Error(data.status);
-        }
+		console.log(response);
+		const data = await response.json();
+		if (!response.ok) {
+			throw Error(data.status);
+		}
+        return data;
     }
 
     get html() {
@@ -69,7 +99,7 @@ export class Signup extends Component {
 					class="form-42oauth">
 					<button class="form-42oauth" type=submit>42 Signup</button>
 				</form>
-                <form class="signup-form" enctype="multipart/form-data">
+                <form class="signup-form">
                     <label for="username">Username</label>
                     <input type="text" placeholder="username" id="username" name="name" required><br/>
                     <label for="password">Password</label>
