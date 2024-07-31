@@ -43,8 +43,12 @@ export class Signup extends Component {
 			return ;
 		}
 
-        let formData = new FormData();
         const fileField = event.target.icon;
+		if (0 >= fileField.files.length) {
+			this.router.goNextPage("/");
+			return ;
+		}
+        let formData = new FormData();
 
         formData.append('icon', fileField.files[0]);
 
