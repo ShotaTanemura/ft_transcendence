@@ -17,10 +17,11 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, re_path, include
+from django.conf import settings
 from pong.views.index import index
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
+    path(settings.ADMIN_PANEL_URL, admin.site.urls),
     path("pong/", include("pong.urls")),
     re_path(r"^.*$", index, name="index"),
 ]
