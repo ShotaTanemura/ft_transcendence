@@ -52,7 +52,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "pong.middleware.auth.JWTAuthenticationMiddleware",
+    "pong.middleware.auth.LoginRequiredMiddleware",
     "django_prometheus.middleware.PrometheusAfterMiddleware",
 ]
 
@@ -162,6 +162,10 @@ REDIS_HOST = "redis"
 REDIS_PORT = 6379
 REDIS_DB = 0
 REDIS_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}"
+
+# user and password for basic auth
+BASIC_AUTH_USERNAME = "admin"
+BASIC_AUTH_PASSWORD = "password123"
 
 # channelsのためのlayerの追加
 CHANNEL_LAYERS = {
