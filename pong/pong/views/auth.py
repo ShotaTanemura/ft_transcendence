@@ -4,7 +4,7 @@ from pong.models import User
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
 from django.conf import settings
-from pong.middleware.auth import jwt_exempt, getJwtPayloadCookie
+from pong.middleware.auth import jwt_exempt, getJwtPayloadCookie, getJwtPayload
 from pong.utils.create_response import create_token_response
 from pong.utils.redis_client import redis_client
 import jwt
@@ -88,6 +88,11 @@ def refresh_token(request):
             status=400,
         )
 
+    if redis_client.exists(refresh_token):
+        return JsonResponse(
+            {"message": "unauthorized", "status": "unauthorized"}, status=401
+        )
+
     try:
         refresh_payload = jwt.decode(
             refresh_token,
@@ -138,16 +143,31 @@ def verify_token(request):
 
 @csrf_exempt
 def revoke_token(request):
+    def blacklist_token(token):
+        payload = getJwtPayload(token)
+        if not payload:
+            return
+        exp = payload["exp"]
+        uuid = payload["uuid"]
+        current_time = datetime.utcnow()
+        exp_time = datetime.utcfromtimestamp(exp)
+        ttl = int((exp_time - current_time).total_seconds())
+        redis_client.setex(token, ttl, "blacklisted")
+        return uuid
+
     if request.method != "POST":
         return JsonResponse(
             {"message": "Method is not allowed", "status": "invalidParams"}, status=400
         )
+    uuid = None
     token = request.COOKIES.get("token", None)
-    payload = getJwtPayloadCookie(request)
-    exp = payload["exp"]
-    uuid = payload["uuid"]
-    current_time = datetime.utcnow()
-    exp_time = datetime.utcfromtimestamp(exp)
-    ttl = int((exp_time - current_time).total_seconds())
-    redis_client.setex(token, ttl, "blacklisted")
+    refresh_token = request.COOKIES.get("refresh_token", None)
+    if not token and not refresh_token:
+        return JsonResponse(
+            {"message": "Invalid parameters", "status": "invalidParams"}, status=400
+        )
+    if token:
+        uuid = blacklist_token(token)
+    if refresh_token:
+        uuid = blacklist_token(refresh_token)
     return JsonResponse({"uuid": str(uuid)}, status=200)
