@@ -101,6 +101,13 @@ services:
     command: "--config.file=/etc/alertmanager/alertmanager.yaml"
     restart: always
 
+  nginx-exporter:
+    image: "nginx/nginx-prometheus-exporter"
+    ports:
+      - "9113:9113"
+    entrypoint: nginx-prometheus-exporter -nginx.scrape-uri=http://web/nginx_status
+    restart: always
+
 
 volumes:
   db_data: {}
