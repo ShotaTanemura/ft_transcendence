@@ -34,7 +34,7 @@ application = ProtocolTypeRouter(
                             PlayerConsumer.as_asgi(),
                         ),
                         re_path(
-                            r"typing-game/(?P<room_name>\w+)/$",
+                            r"realtime-typing/(?P<room_name>\w+)/$",
                             TypingGmaePlayerConsumer.as_asgi(),
                         ),
                     ]

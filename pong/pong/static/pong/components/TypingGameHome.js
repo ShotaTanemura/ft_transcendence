@@ -39,7 +39,6 @@ export class TypingGameHome extends Component {
 		this.setRouteContext("roomID", event.target.elements["room-id"].value);
 		// config/asgiで設定しているpathを指定
 		const socketPath = "ws://" + window.location.hostname + ":" + window.location.port + "/realtime-typing/" + event.target.elements["room-id"].value + "/";
-		print(socketPath);
 		const connection = new WebSocket(socketPath);
 		this.setRouteContext("WebSocket", connection);
 		connection.onopen = this.onWebSocketOpen;
@@ -49,7 +48,7 @@ export class TypingGameHome extends Component {
 
 	get html() {
 		return (`
-			<h1>Welcome To Realtime Typing Game !</h1>
+			<h1>Welcome To Realtime Typing Game !!!!</h1>
 			<form class="entering-room-form">
 				<label for="room-id">Room ID</label>
 				<input id="room-id" type="number" min="1000" max="9999" required><br>

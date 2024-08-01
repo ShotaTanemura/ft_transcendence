@@ -61,8 +61,9 @@ export class Home extends Component {
 	get html() {
 		return (`
 			<h1> signin後の仮ページ </h1>
-			<button class="go-realtime-pong-button">ポングゲームをする</button>
-			<button class="go-realtime-typing-button">タイピングゲームをする</button>
+			<button class="go-realtime-pong-button">ポングゲーム</button>
+            <br>
+			<button class="go-realtime-typing-button">タイピングゲーム</button>
             <form class="signout-form">
                 <button type="submit">signout</button>
             </form>
