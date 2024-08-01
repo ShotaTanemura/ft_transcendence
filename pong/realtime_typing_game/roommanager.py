@@ -5,7 +5,7 @@ from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from threading import Lock
 from enum import Enum, auto
-from realtime_typing_game.typinggame import PongGame
+from realtime_typing_game.typingGame import PongGame
 
 import time
 
