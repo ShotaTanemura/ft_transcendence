@@ -17,7 +17,7 @@ class RoomState(Enum):
     Finished = "finished"
 
 
-class ParticipantsState(Enum):
+class ParticipantState(Enum):
     Not_In_Place = "not-in-place"
     Ready = "ready"
     Player1 = "player1"
@@ -63,7 +63,7 @@ class RoomManager:
             if user in self.participants:
                 return (False, "user already exists in this room")
             self.participants.append(user)
-            self.participants_state[user] = ParticipantsState.Not_In_Place
+            self.participants_state[user] = ParticipantState.Not_In_Place
             if len(self.participants) == self.max_of_participants:
                 self.room_state = RoomState.Ready
                 await self.send_messege_to_group(
@@ -113,9 +113,9 @@ class RoomManager:
     async def user_became_ready_for_game(self, participant, message_json):
         with self.instance_lock:
             # TODO validate the contents of message_json
-            self.participants_state[participant] = ParticipantsState.Ready
+            self.participants_state[participant] = ParticipantState.Ready
             if all(
-                ParticipantsState.Ready == self.participants_state[key]
+                ParticipantState.Ready == self.participants_state[key]
                 for key in self.participants_state
             ):
                 self.room_state = RoomState.In_Game
@@ -125,10 +125,10 @@ class RoomManager:
                     {"sender": "room-manager", "type": "all-participants-ready"},
                 )
                 self.participants_state[self.participants[0]] = (
-                    ParticipantsState.Player1
+                    ParticipantState.Player1
                 )
                 self.participants_state[self.participants[1]] = (
-                    ParticipantsState.Player1
+                    ParticipantState.Player1
                 )
                 asyncio.new_event_loop().run_in_executor(
                     None,
@@ -146,7 +146,7 @@ class RoomManager:
         )
 
     async def handle_game_action(self, participant, message_json):
-        if self.participants_state[participant] == ParticipantsState.Player1:
+        if self.participants_state[participant] == ParticipantState.Player1:
             await self.pong_game.recieve_player1_input(message_json)
-        elif self.participants_state[participant] == ParticipantsState.Player2:
+        elif self.participants_state[participant] == ParticipantState.Player2:
             await self.pong_game.recieve_player2_input(message_json)
