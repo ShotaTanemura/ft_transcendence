@@ -10,6 +10,9 @@ import { PongGame } from './components/PongGame.js'
 import { Error } from './components/Error.js'
 import { Profile } from './components/Profile.js'
 import { TypingGameHome } from './components/TypingGameHome.js'
+import { TypingGameRoom } from './components/TypingGameRoom.js'
+import { TypingGameWaiting } from './components/TypingGameWaiting.js'
+import { TypingGame } from './components/TypingGame.js'
 
 let router = new Router(document.getElementById("app"), [
 		{
@@ -56,6 +59,22 @@ let router = new Router(document.getElementById("app"), [
 		{
 			path: "/typing-game-home",
 			component: TypingGameHome,
+			state: {}
+		},
+		{
+			path: "/typing-game-room",
+			component: TypingGameRoom,
+			state: {}
+		},
+		{
+			path: "/typing-game-waiting",
+			component: TypingGameWaiting,
+			state: {}
+
+		},
+		{
+			path: "/typing-game",
+			component: TypingGame,
 			state: {}
 		},
 		{

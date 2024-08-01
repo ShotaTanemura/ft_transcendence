@@ -10,25 +10,25 @@ export class TypingGameHome extends Component {
 	}
 
 	onWebSocketOpen = (event) => {
-		this.goNextPage("/pong-game-waiting");
+		this.goNextPage("/typing-game-waiting");
 	}
 
 	onWebSocketClose = (event) => {
-		this.goNextPage("/pong-game-home");
+		this.goNextPage("/typing-game-home");
 	}
 
 	onMessage = (event) => {
 		const message = JSON.parse(event.data);
 		switch (message.type) {
 			case 'waiting-for-other-participants':
-				this.goNextPage("/pong-game-waiting");
+				this.goNextPage("/typing-game-waiting");
 				break;
 			case 'all-participants-connected':
 				this.setRouteContext("participants", message.contents);
-				this.goNextPage("/pong-game-room");
+				this.goNextPage("/typing-game-room");
 				break;
 			case 'all-participants-ready':
-				this.goNextPage("/pong-game");
+				this.goNextPage("/typing-game");
 				break;
 		}
 		
@@ -37,7 +37,9 @@ export class TypingGameHome extends Component {
 	submitForm = (event) => {
 		event.preventDefault();
 		this.setRouteContext("roomID", event.target.elements["room-id"].value);
-		const socketPath = "ws://" + window.location.hostname + ":" + window.location.port + "/realtime-pong/" + event.target.elements["room-id"].value + "/";
+		// config/asgiで設定しているpathを指定
+		const socketPath = "ws://" + window.location.hostname + ":" + window.location.port + "/realtime-typing/" + event.target.elements["room-id"].value + "/";
+		print(socketPath);
 		const connection = new WebSocket(socketPath);
 		this.setRouteContext("WebSocket", connection);
 		connection.onopen = this.onWebSocketOpen;
