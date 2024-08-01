@@ -10,14 +10,21 @@ export class Home extends Component {
 	}
 
     verifyJwtToken = async () => {
-        const response = await fetch("/pong/api/v1/auth/token/verify", {
+        const responseToken = await fetch("/pong/api/v1/auth/token/verify", {
             method: "POST",
         });
-        console.log(response);
-        const data = await response.json();
-        if (!response.ok) {
-            this.router.goNextPage("/");
+        console.log(responseToken);
+        if (responseToken.ok) {
+            return ;
         }
+        const responseRefreshToken = await fetch("/pong/api/v1/auth/token/refresh", {
+            method: "POST",
+        });
+        console.log(responseRefreshToken);
+        if (responseRefreshToken.ok) {
+            return ;
+        }
+        this.router.goNextPage("/");
     }
 
     handleSignout = async (event) => {

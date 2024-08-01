@@ -29,7 +29,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -169,3 +168,10 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+NGINX_ORIGIN = os.getenv("NGINX_ORIGIN")
+CSRF_TRUSTED_ORIGINS = [
+    NGINX_ORIGIN,
+]
+
+ADMIN_PANEL_URL = os.getenv("ADMIN_PANEL_URL")
