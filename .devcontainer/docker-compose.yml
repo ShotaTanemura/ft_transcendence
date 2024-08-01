@@ -88,7 +88,17 @@ services:
       - type: volume
         source: grafana_data
         target: /var/lib/grafana
-
+    restart: always
+  
+  alertmanager:
+    image: "prom/alertmanager"
+    ports:
+      - "9093:9093"
+    volumes:
+      - type: bind
+        source: ./requirements/Alertmanager/
+        target: /etc/alertmanager/
+    command: "--config.file=/etc/alertmanager/alertmanager.yaml"
     restart: always
 
 

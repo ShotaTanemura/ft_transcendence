@@ -1,0 +1,12 @@
+global:
+
+route:
+  group_wait: 10s
+  group_interval: 10s
+  repeat_interval: 1h
+  receiver: 'discord'
+
+receivers:
+  - name: 'discord'
+    discord_configs:
+      - webhook_url: 'replace here to discord web hook'
