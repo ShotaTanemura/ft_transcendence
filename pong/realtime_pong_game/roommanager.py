@@ -20,8 +20,8 @@ class RoomState(Enum):
 class ParticipantsState(Enum):
     Not_In_Place = "not-in-place"
     Ready = "ready"
-    In_Game_1 = "in-game1"
-    In_Game_2 = "in-game2"
+    Player1 = "player1"
+    Player2 = "player2"
     Observer = "observer"
 
 
@@ -125,10 +125,10 @@ class RoomManager:
                     {"sender": "room-manager", "type": "all-participants-ready"},
                 )
                 self.participants_state[self.participants[0]] = (
-                    ParticipantsState.In_Game_1
+                    ParticipantsState.Player1
                 )
                 self.participants_state[self.participants[1]] = (
-                    ParticipantsState.In_Game_2
+                    ParticipantsState.Player1
                 )
                 asyncio.new_event_loop().run_in_executor(
                     None,
@@ -146,7 +146,7 @@ class RoomManager:
         )
 
     async def handle_game_action(self, participant, message_json):
-        if self.participants_state[participant] == ParticipantsState.In_Game_1:
+        if self.participants_state[participant] == ParticipantsState.Player1:
             await self.pong_game.recieve_player1_input(message_json)
-        elif self.participants_state[participant] == ParticipantsState.In_Game_2:
+        elif self.participants_state[participant] == ParticipantsState.Player2:
             await self.pong_game.recieve_player2_input(message_json)
