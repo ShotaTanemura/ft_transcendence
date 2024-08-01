@@ -83,8 +83,6 @@ class RoomManager:
         with self.instance_lock:
             # TODO send message when RoomState is ready
 
-            if self.room_state == RoomState.In_Game:
-                return
             self.participants.remove(user)
             if len(self.participants) == 0:
                 self.__class__.remove_instance(self.room_name)
@@ -124,12 +122,8 @@ class RoomManager:
                     "send_room_information",
                     {"sender": "room-manager", "type": "all-participants-ready"},
                 )
-                self.participants_state[self.participants[0]] = (
-                    ParticipantState.Player1
-                )
-                self.participants_state[self.participants[1]] = (
-                    ParticipantState.Player1
-                )
+                self.participants_state[self.participants[0]] = ParticipantState.Player1
+                self.participants_state[self.participants[1]] = ParticipantState.Player2
                 asyncio.new_event_loop().run_in_executor(
                     None,
                     self.game_dispatcher,
