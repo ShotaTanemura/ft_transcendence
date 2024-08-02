@@ -2,18 +2,58 @@ import { gameController } from './gameController.js';
 import { inputHandler } from './inputHandler.js';
 
 const uiController = (function() {
-    const startButton = document.getElementById("startButton");
-    const restartButton = document.getElementById("restartButton");
-    const startDiv = document.getElementById("start");
-    const gameDiv = document.getElementById("game");
-    const resultDiv = document.getElementById("result");
-    const wordDiv = document.getElementById("word");
-    const timerDiv = document.getElementById("timer");
-    const scoreDiv = document.getElementById("score");
-    const finalScoreDiv = document.getElementById("finalScore");
+    let startButton, restartButton, startDiv, gameDiv, resultDiv, wordDiv, timerDiv, scoreDiv, finalScoreDiv;
 	const amount = 2; // ぺナルティ時間の増加量
 
     let inputLength;
+
+    function initializeUI() {
+        const app = document.getElementById('app');
+        
+        app.innerHTML = `
+            <div id="start">
+                <button id="startButton" class="button">スタート</button>
+            </div>
+            <div id="game" class="hidden">
+                <div id="timer">10</div>
+                <div id="word"></div>
+                <div id="inputDisplay"></div>
+                <div id="score">0</div>
+                <canvas id="timerCanvas" width="200" height="200"></canvas>
+            </div>
+            <div id="result" class="hidden">
+                <div id="finalScore"></div>
+                <button id="restartButton" class="button">リスタート</button>
+            </div>
+            <div id="playersImage">
+                <img src="img/person-use-notePc.png" alt="Image of player" class="player1" />
+            </div>
+        `;
+
+        startButton = document.getElementById("startButton");
+        restartButton = document.getElementById("restartButton");
+        startDiv = document.getElementById("start");
+        gameDiv = document.getElementById("game");
+        resultDiv = document.getElementById("result");
+        wordDiv = document.getElementById("word");
+        timerDiv = document.getElementById("timer");
+        scoreDiv = document.getElementById("score");
+        finalScoreDiv = document.getElementById("finalScore");
+
+        startButton.addEventListener("click", () => {
+            startDiv.classList.add("hidden");
+            gameDiv.classList.remove("hidden");
+            enableTextInput();
+            gameController.startGame();
+            inputLength = 0;
+        });
+
+        restartButton.addEventListener("click", () => {
+            resultDiv.classList.add("hidden");
+            startDiv.classList.remove("hidden");
+            disableTextInput();
+        });
+    }
 
     function enableTextInput() {
         document.addEventListener('keydown', handleKeyDown);
@@ -40,22 +80,8 @@ const uiController = (function() {
         }
     }
 
-    startButton.addEventListener("click", () => {
-        startDiv.classList.add("hidden");
-        gameDiv.classList.remove("hidden");
-        enableTextInput();
-        gameController.startGame();
-        inputLength = 0;
-    });
-
-    restartButton.addEventListener("click", () => {
-        resultDiv.classList.add("hidden");
-        startDiv.classList.remove("hidden");
-        disableTextInput();
-    });
-
     function displayWord(word) {
-        wordDiv.innerHTML = ''; // 前の単語をクリア
+        wordDiv.innerHTML = '';
         for (let char of word) {
             const span = document.createElement('span');
             span.textContent = char;
@@ -81,6 +107,7 @@ const uiController = (function() {
     }
 
     return {
+        initializeUI,
         displayWord,
         updateTimer,
         updateScore,

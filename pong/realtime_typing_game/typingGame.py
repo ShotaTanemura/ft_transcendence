@@ -5,6 +5,8 @@ from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from threading import Lock
 
+# TODO: TypingGameのserver処理を記述
+
 # set them to the same values as frontend
 FIELD_WIDTH = 1500
 FIELD_HEIGHT = 585

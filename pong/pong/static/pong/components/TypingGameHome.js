@@ -5,8 +5,7 @@ export class TypingGameHome extends Component {
 	constructor(router, parameters, state) {
 		new Load(router, parameters, state).onload()
 		super(router, parameters, state);
-		this.findElement("form.entering-room-form").onsubmit = this.submitForm;
-		
+		this.findElement("form.entering-room-form").onsubmit = this.submitForm;	
 	}
 
 	onWebSocketOpen = (event) => {

@@ -10,8 +10,7 @@ const gameController = (function () {
   let startTime;
   let maxTime = 15; // 初期タイマー値
   let penaltyTime; // ペナルティ時間を追跡するための変数
-  const canvas = document.getElementById("timerCanvas");
-  const ctx = canvas.getContext("2d");
+  let canvas, ctx;
   let words = [];
 
   async function initializeGame() {
@@ -26,7 +25,13 @@ const gameController = (function () {
     }
   }
 
+  function initializeCanvas() {
+    canvas = document.getElementById("timerCanvas");
+    ctx = canvas.getContext("2d");
+  }
+
   function startGame() {
+    initializeCanvas();
     score = 0;
     timeLeft = maxTime;
     penaltyTime = 0; // ペナルティ時間をリセット
