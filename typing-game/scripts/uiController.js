@@ -1,5 +1,4 @@
-import { gameController } from './gameController.js';
-import { inputHandler } from './inputHandler.js';
+import { gameController, inputHandler } from './main.js';
 
 const uiController = (function() {
     let startButton, restartButton, startDiv, gameDiv, resultDiv, wordDiv, timerDiv, scoreDiv, finalScoreDiv;
