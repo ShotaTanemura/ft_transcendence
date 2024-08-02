@@ -13,6 +13,7 @@ const gameController = (function () {
   let canvas, ctx;
   let words = [];
 
+  // Server
   async function initializeGame() {
     const loadedWords = await loadWords();
     if (loadedWords.length > 0) {
@@ -25,11 +26,13 @@ const gameController = (function () {
     }
   }
 
+  // clinet
   function initializeCanvas() {
     canvas = document.getElementById("timerCanvas");
     ctx = canvas.getContext("2d");
   }
 
+  // Server
   function startGame() {
     initializeCanvas();
     score = 0;
@@ -40,6 +43,7 @@ const gameController = (function () {
     startTimer();
   }
 
+  // Server
   function nextWord() {
     // 制限時間の短縮
     if (score % 4 === 0 && score !== 0 && maxTime > 3) {
@@ -48,12 +52,15 @@ const gameController = (function () {
 
     currentWord = words[Math.floor(Math.random() * words.length)];
     console.log("Next word: ", currentWord); // デバッグ用ログ
+    // client
     uiController.displayWord(currentWord);
     inputHandler.resetInput();
   }
 
   function startTimer() {
+    // Server
     startTime = performance.now();
+    // Client
     requestAnimationFrame(updateTimer);
   }
 
@@ -61,20 +68,26 @@ const gameController = (function () {
     const elapsed = (currentTime - startTime) / 1000; // 経過時間
     timeLeft = maxTime - elapsed - penaltyTime; // ペナルティ時間を考慮
     uiController.updateTimer(timeLeft.toFixed(1));
+    // Client
     drawTimer(timeLeft);
 
     if (timeLeft > 0) {
+      // Client
       requestAnimationFrame(updateTimer);
     } else {
       endGame();
     }
   }
 
+
   function endGame() {
+    // server
     clearInterval(timer);
+    // client
     uiController.showResult(score);
   }
 
+  // server
   function handleCorrectInput() {
     score++;
     uiController.updateScore(score);
@@ -88,6 +101,7 @@ const gameController = (function () {
     return currentWord;
   }
 
+  // Server
   function reduceTime(amount) {
     penaltyTime += amount; // ペナルティ時間を加算
     if (timeLeft - amount <= 0) {
@@ -96,6 +110,7 @@ const gameController = (function () {
     }
   }
 
+  // Client
   function drawTimer(timeLeft) {
     const radius = 50; // 内側の円の半径
     const center = { x: canvas.width / 2, y: canvas.height / 2 };

@@ -1,3 +1,5 @@
+// Server
+
 // CSVを読み込み、パースする
 export async function loadWords() {
   try {

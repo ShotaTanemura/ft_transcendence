@@ -7,6 +7,7 @@ const uiController = (function() {
 
     let inputLength;
 
+    // client
     function initializeUI() {
         const app = document.getElementById('app');
         
@@ -55,14 +56,17 @@ const uiController = (function() {
         });
     }
 
+    // clinet
     function enableTextInput() {
         document.addEventListener('keydown', handleKeyDown);
     }
 
+    // clinet
     function disableTextInput() {
         document.removeEventListener('keydown', handleKeyDown);
     }
 
+    // server
     function handleKeyDown(event) {
         const currentWord = gameController.getCurrentWord();
         event.preventDefault();
@@ -80,6 +84,8 @@ const uiController = (function() {
         }
     }
 
+    
+    // clinet
     function displayWord(word) {
         wordDiv.innerHTML = '';
         for (let char of word) {
@@ -91,14 +97,17 @@ const uiController = (function() {
         inputLength = 0;
     }
 
+    // server
     function updateTimer(time) {
         timerDiv.textContent = time;
     }
 
+    // server
     function updateScore(score) {
         scoreDiv.textContent = score;
     }
 
+    // client
     function showResult(score) {
         gameDiv.classList.add("hidden");
         resultDiv.classList.remove("hidden");

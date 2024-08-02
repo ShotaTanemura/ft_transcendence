@@ -1,5 +1,7 @@
 import { gameController } from "./gameController.js";
 
+
+// Server
 const inputHandler = (function() {
     
     function handleInput(value) {
