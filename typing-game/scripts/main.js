@@ -1,6 +1,8 @@
 import { gameController } from './gameController.js';
+import { uiController } from './uiController.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
+    uiController.initializeUI();
     const gameInitialized = await gameController.initializeGame();
     if (gameInitialized) {
         document.getElementById('startButton').addEventListener('click', () => {

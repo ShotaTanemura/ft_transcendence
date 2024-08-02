@@ -9,6 +9,7 @@ export async function loadWords() {
     return [];
   }
 }
+
 // CSVをパースする関数
 function parseCSV(data) {
   const rows = data.split("\n");

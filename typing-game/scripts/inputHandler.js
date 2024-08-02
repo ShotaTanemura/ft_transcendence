@@ -1,7 +1,7 @@
 import { gameController } from "./gameController.js";
 
 const inputHandler = (function() {
-
+    
     function handleInput(value) {
         const currentWord = gameController.getCurrentWord();
         if (value === currentWord) {
@@ -9,8 +9,16 @@ const inputHandler = (function() {
         }
     }
 
+    function resetInput() {
+        const inputDisplay = document.getElementById('inputDisplay');
+        if (inputDisplay) {
+            inputDisplay.textContent = '';
+        }
+    }
+
     return {
         handleInput,
+        resetInput
     };
 })();
 
