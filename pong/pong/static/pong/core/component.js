@@ -1,23 +1,21 @@
 export class Component {
-  constructor(router, parameters, state) {
-    this.router = router;
-    this.parameters = parameters;
-    this.state = state;
-    this.element = Component.createElementFromHTML(
-      this.html,
-      this.containerTag,
-    );
-    this.element.classList.add("component");
-  }
+	constructor(router, parameters, state) {
+    	this.router = router;
+    	this.parameters = parameters;
+    	this.state = state;
+    	this.element = Component.createElementFromHTML(
+      	this.html,
+      	this.containerTag,
+	);
+	this.element.classList.add("component");
+  	}
 
   get containerTag() {
     return "div";
   }
   set containerTag(newTag) {}
 
-  get html() {
-    return "";
-  }
+  get html() {}
   set html(newHtml) {}
 
   onEnterForeground() {}
