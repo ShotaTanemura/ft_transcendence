@@ -43,8 +43,12 @@ export class Signup extends Component {
       return;
     }
 
-    let formData = new FormData();
     const fileField = event.target.icon;
+    if (0 >= fileField.files.length) {
+      this.router.goNextPage("/");
+      return;
+    }
+    let formData = new FormData();
 
     formData.append("icon", fileField.files[0]);
 
@@ -89,7 +93,7 @@ export class Signup extends Component {
     return `
             <div>
                 <h1>Signup</h1>
-				<form 
+				<form
 					action="/pong/oauth/42/signup"
 					method="GET"
 					class="form-42oauth">
