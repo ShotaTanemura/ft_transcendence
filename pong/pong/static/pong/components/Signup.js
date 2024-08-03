@@ -1,92 +1,92 @@
 import { Component } from "../core/component.js";
 
 export class Signup extends Component {
-	constructor(router, params, state) {
-		super(router, params, state);
-		this.findElement("form.signup-form").onsubmit = this.handleSignup;
-		switch (window.location.hash) {
-			case '#methodNotAllowed':
-				window.alert('リクエストメソッドが不適切です');
-				break;
-			case '#failedToGetCode':
-				window.alert('認証コードの取得に失敗しました');
-				break;
-			case '#invalidParameters':
-				window.alert('パラメーターが不正です');
-				break;
-			case '#failedToGetToken':
-				window.alert('認証トークンの取得に失敗しました');
-				break;
-			case '#failedToGetUserInfo':
-				window.alert('ユーザー情報の取得に失敗しました');
-				break;
-			case '#userAlreadyExists':
-				window.alert('既に存在するユーザーです');
-				break;
-			default:
-				break;
-		}
-	}
+  constructor(router, params, state) {
+    super(router, params, state);
+    this.findElement("form.signup-form").onsubmit = this.handleSignup;
+    switch (window.location.hash) {
+      case "#methodNotAllowed":
+        window.alert("リクエストメソッドが不適切です");
+        break;
+      case "#failedToGetCode":
+        window.alert("認証コードの取得に失敗しました");
+        break;
+      case "#invalidParameters":
+        window.alert("パラメーターが不正です");
+        break;
+      case "#failedToGetToken":
+        window.alert("認証トークンの取得に失敗しました");
+        break;
+      case "#failedToGetUserInfo":
+        window.alert("ユーザー情報の取得に失敗しました");
+        break;
+      case "#userAlreadyExists":
+        window.alert("既に存在するユーザーです");
+        break;
+      default:
+        break;
+    }
+  }
 
-	handleSignup = async (event) => {
-		event.preventDefault();
-		const signupJson = JSON.stringify({
-			"name": event.target.username.value,
-			"password": event.target.password.value,
-			"email": event.target.email.value,
-		});
-		let response;
-		try {
-			response = await this.registerUser(signupJson);
-		} catch (error) {
-            alert(error);
-			return ;
-		}
-
-        let formData = new FormData();
-        const fileField = event.target.icon;
-
-        formData.append('icon', fileField.files[0]);
-
-        try {
-			await this.uploadIcon(response.uuid, formData);            
-            this.router.goNextPage("/");
-		} catch (error) {
-			alert(error);
-		}
-	}
-
-	registerUser = async (jsonData) => {
-		const response = await fetch("/pong/api/v1/auth/register", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: jsonData,
-		});
-		console.log(response);
-		const data = await response.json();
-		if (!response.ok) {
-			throw Error(data.status);
-		}
-        return data;
-	}
-
-    uploadIcon = async (uuid, formData) => {
-        const response = await fetch(`/pong/api/v1/users/${uuid}/icon`, {
-			method: "POST",
-			body: formData,
-        });
-		console.log(response);
-		const data = await response.json();
-		if (!response.ok) {
-			throw Error(data.status);
-		}
-        return data;
+  handleSignup = async (event) => {
+    event.preventDefault();
+    const signupJson = JSON.stringify({
+      name: event.target.username.value,
+      password: event.target.password.value,
+      email: event.target.email.value,
+    });
+    let response;
+    try {
+      response = await this.registerUser(signupJson);
+    } catch (error) {
+      alert(error);
+      return;
     }
 
-    get html() {
-        return `
+    let formData = new FormData();
+    const fileField = event.target.icon;
+
+    formData.append("icon", fileField.files[0]);
+
+    try {
+      await this.uploadIcon(response.uuid, formData);
+      this.router.goNextPage("/");
+    } catch (error) {
+      alert(error);
+    }
+  };
+
+  registerUser = async (jsonData) => {
+    const response = await fetch("/pong/api/v1/auth/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: jsonData,
+    });
+    console.log(response);
+    const data = await response.json();
+    if (!response.ok) {
+      throw Error(data.status);
+    }
+    return data;
+  };
+
+  uploadIcon = async (uuid, formData) => {
+    const response = await fetch(`/pong/api/v1/users/${uuid}/icon`, {
+      method: "POST",
+      body: formData,
+    });
+    console.log(response);
+    const data = await response.json();
+    if (!response.ok) {
+      throw Error(data.status);
+    }
+    return data;
+  };
+
+  get html() {
+    return `
             <div>
                 <h1>Signup</h1>
 				<form 
@@ -110,5 +110,5 @@ export class Signup extends Component {
                 </form>
             </div>
         `;
-    }
+  }
 }
