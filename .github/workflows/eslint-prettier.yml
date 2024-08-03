@@ -1,7 +1,7 @@
 name: eslint-prettier.yml
 on: push
 jobs:
-  eslint:
+  eslint-prettier:
     name: syntax-check-js
     runs-on: ubuntu-latest
     steps:
@@ -9,8 +9,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20.16.0'
-          cache: 'npm'
-          cache-dependency-path: './package-lock.json'
       - run: npm install
       - run: npx eslint ./pong/pong --ext .js
       - run: npx prettier --check ./pong/pong
