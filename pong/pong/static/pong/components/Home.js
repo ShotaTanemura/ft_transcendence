@@ -14,7 +14,6 @@ export class Home extends Component {
             method: "POST",
         });
         console.log(response);
-        const data = await response.json();
         if (!response.ok) {
             this.router.goNextPage("/");
         }

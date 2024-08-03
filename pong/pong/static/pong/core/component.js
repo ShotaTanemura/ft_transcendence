@@ -10,12 +10,11 @@ export class Component {
 	get containerTag() {return 'div';}
 	set containerTag(newTag){}
 
-	get html(){}
+	get html(){return '';}
 	set html(newHtml){}
 
 	onEnterForeground(){
 	}
-
 
 	goNextPage = (path) => {
 		this.router.goNextPage(path);
@@ -27,10 +26,6 @@ export class Component {
 
 	setRouteContext(name, value) {
 		this.router.setContext(name, value);
-	}
-
-	render() {
-		this.element = Component.createElementFromHTML(this.html, this.containerTag);
 	}
 
 	findElement(query) {
