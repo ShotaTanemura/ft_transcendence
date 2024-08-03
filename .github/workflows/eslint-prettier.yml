@@ -10,5 +10,5 @@ jobs:
         with:
           node-version: '20.16.0'
       - run: npm install
-      - run: npx eslint ./pong/pong --ext .js
+      - run: npx eslint ./pong/pong
       - run: npx prettier --check ./pong/pong
