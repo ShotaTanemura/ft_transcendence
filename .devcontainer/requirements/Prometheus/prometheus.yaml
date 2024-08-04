@@ -9,6 +9,9 @@ rule_files:
   - '/etc/prometheus/server-down.rules'
 
 scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
   - job_name: 'django'
     metrics_path: '/metrics/metrics'
     scheme: 'http'
@@ -18,7 +21,6 @@ scrape_configs:
       username: 'admin'
       password: 'password123'
   - job_name: 'nginx'
-    scheme: 'http'
     static_configs:
       - targets: ['nginx-exporter:9113']
       

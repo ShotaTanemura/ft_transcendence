@@ -74,6 +74,9 @@ services:
       - type: bind
         source: ./requirements/Prometheus/
         target: /etc/prometheus/
+      - type: volume
+        source: prometheus_data
+        target: /prometheus
     command: "--config.file=/etc/prometheus/prometheus.yaml"
     depends_on:
       app:
@@ -112,4 +115,5 @@ services:
 volumes:
   db_data: {}
   grafana_data: {}
+  prometheus_data: {}
 
