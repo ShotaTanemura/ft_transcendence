@@ -16,6 +16,11 @@ services:
       - type: bind
         source: ../pong/media
         target: /var/www/uploads
+    healthcheck:
+      test: ['CMD', '/bin/healthcheck.sh']
+      interval: 1m
+      timeout: 5s
+      retries: 3
     depends_on:
       app:
         condition: service_healthy
@@ -96,6 +101,9 @@ services:
         target: /var/lib/grafana
     environment:
       - GF_PATHS_PROVISIONING=/usr/share/grafana/conf/provisioning
+    depends_on:
+      app:
+        condition: service_healthy
     restart: always
   
   alertmanager:
@@ -107,6 +115,9 @@ services:
         source: ./requirements/Alertmanager/
         target: /etc/alertmanager/
     command: "--config.file=/etc/alertmanager/alertmanager.yaml"
+    depends_on:
+      app:
+        condition: service_healthy
     restart: always
 
   nginx-exporter:
@@ -114,6 +125,9 @@ services:
     ports:
       - "9113:9113"
     entrypoint: nginx-prometheus-exporter -nginx.scrape-uri=http://web/nginx_status
+    depends_on:
+      web:
+        condition: service_healthy
     restart: always
 
 
