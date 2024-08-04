@@ -88,9 +88,14 @@ services:
     ports:
       - "3000:3000"
     volumes:
+      - type: bind
+        source: ./requirements/Grafana/conf/
+        target: /usr/share/grafana/conf/provisioning/
       - type: volume
         source: grafana_data
         target: /var/lib/grafana
+    environment:
+      - GF_PATHS_PROVISIONING=/usr/share/grafana/conf/provisioning
     restart: always
   
   alertmanager:
