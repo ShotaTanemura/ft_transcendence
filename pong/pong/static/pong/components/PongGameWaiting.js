@@ -21,3 +21,4 @@ export class PongGameWaiting extends Component {
         `)
     }
 }
+

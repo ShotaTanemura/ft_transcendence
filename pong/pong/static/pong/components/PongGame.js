@@ -104,3 +104,4 @@ export class PongGame extends Component {
         `)
     }
 };
+

@@ -26,3 +26,4 @@ export class PongGameRoom extends Component {
 }
 
 export default PongGameRoom;
+
