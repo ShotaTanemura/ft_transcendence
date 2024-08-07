@@ -11,8 +11,9 @@ import time
 
 
 class RoomState(Enum):
-    Queuing = "queuing"
-    Ready = "ready"
+    Not_All_Participants_Connected = "Not_All_Participants_Connected"
+    Waiting_For_Participants_To_Approve_Room = "Waiting_For_Participants_To_Approve_Room"
+    Display_Tournament = "Display_Tournament"
     In_Game = "in-game"
     Finished = "finished"
 
@@ -49,7 +50,7 @@ class RoomManager:
         self.channel_layer = get_channel_layer()
         self.pong_game = PongGame(room_name)
         self.room_name = room_name
-        self.room_state = RoomState.Queuing
+        self.room_state = RoomState.Not_All_Participants_Connected
         self.participants = []
         self.participants_state = dict()
         self.max_of_participants = 2
@@ -58,14 +59,14 @@ class RoomManager:
     # add user to Room
     async def on_user_connected(self, user):
         with self.instance_lock:
-            if self.room_state != RoomState.Queuing:
+            if self.room_state != RoomState.Not_All_Participants_Connected:
                 return (False, "exceed the limit of users")
             if user in self.participants:
                 return (False, "user already exists in this room")
             self.participants.append(user)
             self.participants_state[user] = ParticipantState.Not_In_Place
             if len(self.participants) == self.max_of_participants:
-                self.room_state = RoomState.Ready
+                self.room_state = RoomState.Waiting_For_Participants_To_Approve_Room
                 await self.send_messege_to_group(
                     "send_room_information",
                     {
@@ -103,7 +104,7 @@ class RoomManager:
         # TODO send error if sender is not participants
         # TODO confirm the message syntax is good
         message_json = json.loads(message)
-        if self.room_state == RoomState.Ready:
+        if self.room_state == RoomState.Waiting_For_Participants_To_Approve_Room:
             await self.user_became_ready_for_game(participant, message_json)
         elif self.room_state == RoomState.In_Game:
             await self.handle_game_action(participant, message_json)
