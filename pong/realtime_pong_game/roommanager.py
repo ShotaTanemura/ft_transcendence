@@ -6,13 +6,17 @@ from asgiref.sync import async_to_sync
 from threading import Lock
 from enum import Enum, auto
 from realtime_pong_game.ponggame import PongGame
+from realtime_pong_game.tournamentmanager import TournamentManager
+
 
 import time
 
 
 class RoomState(Enum):
     Not_All_Participants_Connected = "Not_All_Participants_Connected"
-    Waiting_For_Participants_To_Approve_Room = "Waiting_For_Participants_To_Approve_Room"
+    Waiting_For_Participants_To_Approve_Room = (
+        "Waiting_For_Participants_To_Approve_Room"
+    )
     Display_Tournament = "Display_Tournament"
     In_Game = "in-game"
     Finished = "finished"
@@ -67,6 +71,7 @@ class RoomManager:
             self.participants_state[user] = ParticipantState.Not_In_Place
             if len(self.participants) == self.max_of_participants:
                 self.room_state = RoomState.Waiting_For_Participants_To_Approve_Room
+                self.tournament_manager = TournamentManager(self.participants)
                 await self.send_messege_to_group(
                     "send_room_information",
                     {
@@ -132,8 +137,29 @@ class RoomManager:
                     self.participants[1].name,
                 )
 
+    def change_participants_state_for_game(self, player1, player2):
+        with self.instance_lock:
+            for participant in self.participants_state.keys():
+                if participant == player1:
+                    self.participants_state[participant] = ParticipantState.Player1
+                elif participant == player2:
+                    self.participants_state[participant] = ParticipantState.Player2
+                else:
+                    self.participants_state[participant] = ParticipantState.Observer
+
     def game_dispatcher(self, player1_name, player2_name):
-        self.pong_game.execute(player1_name=player1_name, player2_name=player2_name)
+        is_tournament_ongoing = True
+        tournament_winner = None
+        while is_tournament_ongoing:
+            (player1, player2) = self.tournament_manager.get_next_match_players()
+            if player2 == None:
+                tournament_winner = player1
+                break
+            self.change_participants_state_for_game(player1, player2)
+            (player1_score, player2_score) = self.pong_game.execute(
+                player1_name=player1.name, player2_name=player2.name
+            )
+            self.tournament_manager.update_current_match(player1_score, player2_score)
         # TODO update db to record match result
         self.room_state = RoomState.Finished
         async_to_sync(self.send_messege_to_group)(
