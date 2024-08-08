@@ -5,9 +5,14 @@ import { Component } from "../core/component.js";
 export class Home extends Component {
   constructor(router, params, state) {
     super(router, params, state);
+    this.findElement("button.go-realtime-button").onclick = this.goRealtime;
     this.findElement("form.signout-form").onsubmit = this.handleSignout;
     this.verifyJwtToken();
   }
+
+  goRealtime = () => {
+    this.router.goNextPage("/pong-game-home");
+  };
 
   verifyJwtToken = async () => {
     const responseToken = await fetch("/pong/api/v1/auth/token/verify", {
@@ -54,6 +59,7 @@ export class Home extends Component {
   get html() {
     return `
 			<h1> signin後の仮ページ </h1>
+			<button class="go-realtime-button">リアルタイム対戦をする</button>
             <form class="signout-form">
                 <button type="submit">signout</button>
             </form>
