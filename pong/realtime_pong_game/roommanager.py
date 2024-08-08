@@ -85,7 +85,7 @@ class RoomManager:
         return (True, "")
 
     # send message to Group that belogs to this room
-    async def send_messege_to_group(self, method_type, content):
+    async def send_messege_to_group(self, method_type, content=None):
         await self.channel_layer.group_send(
             self.room_name,
             {
@@ -158,7 +158,7 @@ class RoomManager:
             self.tournament_manager.update_current_match(player1_score, player2_score)
         # TODO update db to record match result
         self.room_state = RoomState.Finished
-        async_to_sync(self.send_room_state_to_group)()
+        async_to_sync(self.send_messege_to_group)("notify_client_proccessing_complete")
 
     async def handle_game_action(self, participant, message_json):
         if self.participants_state[participant] == ParticipantState.Player1:

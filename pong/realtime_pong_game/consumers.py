@@ -55,3 +55,6 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 
     async def send_game_information(self, event):
         await self.send(text_data=json.dumps(event["contents"]))
+
+    async def notify_client_proccessing_complete(self, event):
+        await self.close()
