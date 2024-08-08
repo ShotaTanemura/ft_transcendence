@@ -101,8 +101,12 @@ class RoomManager:
             self.room_name,
             {
                 "type": "send_room_information",
-                "contents": {"sender": "room-manager", "type": "room-state", "contents": self.room_state.value},
-            }
+                "contents": {
+                    "sender": "room-manager",
+                    "type": "room-state",
+                    "contents": self.room_state.value,
+                },
+            },
         )
 
     # event handler when receiving user message
@@ -141,7 +145,7 @@ class RoomManager:
                 else:
                     self.participants_state[participant] = ParticipantState.Observer
 
-    #TODO Make sure it functions correctly even without dummy data
+    # TODO Make sure it functions correctly even without dummy data
     def game_dispatcher(self, dummy_data):
         is_tournament_ongoing = True
         tournament_winner = None
@@ -151,7 +155,7 @@ class RoomManager:
                 tournament_winner = player1
                 break
             self.change_participants_state_for_game(player1, player2)
-            #TODO wait a minute to display tournament client side
+            # TODO wait a minute to display tournament client side
             (player1_score, player2_score) = self.pong_game.execute(
                 player1_name=player1.name, player2_name=player2.name
             )
