@@ -19,11 +19,16 @@ class Match:
     def get_palyers(self):
         return self.player1, self.player2
 
-    def get_result(self):
-        return (self.player1.name, self.player1_score), (
-            self.player2.name,
-            self.player2_score,
-        )
+    def get_match_result(self):
+        is_player1_winner = True
+        is_player2_winner = True
+        if self.winner == self.player1:
+            is_player2_winner = False
+        elif self.winner == self.player2:
+            is_player2_winner = False
+        if self.player2 == None:
+            return {"top": {"name": self.player1.name, "score": self.player1_score, "winner": is_player1_winner}, "b0ttom": {"name": "", "score": 0, "winner": False}}
+        return {"top": {"name": self.player1.name, "score": self.player1_score, "winner": is_player1_winner}, "bottom": {"name": self.player2.name, "score": self.player2_score, "winner": is_player2_winner}}
 
     def get_winner(self):
         return self.winner
@@ -83,3 +88,21 @@ class TournamentManager:
             if match.winner == None:
                 return False
         return True
+
+    def get_current_tournament_information_as_list(self):
+        tournament_information = []
+        for round in self.tournament_list:
+            round_information = []
+            for match in round:
+                round_information.append(match.get_match_result())
+            tournament_information.append(round_information)
+        number_of_extra_round = len(self.tournament_list[-1]) // 2
+        while number_of_extra_round:
+            round_information = []
+            for i in range(0, number_of_extra_round):
+                round_information.append({"top": {"name": "", "score": 0, "winner": True}, "bottom": {"name": "", "score": 0, "winner": True}})
+            tournament_information.append(round_information)
+            number_of_extra_round //= 2
+        print(f"tournament_information: {tournament_information}")
+        return tournament_information 
+

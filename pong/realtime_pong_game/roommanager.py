@@ -78,7 +78,6 @@ class RoomManager:
     async def on_user_disconnected(self, user):
         with self.instance_lock:
             # TODO send message when RoomState is ready
-
             self.participants.remove(user)
             if len(self.participants) == 0:
                 self.__class__.remove_instance(self.room_name)
@@ -151,7 +150,7 @@ class RoomManager:
                 tournament_winner = player1
                 break
             self.change_participants_state_for_game(player1, player2)
-            # TODO wait a minute to display tournament client side
+            self.tournament_manager.get_current_tournament_information_as_list()
             (player1_score, player2_score) = self.pong_game.execute(
                 player1_name=player1.name, player2_name=player2.name
             )
