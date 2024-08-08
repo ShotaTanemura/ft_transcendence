@@ -57,14 +57,37 @@ export class PongGame extends Component {
           document.getElementById("player2-name").innerHTML = message.contents.player2.name
           document.getElementById("player2-score").innerHTML = message.contents.player2.score
           break;
-        case "game-ended":
-          this.connection.close();
-          this.goNextPage("/game-home");
+        case "room-state":
+          this.changePageByRoomStatus(message)
           break;
 
       }
       
     }
+
+    changePageByRoomStatus = (message) => {
+		  if (message.type != "room-state")
+		  	throw new Error("changePageByRoomStatus: invalid message type")
+		  switch (message.contents) {
+		  	case "Not_All_Participants_Connected":
+		  		this.goNextPage("/pong-game-waiting");
+		  		break;
+		  	case "Waiting_For_Participants_To_Approve_Room":
+		  		this.goNextPage("/pong-game-room");
+		  		break;
+		  	case "Display_Tournament":
+		  		this.goNextPage("/pong-game-display-tournament");
+		  		break;
+		  	case "In_Game":
+		  		this.goNextPage("/pong-game");
+		  		break;
+		  	case "Finished":
+		  		this.goNextPage("/pong-game-home");
+		  		break;
+		  	default:
+		  		throw Error("changePageByRoomStatus: doesn't match any room states.")
+		  }
+	  }
 
     loop = () =>  {
         requestAnimationFrame(this.loop);

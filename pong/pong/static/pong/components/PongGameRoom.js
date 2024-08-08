@@ -16,9 +16,6 @@ export class PongGameRoom extends Component {
 	get html() {
 		return (`
 			<h1>game room</h1>
-			<h1>Room member</h1>
-			<h2>${(this.getRouteContext("participants"))[0]}</h2>
-			<h2>${(this.getRouteContext("participants"))[1]}</h2>
 			<label>Are you ready?</label>
 			<button class="ready">I'm ready.</button>
 		`);

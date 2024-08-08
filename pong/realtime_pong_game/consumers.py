@@ -29,8 +29,13 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data=None, bytes_data=None):
         # deliver message to room manager
-        # TODO This part occasionally throws an error indicating that the class member variable roommanager
-        await self.room_manager.on_receive_user_message(self.user, text_data)
+        message_json = json.loads(text_data)
+        if not message_json.keys() >= {'sender', 'type'}:
+            return 
+        if message_json["type"] == "get-room-state":
+            await self.send(text_data=json.dumps({"sender": "consumer", "type": "room-state", "contents": self.room_manager.room_state.value}))
+            return
+        await self.room_manager.on_receive_user_message(self.user, message_json)
 
     async def disconnect(self, close_code):
         if hasattr(self, "room_manager"):

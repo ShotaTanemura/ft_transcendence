@@ -18,8 +18,8 @@ class RoomState(Enum):
         "Waiting_For_Participants_To_Approve_Room"
     )
     Display_Tournament = "Display_Tournament"
-    In_Game = "in-game"
-    Finished = "finished"
+    In_Game = "In_Game"
+    Finished = "Finished"
 
 
 class ParticipantState(Enum):
@@ -72,16 +72,7 @@ class RoomManager:
             if len(self.participants) == self.max_of_participants:
                 self.room_state = RoomState.Waiting_For_Participants_To_Approve_Room
                 self.tournament_manager = TournamentManager(self.participants)
-                await self.send_messege_to_group(
-                    "send_room_information",
-                    {
-                        "sender": "room-manager",
-                        "type": "all-participants-connected",
-                        "contents": [
-                            participant.name for participant in self.participants
-                        ],
-                    },
-                )
+                await self.send_room_state_to_group()
         return (True, "")
 
     # delete user from Room
@@ -104,11 +95,20 @@ class RoomManager:
             },
         )
 
+    # make consumer to send room state to group via send_room_information
+    async def send_room_state_to_group(self):
+        await self.channel_layer.group_send(
+            self.room_name,
+            {
+                "type": "send_room_information",
+                "contents": {"sender": "room-manager", "type": "room-state", "contents": self.room_state.value},
+            }
+        )
+
     # event handler when receiving user message
-    async def on_receive_user_message(self, participant, message):
+    async def on_receive_user_message(self, participant, message_json):
         # TODO send error if sender is not participants
         # TODO confirm the message syntax is good
-        message_json = json.loads(message)
         if self.room_state == RoomState.Waiting_For_Participants_To_Approve_Room:
             await self.user_became_ready_for_game(participant, message_json)
         elif self.room_state == RoomState.In_Game:
@@ -124,10 +124,7 @@ class RoomManager:
             ):
                 self.room_state = RoomState.In_Game
                 # TODO change this allocation when implementing tournament
-                await self.send_messege_to_group(
-                    "send_room_information",
-                    {"sender": "room-manager", "type": "all-participants-ready"},
-                )
+                await self.send_room_state_to_group()
                 asyncio.new_event_loop().run_in_executor(
                     None,
                     self.game_dispatcher,
@@ -154,15 +151,14 @@ class RoomManager:
                 tournament_winner = player1
                 break
             self.change_participants_state_for_game(player1, player2)
+            #TODO wait a minute to display tournament client side
             (player1_score, player2_score) = self.pong_game.execute(
                 player1_name=player1.name, player2_name=player2.name
             )
             self.tournament_manager.update_current_match(player1_score, player2_score)
         # TODO update db to record match result
         self.room_state = RoomState.Finished
-        async_to_sync(self.send_messege_to_group)(
-            "send_room_information", {"sender": "room-manager", "type": "game-ended"}
-        )
+        async_to_sync(self.send_room_state_to_group)()
 
     async def handle_game_action(self, participant, message_json):
         if self.participants_state[participant] == ParticipantState.Player1:
