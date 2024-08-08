@@ -1,3 +1,5 @@
+import random
+
 class Match:
     def __init__(self, player1, player2):
         self.player1 = player1
@@ -31,6 +33,7 @@ class TournamentManager:
     def __init__(self, participants_list):
         self.round = 0
         self.tournament_list = []
+        random.shuffle(participants_list)
         self.create_tournament(participants_list)
         return
 

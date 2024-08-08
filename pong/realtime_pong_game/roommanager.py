@@ -71,7 +71,6 @@ class RoomManager:
             self.participants_state[user] = ParticipantState.Not_In_Place
             if len(self.participants) == self.max_of_participants:
                 self.room_state = RoomState.Waiting_For_Participants_To_Approve_Room
-                self.tournament_manager = TournamentManager(self.participants)
                 await self.send_room_state_to_group()
         return (True, "")
 
@@ -111,8 +110,6 @@ class RoomManager:
 
     # event handler when receiving user message
     async def on_receive_user_message(self, participant, message_json):
-        # TODO send error if sender is not participants
-        # TODO confirm the message syntax is good
         if self.room_state == RoomState.Waiting_For_Participants_To_Approve_Room:
             await self.user_became_ready_for_game(participant, message_json)
         elif self.room_state == RoomState.In_Game:
@@ -120,14 +117,13 @@ class RoomManager:
 
     async def user_became_ready_for_game(self, participant, message_json):
         with self.instance_lock:
-            # TODO validate the contents of message_json
             self.participants_state[participant] = ParticipantState.Ready
             if all(
                 ParticipantState.Ready == self.participants_state[key]
                 for key in self.participants_state
             ):
                 self.room_state = RoomState.In_Game
-                # TODO change this allocation when implementing tournament
+                self.tournament_manager = TournamentManager(self.participants)
                 await self.send_room_state_to_group()
                 asyncio.new_event_loop().run_in_executor(
                     None,
