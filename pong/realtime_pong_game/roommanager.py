@@ -121,7 +121,7 @@ class RoomManager:
                 ParticipantState.Ready == self.participants_state[key]
                 for key in self.participants_state
             ):
-                self.room_state = RoomState.In_Game
+                self.room_state = RoomState.Display_Tournament
                 self.tournament_manager = TournamentManager(self.participants)
                 await self.send_room_state_to_group()
                 asyncio.new_event_loop().run_in_executor(
@@ -148,15 +148,25 @@ class RoomManager:
             (player1, player2) = self.tournament_manager.get_next_match_players()
             if player2 == None:
                 tournament_winner = player1
+                async_to_sync(self.send_messege_to_group)("send_room_information", {"sender": "room_manager", "type": "tournament-winner", "contents": tournament_winner.name})
                 break
             self.change_participants_state_for_game(player1, player2)
-            self.tournament_manager.get_current_tournament_information_as_list()
+            # get tournament list
+            tournament = self.tournament_manager.get_current_tournament_information_as_list()
+            print(tournament)
+            async_to_sync(self.send_messege_to_group)("send_room_information", {"sender": "room_manager", "type": "tournament", "contents": tournament})
+            self.room_state = RoomState.Display_Tournament
+            async_to_sync(self.send_room_state_to_group)()
+            time.sleep(3)
+            self.room_state = RoomState.In_Game
+            async_to_sync(self.send_room_state_to_group)()
             (player1_score, player2_score) = self.pong_game.execute(
                 player1_name=player1.name, player2_name=player2.name
             )
             self.tournament_manager.update_current_match(player1_score, player2_score)
         # TODO update db to record match result
         self.room_state = RoomState.Finished
+        async_to_sync(self.send_room_state_to_group)()
         async_to_sync(self.send_messege_to_group)("notify_client_proccessing_complete")
 
     async def handle_game_action(self, participant, message_json):

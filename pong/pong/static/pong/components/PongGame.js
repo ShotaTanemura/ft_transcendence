@@ -58,9 +58,14 @@ export class PongGame extends Component {
           document.getElementById("player2-score").innerHTML = message.contents.player2.score
           break;
         case "room-state":
-          this.changePageByRoomStatus(message)
+          this.changePageByRoomStatus(message);
           break;
-
+        case "tournament":
+          this.setRouteContext("tournament", message.contents);
+          break;
+        case "tournament-winner":
+          this.setRouteContext("tournament-winner", message.contents);
+          break;
       }
       
     }
@@ -76,13 +81,13 @@ export class PongGame extends Component {
 		  		this.goNextPage("/pong-game-room");
 		  		break;
 		  	case "Display_Tournament":
-		  		this.goNextPage("/pong-game-display-tournament");
+		  		this.goNextPage("/pong-game-tournament");
 		  		break;
 		  	case "In_Game":
 		  		this.goNextPage("/pong-game");
 		  		break;
 		  	case "Finished":
-		  		this.goNextPage("/pong-game-home");
+		  		this.goNextPage("/pong-game-finished");
 		  		break;
 		  	default:
 		  		throw Error("changePageByRoomStatus: doesn't match any room states.")
