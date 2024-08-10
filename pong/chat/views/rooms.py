@@ -21,60 +21,52 @@ def serialize_rooms(room):
     return {"uuid": str(room.uuid), "name": room.name}
 
 
-@jwt_exempt
-@csrf_exempt
-def search_rooms(request):
+# @jwt_exempt
+# @csrf_exempt
+# def search_rooms(request):
+#     try:
+#         user = verify_user(request)
+#         if request.method != "GET":
+#             return JsonResponse(
+#                 {"message": "Method is not allowed", "status": "invalidParams"},
+#                 status=400,
+#             )
+#         query = request.GET.get("query", "")
+#         logger.info("search_rooms")
+
+#         if query:
+#             rooms = Rooms.objects.filter(name__icontains=query)
+#         else:
+#             rooms = Rooms.objects.all()
+#         response_rooms = [serialize_rooms(room) for room in rooms]
+
+#         logger.info(response_rooms)
+
+#         return JsonResponse(
+#             {"message": "success", "status": "OK", "rooms": response_rooms},
+#             status=200,
+#         )
+
+#     except AppError as e:
+#         logger.error(e)
+#         return JsonResponse(e.to_dict(), status=e.status_code)
+#     except Exception as e:
+#         logger.error(e)
+#         return JsonResponse({"message": e}, status=500)
+
+
+def handle_get_rooms(request, user):
     try:
-        user = verify_user(request)
-        if request.method != "GET":
-            return JsonResponse(
-                {"message": "Method is not allowed", "status": "invalidParams"},
-                status=400,
-            )
         query = request.GET.get("query", "")
-        logger.info("search_rooms")
-
-        if query:
-            rooms = Rooms.objects.filter(name__icontains=query)
-        else:
-            rooms = Rooms.objects.all()
-        response_rooms = [serialize_rooms(room) for room in rooms]
-
-        logger.info(response_rooms)
-
-        return JsonResponse(
-            {"message": "success", "status": "OK", "rooms": response_rooms},
-            status=200,
-        )
-
-    except AppError as e:
-        logger.error(e)
-        return JsonResponse(e.to_dict(), status=e.status_code)
-    except Exception as e:
-        logger.error(e)
-        return JsonResponse({"message": e}, status=500)
-
-
-def get(request):
-    try:
-        user = verify_user(request)
-        if request.method != "GET":
-            return JsonResponse(
-                {"message": "Method is not allowed", "status": "invalidParams"},
-                status=400,
-            )
-
-        query = request.GET.get("query", "")
-        logger.info("search_rooms")
 
         if query:
             rooms = Rooms.objects.filter(
                 Q(userrooms__user_id_id=user.uuid) & Q(name__icontains=query)
-            ).select_related("room_status_id")
+            )
         else:
             rooms = Rooms.objects.filter(
                 userrooms__user_id_id=user.uuid
-            ).select_related("room_status_id")
+            )
 
         response_rooms = [serialize_rooms(room) for room in rooms]
 
@@ -95,11 +87,8 @@ def get(request):
 
 
 
-@jwt_exempt
-@csrf_exempt
-def post(request):
+def handle_post_rooms(request, user):
     try:
-        user = verify_user(request)
         data = json.loads(request.body)
         logger.info(data)
         try:
@@ -121,3 +110,18 @@ def post(request):
     except Exception as e:
         logger.error(e)
         return JsonResponse({"message": e}, status=500)
+
+
+@csrf_exempt
+@jwt_exempt
+def handle_rooms(request):
+    user = verify_user(request)
+    if request.method == "GET":
+        return handle_get_rooms(request, user)
+    elif request.method == "POST":
+        return handle_post_rooms(request, user)
+    else:
+        return JsonResponse(
+            {"message": "Method is not allowed", "status": "invalidParams"},
+            status=400,
+        )

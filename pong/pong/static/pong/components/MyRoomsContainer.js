@@ -4,11 +4,41 @@ export class MyRoomsContainer extends Component {
     constructor(router, params, state) {
         super(router, params, state);
         this.initializeEventListeners();
+        this.fetchAndDisplayRooms();
     }
 
     initializeEventListeners() {
         document.removeEventListener('DOMContentLoaded', this.handleDOMContentLoaded);
         document.addEventListener('DOMContentLoaded', this.handleDOMContentLoaded.bind(this));
+    }
+
+    async fetchAndDisplayRooms() {
+        try {
+            const response = await fetch('/chat/api/v1/rooms');
+            console.log('Response:', response);
+            if (response.ok) {
+                const rooms = await response.json();
+                console.log('Rooms:', rooms);
+                this.displayRooms(rooms.rooms);
+            } else {
+                console.error('Failed to fetch rooms');
+            }
+        } catch (error) {
+            alert('An error occurred. Please try again later.', error);
+            console.error('Error fetching rooms:', error);
+        }
+    }
+
+    displayRooms(rooms) {
+        const myRoomsContainer = document.querySelector('.myrooms');
+        myRoomsContainer.innerHTML = '';
+
+        rooms.forEach(room => {
+            const roomElement = document.createElement('div');
+            roomElement.className = 'room';
+            roomElement.textContent = room.name;
+            myRoomsContainer.appendChild(roomElement);
+        });
     }
 
     handleDOMContentLoaded() {
@@ -45,6 +75,7 @@ export class MyRoomsContainer extends Component {
                 if (response.ok) {
                     alert('Chatroom created successfully!');
                     modal.style.display = 'none';
+                    this.fetchAndDisplayRooms();  // Refresh the rooms list after creating a new room
                 } else {
                     alert('Failed to create chatroom. Please try again.');
                 }
