@@ -46,6 +46,15 @@ class GetUserTest(TestCase):
         )
         self.assertEqual(response.status_code, 200)
 
+    def test_patch_user_normal(self):
+        response = self.client.patch(
+            reverse("pong:get_user", kwargs={"uuid": self.user.uuid}),
+            {"name": "changed"},
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["name"], "changed")
+
     def test_get_user_not_allowed_method(self):
         response = self.client.post(
             reverse("pong:get_user", kwargs={"uuid": self.user.uuid}),
