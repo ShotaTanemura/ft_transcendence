@@ -1,13 +1,12 @@
-import { Component } from "../core/component.js"
+import { Component } from "../core/component.js";
 import { Load } from "./Load.js";
 
 export class PongGameHome extends Component {
-	constructor(router, parameters, state) {
-		new Load(router, parameters, state).onload()
-		super(router, parameters, state);
-		this.findElement("form.entering-room-form").onsubmit = this.submitForm;
-		
-	}
+  constructor(router, parameters, state) {
+    new Load(router, parameters, state).onload();
+    super(router, parameters, state);
+    this.findElement("form.entering-room-form").onsubmit = this.submitForm;
+  }
 
 	onWebSocketOpen = (event) => {
 		this.goNextPage("/pong-game-waiting");
@@ -76,10 +75,9 @@ export class PongGameHome extends Component {
 				<input id="room-id" type="number" min="1000" max="9999" required><br>
 				<input id="enter-room-submit" name="enter-room" type="submit" value="enter room">
 			</form>
-			
+
 		`);
-	}
+  }
 }
 
 export default PongGameHome;
-
