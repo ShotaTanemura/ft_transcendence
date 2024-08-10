@@ -12,7 +12,6 @@ export class Chat extends Component {
 
         this.verifyJwtToken();
         this.handleRoomSelect = this.handleRoomSelect.bind(this);
-        this.setState = this.setState.bind(this);
         this.render();
     }
 
@@ -26,27 +25,11 @@ export class Chat extends Component {
         }
     }
 
-    setState(newState, callback) {
-        const prevState = { ...this.state };
-        this.state = { ...this.state, ...newState };
-        this.update(prevState, this.state);
-        if (callback) callback();
-        this.render();
-    }
-
-    handleRoomSelect(room) {
-        this.setState({ selectedRoom: room }, () => {
-            console.log("Room selected (after):", this.state.selectedRoom);
-        });
-		this.render();
-    }
 
     get html() {
-        const selectedRoomName = this.state.selectedRoom ? this.state.selectedRoom.name : "No room selected";
         return (`
             <div class="parent-container">
-                ${selectedRoomName}
-                ${new MyRoomsContainer(this.router, this.params, this.state, this.handleRoomSelect).html}
+                ${new MyRoomsContainer(this.router, this.params, this.state)}
                 ${new ChatContainer(this.router, this.params, this.state, this.state.selectedRoom).html}
                 ${new DirectoryContainer(this.router, this.params, this.state).html}
             </div>
