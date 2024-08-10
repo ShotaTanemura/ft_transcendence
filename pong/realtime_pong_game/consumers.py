@@ -21,7 +21,7 @@ class PlayerConsumer(AsyncWebsocketConsumer):
         # add user to group
         await self.channel_layer.group_add(self.room_name, self.channel_name)
         # add user to Room
-        is_success, error_message = await self.room_manager.on_user_connected(self.user)
+        is_success = await self.room_manager.on_user_connected(self.user)
         # TODO send error message before close
         if not is_success:
             await self.close()

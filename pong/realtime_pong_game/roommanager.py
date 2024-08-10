@@ -60,28 +60,49 @@ class RoomManager:
         self.max_of_participants = 2
         self.game_results = []
 
-    # add user to Room
-    async def on_user_connected(self, user):
+    def set_room_state(self, new_room_state):
+        with self.instance_lock:
+            self.room_state = new_room_state
+            return True
+
+    def set_participant_state(self, participant, new_participant_state):
+        with self.instance_lock:
+            self.participants_state[participant] = new_participant_state
+            return True
+
+    def add_new_participant(self, new_participant):
         with self.instance_lock:
             if self.room_state != RoomState.Not_All_Participants_Connected:
-                return (False, "exceed the limit of users")
-            if user in self.participants:
-                return (False, "user already exists in this room")
-            self.participants.append(user)
-            self.participants_state[user] = ParticipantState.Not_In_Place
-            if len(self.participants) == self.max_of_participants:
-                self.room_state = RoomState.Waiting_For_Participants_To_Approve_Room
-                await self.send_room_state_to_group()
-        return (True, "")
+                return False
+            if new_participant in self.participants:
+                return False
+            self.participants.append(new_participant)
+        self.set_participant_state(new_participant, ParticipantState.Not_In_Place)
+        return True
+
+    def remove_participant(self, participant):
+        with self.instance_lock:
+            if participant in self.participants:
+                self.participants.remove(participant)
+                self.participants_state.pop(participant)
+                return True
+            return False
+
+    # add user to Room
+    async def on_user_connected(self, user):
+        if not self.add_new_participant(user):
+            return False
+        if len(self.participants) == self.max_of_participants:
+            self.set_room_state(RoomState.Waiting_For_Participants_To_Approve_Room)
+            await self.send_room_state_to_group()
+        return True
 
     # delete user from Room
-    async def on_user_disconnected(self, user):
-        with self.instance_lock:
-            # TODO send message when RoomState is ready
-            self.participants.remove(user)
-            if len(self.participants) == 0:
-                self.__class__.remove_instance(self.room_name)
-        return (True, "")
+    async def on_user_disconnected(self, participant):
+        self.remove_participant(participant)
+        if len(self.participants) == 0:
+            self.__class__.remove_instance(self.room_name)
+        return True
 
     # send message to Group that belogs to this room
     async def send_messege_to_group(self, method_type, content=None):
@@ -115,29 +136,27 @@ class RoomManager:
             await self.handle_game_action(participant, message_json)
 
     async def user_became_ready_for_game(self, participant, message_json):
-        with self.instance_lock:
-            self.participants_state[participant] = ParticipantState.Ready
-            if all(
-                ParticipantState.Ready == self.participants_state[key]
-                for key in self.participants_state
-            ):
-                self.room_state = RoomState.Display_Tournament
-                self.tournament_manager = TournamentManager(self.participants)
-                asyncio.new_event_loop().run_in_executor(
-                    None,
-                    self.game_dispatcher,
-                    "",
-                )
+        self.set_participant_state(participant, ParticipantState.Ready)
+        if all(
+            ParticipantState.Ready == self.participants_state[key]
+            for key in self.participants_state
+        ):
+            self.set_room_state(RoomState.Display_Tournament)
+            self.tournament_manager = TournamentManager(self.participants)
+            asyncio.new_event_loop().run_in_executor(
+                None,
+                self.game_dispatcher,
+                "",
+            )
 
     def change_participants_state_for_game(self, player1, player2):
-        with self.instance_lock:
-            for participant in self.participants_state.keys():
-                if participant == player1:
-                    self.participants_state[participant] = ParticipantState.Player1
-                elif participant == player2:
-                    self.participants_state[participant] = ParticipantState.Player2
-                else:
-                    self.participants_state[participant] = ParticipantState.Observer
+        for participant in self.participants_state.keys():
+            if participant == player1:
+                self.set_participant_state(participant, ParticipantState.Player1)
+            elif participant == player2:
+                self.set_participant_state(participant, ParticipantState.Player2)
+            else:
+                self.set_participant_state(participant, ParticipantState.Observer)
 
     # TODO Make sure it functions correctly even without dummy data
     def game_dispatcher(self, dummy_data):
@@ -145,25 +164,49 @@ class RoomManager:
         tournament_winner = None
         while is_tournament_ongoing:
             (player1, player2) = self.tournament_manager.get_next_match_players()
+            # if player2 is None, player1 is the tournament winner
             if player2 == None:
                 tournament_winner = player1
-                async_to_sync(self.send_messege_to_group)("send_room_information", {"sender": "room_manager", "type": "tournament-winner", "contents": tournament_winner.name})
+                async_to_sync(self.send_messege_to_group)(
+                    "send_room_information",
+                    {
+                        "sender": "room_manager",
+                        "type": "tournament-winner",
+                        "contents": tournament_winner.name,
+                    },
+                )
                 break
+            # get change next game player's state
             self.change_participants_state_for_game(player1, player2)
             # get tournament list
-            tournament = self.tournament_manager.get_current_tournament_information_as_list()
-            async_to_sync(self.send_messege_to_group)("send_room_information", {"sender": "room_manager", "type": "tournament", "contents": tournament})
-            self.room_state = RoomState.Display_Tournament
+            tournament = (
+                self.tournament_manager.get_current_tournament_information_as_list()
+            )
+            # send tournament list to client
+            async_to_sync(self.send_messege_to_group)(
+                "send_room_information",
+                {
+                    "sender": "room_manager",
+                    "type": "tournament",
+                    "contents": tournament,
+                },
+            )
+            # change room state to Display_Tournament
+            self.set_room_state(RoomState.Display_Tournament)
             async_to_sync(self.send_room_state_to_group)()
             time.sleep(3)
-            self.room_state = RoomState.In_Game
+            # change room state to In_Game
+            self.set_room_state(RoomState.In_Game)
             async_to_sync(self.send_room_state_to_group)()
+            # execute game
             (player1_score, player2_score) = self.pong_game.execute(
                 player1_name=player1.name, player2_name=player2.name
             )
+            # update trounament from executed game
             self.tournament_manager.update_current_match(player1_score, player2_score)
-        # TODO update db to record match result
-        self.room_state = RoomState.Finished
+        # TODO update db to record match and tournament results
+        # send room status to client
+        self.set_room_state(RoomState.Finished)
         async_to_sync(self.send_room_state_to_group)()
         async_to_sync(self.send_messege_to_group)("notify_client_proccessing_complete")
 

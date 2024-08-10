@@ -1,5 +1,6 @@
 import random
 
+
 class Match:
     def __init__(self, player1, player2):
         self.player1 = player1
@@ -27,8 +28,26 @@ class Match:
         elif self.winner == self.player2:
             is_player2_winner = False
         if self.player2 == None:
-            return {"top": {"name": self.player1.name, "score": self.player1_score, "winner": is_player1_winner}, "b0ttom": {"name": "", "score": 0, "winner": False}}
-        return {"top": {"name": self.player1.name, "score": self.player1_score, "winner": is_player1_winner}, "bottom": {"name": self.player2.name, "score": self.player2_score, "winner": is_player2_winner}}
+            return {
+                "top": {
+                    "name": self.player1.name,
+                    "score": self.player1_score,
+                    "winner": is_player1_winner,
+                },
+                "b0ttom": {"name": "", "score": 0, "winner": False},
+            }
+        return {
+            "top": {
+                "name": self.player1.name,
+                "score": self.player1_score,
+                "winner": is_player1_winner,
+            },
+            "bottom": {
+                "name": self.player2.name,
+                "score": self.player2_score,
+                "winner": is_player2_winner,
+            },
+        }
 
     def get_winner(self):
         return self.winner
@@ -100,8 +119,12 @@ class TournamentManager:
         while number_of_extra_round:
             round_information = []
             for i in range(0, number_of_extra_round):
-                round_information.append({"top": {"name": "", "score": 0, "winner": True}, "bottom": {"name": "", "score": 0, "winner": True}})
+                round_information.append(
+                    {
+                        "top": {"name": "", "score": 0, "winner": True},
+                        "bottom": {"name": "", "score": 0, "winner": True},
+                    }
+                )
             tournament_information.append(round_information)
             number_of_extra_round //= 2
-        return tournament_information 
-
+        return tournament_information
