@@ -70,8 +70,16 @@ export class Signup extends Component {
     });
     console.log(response);
     const data = await response.json();
+
     if (!response.ok) {
-      throw Error(data.status);
+      switch (response.status) {
+        case 400:
+          throw Error('不正なリクエストです');
+        case 409:
+          throw Error('既に存在するユーザー名またはメールアドレスです');
+        default:
+          throw Error(data.status);
+      }
     }
     return data;
   };
