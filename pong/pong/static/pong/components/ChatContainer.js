@@ -1,9 +1,8 @@
 import { Component } from "../core/component.js";
 
 export class ChatContainer extends Component {
-    constructor(router, params, state, selectedRoom) {
-        super(router, params, state, '.chat');
-        this.selectedRoom = selectedRoom;
+    constructor(router, params, state) {
+        super(router, params, state);
         console.log("this.html", this.html);
     }
 
@@ -17,7 +16,6 @@ export class ChatContainer extends Component {
                 <div class="header">
                     <img src="static/pong/images/snapchat.svg" alt="Profile Image" class="profile-img">
                     <div class="info">
-                        <h2>${this.selectedRoom.name}</h2>
                         <p>オンライン</p>
                     </div>
                     <button class="call-button">Call</button>

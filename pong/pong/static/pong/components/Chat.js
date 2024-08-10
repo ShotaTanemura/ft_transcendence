@@ -11,7 +11,6 @@ export class Chat extends Component {
         };
 
         this.verifyJwtToken();
-        this.handleRoomSelect = this.handleRoomSelect.bind(this);
         this.render();
     }
 
@@ -29,8 +28,8 @@ export class Chat extends Component {
     get html() {
         return (`
             <div class="parent-container">
-                ${new MyRoomsContainer(this.router, this.params, this.state)}
-                ${new ChatContainer(this.router, this.params, this.state, this.state.selectedRoom).html}
+                ${new MyRoomsContainer(this.router, this.params, this.state).html}
+                ${new ChatContainer(this.router, this.params, this.state).html}
                 ${new DirectoryContainer(this.router, this.params, this.state).html}
             </div>
         `);

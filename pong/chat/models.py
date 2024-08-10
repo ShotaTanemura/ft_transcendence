@@ -8,17 +8,13 @@ logger = getLogger(__name__)
 
 
 class RoomsManager(models.Manager):
-    def create_room(self, name, password, user):
+    def create_room(self, name, user):
         if not name:
             raise ValueError("nameを入力してください")
-        if not password:
-            raise ValueError("passwordを入力してください")
         try:
-            room = self.model(name=name, password=password)
+            room = self.model(name=name)
             room.save(using=self._db)
 
-            logger.info(room)
-            logger.info(user)
             user_room = UserRooms(user_id=user, room_id=room)
             user_room.save(using=self._db)
 

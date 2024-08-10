@@ -55,7 +55,7 @@ def search_rooms(request):
         return JsonResponse({"message": e}, status=500)
 
 
-def rooms(request):
+def get(request):
     try:
         user = verify_user(request)
         if request.method != "GET":
@@ -91,3 +91,33 @@ def rooms(request):
     except Exception as e:
         logger.error(e)
         return JsonResponse({"message": str(e)}, status=500)
+
+
+
+
+@jwt_exempt
+@csrf_exempt
+def post(request):
+    try:
+        user = verify_user(request)
+        data = json.loads(request.body)
+        logger.info(data)
+        try:
+            Rooms.objects.create_room(
+                data["name"], user
+            )
+        except ValueError as e:
+            return JsonResponse({"message": str(e)}, status=400)
+        except Exception as e:
+            return JsonResponse({"message": str(e)}, status=500)
+
+        return JsonResponse(
+            {"message": "created chat room", "status": "Created"}, status=200
+        )
+
+    except AppError as e:
+        logger.error(e)
+        return JsonResponse(e.to_dict(), status=e.status_code)
+    except Exception as e:
+        logger.error(e)
+        return JsonResponse({"message": e}, status=500)
