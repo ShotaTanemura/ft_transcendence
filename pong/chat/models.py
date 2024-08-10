@@ -7,37 +7,14 @@ from logging import getLogger
 logger = getLogger(__name__)
 
 
-class RoomStatus(models.Model):
-    id = models.AutoField(primary_key=True)
-    status = models.CharField(max_length=20, blank=False, null=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.status
-
-    class RoomStatusManager(models.Manager):
-        def create_room_status(self, status):
-            room_status = self.model(status=status)
-            room_status.save(using=self._db)
-            return room_status
-
-    class Meta:
-        db_table = "room_status"
-        verbose_name = "room_status"
-        verbose_name_plural = "room_status"
-        ordering = ["-created_at"]
-
-
 class RoomsManager(models.Manager):
-    def create_room(self, name, password, status, user):
+    def create_room(self, name, password, user):
         if not name:
             raise ValueError("nameを入力してください")
         if not password:
             raise ValueError("passwordを入力してください")
         try:
-            room_status = RoomStatus.objects.get(status=status)
-            room = self.model(name=name, password=password, room_status_id=room_status)
+            room = self.model(name=name, password=password)
             room.save(using=self._db)
 
             logger.info(room)
@@ -61,8 +38,6 @@ class RoomsManager(models.Manager):
 class Rooms(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(unique=True, blank=False, max_length=20)
-    password = models.CharField(max_length=20, blank=True, null=True)
-    room_status_id = models.ForeignKey(RoomStatus, on_delete=models.CASCADE)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
