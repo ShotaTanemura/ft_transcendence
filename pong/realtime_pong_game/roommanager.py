@@ -123,7 +123,6 @@ class RoomManager:
             ):
                 self.room_state = RoomState.Display_Tournament
                 self.tournament_manager = TournamentManager(self.participants)
-                await self.send_room_state_to_group()
                 asyncio.new_event_loop().run_in_executor(
                     None,
                     self.game_dispatcher,
@@ -153,7 +152,6 @@ class RoomManager:
             self.change_participants_state_for_game(player1, player2)
             # get tournament list
             tournament = self.tournament_manager.get_current_tournament_information_as_list()
-            print(tournament)
             async_to_sync(self.send_messege_to_group)("send_room_information", {"sender": "room_manager", "type": "tournament", "contents": tournament})
             self.room_state = RoomState.Display_Tournament
             async_to_sync(self.send_room_state_to_group)()

@@ -1,11 +1,10 @@
 import { Component } from '../core/component.js';
 
 export class PongGameTournamentBracket extends Component {
-  constructor(router, parameters, state, tournament) {
+  constructor(router, parameters, state, tournament = []) {
     super(router, parameters, state);
-    this.tournament = tournament;
     this.tournamentElement = this.findElement("main.tournament")
-    this.tournamentChildElements = this.createTounamentObject();
+    this.tournamentChildElements = this.createTounamentObject(tournament);
 
     // TODO This code is a bit redundant.
     // Adding child nodes to avoid the first element being a div tag is unnecessary.
@@ -15,9 +14,9 @@ export class PongGameTournamentBracket extends Component {
     } 
   }
 
-  createTounamentObject() { 
+  createTounamentObject(tournament) { 
     let parentElement = document.createElement("div");
-     this.tournament.map((round, roundIndex)=>{
+    tournament.map((round, roundIndex)=>{
         let roundElement = Object.assign(document.createElement('ul'), {className: `round round-${roundIndex + 1}`});
         round.map((game, gameIndex)=>{
           //create Top Player Element

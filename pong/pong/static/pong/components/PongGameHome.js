@@ -15,12 +15,11 @@ export class PongGameHome extends Component {
 	}
 
 	onWebSocketClose = (event) => {
-		this.goNextPage("/pong-game-home");
+		console.log("closed");
 	}
 
 	onMessage = (event) => {
 		const message = JSON.parse(event.data);
-		console.log(message);
 		switch (message.type) {
 			case 'room-state':
 				this.changePageByRoomStatus(message);

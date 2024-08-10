@@ -103,6 +103,5 @@ class TournamentManager:
                 round_information.append({"top": {"name": "", "score": 0, "winner": True}, "bottom": {"name": "", "score": 0, "winner": True}})
             tournament_information.append(round_information)
             number_of_extra_round //= 2
-        print(f"tournament_information: {tournament_information}")
         return tournament_information 
 
