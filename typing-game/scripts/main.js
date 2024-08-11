@@ -1,5 +1,4 @@
 import { uiController } from './uiController.js';
-// main.js
 
 document.addEventListener('DOMContentLoaded', async () => {
     uiController.initializeUI();
@@ -12,8 +11,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error('Failed to initialize game.');
     }
 });
-
-// loadWords.js
 
 // サーバー
 async function loadWords() {
@@ -33,8 +30,7 @@ function parseCSV(data) {
   return rows.slice(1).map((row) => row.trim()); // ヘッダーを除いてトリムされた単語を返す
 }
 
-// inputHandler.js
-
+// サーバー
 export const inputHandler = (function() {
     function handleInput(value) {
         const currentWord = gameController.getCurrentWord();
@@ -55,8 +51,6 @@ export const inputHandler = (function() {
         resetInput
     };
 })();
-
-// gameController.js
 
 export const gameController = (function () {
   let timer;

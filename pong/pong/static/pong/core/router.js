@@ -106,7 +106,6 @@ export class Router {
 			 	parameters: parameters,
 			 	state: route.state
 			}
-			 
 		}
 		//TODO 組み込みのエラーページコンポーネントを返す。
 		return (null);

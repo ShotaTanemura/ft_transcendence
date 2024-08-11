@@ -8,9 +8,8 @@ from threading import Lock
 # set them to the same values as frontend
 FIELD_WIDTH = 1500
 FIELD_HEIGHT = 585
-PADDLE_SIZE = 80
-GRID = 15
 FPS = 120
+
 
 
 class Ball:
