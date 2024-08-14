@@ -22,7 +22,7 @@ export class PongGameTournamentBracket extends Component {
       let roundElement = Object.assign(document.createElement("ul"), {
         className: `round round-${roundIndex + 1}`,
       });
-      round.map((game, gameIndex) => {
+      round.map((game) => {
         //create Top Player Element
         roundElement.appendChild(
           Object.assign(document.createElement("li"), {

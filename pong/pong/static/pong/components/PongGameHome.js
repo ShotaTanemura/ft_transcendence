@@ -8,14 +8,14 @@ export class PongGameHome extends Component {
     this.findElement("form.entering-room-form").onsubmit = this.submitForm;
   }
 
-  onWebSocketOpen = (event) => {
+  onWebSocketOpen = () => {
     this.goNextPage("/pong-game-waiting");
     this.connection.send(
       JSON.stringify({ sender: "user", type: "get-room-state" }),
     );
   };
 
-  onWebSocketClose = (event) => {
+  onWebSocketClose = () => {
     console.log("closed");
   };
 

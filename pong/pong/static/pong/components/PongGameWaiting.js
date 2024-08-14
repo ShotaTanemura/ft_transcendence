@@ -9,7 +9,7 @@ export class PongGameWaiting extends Component {
     this.findElement("button.go-back-to-game-home").onclick = this.onClick;
   }
 
-  onClick = (event) => {
+  onClick = () => {
     this.goNextPage("/pong-game-home");
   };
 
