@@ -130,12 +130,12 @@ export class TypingGame extends Component {
         const rows = data.split("\n");
         return rows.slice(1).map((row) => row.trim());
     }
-
+    
     initializeCanvas() {
         this.canvas = document.getElementById("timerCanvas");
         this.ctx = this.canvas.getContext("2d");
     }
-
+    
     startGame() {
         this.initializeCanvas();
         this.score = 0;
@@ -150,7 +150,7 @@ export class TypingGame extends Component {
         if (this.score % 4 === 0 && this.score !== 0 && this.maxTime > 3) {
             this.maxTime -= 1;
         }
-
+        
         this.currentWord = this.words[Math.floor(Math.random() * this.words.length)];
         console.log("Next word: ", this.currentWord);
         this.displayWord(this.currentWord);
@@ -178,15 +178,20 @@ export class TypingGame extends Component {
     handleKeyDown(event) {
         const currentWord = this.currentWord;
         event.preventDefault();
-        if (event.key.length === 1 && event.key === currentWord[this.inputLength]) {
-            this.wordDiv.children[this.inputLength].classList.remove('incorrect');
-            this.wordDiv.children[this.inputLength].classList.add('correct');
-            this.inputLength++;
-
-            this.handleInput(currentWord.substring(0, this.inputLength));
-        } else if (event.key.length === 1) {
-            this.reduceTime(this.amount);
+        console.log("Key pressed:", event.key);
+        if (event.key.length === 1) {
+            // 正しい文字が入力された場合
+            if (event.key === currentWord[this.inputLength]) {
+                this.wordDiv.children[this.inputLength].style.color = 'red'; // 色を赤に変更
+                this.inputLength++;
+                this.handleInput(currentWord.substring(0, this.inputLength));
+            } else { // 間違った文字が入力された場合
+                this.wordDiv.children[this.inputLength].style.color = 'gray'; // 色を灰色に変更
+                this.reduceTime(this.amount);
+            }
         }
+
+
     }
 
     handleInput(value) {
@@ -264,7 +269,7 @@ export class TypingGame extends Component {
         for (let char of word) {
             const span = document.createElement('span');
             span.textContent = char;
-            span.classList.add('incorrect');
+            span.style.color = 'gray';
             this.wordDiv.appendChild(span);
         }
         this.inputLength = 0;
