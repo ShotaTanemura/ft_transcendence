@@ -6,24 +6,52 @@ from realtime_pong_game.roommanager import RoomManager
 
 class PlayerConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        # register group name
-        self.room_name = "room_" + self.scope["url_route"]["kwargs"]["room_name"]
-        # get Room instance
-        self.room_manager = RoomManager.get_instance(self.room_name)
-        # verify user
-        if self.scope["user"] == AnonymousUser():
-            await self.close()
-            return
-        # register user
-        self.user = self.scope["user"]
         # accept connection first
         await self.accept()
+
+        # register user
+        self.user = self.scope["user"]
+        # verify user
+        if self.scope["user"] == AnonymousUser():
+            await self.send(text_data=json.dumps({"sender": "room-manager", "type": "error-message", "contents": "User not Found."}))
+            await self.close()
+            return
+
+        # register group name
+        self.room_name = self.scope["url_route"]["kwargs"].get("room_name")
+        self.user_role = self.scope["url_route"]["kwargs"].get("user_role")
+        # if url path is not valid, close connection
+        if self.room_name == None or self.user_role == None:
+            await self.send(text_data=json.dumps({"sender": "room-manager", "type": "error-message", "contents": "room name or user role is invalid."}))
+            await self.close()
+            return 
+
+        # if user want to host, confirm that room is empty. if not, connection closed.
+        if self.user_role == "host":
+            self.room_manager = RoomManager.host_room(self.room_name)
+            if self.room_manager == None:
+                await self.send(text_data=json.dumps({"sender": "room-manager", "type": "error-message", "contents": "This room is ongoing."}))
+                await self.close()
+                return 
+        # if user want to guest, confirm that room can be entered. if not, connection closed.
+        elif self.user_role == "guest":
+            self.room_manager = RoomManager.guest_room(self.room_name)
+            if self.room_manager == None:
+                await self.send(text_data=json.dumps({"sender": "room-manager", "type": "error-message", "contents": "Room not Found."}))
+                await self.close()
+                return 
+        # if user_role is neither host nor guest, connection closed.
+        else:
+            await self.send(text_data=json.dumps({"sender": "room-manager", "type": "error-message", "contents": "user role is invalid."}))
+            await self.close()
+            return
+
         # add user to group
         await self.channel_layer.group_add(self.room_name, self.channel_name)
         # add user to Room
         is_success = await self.room_manager.on_user_connected(self.user)
-        # TODO send error message before close
         if not is_success:
+            await self.send(text_data=json.dumps({"sender": "room-manager", "type": "error-message", "contents": "cannot connect room."}))
             await self.close()
             return
 
@@ -31,6 +59,7 @@ class PlayerConsumer(AsyncWebsocketConsumer):
         # deliver message to room manager
         message_json = json.loads(text_data)
         if not message_json.keys() >= {"sender", "type"}:
+            await self.send(text_data=json.dumps({"sender": "room-manager", "type": "error-message", "contents": "message format is invalid."}))
             return
         if message_json["type"] == "get-room-state":
             await self.send(
@@ -46,7 +75,7 @@ class PlayerConsumer(AsyncWebsocketConsumer):
         await self.room_manager.on_receive_user_message(self.user, message_json)
 
     async def disconnect(self, close_code):
-        if hasattr(self, "room_manager"):
+        if self.room_manager != None:
             await self.room_manager.on_user_disconnected(self.user)
         await self.channel_layer.group_discard(self.room_name, self.channel_name)
 

@@ -21,6 +21,7 @@ export class PongGameHome extends Component {
 
   onMessage = (event) => {
     const message = JSON.parse(event.data);
+    console.log(message)
     switch (message.type) {
       case "room-state":
         this.changePageByRoomStatus(message);
@@ -30,6 +31,10 @@ export class PongGameHome extends Component {
         break;
       case "tournament-winner":
         this.setRouteContext("tournament-winner", message.contents);
+        break;
+      case "error-message":
+        alert(message.contents)
+        this.goNextPage("/error")
         break;
     }
   };
@@ -44,7 +49,10 @@ export class PongGameHome extends Component {
       window.location.port +
       "/realtime-pong/" +
       event.target.elements["room-id"].value +
+      "/" +
+      event.submitter.name +
       "/";
+
     this.connection = new WebSocket(socketPath);
     this.setRouteContext("WebSocket", this.connection);
     this.connection.onopen = this.onWebSocketOpen;
@@ -81,7 +89,8 @@ export class PongGameHome extends Component {
 			<form class="entering-room-form">
 				<label for="room-id">Room ID</label>
 				<input id="room-id" type="number" min="1000" max="9999" required><br>
-				<input id="enter-room-submit" name="enter-room" type="submit" value="enter room">
+				<input id="enter-room-as-host-submit" name="host" type="submit" value="enter room as host">
+				<input id="enter-room-as-guest-submit" name="guest" type="submit" value="enter room as guest">
 			</form>
 
 		`;
