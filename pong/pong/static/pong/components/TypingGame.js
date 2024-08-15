@@ -1,7 +1,10 @@
 import { Component } from "../core/component.js";
+import { wordsArray } from "../data/words.js";
 
-export class TypingGame {
-    constructor() {
+
+export class TypingGame extends Component {
+    constructor(router, parameters, state) {
+        super(router, parameters, state);
         this.startButton = null;
         this.restartButton = null;
         this.startDiv = null;
@@ -23,11 +26,11 @@ export class TypingGame {
         this.canvas = null;
         this.ctx = null;
         this.words = [];
+        this.initialize();
     }
 
     async initialize() {
         document.addEventListener('DOMContentLoaded', async () => {
-            print("initializeが呼ばれました");
             this.initializeUI();
             const gameInitialized = await this.initializeGame();
             if (gameInitialized) {
@@ -40,29 +43,30 @@ export class TypingGame {
         });
     }
 
+    get html() {
+        return (`
+<div id="typing-game">
+    <div id="start">
+        <button id="startButton" class="button">スタート</button>
+    </div>
+    <div id="game" class="hidden">
+        <div id="timer"></div>
+        <div id="word"></div>
+        <div id="inputDisplay"></div>
+        <div id="score"></div>
+        <canvas id="timerCanvas" width="200" height="200"></canvas>
+    </div>
+    <div id="result" class="hidden">
+        <div id="finalScore"></div>
+        <button id="restartButton" class="button">リスタート</button>
+    </div>
+</div>
+        `);
+    }
+    
     initializeUI() {
-        const app = document.getElementById('app');
-
-        app.innerHTML = `
-            <div id="start">
-                <button id="startButton" class="button">スタート</button>
-            </div>
-            <div id="game" class="hidden">
-                <div id="timer">10</div>
-                <div id="word"></div>
-                <div id="inputDisplay"></div>
-                <div id="score">0</div>
-                <canvas id="timerCanvas" width="200" height="200"></canvas>
-            </div>
-            <div id="result" class="hidden">
-                <div id="finalScore"></div>
-                <button id="restartButton" class="button">リスタート</button>
-            </div>
-            <div id="playersImage">
-                <img src="img/person-use-notePc.png" alt="Image of player" class="player1" />
-            </div>
-        `;
-
+        const app = document.getElementById('typing-game');
+        app.innerHTML = this.html;
         this.startButton = document.getElementById("startButton");
         this.restartButton = document.getElementById("restartButton");
         this.startDiv = document.getElementById("start");
@@ -77,7 +81,6 @@ export class TypingGame {
             this.startDiv.classList.add("hidden");
             this.gameDiv.classList.remove("hidden");
             this.enableTextInput();
-            this.startGame();
             this.inputLength = 0;
         });
 
@@ -87,6 +90,17 @@ export class TypingGame {
             this.disableTextInput();
         });
     }
+        async initializeGame() {
+            const loadedWords = await this.loadWords();
+            if (loadedWords.length > 0) {
+                this.words = loadedWords;
+                console.log("Words loaded:", this.words);
+                return true;
+            } else {
+                console.error("No words loaded.");
+                return false;
+            }
+        }
 
     enableTextInput() {
         document.addEventListener('keydown', (event) => this.handleKeyDown(event));
@@ -98,9 +112,14 @@ export class TypingGame {
 
     async loadWords() {
         try {
-            const response = await fetch("words.csv");
-            const data = await response.text();
-            return this.parseCSV(data);
+            // 単語データが存在するかチェック
+            if (wordsArray && wordsArray.length > 0) {
+                console.log("単語データが正常に読み込まれました。");
+                return wordsArray;
+            } else {
+                console.error("単語データが空です。");
+                return [];
+            }
         } catch (error) {
             console.error("Error:", error);
             return [];
@@ -110,18 +129,6 @@ export class TypingGame {
     parseCSV(data) {
         const rows = data.split("\n");
         return rows.slice(1).map((row) => row.trim());
-    }
-
-    async initializeGame() {
-        const loadedWords = await this.loadWords();
-        if (loadedWords.length > 0) {
-            this.words = loadedWords;
-            console.log("Words loaded:", this.words);
-            return true;
-        } else {
-            console.error("No words loaded.");
-            return false;
-        }
     }
 
     initializeCanvas() {
