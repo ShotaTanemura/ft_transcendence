@@ -20,7 +20,7 @@ django_asgi_app = application = get_asgi_application()
 # import consumers here
 from pong.middleware.auth import ChannelsJWTAuthenticationMiddleware
 from realtime_pong_game.consumers import PlayerConsumer
-from realtime_typing_game.consumers import TypingGmaePlayerConsumer
+from realtime_typing_game.consumers import TypingGamePlayerConsumer
 
 application = ProtocolTypeRouter(
     {
@@ -35,7 +35,7 @@ application = ProtocolTypeRouter(
                         ),
                         re_path(
                             r"realtime-typing/(?P<room_name>\w+)/$",
-                            TypingGmaePlayerConsumer.as_asgi(),
+                            TypingGamePlayerConsumer.as_asgi(),
                         ),
                     ]
                 )
