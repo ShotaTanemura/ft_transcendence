@@ -7,6 +7,6 @@ users {
     string uuid PK
     string name
     string email
-    string password
+    string icon
 }
 ```
