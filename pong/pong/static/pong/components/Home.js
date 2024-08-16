@@ -6,12 +6,17 @@ export class Home extends Component {
   constructor(router, params, state) {
     super(router, params, state);
     this.findElement("button.go-realtime-button").onclick = this.goRealtime;
+    this.findElement("button.go-profile-button").onclick = this.goProfile;
     this.findElement("form.signout-form").onsubmit = this.handleSignout;
     this.verifyJwtToken();
   }
 
   goRealtime = () => {
     this.router.goNextPage("/pong-game-home");
+  };
+
+  goProfile = () => {
+    this.router.goNextPage("/profile");
   };
 
   verifyJwtToken = async () => {
@@ -60,9 +65,12 @@ export class Home extends Component {
     return `
 			<h1> signin後の仮ページ </h1>
 			<button class="go-realtime-button">リアルタイム対戦をする</button>
+      <br>
+      <button class="go-profile-button">profile</button>
             <form class="signout-form">
                 <button type="submit">signout</button>
             </form>
+
 		`;
   }
 }
