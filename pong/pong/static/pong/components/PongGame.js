@@ -26,7 +26,7 @@ export class PongGame extends Component {
       size: 80,
     };
     document.addEventListener("keydown", (e) => {
-      if (e.which === 87) {
+      if (e.key === 'w') {
         this.connection.send(
           JSON.stringify({
             sender: "player",
@@ -34,7 +34,7 @@ export class PongGame extends Component {
             contents: "keyup-go-up",
           }),
         );
-      } else if (e.which === 83) {
+      } else if (e.key === 's') {
         this.connection.send(
           JSON.stringify({
             sender: "player",
@@ -45,7 +45,7 @@ export class PongGame extends Component {
       }
     });
     document.addEventListener("keyup", (e) => {
-      if (e.which === 87 || e.which === 83) {
+      if (e.key=== 'w' || e.key=== 's') {
         this.connection.send(
           JSON.stringify({
             sender: "player",
