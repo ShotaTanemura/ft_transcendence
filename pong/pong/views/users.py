@@ -2,12 +2,15 @@ from django.http.response import JsonResponse
 from pong.models import User, UserIconUpdateForm
 from django.views.decorators.csrf import csrf_exempt
 from pong.middleware.auth import jwt_exempt
+import json
+import logging
 
+logger = logging.getLogger(__name__)
 
 @csrf_exempt
 def get_user(request, uuid):
-    match request.method:
-        case "GET":
+    try:
+        if request.method == "GET":
             user = User.objects.filter(uuid=uuid).first()
             if not user:
                 return JsonResponse(
@@ -19,41 +22,49 @@ def get_user(request, uuid):
                     "uuid": user.uuid,
                     "name": user.name,
                     "email": user.email,
-                    "icon": user.icon.url,
+                    "icon": user.icon.url if user.icon else None,
                 },
                 status=200,
             )
-        case "PATCH":
+        elif request.method == "PATCH":
             user = User.objects.filter(uuid=uuid).first()
             if not user:
                 return JsonResponse(
                     {"message": "User not found", "status": "userNotFound"}, status=404
                 )
 
-            data = json.loads(request.body)
-            print(data)
+            try:
+                data = json.loads(request.body)
+            except json.JSONDecodeError as e:
+                logger.error(f"Invalid JSON: {e}")
+                return JsonResponse(
+                    {"message": "Invalid JSON", "status": "invalidJson"}, status=400
+                )
+
             if "name" in data:
                 user.name = data["name"]
             if "email" in data:
                 user.email = data["email"]
             user.save()
 
-            print(user.name, user.email)
             return JsonResponse(
                 {
                     "uuid": user.uuid,
                     "name": user.name,
                     "email": user.email,
-                    "icon": user.icon.url,
+                    "icon": user.icon.url if user.icon else None,
                 },
                 status=200,
             )
-        case _:
+        else:
             return JsonResponse(
                 {"message": "Method is not allowed", "status": "invalidParams"}, status=400
             )
-
-
+    except Exception as e:
+        logger.error(f"Server error: {e}")
+        return JsonResponse(
+            {"message": "Internal Server Error", "status": "serverError"}, status=500
+        )
 
 @csrf_exempt
 @jwt_exempt
