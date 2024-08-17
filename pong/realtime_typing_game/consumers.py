@@ -4,7 +4,7 @@ from django.contrib.auth.models import AnonymousUser
 from realtime_typing_game.roommanager import RoomManager
 
 
-class TypingGmaePlayerConsumer(AsyncWebsocketConsumer):
+class TypingGamePlayerConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         # register group name
         self.room_name = "room_" + self.scope["url_route"]["kwargs"]["room_name"]
