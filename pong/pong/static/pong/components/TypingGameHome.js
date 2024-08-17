@@ -38,7 +38,14 @@ export class TypingGameHome extends Component {
 		event.preventDefault();
 		this.setRouteContext("roomID", event.target.elements["room-id"].value);
 		// config/asgiで設定しているpathを指定
-		const socketPath = "ws://" + window.location.hostname + ":" + window.location.port + "/realtime-typing/" + event.target.elements["room-id"].value + "/";
+		const socketPath =
+			"ws://" + 
+			window.location.hostname + 
+			":" + 
+			window.location.port + 
+			"/realtime-typing/" + 
+			event.target.elements["room-id"].value + 
+			"/";
 		const connection = new WebSocket(socketPath);
 		this.setRouteContext("WebSocket", connection);
 		connection.onopen = this.onWebSocketOpen;
