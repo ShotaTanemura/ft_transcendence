@@ -8,7 +8,7 @@ export class PongGameTournament extends Component {
       route,
       parameters,
       state,
-      this.getRouteContext("tournament"),
+      this.getRouteContext("Tournament"),
     );
     this.element.appendChild(this.bracket.element);
   }

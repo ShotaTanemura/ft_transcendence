@@ -14,7 +14,7 @@ export class PongGameFinished extends Component {
 
   get html() {
     return `
-			<h1>congratulation ${this.getRouteContext("tournament-winner")}!!</h1>
+			<h1>congratulation ${this.getRouteContext("TournamentWinner")}!!</h1>
             <button class="go-back-to-game-home">go back to game home</button>
 		`;
   }

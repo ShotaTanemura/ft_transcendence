@@ -26,10 +26,10 @@ export class PongGameHome extends Component {
         this.changePageByRoomStatus(message);
         break;
       case "tournament":
-        this.setRouteContext("tournament", message.contents);
+        this.setRouteContext("Tournament", message.contents);
         break;
       case "tournament-winner":
-        this.setRouteContext("tournament-winner", message.contents);
+        this.setRouteContext("TournamentWinner", message.contents);
         break;
       case "error-message":
         alert(message.contents);
@@ -40,7 +40,7 @@ export class PongGameHome extends Component {
 
   submitForm = (event) => {
     event.preventDefault();
-    this.setRouteContext("roomID", event.target.elements["room-id"].value);
+    this.setRouteContext("RoomID", event.target.elements["room-id"].value);
     const socketPath =
       "ws://" +
       window.location.hostname +

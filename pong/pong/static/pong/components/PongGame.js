@@ -81,10 +81,10 @@ export class PongGame extends Component {
         this.changePageByRoomStatus(message);
         break;
       case "tournament":
-        this.setRouteContext("tournament", message.contents);
+        this.setRouteContext("Tournament", message.contents);
         break;
       case "tournament-winner":
-        this.setRouteContext("tournament-winner", message.contents);
+        this.setRouteContext("TournamentWinner", message.contents);
         break;
     }
   };
