@@ -21,7 +21,6 @@ export class PongGameHome extends Component {
 
   onMessage = (event) => {
     const message = JSON.parse(event.data);
-    console.log(message)
     switch (message.type) {
       case "room-state":
         this.changePageByRoomStatus(message);
@@ -33,8 +32,8 @@ export class PongGameHome extends Component {
         this.setRouteContext("tournament-winner", message.contents);
         break;
       case "error-message":
-        alert(message.contents)
-        this.goNextPage("/error")
+        alert(message.contents);
+        this.goNextPage("/error");
         break;
     }
   };

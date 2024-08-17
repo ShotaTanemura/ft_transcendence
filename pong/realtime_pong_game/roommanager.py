@@ -39,15 +39,15 @@ class RoomManager:
         with cls.lock:
             if room_name not in cls.room_instances:
                 cls.room_instances[room_name] = cls(room_name)
-                return (cls.room_instances[room_name])
+                return cls.room_instances[room_name]
             return None
-    
+
     @classmethod
     def guest_room(cls, room_name):
         with cls.lock:
-            #TODO validate precisely weather room can be entered
+            # TODO validate precisely weather room can be entered
             if room_name in cls.room_instances:
-                return (cls.room_instances[room_name])
+                return cls.room_instances[room_name]
             return None
 
     # get or create RoomManager instance
