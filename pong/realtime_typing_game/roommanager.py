@@ -47,6 +47,7 @@ class RoomManager:
     def __init__(self, room_name):
         self.instance_lock = Lock()
         self.channel_layer = get_channel_layer()
+        # TODO:
         self.pong_game = PongGame(room_name)
         self.room_name = room_name
         self.room_state = RoomState.Queuing
@@ -82,7 +83,6 @@ class RoomManager:
     async def on_user_disconnected(self, user):
         with self.instance_lock:
             # TODO send message when RoomState is ready
-
             if self.room_state == RoomState.In_Game:
                 return
             self.participants.remove(user)
@@ -146,7 +146,4 @@ class RoomManager:
         )
 
     async def handle_game_action(self, participant, message_json):
-        if self.participants_state[participant] == ParticipantState.Player1:
-            await self.pong_game.recieve_player1_input(message_json)
-        elif self.participants_state[participant] == ParticipantState.Player2:
-            await self.pong_game.recieve_player2_input(message_json)
+        await self.pong_game.recieve_player1_input(message_json)

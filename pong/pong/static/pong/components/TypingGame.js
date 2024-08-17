@@ -5,6 +5,7 @@ import { wordsArray } from "../data/words.js";
 export class TypingGame extends Component {
     constructor(router, parameters, state) {
         super(router, parameters, state);
+        /*
         this.startButton = null;
         this.restartButton = null;
         this.startDiv = null;
@@ -27,8 +28,36 @@ export class TypingGame extends Component {
         this.ctx = null;
         this.words = [];
         this.initialize();
+        */
+        
+        // websocketでの接続テスト
+        this.connection = this.getRouteContext("WebSocket");
+        if (!this.connection) {
+            console.error("WebSocket connection is undefined, creating a new connection.");
+        }
+        this.connection.onmessage = this.onMessage;
+
+        document.addEventListener("keydown", (e) => {
+            this.connection.send(
+                JSON.stringify({
+                    sender: "player",
+                    type: "gameKeyEvent",
+                    contents: e.key,
+                }),
+            );
+        });
+
+        onMessage = (event) => {
+            const message = JSON.parse(event.data);
+            console.log("Message received:", message);
+        }
     }
 
+    onMessage = (event) => {
+        const message = JSON.parse(event.data);
+        console.log("Message received:", message);
+      };
+/*
     async initialize() {
         document.addEventListener('DOMContentLoaded', async () => {
             this.initializeUI();
@@ -281,4 +310,5 @@ export class TypingGame extends Component {
         this.finalScoreDiv.textContent = "スコア: " + score;
         this.disableTextInput();
     }
+    */
 }

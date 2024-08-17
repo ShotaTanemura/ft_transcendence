@@ -54,7 +54,6 @@ export class TypingGameHome extends Component {
 				<input id="room-id" type="number" min="1000" max="9999" required><br>
 				<input id="enter-room-submit" name="enter-room" type="submit" value="enter room">
 			</form>
-			
 		`);
 	}
 }
