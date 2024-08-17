@@ -7,6 +7,7 @@ export class Home extends Component {
     super(router, params, state);
     this.findElement("button.go-realtime-button").onclick = this.goRealtime;
     this.findElement("form.signout-form").onsubmit = this.handleSignout;
+    this.findElement("button.go-profile-button").onclick = this.goProfile;
     this.verifyJwtToken();
   }
 
@@ -35,6 +36,10 @@ export class Home extends Component {
     this.router.goNextPage("/");
   };
 
+  goProfile = () => {
+    this.router.goNextPage("/profile");
+  };
+
   handleSignout = async (event) => {
     event.preventDefault();
     try {
@@ -60,6 +65,8 @@ export class Home extends Component {
     return `
 			<h1> signin後の仮ページ </h1>
 			<button class="go-realtime-button">リアルタイム対戦をする</button>
+       <br>
+      <button class="go-profile-button">profile</button>
             <form class="signout-form">
                 <button type="submit">signout</button>
             </form>
