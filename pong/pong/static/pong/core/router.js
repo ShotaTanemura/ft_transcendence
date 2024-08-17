@@ -1,120 +1,121 @@
 // RootingList must be contain component, parameters, state
-import './component.js'
+import "./component.js";
 
 export class Router {
-	constructor(rootElement, routingList, context) {
-		this.pageStack = [];
-		this.rootElement = rootElement;
-		this.routingList = routingList;
-		this.context = context;
-		window.addEventListener('popstate', (e) => {
-			if (e.state.depth < this.pageStack.length) {
-				this.onHistoryBack();
-			} else {
-				this.onHistoryForward(e.state);
-			}
-		});
-	}
-	
-	setContext(name, value) {
-		this.context[name] = value;
-	}
+  constructor(rootElement, routingList, context) {
+    this.pageStack = [];
+    this.rootElement = rootElement;
+    this.routingList = routingList;
+    this.context = context;
+    window.addEventListener("popstate", (e) => {
+      if (e.state.depth < this.pageStack.length) {
+        this.onHistoryBack();
+      } else {
+        this.onHistoryForward(e.state);
+      }
+    });
+  }
 
-	getContext(name) {
-		return (this.context[name]);
-	}
+  setContext(name, value) {
+    this.context[name] = value;
+  }
 
-	// 指定したpathに遷移する。
-	goNextPage(path) {
-		return this.changePage(path)		
-	}
+  getContext(name) {
+    return this.context[name];
+  }
 
-	//前のページに戻る
-	goBackPage() {
-		return history.back();
-	}
+  // 指定したpathに遷移する。
+  goNextPage(path) {
+    return this.changePage(path);
+  }
 
-	// 実際にpathに遷移させる。
-	changePage(path) {
-		let route = this.searchRouteFromPath(path);
-		//TODO 組み込みのエラーページができるまで何もしない。
-		if (route === null) {
-			console.log('Error: changePage: No such path entry.');
-			return null;
-		}
-		let component = new route.component(this, route.parameters, route.state);
+  //前のページに戻る
+  goBackPage() {
+    return history.back();
+  }
 
-		if (0 < this.pageStack.length) {
-			this.getForegroundPage.element.parentNode.removeChild(this.getForegroundPage.element);
-		}
+  // 実際にpathに遷移させる。
+  changePage(path) {
+    let route = this.searchRouteFromPath(path);
+    //TODO 組み込みのエラーページができるまで何もしない。
+    if (route === null) {
+      console.log("Error: changePage: No such path entry.");
+      return null;
+    }
+    let component = new route.component(this, route.parameters, route.state);
 
-		let data = {
-			depth: this.pageStack.length + 1,
-			path: path
-		};
+    if (0 < this.pageStack.length) {
+      this.getForegroundPage.element.parentNode.removeChild(
+        this.getForegroundPage.element,
+      );
+    }
 
-		if (this.pageStack.length === 0) {
-			history.replaceState(data, null, path);
-		} else {
-			history.pushState(data, null, path);
-		}
-		this.pageStack.push(component);
-		this.rootElement.appendChild(component.element);
-		component.onEnterForeground();
-		return component; 
-	}
+    let data = {
+      depth: this.pageStack.length + 1,
+      path: path,
+    };
 
-	onHistoryBack() {
-		//TODO これはいるのかわからん
-		if (this.pageStack.length === 1) {
-			return ;
-		}
+    if (this.pageStack.length === 0) {
+      history.replaceState(data, null, path);
+    } else {
+      history.pushState(data, null, path);
+    }
+    this.pageStack.push(component);
+    this.rootElement.appendChild(component.element);
+    component.onEnterForeground();
+    return component;
+  }
 
-		let currentPage = this.pageStack.pop();
-		currentPage.router = null;
-		currentPage.element.parentNode.removeChild(currentPage.element);
+  onHistoryBack() {
+    //TODO これはいるのかわからん
+    if (this.pageStack.length === 1) {
+      return;
+    }
 
-		let page = this.getForegroundPage;
-		this.rootElement.appendChild(page.element);
-		page.onEnterForeground();
-	}
-	
-	onHistoryForward(data) {
-		this.getForegroundPage.element.parentNode.removeChild(this.getForegroundPage.element);
+    let currentPage = this.pageStack.pop();
+    currentPage.router = null;
+    currentPage.element.parentNode.removeChild(currentPage.element);
 
-		let route = this.searchRouteFromPath(data.path);
-		//TODO 組み込みエラーページができるまで何もしない。
-		if (route === null) {
-			console.log('Error: onHistoryForward: No such path entry.');
-		}
-		let component  = new route.component(this, route.parameters, route.state);
-		this.pageStack.push(component);
+    let page = this.getForegroundPage;
+    this.rootElement.appendChild(page.element);
+    page.onEnterForeground();
+  }
 
-		this.rootElement.appendChild(component.element);
-		component.onEnterForeground();
-	}
+  onHistoryForward(data) {
+    this.getForegroundPage.element.parentNode.removeChild(
+      this.getForegroundPage.element,
+    );
 
-	searchRouteFromPath(path) {
-		if (path === "") path = "/";
-		for (let i = 0; i < this.routingList.length; i++) {
-			let route = this.routingList[i];
-			//TODO idなど個人によってpathを変えるなら、完全一致だけでなく、正規表現を用いた一致も必要。
-			if (route.path !== path) continue;
-			let parameters = {};
-			return {
-				component: route.component,
-			 	parameters: parameters,
-			 	state: route.state
-			}
-			 
-		}
-		//TODO 組み込みのエラーページコンポーネントを返す。
-		return (null);
-	}
-	
-	get getForegroundPage() {
-		return this.pageStack[this.pageStack.length - 1];
-	}
-	
+    let route = this.searchRouteFromPath(data.path);
+    //TODO 組み込みエラーページができるまで何もしない。
+    if (route === null) {
+      console.log("Error: onHistoryForward: No such path entry.");
+    }
+    let component = new route.component(this, route.parameters, route.state);
+    this.pageStack.push(component);
+
+    this.rootElement.appendChild(component.element);
+    component.onEnterForeground();
+  }
+
+  searchRouteFromPath(path) {
+    if (path === "") path = "/";
+    for (let i = 0; i < this.routingList.length; i++) {
+      let route = this.routingList[i];
+      //TODO idなど個人によってpathを変えるなら、完全一致だけでなく、正規表現を用いた一致も必要。
+      if (route.path !== path) continue;
+      let parameters = {};
+      return {
+        component: route.component,
+        parameters: parameters,
+        state: route.state,
+      };
+    }
+    //TODO 組み込みのエラーページコンポーネントを返す。
+    return null;
+  }
+
+  get getForegroundPage() {
+    return this.pageStack[this.pageStack.length - 1];
+  }
 }
-
