@@ -62,6 +62,7 @@ class RoomManager:
         with cls.lock:
             cls.room_instances.pop(room_name)
 
+
 class Room:
     # TODO allow to set max_of_participants
     def __init__(self, room_name):
