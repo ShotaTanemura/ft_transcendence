@@ -7,8 +7,6 @@ from threading import Lock
 from enum import Enum, auto
 from realtime_pong_game.ponggame import PongGame
 from realtime_pong_game.tournamentmanager import TournamentManager
-
-
 import time
 
 
@@ -38,7 +36,7 @@ class RoomManager:
     def host_room(cls, room_name):
         with cls.lock:
             if room_name not in cls.room_instances:
-                cls.room_instances[room_name] = cls(room_name)
+                cls.room_instances[room_name] = Room(room_name)
                 return cls.room_instances[room_name]
             return None
 
@@ -55,7 +53,7 @@ class RoomManager:
     def get_instance(cls, room_name):
         with cls.lock:
             if room_name not in cls.room_instances:
-                cls.room_instances[room_name] = cls(room_name)
+                cls.room_instances[room_name] = Room(room_name)
             return cls.room_instances[room_name]
 
     # remove RoomManager instance
@@ -64,6 +62,7 @@ class RoomManager:
         with cls.lock:
             cls.room_instances.pop(room_name)
 
+class Room:
     # TODO allow to set max_of_participants
     def __init__(self, room_name):
         self.instance_lock = Lock()
@@ -117,7 +116,7 @@ class RoomManager:
     async def on_user_disconnected(self, participant):
         self.remove_participant(participant)
         if len(self.participants) == 0:
-            self.__class__.remove_instance(self.room_name)
+            RoomManager.remove_instance(self.room_name)
         return True
 
     # send message to Group that belogs to this room
