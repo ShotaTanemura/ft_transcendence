@@ -10,6 +10,7 @@ export class PongGameWaiting extends Component {
   }
 
   onClick = () => {
+    this.connection.close()
     this.goNextPage("/pong-game-home");
   };
 
