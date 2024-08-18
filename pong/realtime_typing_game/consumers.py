@@ -1,7 +1,7 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.contrib.auth.models import AnonymousUser
-from realtime_pong_game.roommanager import RoomManager
+from realtime_typing_game.roommanager import TypingRoomManager
 
 
 class TypingPlayerConsumer(AsyncWebsocketConsumer):
@@ -9,7 +9,7 @@ class TypingPlayerConsumer(AsyncWebsocketConsumer):
         # register group name
         self.room_name = "room_" + self.scope["url_route"]["kwargs"]["room_name"]
         # get Room instance
-        self.room_manager = RoomManager.get_instance(self.room_name)
+        self.room_manager = TypingRoomManager.get_instance(self.room_name)
         # verify user
         if self.scope["user"] == AnonymousUser():
             await self.close()

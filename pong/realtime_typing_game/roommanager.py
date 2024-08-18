@@ -1,4 +1,4 @@
-from typinggame import TypingGame  # 新たに追加
+from .typinggame import TypingGame  # 新たに追加
 import json
 import asyncio
 from channels.layers import get_channel_layer
@@ -19,7 +19,7 @@ class ParticipantState(Enum):
     Ready = "ready"
 
 
-class RoomManager:
+class TypingRoomManager:
     room_instances = dict()
     lock = Lock()
 
