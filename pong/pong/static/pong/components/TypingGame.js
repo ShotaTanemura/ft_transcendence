@@ -5,30 +5,6 @@ import { wordsArray } from "../data/words.js";
 export class TypingGame extends Component {
     constructor(router, parameters, state) {
         super(router, parameters, state);
-        /*
-        this.startButton = null;
-        this.restartButton = null;
-        this.startDiv = null;
-        this.gameDiv = null;
-        this.resultDiv = null;
-        this.wordDiv = null;
-        this.timerDiv = null;
-        this.scoreDiv = null;
-        this.finalScoreDiv = null;
-        this.amount = 2;
-        this.inputLength = 0;
-        this.timer = null;
-        this.timeLeft = 0;
-        this.score = 0;
-        this.currentWord = '';
-        this.startTime = 0;
-        this.maxTime = 15;
-        this.penaltyTime = 0;
-        this.canvas = null;
-        this.ctx = null;
-        this.words = [];
-        this.initialize();
-        */
         
         // websocketでの接続テスト
         this.connection = this.getRouteContext("WebSocket");
@@ -36,7 +12,7 @@ export class TypingGame extends Component {
             console.error("WebSocket connection is undefined, creating a new connection.");
         }
         this.connection.onmessage = this.onMessage;
-
+        
         document.addEventListener("keydown", (e) => {
             this.connection.send(
                 JSON.stringify({
@@ -46,19 +22,38 @@ export class TypingGame extends Component {
                 }),
             );
         });
-
-        onMessage = (event) => {
-            const message = JSON.parse(event.data);
-            console.log("Message received:", message);
-        }
     }
-
     onMessage = (event) => {
         const message = JSON.parse(event.data);
         console.log("Message received:", message);
-      };
+    };
+}
 /*
-    async initialize() {
+this.startButton = null;
+this.restartButton = null;
+this.startDiv = null;
+this.gameDiv = null;
+this.resultDiv = null;
+this.wordDiv = null;
+this.timerDiv = null;
+this.scoreDiv = null;
+this.finalScoreDiv = null;
+this.amount = 2;
+this.inputLength = 0;
+this.timer = null;
+this.timeLeft = 0;
+this.score = 0;
+this.currentWord = '';
+this.startTime = 0;
+this.maxTime = 15;
+this.penaltyTime = 0;
+this.canvas = null;
+this.ctx = null;
+this.words = [];
+this.initialize();
+*/
+/*
+async initialize() {
         document.addEventListener('DOMContentLoaded', async () => {
             this.initializeUI();
             const gameInitialized = await this.initializeGame();
@@ -310,5 +305,5 @@ export class TypingGame extends Component {
         this.finalScoreDiv.textContent = "スコア: " + score;
         this.disableTextInput();
     }
-    */
 }
+*/
