@@ -9,9 +9,9 @@ export class TypingGameWaiting extends Component {
         this.findElement("button.go-back-to-game-home").onclick = this.onClick;
 	}
 
-    onClick = (event) => {
-        this.connection.close();
-    }
+    // onClick = (event) => {
+    //     this.connection.close();
+    // }
 
     get html() {
         return (`
