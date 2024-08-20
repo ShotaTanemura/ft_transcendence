@@ -10,6 +10,19 @@ class RoomInfo(models.Model):
     )
 
 
+class RoomParticipantMapper(models.Model):
+    room_info = models.ForeignKey(
+        RoomInfo, on_delete=models.CASCADE, null=False, blank=False
+    )
+    participant = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=False,
+        blank=False,
+        on_delete=models.CASCADE,
+    )
+    created_at = models.DateTimeField(auto_now=True)
+
+
 class MatchInfo(models.Model):
     room_info = models.ForeignKey(
         RoomInfo, on_delete=models.CASCADE, null=False, blank=False

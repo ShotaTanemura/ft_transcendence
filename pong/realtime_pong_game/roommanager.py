@@ -8,7 +8,7 @@ from threading import Lock
 from enum import Enum, auto
 from realtime_pong_game.ponggame import PongGame
 from realtime_pong_game.tournamentmanager import TournamentManager
-from realtime_pong_game.models import RoomInfo, MatchInfo
+from realtime_pong_game.models import RoomInfo, MatchInfo, RoomParticipantMapper
 import time
 
 
@@ -183,6 +183,12 @@ class Room:
         # add RoomInfo to DB
         room_info = RoomInfo(room_name=self.room_name)
         room_info.save()
+        # create room participant mapper
+        for participant in self.participants:
+            RoomParticipantMapper.objects.create(
+                room_info=room_info, participant=participant
+            )
+
         while is_tournament_ongoing:
             (player1, player2) = self.tournament_manager.get_next_match_players()
             # if player2 is None, player1 is the tournament winner
