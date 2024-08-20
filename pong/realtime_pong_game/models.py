@@ -9,6 +9,9 @@ class RoomInfo(models.Model):
         settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL
     )
 
+    def __str__(self):
+        return self.room_name
+
 
 class RoomParticipantMapper(models.Model):
     room_info = models.ForeignKey(
@@ -46,3 +49,7 @@ class MatchInfo(models.Model):
     winner = models.ForeignKey(
         settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL
     )
+    created_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.player1.name}_vs_{self.player2.name}_in_{self.room_info}_at_{str(self.created_at)}"
