@@ -46,9 +46,6 @@ class MatchInfo(models.Model):
     )
     player1_score = models.SmallIntegerField(default=0, null=False, blank=False)
     player2_score = models.SmallIntegerField(default=0, null=False, blank=False)
-    winner = models.ForeignKey(
-        settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL
-    )
     created_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
