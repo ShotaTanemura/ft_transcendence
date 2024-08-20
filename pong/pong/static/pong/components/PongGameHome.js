@@ -10,31 +10,37 @@ export class PongGameHome extends Component {
 
   onWebSocketOpen = () => {
     this.goNextPage("/pong-game-waiting");
+    this.connection.send(
+      JSON.stringify({ sender: "user", type: "get-room-state" }),
+    );
   };
 
   onWebSocketClose = () => {
-    this.goNextPage("/pong-game-home");
+    console.log("closed");
   };
 
   onMessage = (event) => {
     const message = JSON.parse(event.data);
     switch (message.type) {
-      case "waiting-for-other-participants":
-        this.goNextPage("/pong-game-waiting");
+      case "room-state":
+        this.changePageByRoomStatus(message);
         break;
-      case "all-participants-connected":
-        this.setRouteContext("participants", message.contents);
-        this.goNextPage("/pong-game-room");
+      case "tournament":
+        this.setRouteContext("Tournament", message.contents);
         break;
-      case "all-participants-ready":
-        this.goNextPage("/pong-game");
+      case "tournament-winner":
+        this.setRouteContext("TournamentWinner", message.contents);
+        break;
+      case "error-message":
+        alert(message.contents);
+        this.goNextPage("/error");
         break;
     }
   };
 
   submitForm = (event) => {
     event.preventDefault();
-    this.setRouteContext("roomID", event.target.elements["room-id"].value);
+    this.setRouteContext("RoomID", event.target.elements["room-id"].value);
     const socketPath =
       "ws://" +
       window.location.hostname +
@@ -42,21 +48,48 @@ export class PongGameHome extends Component {
       window.location.port +
       "/realtime-pong/" +
       event.target.elements["room-id"].value +
+      "/" +
+      event.submitter.name +
       "/";
-    const connection = new WebSocket(socketPath);
-    this.setRouteContext("WebSocket", connection);
-    connection.onopen = this.onWebSocketOpen;
-    connection.onclose = this.onWebSocketClose;
-    connection.onmessage = this.onMessage;
+
+    this.connection = new WebSocket(socketPath);
+    this.setRouteContext("WebSocket", this.connection);
+    this.connection.onopen = this.onWebSocketOpen;
+    this.connection.onclose = this.onWebSocketClose;
+    this.connection.onmessage = this.onMessage;
   };
 
+  changePageByRoomStatus = (message) => {
+    if (message.type != "room-state")
+      throw new Error("changePageByRoomStatus: invalid message type");
+    switch (message.contents) {
+      case "Not_All_Participants_Connected":
+        this.goNextPage("/pong-game-waiting");
+        break;
+      case "Waiting_For_Participants_To_Approve_Room":
+        this.goNextPage("/pong-game-room");
+        break;
+      case "Display_Tournament":
+        this.goNextPage("/pong-game-tournament");
+        break;
+      case "In_Game":
+        this.goNextPage("/pong-game");
+        break;
+      case "Finished":
+        this.goNextPage("/pong-game-finished");
+        break;
+      default:
+        throw Error("changePageByRoomStatus: doesn't match any room states.");
+    }
+  };
   get html() {
     return `
 			<h1>Welcome To Realtime Pong !</h1>
 			<form class="entering-room-form">
 				<label for="room-id">Room ID</label>
 				<input id="room-id" type="number" min="1000" max="9999" required><br>
-				<input id="enter-room-submit" name="enter-room" type="submit" value="enter room">
+				<input id="enter-room-as-host-submit" name="host" type="submit" value="enter room as host">
+				<input id="enter-room-as-guest-submit" name="guest" type="submit" value="enter room as guest">
 			</form>
 
 		`;
