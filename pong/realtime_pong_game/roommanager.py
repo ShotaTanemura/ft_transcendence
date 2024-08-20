@@ -122,13 +122,9 @@ class RoomManager:
                     "send_room_information",
                     {"sender": "room-manager", "type": "all-participants-ready"},
                 )
-                self.participants_state[self.participants[0]] = ParticipantState.Player1
-                self.participants_state[self.participants[1]] = ParticipantState.Player2
                 asyncio.new_event_loop().run_in_executor(
                     None,
                     self.game_dispatcher,
-                    self.participants[0].name,
-                    self.participants[1].name,
                 )
 
     def game_dispatcher(self, player1_name, player2_name):

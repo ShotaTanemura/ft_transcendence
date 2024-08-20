@@ -17,6 +17,8 @@ class RoomState(Enum):
 class ParticipantState(Enum):
     Not_In_Place = "not-in-place"
     Ready = "ready"
+    Player1 = "player1"
+    Player2 = "player2"
 
 
 class TypingRoomManager:
@@ -88,7 +90,7 @@ class TypingRoomManager:
         if self.room_state == RoomState.Ready:
             await self.user_became_ready_for_game(participant, message_json)
         elif self.room_state == RoomState.In_Game:
-            await self.typing_game.handle_typing_input(message_json)  # TypingGameでの処理
+            await self.typing_game.handle_typing_input(participant, message_json)  # TypingGameでの処理
 
     async def user_became_ready_for_game(self, participant, message_json):
         with self.instance_lock:
@@ -102,4 +104,20 @@ class TypingRoomManager:
                     "send_room_information",
                     {"sender": "room-manager", "type": "all-participants-ready"},
                 )
+                self.participants_state[self.participants[0]] = ParticipantState.Player1
+                self.participants_state[self.participants[1]] = ParticipantState.Player2
+                asyncio.new_event_loop().run_in_executor(
+                    None,
+                    self.game_dispatcher,
+                    self.participants[0].name,
+                    self.participants[1].name,
+                )
+    def game_dispatcher(self, player1_name, player2_name):
+        self.pong_game.execute(player1_name=player1_name, player2_name=player2_name)
+        # TODO update db to record match result
+        self.room_state = RoomState.Finished
+        async_to_sync(self.send_messege_to_group)(
+            "send_room_information", {"sender": "room-manager", "type": "game-ended"}
+        )
 
+    
