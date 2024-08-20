@@ -5,8 +5,10 @@ import { Component } from "../core/component.js";
 export class Home extends Component {
   constructor(router, params, state) {
     super(router, params, state);
-    this.findElement("button.go-realtime-pong-button").onclick = this.goRealtimePong;
-    this.findElement("button.go-realtime-typing-button").onclick = this.goRealtimeTyping;
+    this.findElement("button.go-realtime-pong-button").onclick =
+      this.goRealtimePong;
+    this.findElement("button.go-realtime-typing-button").onclick =
+      this.goRealtimeTyping;
     this.findElement("form.signout-form").onsubmit = this.handleSignout;
     this.verifyJwtToken();
   }

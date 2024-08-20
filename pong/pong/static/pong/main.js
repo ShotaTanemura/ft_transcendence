@@ -63,26 +63,25 @@ let router = new Router(
       state: {},
     },
     {
-			path: "/typing-game-home",
-			component: TypingGameHome,
-			state: {},
-		},
-		{
-			path: "/typing-game-room",
-			component: TypingGameRoom,
-			state: {},
-		},
-		{
-			path: "/typing-game-waiting",
-			component: TypingGameWaiting,
-			state: {},
-
-		},
-		{
-			path: "/typing-game",
-			component: TypingGame,
-			state: {},
-		},
+      path: "/typing-game-home",
+      component: TypingGameHome,
+      state: {},
+    },
+    {
+      path: "/typing-game-room",
+      component: TypingGameRoom,
+      state: {},
+    },
+    {
+      path: "/typing-game-waiting",
+      component: TypingGameWaiting,
+      state: {},
+    },
+    {
+      path: "/typing-game",
+      component: TypingGame,
+      state: {},
+    },
   ],
   {
     playersInfo: {},
