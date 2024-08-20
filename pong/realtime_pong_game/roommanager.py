@@ -180,7 +180,7 @@ class Room:
     def game_dispatcher(self, dummy_data):
         is_tournament_ongoing = True
         tournament_winner = None
-        # TODO add RoomInfo to DB
+        # add RoomInfo to DB
         room_info = RoomInfo(room_name=self.room_name)
         room_info.save()
         while is_tournament_ongoing:
@@ -188,9 +188,6 @@ class Room:
             # if player2 is None, player1 is the tournament winner
             if player2 == None:
                 tournament_winner = player1
-                # save the tournament winner to RoomInfo
-                room_info.winner = tournament_winner
-                room_info.save()
                 async_to_sync(self.send_messege_to_group)(
                     "send_room_information",
                     {
@@ -237,7 +234,9 @@ class Room:
             )
             # update trounament from executed game
             self.tournament_manager.update_current_match(player1_score, player2_score)
-        # TODO save winner to room_info model
+        # save the tournament winner to RoomInfo
+        room_info.winner = tournament_winner
+        room_info.save()
         # send room status to client
         self.set_room_state(RoomState.Finished)
         async_to_sync(self.send_room_state_to_group)()
