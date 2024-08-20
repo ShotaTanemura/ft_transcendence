@@ -2,6 +2,7 @@ import json
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 
+
 class TypingGame:
     def __init__(self, room_name):
         self.room_name = room_name
@@ -18,7 +19,7 @@ class TypingGame:
                     "message": message_json["contents"],
                 },
             },
-        )        
+        )
 
     async def send_messege_to_group(self, method_type, content):
         await self.channel_layer.group_send(

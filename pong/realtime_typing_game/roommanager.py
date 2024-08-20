@@ -90,7 +90,9 @@ class TypingRoomManager:
         if self.room_state == RoomState.Ready:
             await self.user_became_ready_for_game(participant, message_json)
         elif self.room_state == RoomState.In_Game:
-            await self.typing_game.handle_typing_input(participant, message_json)  # TypingGameでの処理
+            await self.typing_game.handle_typing_input(
+                participant, message_json
+            )  # TypingGameでの処理
 
     async def user_became_ready_for_game(self, participant, message_json):
         with self.instance_lock:
@@ -112,6 +114,7 @@ class TypingRoomManager:
                     self.participants[0].name,
                     self.participants[1].name,
                 )
+
     def game_dispatcher(self, player1_name, player2_name):
         self.pong_game.execute(player1_name=player1_name, player2_name=player2_name)
         # TODO update db to record match result
@@ -119,5 +122,3 @@ class TypingRoomManager:
         async_to_sync(self.send_messege_to_group)(
             "send_room_information", {"sender": "room-manager", "type": "game-ended"}
         )
-
-    
