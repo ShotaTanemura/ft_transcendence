@@ -1,5 +1,5 @@
 from django.http.response import JsonResponse
-from pong.models import User, UserIconUpdateForm
+from pong.models import User, UserIconUpdateForm, Users2FA
 from django.views.decorators.csrf import csrf_exempt
 from pong.middleware.auth import jwt_exempt
 
@@ -16,6 +16,13 @@ def get_user(request, uuid):
     if not user:
         return JsonResponse(
             {"message": "User not found", "status": "userNotFound"}, status=404
+        )
+
+    is_active = Users2FA.objects.filter(user=user).first()
+
+    if not is_active:
+        return JsonResponse(
+            {"message": "User 2FA status is not found", "status": "userNotFound"}, status=404
         )
 
     return JsonResponse(
