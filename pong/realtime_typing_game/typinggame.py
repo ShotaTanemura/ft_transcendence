@@ -9,7 +9,7 @@ class TypingGame:
         self.channel_layer = get_channel_layer()
 
     async def handle_typing_input(self, participant, message_json):
-        print(f"Participant {participant} sent: {message_json['contents']}")
+        print(f"Participant: {participant} sent: {message_json['contents']}")
         await self.send_messege_to_group(
             "send_game_information",
             {
@@ -17,6 +17,7 @@ class TypingGame:
                 "type": "typing-input",
                 "contents": {
                     "message": message_json["contents"],
+                    "sender": participant.name,
                 },
             },
         )
