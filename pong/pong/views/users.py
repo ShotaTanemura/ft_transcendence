@@ -1,6 +1,6 @@
 from django.http.response import JsonResponse
 from django.db.utils import IntegrityError
-from pong.models import User, UserIconUpdateForm
+from pong.models import User, UserIconUpdateForm, Users2FA
 from django.views.decorators.csrf import csrf_exempt
 from pong.middleware.auth import jwt_exempt
 import json
@@ -19,15 +19,33 @@ def user(request, uuid):
                     {"message": "User not found", "status": "userNotFound"}, status=404
                 )
 
+            user = User.objects.filter(uuid=uuid).first()
+
+            if not user:
+                return JsonResponse(
+                    {"message": "User not found", "status": "userNotFound"}, status=404
+                )
+
+            tfa = Users2FA.objects.filter(user=user).first()
+
+            if not tfa:
+                return JsonResponse(
+                    {"message": "User 2FA status is not found", "status": "userNotFound"}, status=404
+                )
+
+            is_active = tfa.is_active
+
             return JsonResponse(
                 {
                     "uuid": user.uuid,
                     "name": user.name,
                     "email": user.email,
                     "icon": user.icon.url if user.icon else None,
+                    "is_2fa_active": is_active,
                 },
                 status=200,
             )
+
         elif request.method == "PATCH":
             user = User.objects.filter(uuid=uuid).first()
             if not user:
@@ -81,7 +99,6 @@ def user(request, uuid):
         return JsonResponse(
             {"message": "Internal Server Error", "status": "serverError"}, status=500
         )
-
 
 @csrf_exempt
 @jwt_exempt
