@@ -88,11 +88,11 @@ paths:
           $ref: "#/components/responses/badRequest"
    /pong/api/v1/auth/two-factor/register:
       post:
-        summary: TOTPの登録とURLの生成
-        description: TOTPの登録とURLの生成
+        summary: TOTPの登録とURIの生成
+        description: TOTPの登録とURIの生成
         responses:
           "200":
-            description: TOTPの登録とURLの生成が成功
+            description: TOTPの登録とURIの生成が成功
             content:
                 "application/json":
                   schema:
@@ -251,12 +251,12 @@ components:
             example: b4cf1ef4-1cab-490b-a32c-f6528f95c796
     post2FARegisterResponse:
       type: object
-      description: TOTPの登録とURLの生成
+      description: TOTPの登録とURIの生成
       properties:
-          url:
+          uri:
             type: string
-            description: TOTPのURL
-            example: url
+            description: TOTPのURI
+            example: uri
     getUserResponse:
       type: object
       description: ユーザー情報取得成功
