@@ -3,9 +3,15 @@ from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 import time
 import threading
+import os
+import csv
 
 TIME_LIMIT = 10
+RED = "\033[91m"
+GREEN = "\033[92m"
+RESET = "\033[0m"
 
+# 単語の処理が終わり次第、追加
 class Timer:
     def __init__(self):
         self.timer = TIME_LIMIT
@@ -34,6 +40,34 @@ class TypingGame:
     def __init__(self, room_name):
         self.room_name = room_name
         self.channel_layer = get_channel_layer()
+        self.words = self.load_words()
+
+    def load_words(self):
+        words = []
+        csv_file_path = os.path.join(os.path.dirname(__file__), 'words.csv')
+        try:
+            with open(csv_file_path, newline='', encoding='utf-8') as csvfile:
+                reader = csv.reader(csvfile)
+                next(reader)  # ヘッダーをスキップ
+                for row in reader:
+                    word = row[0].strip()  # 単語をトリムしてリストに追加
+                    if word:
+                        words.append(word)
+        except FileNotFoundError:
+            print(f"{RED}Error: {csv_file_path} ファイルが見つかりません{RESET}")  # 赤色で表示
+        except Exception as e:
+            print(f"{RED}Error: {e}{RESET}")  # 赤色で表示
+        print(f"{GREEN}words.csvファイルが読み込まれました{RESET}")  # 緑色で表示
+        print(f"{GREEN}Loaded {len(words)} words{RESET}")
+        return words
+
+    # TODO: start_gameメソッドの追加
+    # TODO: 単語の送信
+    
+    # TODO: runメソッドの追加
+    # TODO: keyを受信し、単語の正誤判定処理の追加
+    # 正解の単語と入力された単語の文字数を保持
+    
 
     async def handle_typing_input(self, participant, message_json):
         print(f"Participant: {participant} sent: {message_json['contents']}")
