@@ -15,5 +15,6 @@ users-2fa {
     string uuid PK
     string user FK
     bool isActive
+    string secret
 }
 ```

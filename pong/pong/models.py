@@ -7,6 +7,7 @@ from django.contrib.auth.models import (
 )
 from django import forms
 from django.contrib.auth import get_user_model
+from pong.utils.random_string import generate_base32_encoded_raondom_string 
 
 
 class UserManager(BaseUserManager):
@@ -72,3 +73,4 @@ class Users2FA(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, blank=False, null=False, editable=False, on_delete = models.CASCADE)
     is_active = models.BooleanField(default=False)
+    secret = models.CharField(blank=False, null=False, default=generate_base32_encoded_raondom_string)
