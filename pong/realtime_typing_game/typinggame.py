@@ -1,17 +1,17 @@
-import json
-from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync
-import time
-import threading
 import os
 import csv
+import random
+import time
+import threading
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+
 
 TIME_LIMIT = 10
 RED = "\033[91m"
 GREEN = "\033[92m"
 RESET = "\033[0m"
 
-# 単語の処理が終わり次第、追加
 class Timer:
     def __init__(self):
         self.timer = TIME_LIMIT
@@ -39,8 +39,15 @@ class Timer:
 class TypingGame:
     def __init__(self, room_name):
         self.room_name = room_name
+        self.selected_word = ""
+        self.input_length = 0
         self.channel_layer = get_channel_layer()
         self.words = self.load_words()
+        self.start_game()
+
+    async def start_game(self):
+        # オブジェクト作成後、最初に一度呼び出される非同期メソッド
+        await self.next_word()
 
     def load_words(self):
         words = []
@@ -61,30 +68,65 @@ class TypingGame:
         print(f"{GREEN}Loaded {len(words)} words{RESET}")
         return words
 
-    # TODO: start_gameメソッドの追加
-    # TODO: 単語の送信
-    
-    # TODO: runメソッドの追加
-    # TODO: keyを受信し、単語の正誤判定処理の追加
-    # 正解の単語と入力された単語の文字数を保持
-    
+    async def next_word(self):
+        # reset
+        self.selected_word = ""
+        self.input_length = 0
+        self.selected_word = random.choice(self.words)
+        print(f"{GREEN}Selected word: {self.selected_word}{RESET}")
 
-    async def handle_typing_input(self, participant, message_json):
-        print(f"Participant: {participant} sent: {message_json['contents']}")
-        # TODO: ゲームロジックの処理
-        await self.send_messege_to_group(
+        await self.send_message_to_group(
             "send_game_information",
             {
                 "sender": "TypingGame",
-                "type": "typing-input",
+                "type": "next-word",
                 "contents": {
-                    "message": message_json["contents"],
-                    "sender": participant.name,
-                },
+                    "word": self.selected_word,
+                }
             },
         )
 
-    async def send_messege_to_group(self, method_type, content):
+    async def handle_typing_input(self, participant, message_json):
+        print(f"Participant: {participant} sent: {message_json['contents']}")
+        input_key = message_json["contents"]
+
+        if self.input_length < len(self.selected_word):
+            print(f"{RED}ERROR: selected_word={self.selected_word}{RESET}")
+            print(f"{RED}ERROR: selected_word.input_length={len(self.selected_word)}{RESET}")
+            print(f"{RED}ERROR: self.input_length={self.input_length}{RESET}")
+
+        # 入力された文字が正解の場合
+        if self.input_length < len(self.selected_word) and input_key == self.selected_word[self.input_length]:
+            self.input_length += 1
+            print(f"{GREEN}Correct! {self.input_length}/{len(self.selected_word)}{RESET}")
+            if self.input_length == len(self.selected_word):
+                self.next_word()
+            else:
+                await self.send_message_to_group(
+                    "send_game_information",
+                    {
+                        "sender": "TypingGame",
+                        "type": "correct-key",
+                        "contents": {
+                            "word": self.selected_word,
+                            "input_length": self.input_length,
+                        }
+                    },
+                )
+        else:
+            await self.send_message_to_group(
+                "send_game_information",
+                {
+                    "sender": "TypingGame",
+                    "type": "incorrect-key",
+                    "contents": {
+                        "word": self.selected_word,
+                        "input_length": self.input_length,
+                    }
+                },
+            )
+
+    async def send_message_to_group(self, method_type, content):
         await self.channel_layer.group_send(
             self.room_name,
             {
