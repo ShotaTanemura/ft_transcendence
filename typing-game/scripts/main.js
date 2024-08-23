@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
-// サーバー
 async function loadWords() {
   try {
     const response = await fetch("words.csv");
@@ -30,7 +29,6 @@ function parseCSV(data) {
   return rows.slice(1).map((row) => row.trim()); // ヘッダーを除いてトリムされた単語を返す
 }
 
-// サーバー
 export const inputHandler = (function() {
     function handleInput(value) {
         const currentWord = gameController.getCurrentWord();
@@ -63,7 +61,6 @@ export const gameController = (function () {
   let canvas, ctx;
   let words = [];
 
-  // サーバー
   async function initializeGame() {
     const loadedWords = await loadWords();
     if (loadedWords.length > 0) {
@@ -75,14 +72,11 @@ export const gameController = (function () {
       return false;
     }
   }
-
-  // クライアント
   function initializeCanvas() {
     canvas = document.getElementById("timerCanvas");
     ctx = canvas.getContext("2d");
   }
 
-  // サーバー
   function startGame() {
     initializeCanvas();
     score = 0;
@@ -93,7 +87,6 @@ export const gameController = (function () {
     startTimer();
   }
 
-  // サーバー
   function nextWord() {
     // 制限時間の短縮
     if (score % 4 === 0 && score !== 0 && maxTime > 3) {
@@ -102,19 +95,14 @@ export const gameController = (function () {
 
     currentWord = words[Math.floor(Math.random() * words.length)];
     console.log("Next word: ", currentWord); // デバッグ用ログ
-    // クライアント
     uiController.displayWord(currentWord);
     inputHandler.resetInput();
   }
 
-  // サーバー
   function startTimer() {
     startTime = performance.now();
-    // クライアント
     requestAnimationFrame(updateTimer);
   }
-
-  // クライアント
   function updateTimer(currentTime) {
     const elapsed = (currentTime - startTime) / 1000; // 経過時間
     timeLeft = maxTime - elapsed - penaltyTime; // ペナルティ時間を考慮
@@ -128,14 +116,11 @@ export const gameController = (function () {
     }
   }
 
-  // サーバー
   function endGame() {
     clearInterval(timer);
-    // クライアント
     uiController.showResult(score);
   }
 
-  // サーバー
   function handleCorrectInput() {
     score++;
     uiController.updateScore(score);
@@ -145,12 +130,10 @@ export const gameController = (function () {
     startTimer(); // タイマーをリセット
   }
 
-  // サーバー
   function getCurrentWord() {
     return currentWord;
   }
 
-  // サーバー
   function reduceTime(amount) {
     penaltyTime += amount; // ペナルティ時間を加算
     if (timeLeft - amount <= 0) {
@@ -158,8 +141,6 @@ export const gameController = (function () {
       endGame();
     }
   }
-
-  // クライアント
   function drawTimer(timeLeft) {
     const radius = 50; // 内側の円の半径
     const center = { x: canvas.width / 2, y: canvas.height / 2 };
