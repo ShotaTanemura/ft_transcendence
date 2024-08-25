@@ -45,10 +45,10 @@ class TypingGame:
         self.input_length = 0
         self.channel_layer = get_channel_layer()
         self.words = self.load_words()
-        self.start_game()
 
+    # roommanager.pyから参加者の準備ができたら呼ばれる
     async def start_game(self):
-        print(f"{GREEN}start_game()が呼ばれました{RESET}")  # 緑色で表示
+        print(f"{GREEN}start_game()が呼ばれました{RESET}")
         await self.next_word()
 
     def load_words(self):
@@ -68,12 +68,11 @@ class TypingGame:
             )  # 赤色で表示
         except Exception as e:
             print(f"{RED}Error: {e}{RESET}")  # 赤色で表示
-        print(f"{GREEN}words.csvファイルが読み込まれました{RESET}")  # 緑色で表示
+        print(f"{GREEN}words.csvファイルが読み込まれました{RESET}")
         print(f"{GREEN}Loaded {len(words)} words{RESET}")
         return words
 
     async def next_word(self):
-        # reset
         self.selected_word = ""
         self.input_length = 0
         self.selected_word = random.choice(self.words)
@@ -111,6 +110,7 @@ class TypingGame:
                     {
                         "sender": "TypingGame",
                         "type": "correct-key",
+                        # TODO: 送信する内容の相談
                         "contents": {
                             "word": self.selected_word,
                             "input_length": self.input_length,
@@ -123,6 +123,7 @@ class TypingGame:
                 {
                     "sender": "TypingGame",
                     "type": "incorrect-key",
+                    # TODO: 送信する内容の相談
                     "contents": {
                         "word": self.selected_word,
                         "input_length": self.input_length,
