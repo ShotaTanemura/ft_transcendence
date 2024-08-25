@@ -38,6 +38,9 @@ export class TypingGame extends Component {
       case "incorrect-key":
         console.log("incorrect-key\nMessage received:", message);
         break;
+      case "time-up":
+        console.log("time-up\nMessage received:", message);
+        break;
 
       // TODO:必要に応じて他のケースを追加
       default:

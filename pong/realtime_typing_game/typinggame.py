@@ -5,50 +5,86 @@ import time
 import threading
 from channels.layers import get_channel_layer
 
-TIME_LIMIT = 10
 RED = "\033[91m"
 GREEN = "\033[92m"
 RESET = "\033[0m"
 
 
-class Timer:
-    def __init__(self):
-        self.timer = TIME_LIMIT
-        self.running = True
-        self._start_countdown()
+class MessageSender:
+    def __init__(self, room_name):
+        self.room_name = room_name
+        self.channel_layer = get_channel_layer()
 
-    def _start_countdown(self):
+    async def send_message_to_group(self, method_type, content):
+        print(f"{GREEN}send_message_to_group: {method_type}, {content}{RESET}")
+        await self.channel_layer.group_send(
+            self.room_name,
+            {
+                "type": method_type,
+                "contents": content,
+            },
+        )
+
+
+class Timer(MessageSender):
+    def __init__(self,room_name):
+        super().__init__(room_name)
+        self.time_limit = 10
+        self.timer = self.time_limit
+        self.running = True
+        self.decrease_timer = False
+
+    def start_countdown(self):
         def countdown():
             while self.running and self.timer > 0:
                 time.sleep(0.1)
-                self.timer -= 0.1
+                if self.decrease_timer == True:
+                    self.decrease_timer = False
+                    self.timer -= 2.0
+                else: # 通常時
+                    self.timer -= 0.1
                 print(f"Timer: {self.timer:.1f}秒")
             if self.timer <= 0:  # 0秒以下になった場合の処理
                 print("Time's up!")
                 self.running = False
+                self.send_message_to_group(
+                    "send_game_information",
+                    {
+                        "sender": "TypingGame",
+                        "type": "time-up",
+                        "contents": {},
+                    },
+                )
 
         threading.Thread(target=countdown, daemon=True).start()
 
     def reset(self):
-        self.timer = TIME_LIMIT
+        self.timer = self.time_limit
+        self.running = True
         print("Timerをリセットしました。")
-        self._start_countdown()
+        self.start_countdown()
+    
+    def decrease_time_limit(self, amount):
+        self.time_limit = max(3, self.time_limit - amount)
+        self.timer = self.time_limit  # 現在のタイマーを新しい制限時間にリセット
+        print(f"制限時間が{self.time_limit}秒に減少しました。")
 
-    # TODO: タイマー減少処理の追加
-    # TODO: タイマーの制限時間の減少の追加
+    def trigger_timer_decrease(self):
+        self.decrease_timer = True
 
 
-class TypingGame:
+class TypingGame(MessageSender):
     def __init__(self, room_name):
-        self.room_name = room_name
+        super().__init__(room_name)
         self.selected_word = ""
         self.input_length = 0
-        self.channel_layer = get_channel_layer()
+        self.timer = Timer(room_name)
         self.words = self.load_words()
 
     # roommanager.pyから参加者の準備ができたら呼ばれる
     async def start_game(self):
         print(f"{GREEN}start_game()が呼ばれました{RESET}")
+        self.timer.start_countdown()
         await self.next_word()
 
     def load_words(self):
@@ -76,6 +112,7 @@ class TypingGame:
         self.selected_word = ""
         self.input_length = 0
         self.selected_word = random.choice(self.words)
+        self.timer.reset()
         print(f"{GREEN}Selected word: {self.selected_word}{RESET}")
 
         await self.send_message_to_group(
@@ -130,12 +167,3 @@ class TypingGame:
                     },
                 },
             )
-
-    async def send_message_to_group(self, method_type, content):
-        await self.channel_layer.group_send(
-            self.room_name,
-            {
-                "type": method_type,
-                "contents": content,
-            },
-        )
