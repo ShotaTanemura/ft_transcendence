@@ -94,13 +94,6 @@ class TypingGame:
         print(f"Participant: {participant} sent: {message_json['contents']}")
         input_key = message_json["contents"]
 
-        if self.input_length < len(self.selected_word):
-            print(f"{RED}ERROR: selected_word={self.selected_word}{RESET}")
-            print(
-                f"{RED}ERROR: selected_word.input_length={len(self.selected_word)}{RESET}"
-            )
-            print(f"{RED}ERROR: self.input_length={self.input_length}{RESET}")
-
         # 入力された文字が正解の場合
         if (
             self.input_length < len(self.selected_word)
