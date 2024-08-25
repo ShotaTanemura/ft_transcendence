@@ -92,7 +92,7 @@ class TypingGame:
     async def handle_typing_input(self, participant, message_json):
         print(f"Participant: {participant} sent: {message_json['contents']}")
         input_key = message_json["contents"]
-
+        print(f"{GREEN}Input key: {input_key}{RESET}")
         # 入力された文字が正解の場合
         if (
             self.input_length < len(self.selected_word)
