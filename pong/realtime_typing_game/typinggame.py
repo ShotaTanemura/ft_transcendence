@@ -132,6 +132,7 @@ class TypingGame:
             )
 
     async def send_message_to_group(self, method_type, content):
+        print(f"{GREEN}send_message_to_group: {method_type}, {content}{RESET}")
         await self.channel_layer.group_send(
             self.room_name,
             {
