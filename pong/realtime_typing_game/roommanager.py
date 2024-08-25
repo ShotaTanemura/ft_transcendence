@@ -67,6 +67,8 @@ class TypingRoomManager:
                         ],
                     },
                 )
+                # 全ての参加者が準備完了したらゲーム開始
+                await self.typing_game.start_game()
         return (True, "")
 
     async def on_user_disconnected(self, user):
