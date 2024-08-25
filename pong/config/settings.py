@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "pong",
     "realtime_pong_game",
+    "realtime_typing_game",
 ]
 
 MIDDLEWARE = [
