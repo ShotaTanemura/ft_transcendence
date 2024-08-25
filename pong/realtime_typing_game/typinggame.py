@@ -5,7 +5,6 @@ import time
 import threading
 from channels.layers import get_channel_layer
 
-
 TIME_LIMIT = 10
 RED = "\033[91m"
 GREEN = "\033[92m"
@@ -46,10 +45,10 @@ class TypingGame:
         self.input_length = 0
         self.channel_layer = get_channel_layer()
         self.words = self.load_words()
-        self.word = self.start_game()
+        self.start_game()
 
     async def start_game(self):
-        # オブジェクト作成後、最初に一度呼び出される非同期メソッド
+        print(f"{GREEN}start_game()が呼ばれました{RESET}")  # 緑色で表示
         await self.next_word()
 
     def load_words(self):
@@ -112,7 +111,7 @@ class TypingGame:
                 f"{GREEN}Correct! {self.input_length}/{len(self.selected_word)}{RESET}"
             )
             if self.input_length == len(self.selected_word):
-                self.next_word()
+                await self.next_word()
             else:
                 await self.send_message_to_group(
                     "send_game_information",
