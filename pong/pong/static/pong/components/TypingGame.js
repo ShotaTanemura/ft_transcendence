@@ -25,7 +25,6 @@ export class TypingGame extends Component {
   }
   onMessage = (event) => {
     const message = JSON.parse(event.data);
-    console.log("Message received:", message);
     switch (message.type) {
       case "typing-input":
         console.log("typing-input\nMessage received:", message);
