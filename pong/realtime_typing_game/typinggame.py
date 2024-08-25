@@ -3,7 +3,6 @@ import csv
 import random
 import time
 import threading
-import asyncio
 from channels.layers import get_channel_layer
 
 
@@ -47,7 +46,7 @@ class TypingGame:
         self.input_length = 0
         self.channel_layer = get_channel_layer()
         self.words = self.load_words()
-        self.word = asyncio.run(self.next_word())
+        self.word = self.start_game()
 
     async def start_game(self):
         # オブジェクト作成後、最初に一度呼び出される非同期メソッド
