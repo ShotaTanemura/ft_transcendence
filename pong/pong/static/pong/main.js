@@ -9,6 +9,10 @@ import { PongGameWaiting } from "./components/PongGameWaiting.js";
 import { PongGame } from "./components/PongGame.js";
 import { Error } from "./components/Error.js";
 import { Profile } from "./components/Profile.js";
+import { TypingGameHome } from "./components/TypingGameHome.js";
+import { TypingGameRoom } from "./components/TypingGameRoom.js";
+import { TypingGameWaiting } from "./components/TypingGameWaiting.js";
+import { TypingGame } from "./components/TypingGame.js";
 import { PongGameTournament } from "./components/PongGameTournament.js";
 import { PongGameFinished } from "./components/PongGameFinished.js";
 
@@ -68,6 +72,26 @@ let router = new Router(
     {
       path: "/profile",
       component: Profile,
+      state: {},
+    },
+    {
+      path: "/typing-game-home",
+      component: TypingGameHome,
+      state: {},
+    },
+    {
+      path: "/typing-game-room",
+      component: TypingGameRoom,
+      state: {},
+    },
+    {
+      path: "/typing-game-waiting",
+      component: TypingGameWaiting,
+      state: {},
+    },
+    {
+      path: "/typing-game",
+      component: TypingGame,
       state: {},
     },
   ],

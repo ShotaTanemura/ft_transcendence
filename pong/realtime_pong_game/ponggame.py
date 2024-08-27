@@ -54,7 +54,7 @@ class PongGame:
     # execture pong game and return the scores
     def execute(self, player1_name, player2_name):
         while self.player1_score < 5 and self.player2_score < 5:
-            async_to_sync(self.send_messege_to_group)(
+            async_to_sync(self.send_message_to_group)(
                 "send_game_information",
                 {
                     "sender": "PongGame",
@@ -68,7 +68,7 @@ class PongGame:
             time.sleep(2)
             self.ball = Ball(FIELD_WIDTH / 2, FIELD_HEIGHT / 2)
             async_to_sync(self.run)()
-        async_to_sync(self.send_messege_to_group)(
+        async_to_sync(self.send_message_to_group)(
             "send_game_information",
             {
                 "sender": "PongGame",
@@ -92,7 +92,7 @@ class PongGame:
             if is_scored:
                 self.evaluate_and_update_score(player_name)
                 break
-            await self.send_messege_to_group(
+            await self.send_message_to_group(
                 "send_game_information",
                 {
                     "sender": "PongGame",
@@ -155,7 +155,7 @@ class PongGame:
             self.player2_paddle.velocity = 0
 
     # send message to Group that belogs to this room
-    async def send_messege_to_group(self, method_type, content):
+    async def send_message_to_group(self, method_type, content):
         await self.channel_layer.group_send(
             self.room_name,
             {
