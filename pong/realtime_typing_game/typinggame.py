@@ -28,21 +28,21 @@ class MessageSender:
 
 
 class Timer(MessageSender):
-    def __init__(self,room_name):
+    def __init__(self, room_name):
         super().__init__(room_name)
         self.time_limit = 10
         self.timer = self.time_limit
         self.running = True
         self.decrease_timer = False
 
-    def start_countdown(self):
+    def start_countdown(self, player_to_input):
         def countdown():
             while self.running and self.timer > 0:
                 time.sleep(0.1)
-                if self.decrease_timer == True: # 打ち間違えた時
+                if self.decrease_timer:  # 打ち間違えた時
                     self.decrease_timer = False
                     self.timer -= 2.0
-                else: # 通常時
+                else:  # 通常時
                     self.timer -= 0.1
                 print(f"Timer: {self.timer:.1f}秒")
                 async_to_sync(self.send_message_to_group)(
@@ -63,17 +63,21 @@ class Timer(MessageSender):
                     {
                         "sender": "TypingGame",
                         "type": "time-up",
+                        "contents": {
+                            # 勝敗を判定。(負けたプレイヤーを送信)
+                            "player": player_to_input,
+                        },
                     },
                 )
 
         threading.Thread(target=countdown, daemon=True).start()
 
-    def reset(self):
+    def reset(self, player_to_input):
         self.timer = self.time_limit
         self.running = True
         print("Timerをリセットしました。")
-        self.start_countdown()
-    
+        self.start_countdown(player_to_input)
+
     def decrease_time_limit(self, amount):
         self.time_limit = max(3, self.time_limit - amount)
         self.timer = self.time_limit  # 現在のタイマーを新しい制限時間にリセット
@@ -84,17 +88,21 @@ class Timer(MessageSender):
 
 
 class TypingGame(MessageSender):
+    PLAYER1 = "player1"
+    PLAYER2 = "player2"
+
     def __init__(self, room_name):
         super().__init__(room_name)
         self.selected_word = ""
         self.input_length = 0
         self.timer = Timer(room_name)
         self.words = self.load_words()
+        self.player_to_input = self.PLAYER1
 
     # roommanager.pyから参加者の準備ができたら呼ばれる
     async def start_game(self):
         print(f"{GREEN}start_game()が呼ばれました{RESET}")
-        self.timer.start_countdown()
+        self.timer.start_countdown(self.player_to_input)
         await self.send_message_to_group(
             "send_game_information",
             {
@@ -117,22 +125,28 @@ class TypingGame(MessageSender):
                     if word:
                         words.append(word)
         except FileNotFoundError:
-            print(
-                f"{RED}Error: {csv_file_path} ファイルが見つかりません{RESET}"
-            )  # 赤色で表示
+            print(f"{RED}Error: {csv_file_path} ファイルが見つかりません{RESET}")  # 赤色で表示
         except Exception as e:
             print(f"{RED}Error: {e}{RESET}")  # 赤色で表示
         print(f"{GREEN}words.csvファイルが読み込まれました{RESET}")
         print(f"{GREEN}Loaded {len(words)} words{RESET}")
         return words
 
+    def change_player_to_input(self):
+        if self.player_to_input == self.PLAYER1:
+            self.player_to_input = self.PLAYER2
+        else:
+            self.player_to_input = self.PLAYER1
+
     async def next_word(self):
         self.selected_word = ""
         self.input_length = 0
         self.selected_word = random.choice(self.words)
-        self.timer.reset()
+        self.change_player_to_input()
+        self.timer.reset(self.player_to_input)
         print(f"{GREEN}Selected word: {self.selected_word}{RESET}")
 
+        # TODO: 入力するユーザーの指定
         await self.send_message_to_group(
             "send_game_information",
             {
@@ -140,6 +154,7 @@ class TypingGame(MessageSender):
                 "type": "next-word",
                 "contents": {
                     "word": self.selected_word,
+                    "player": self.player_to_input,
                 },
             },
         )
@@ -165,10 +180,10 @@ class TypingGame(MessageSender):
                     {
                         "sender": "TypingGame",
                         "type": "correct-key",
-                        # TODO:  送信する内容の相談をする
                         "contents": {
                             "word": self.selected_word,
                             "input_length": self.input_length,
+                            "player": self.player_to_input,
                         },
                     },
                 )
@@ -178,10 +193,10 @@ class TypingGame(MessageSender):
                 {
                     "sender": "TypingGame",
                     "type": "incorrect-key",
-                    # TODO: 送信する内容の相談をする
                     "contents": {
                         "word": self.selected_word,
                         "input_length": self.input_length,
+                        "player": self.player_to_input,
                     },
                 },
             )
