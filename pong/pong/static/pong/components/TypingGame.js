@@ -25,21 +25,19 @@ export class TypingGame extends Component {
   }
   onMessage = (event) => {
     const message = JSON.parse(event.data);
+    console.log(message.type, message);
     switch (message.type) {
-      case "typing-input":
-        console.log("typing-input\nMessage received:", message);
+      case "start-game":
         break;
       case "next-word":
-        console.log("next-word\nMessage received:", message);
         break;
       case "correct-key":
-        console.log("correct-key\nMessage received:", message);
         break;
       case "incorrect-key":
-        console.log("incorrect-key\nMessage received:", message);
         break;
       case "time-up":
-        console.log("time-up\nMessage received:", message);
+        break;
+      case "countdown-timer":
         break;
 
       // TODO:必要に応じて他のケースを追加

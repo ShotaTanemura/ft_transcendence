@@ -4,6 +4,7 @@ import random
 import time
 import threading
 from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 RED = "\033[91m"
 GREEN = "\033[92m"
@@ -38,21 +39,30 @@ class Timer(MessageSender):
         def countdown():
             while self.running and self.timer > 0:
                 time.sleep(0.1)
-                if self.decrease_timer == True:
+                if self.decrease_timer == True: # 打ち間違えた時
                     self.decrease_timer = False
                     self.timer -= 2.0
                 else: # 通常時
                     self.timer -= 0.1
                 print(f"Timer: {self.timer:.1f}秒")
+                async_to_sync(self.send_message_to_group)(
+                    "send_game_information",
+                    {
+                        "sender": "TypingGame",
+                        "type": "countdown-timer",
+                        "contents": {
+                            "timer": self.timer,
+                        },
+                    },
+                )
             if self.timer <= 0:  # 0秒以下になった場合の処理
                 print("Time's up!")
                 self.running = False
-                self.send_message_to_group(
+                async_to_sync(self.send_message_to_group)(
                     "send_game_information",
                     {
                         "sender": "TypingGame",
                         "type": "time-up",
-                        "contents": {},
                     },
                 )
 
@@ -85,6 +95,14 @@ class TypingGame(MessageSender):
     async def start_game(self):
         print(f"{GREEN}start_game()が呼ばれました{RESET}")
         self.timer.start_countdown()
+        await self.send_message_to_group(
+            "send_game_information",
+            {
+                "sender": "TypingGame",
+                "type": "start-game",
+                "contents": {},
+            },
+        )
         await self.next_word()
 
     def load_words(self):
@@ -147,7 +165,7 @@ class TypingGame(MessageSender):
                     {
                         "sender": "TypingGame",
                         "type": "correct-key",
-                        # TODO: 送信する内容の相談
+                        # TODO:  送信する内容の相談をする
                         "contents": {
                             "word": self.selected_word,
                             "input_length": self.input_length,
@@ -160,7 +178,7 @@ class TypingGame(MessageSender):
                 {
                     "sender": "TypingGame",
                     "type": "incorrect-key",
-                    # TODO: 送信する内容の相談
+                    # TODO: 送信する内容の相談をする
                     "contents": {
                         "word": self.selected_word,
                         "input_length": self.input_length,
