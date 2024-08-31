@@ -26,7 +26,7 @@ export class PongGame extends Component {
       size: 80,
     };
     document.addEventListener("keydown", (e) => {
-      if (e.which === 87) {
+      if (e.key === "w") {
         this.connection.send(
           JSON.stringify({
             sender: "player",
@@ -34,7 +34,7 @@ export class PongGame extends Component {
             contents: "keyup-go-up",
           }),
         );
-      } else if (e.which === 83) {
+      } else if (e.key === "s") {
         this.connection.send(
           JSON.stringify({
             sender: "player",
@@ -45,7 +45,7 @@ export class PongGame extends Component {
       }
     });
     document.addEventListener("keyup", (e) => {
-      if (e.which === 87 || e.which === 83) {
+      if (e.key === "w" || e.key === "s") {
         this.connection.send(
           JSON.stringify({
             sender: "player",
@@ -77,10 +77,39 @@ export class PongGame extends Component {
         document.getElementById("player2-score").innerHTML =
           message.contents.player2.score;
         break;
-      case "game-ended":
-        this.connection.close();
-        this.goNextPage("/game-home");
+      case "room-state":
+        this.changePageByRoomStatus(message);
         break;
+      case "tournament":
+        this.setRouteContext("Tournament", message.contents);
+        break;
+      case "tournament-winner":
+        this.setRouteContext("TournamentWinner", message.contents);
+        break;
+    }
+  };
+
+  changePageByRoomStatus = (message) => {
+    if (message.type != "room-state")
+      throw new Error("changePageByRoomStatus: invalid message type");
+    switch (message.contents) {
+      case "Not_All_Participants_Connected":
+        this.goNextPage("/pong-game-waiting");
+        break;
+      case "Waiting_For_Participants_To_Approve_Room":
+        this.goNextPage("/pong-game-room");
+        break;
+      case "Display_Tournament":
+        this.goNextPage("/pong-game-tournament");
+        break;
+      case "In_Game":
+        this.goNextPage("/pong-game");
+        break;
+      case "Finished":
+        this.goNextPage("/pong-game-finished");
+        break;
+      default:
+        throw Error("changePageByRoomStatus: doesn't match any room states.");
     }
   };
 
