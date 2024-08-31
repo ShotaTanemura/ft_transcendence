@@ -24,11 +24,15 @@ export class Chat extends Component {
         }
     }
 
+    handleRoomSelected = (room) => {
+        this.state.selectedRoom = room;
+        this.render();
+    }
 
     get html() {
         return (`
             <div class="parent-container">
-                ${new MyRoomsContainer(this.router, this.params, this.state).html}
+                ${new MyRoomsContainer(this.router, this.params, this.state, this.handleRoomSelected).html}
                 ${new ChatContainer(this.router, this.params, this.state).html}
                 ${new DirectoryContainer(this.router, this.params, this.state).html}
             </div>

@@ -1,8 +1,9 @@
 import { Component } from "../core/component.js";
 
 export class MyRoomsContainer extends Component {
-    constructor(router, params, state) {
+    constructor(router, params, state, onRoomSelected) {
         super(router, params, state);
+        this.onRoomSelected = onRoomSelected; // Store the callback
         this.initializeEventListeners();
         this.fetchAndDisplayRooms();
     }
@@ -28,19 +29,33 @@ export class MyRoomsContainer extends Component {
             console.error('Error fetching rooms:', error);
         }
     }
-
     displayRooms(rooms) {
         const myRoomsContainer = document.querySelector('.myrooms');
         myRoomsContainer.innerHTML = '';
-
+    
         rooms.forEach(room => {
             const roomElement = document.createElement('div');
             roomElement.className = 'room';
             roomElement.textContent = room.name;
+    
+            console.log(`Attaching click listener to room: ${room.name}`);
+    
+            roomElement.addEventListener('click', () => {
+                console.log(`Room clicked: ${room.name}`);
+                this.handleRoomClick(room);
+            });
+    
             myRoomsContainer.appendChild(roomElement);
         });
     }
-
+    
+    handleRoomClick(room) {
+        console.log(`Room selected: ${room.name}`);
+        this.state.selectedRoom = room;
+        if (this.onRoomSelected) {
+            this.onRoomSelected(room);
+        }
+    }
     handleDOMContentLoaded() {
         const createChatroomButton = document.querySelector('.create-chatroom-button');
         const modal = document.getElementById('createChatroomModal');
