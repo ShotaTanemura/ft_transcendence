@@ -21,8 +21,6 @@ services:
         condition: service_healthy
     env_file:
       - .env
-    networks:
-      - ft_transcendence_net
 
   app:
     build:
@@ -44,8 +42,6 @@ services:
           condition: service_healthy
     env_file:
       - .env
-    networks:
-      - ft_transcendence_net
 
   redis:
     image: "redis:7.4-rc2"
@@ -53,8 +49,6 @@ services:
       - "6379:6379"
     healthcheck:
         test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
-    networks:
-      - ft_transcendence_net
 
   db:
     image: "postgres:15.2"
@@ -71,12 +65,7 @@ services:
       retries: 5
     env_file:
       - .env
-    networks:
-      - ft_transcendence_net
+
 
 volumes:
   db_data:
-
-networks:
-  ft_transcendence_net:
-    driver: bridge
