@@ -56,6 +56,10 @@ export class MyRoomsContainer extends Component {
         }
     }
 
+    refreshRooms() {
+        this.fetchAndDisplayRooms();
+    }
+
     handleDOMContentLoaded() {
         const createChatroomButton = document.querySelector('.create-chatroom-button');
         const modal = document.getElementById('createChatroomModal');

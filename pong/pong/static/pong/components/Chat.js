@@ -30,11 +30,16 @@ export class Chat extends Component {
     }
 
     get html() {
+        const myRoomsContainer = new MyRoomsContainer(this.router, this.params, this.state, this.handleRoomSelected);
+        const directoryContainer = new DirectoryContainer(this.router, this.params, this.state, () => {
+            myRoomsContainer.refreshRooms();
+        });
+
         return (`
             <div class="parent-container">
-                ${new MyRoomsContainer(this.router, this.params, this.state, this.handleRoomSelected).html}
+                ${myRoomsContainer.html}
                 ${new ChatContainer(this.router, this.params, this.state).html}
-                ${new DirectoryContainer(this.router, this.params, this.state).html}
+                ${directoryContainer.html}
             </div>
         `);
     }

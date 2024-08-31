@@ -1,9 +1,10 @@
 import { Component } from "../core/component.js";
 
 export class DirectoryContainer extends Component {
-    constructor(router, params, state) {
+    constructor(router, params, state, onRoomJoined) {
         super(router, params, state, '.directory-container');
         this.initializeEventListeners();
+        this.onRoomJoined = onRoomJoined;
         this.fetchAndDisplayRooms();
     }
 
@@ -72,6 +73,9 @@ export class DirectoryContainer extends Component {
                     alert('You have successfully joined the chatroom!');
                     modal.style.display = 'none';
                     this.fetchAndDisplayRooms();
+                    if (this.onRoomJoined) {
+                        this.onRoomJoined();
+                    }
                 } else {
                     alert('Failed to join the chatroom. Please try again.');
                 }
