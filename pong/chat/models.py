@@ -25,6 +25,7 @@ class RoomsManager(models.Manager):
                 raise ValueError("同じ名前の部屋が既に存在します")
             else:
                 raise e
+
     def join_room(self, user, room):
         room = self.model.objects.get(uuid=room)
         if not room:
