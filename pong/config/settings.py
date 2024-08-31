@@ -29,7 +29,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -41,6 +40,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "pong",
     "chat.apps.ChatConfig",
+    "realtime_pong_game",
+    "realtime_typing_game",
 ]
 
 MIDDLEWARE = [
@@ -182,3 +183,9 @@ conf_file_path = "config/logging.yaml"
 with open(conf_file_path, "r") as f:
     conf = yaml.safe_load(f.read())
 logging.config.dictConfig(conf)
+NGINX_ORIGIN = os.getenv("NGINX_ORIGIN")
+CSRF_TRUSTED_ORIGINS = [
+    NGINX_ORIGIN,
+]
+
+ADMIN_PANEL_URL = os.getenv("ADMIN_PANEL_URL")

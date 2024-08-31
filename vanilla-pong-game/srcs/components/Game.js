@@ -65,7 +65,7 @@ export class Game extends Component {
 		});
 		this.element.removeChild(this.pongComponent.element);
 		this.playersScoreElement.classList.add("align-items-center");
-		this.setRouteContext("gameResults", newGameResult);
+		this.setRouteContext("GameResults", newGameResult);
 		setTimeout(this.goNextPage, 2000,"/tournament");
 	};
 

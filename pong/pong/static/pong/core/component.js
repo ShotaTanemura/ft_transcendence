@@ -1,98 +1,68 @@
 export class Component {
-	constructor(router, parameters, state, containerSelector) {
-		this.router = router;
-		this.parameters = parameters;
-		this.state = state || {};
-		this.containerSelector = containerSelector;
-		this.element = Component.createElementFromHTML(this.html, this.containerTag);
-		this.element.classList.add('component');
-	}
+  constructor(router, parameters, state) {
+    this.router = router;
+    this.parameters = parameters;
+    this.state = state;
+    this.element = Component.createElementFromHTML(
+      this.html,
+      this.containerTag,
+    );
+    this.element.classList.add("component");
+  }
 
-	get containerTag() {
-		return 'div';
-	}
-	set containerTag(newTag) {}
+  get containerTag() {
+    return "div";
+  }
+  set containerTag(newTag) {}
 
-	get html() {
-		return this._html || '';
-	}
-	set html(newHtml) {
-		console.log("Setting new HTML:", newHtml);
-		this._html = newHtml;
-		this.render();
-	}
+  get html() {
+    return "";
+  }
+  set html(newHtml) {}
 
-	onEnterForeground() {}
+  onEnterForeground() {}
 
-	setState(newState) {
-		const prevState = { ...this.state };
-		this.state = { ...this.state, ...newState };
-		this.update(prevState, this.state);
-	}
+  goNextPage = (path) => {
+    this.router.goNextPage(path);
+  };
 
-	goNextPage = (path) => {
-		this.router.goNextPage(path);
-	}
+  getRouteContext(name) {
+    return this.router.getContext(name);
+  }
 
-	getRouteContext(name) {
-		return (this.router.getContext(name));
-	}
+  setRouteContext(name, value) {
+    this.router.setContext(name, value);
+  }
 
-	setRouteContext(name, value) {
-		this.router.setContext(name, value);
-	}
+  findElement(query) {
+    return this.element.querySelector(query);
+  }
 
-	render() {
-		console.log("Rendering component:", this.html);
-		this.element = Component.createElementFromHTML(this.html, this.containerTag);
-		
-		// if (this.containerSelector) {
-		// 	const container = document.querySelector(this.containerSelector);
-		// 	if (container) {
-		// 		console.log("Rendering component in container:", this.containerSelector);
-		// 		container.innerHTML = '';
-		// 		container.appendChild(this.element);
-		// 	} else {
-		// 		console.warn(`Container ${this.containerSelector} not found. Appending to body instead.`);
-		// 	}
-		// } else {
-		// 	console.log("No containerSelector provided. Appending to body.");
-		// }
-	}
+  findElements(query) {
+    let nodeList = this.element.querySelectorAll(query);
+    return Array.from(nodeList, (element) => {
+      if (element instanceof HTMLElement) {
+        return element;
+      }
+      throw "findElements: Some element of Query are not HTMLElement.";
+    });
+  }
 
-	update(prevState, newState) {
-		const changedKeys = Object.keys(newState).filter(key => newState[key] !== prevState[key]);
-		changedKeys.forEach(key => {
-			const newValue = newState[key];
-			const element = this.findElement(`[data-state-key="${key}"]`);
-			if (element) {
-				element.textContent = newValue;
-			}
-		});
-	}
+  render() {
+    this.element = Component.createElementFromHTML(
+      this.html,
+      this.containerTag,
+    );
+  }
 
-	findElement(query) {
-		return this.element.querySelector(query);
-	}
-
-	findElements(query) {
-		let nodeList = this.element.querySelectorAll(query);
-		return Array.from(nodeList, (element) => {
-			if (element instanceof HTMLElement) {
-				return (element);
-			}
-			throw 'findElements: Some element of Query are not HTMLElement.';
-		});
-	}
-
-	static createElementFromHTML(html, containerTag) {
-		let newElement = document.createElement(containerTag);
-		newElement.innerHTML = html.trim();
-		let firstElement = newElement;
-		// let firstElement = newElement.firstElementChild;
-		if (firstElement instanceof HTMLElement) {
-			return firstElement;
-		}
-		throw 'createElementFromHTML: First element of newElement is not HTMLElement.';
-	}
+  static createElementFromHTML(html, containerTag) {
+    let new_element = document.createElement(containerTag);
+    new_element.innerHTML = html.trim();
+    // first_element = new_element.firstChild;だと最初の要素のみしか追加されない。
+    let first_element = new_element;
+    if (first_element instanceof HTMLElement) {
+      return first_element;
+    }
+    throw "createElementFromHTML: First element of new_element is not HTMLElement.";
+  }
 }
