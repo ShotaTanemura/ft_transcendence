@@ -4,7 +4,7 @@ export class DirectoryContainer extends Component {
     constructor(router, params, state, onRoomSelected) {
         super(router, params, state);
         this.onRoomSelected = onRoomSelected;
-        this.handleRoomClick = this.handleRoomClick.bind(this);  // Ensure correct binding
+        this.handleRoomClick = this.handleRoomClick.bind(this);
         this.fetchAndDisplayRooms().then(() => {
             this.initializeEventListeners();
         });
