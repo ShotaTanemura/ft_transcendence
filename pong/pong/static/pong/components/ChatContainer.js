@@ -8,11 +8,12 @@ export class ChatContainer extends Component {
 
     async fetchAndDisplayChat() {
         const { selectedRoom } = this.state;
-
+        console.log('selectedRoom:', selectedRoom);
         if (!selectedRoom) {
             this.render();
             return;
         }
+        console.log('Fetching chat data...');
 
         try {
             const response = await fetch(`/chat/api/v1/rooms/${selectedRoom.uuid}`);
