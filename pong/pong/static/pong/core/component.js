@@ -49,11 +49,17 @@ export class Component {
   }
 
   render() {
-    this.element = Component.createElementFromHTML(
-      this.html,
-      this.containerTag,
+    const newElement = Component.createElementFromHTML(
+        this.html,
+        this.containerTag,
     );
-  }
+
+    if (this.element && this.element.parentNode) {
+        this.element.parentNode.replaceChild(newElement, this.element);
+    }
+
+    this.element = newElement;
+}
 
   static createElementFromHTML(html, containerTag) {
     let new_element = document.createElement(containerTag);

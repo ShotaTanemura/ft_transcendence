@@ -16,10 +16,8 @@ export class MyRoomsContainer extends Component {
     async fetchAndDisplayRooms() {
         try {
             const response = await fetch('/chat/api/v1/rooms');
-            console.log('Response:', response);
             if (response.ok) {
                 const rooms = await response.json();
-                console.log('Rooms:', rooms);
                 this.displayRooms(rooms.rooms);
             } else {
                 console.error('Failed to fetch rooms');
@@ -38,10 +36,7 @@ export class MyRoomsContainer extends Component {
             roomElement.className = 'room';
             roomElement.textContent = room.name;
     
-            console.log(`Attaching click listener to room: ${room.name}`);
-    
             roomElement.addEventListener('click', () => {
-                console.log(`Room clicked: ${room.name}`);
                 this.handleRoomClick(room);
             });
     
@@ -50,7 +45,6 @@ export class MyRoomsContainer extends Component {
     }
     
     handleRoomClick(room) {
-        console.log(`Room selected: ${room.name}`);
         this.state.selectedRoom = room;
         if (this.onRoomSelected) {
             this.onRoomSelected(room);
@@ -63,18 +57,15 @@ export class MyRoomsContainer extends Component {
         const createChatroomForm = document.getElementById('createChatroomForm');
 
         createChatroomButton.addEventListener('click', () => {
-            console.log('Create Chatroom button clicked');
             modal.style.display = 'block';
         });
 
         closeModal.addEventListener('click', () => {
-            console.log('Close modal button clicked');
             modal.style.display = 'none';
         });
 
         createChatroomForm.addEventListener('submit', async (event) => {
             event.preventDefault();
-            console.log('Form submitted');
             const formData = new FormData(createChatroomForm);
             const data = Object.fromEntries(formData.entries());
 

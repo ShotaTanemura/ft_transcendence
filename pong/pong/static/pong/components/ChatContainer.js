@@ -2,32 +2,26 @@ import { Component } from "../core/component.js";
 
 export class ChatContainer extends Component {
     constructor(router, params, state) {
-        super(router, params, state);
-        console.log("this.html", this.html);
+        super(router, params, state, '.chat-container');
+        this.render();
+    }
+
+    render() {
+        super.render();
     }
 
     get html() {
-        if (!this.selectedRoom) {
-            return `<div class="chat">ルームを選択してください。</div>`;
-        }
+        const { selectedRoom } = this.state;
 
-        return (`
+        if (!selectedRoom) {
+            return `<div class="chat">Select a room</div>`;
+        }
+        
+        return `
             <div class="chat">
-                <div class="header">
-                    <img src="static/pong/images/snapchat.svg" alt="Profile Image" class="profile-img">
-                    <div class="info">
-                        <p>オンライン</p>
-                    </div>
-                    <button class="call-button">Call</button>
-                </div>
-                <div class="chat-messages">
-                    <!-- ここにメッセージを表示するロジックを追加できます -->
-                </div>
-                <div class="input-area">
-                    <input type="text" placeholder="Type a message">
-                    <button>Send</button>
-                </div>
+                <h2>${selectedRoom.uuid}</h2>
+                <h2>${selectedRoom.name}</h2>
             </div>
-        `);
+        `;
     }
 }
