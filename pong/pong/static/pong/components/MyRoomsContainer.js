@@ -3,7 +3,7 @@ import { Component } from "../core/component.js";
 export class MyRoomsContainer extends Component {
     constructor(router, params, state, onRoomSelected) {
         super(router, params, state);
-        this.onRoomSelected = onRoomSelected; // Store the callback
+        this.onRoomSelected = onRoomSelected;
         this.initializeEventListeners();
         this.fetchAndDisplayRooms();
     }
@@ -13,12 +13,12 @@ export class MyRoomsContainer extends Component {
         document.addEventListener('DOMContentLoaded', this.handleDOMContentLoaded.bind(this));
     }
 
-    async fetchAndDisplayRooms() {
+    async fetchAndDisplayRooms(query = '') {
         try {
             const response = await fetch('/chat/api/v1/rooms');
             if (response.ok) {
                 const rooms = await response.json();
-                this.displayRooms(rooms.rooms);
+                this.displayRooms(rooms.rooms, query);
             } else {
                 console.error('Failed to fetch rooms');
             }
@@ -27,34 +27,41 @@ export class MyRoomsContainer extends Component {
             console.error('Error fetching rooms:', error);
         }
     }
-    displayRooms(rooms) {
+
+    displayRooms(rooms, query) {
         const myRoomsContainer = document.querySelector('.myrooms');
         myRoomsContainer.innerHTML = '';
-    
-        rooms.forEach(room => {
+
+        const filteredRooms = rooms.filter(room => 
+            room.name.toLowerCase().includes(query.toLowerCase())
+        );
+
+        filteredRooms.forEach(room => {
             const roomElement = document.createElement('div');
             roomElement.className = 'room';
             roomElement.textContent = room.name;
-    
+
             roomElement.addEventListener('click', () => {
                 this.handleRoomClick(room);
             });
-    
+
             myRoomsContainer.appendChild(roomElement);
         });
     }
-    
+
     handleRoomClick(room) {
         this.state.selectedRoom = room;
         if (this.onRoomSelected) {
             this.onRoomSelected(room);
         }
     }
+
     handleDOMContentLoaded() {
         const createChatroomButton = document.querySelector('.create-chatroom-button');
         const modal = document.getElementById('createChatroomModal');
         const closeModal = document.querySelector('.close-modal');
         const createChatroomForm = document.getElementById('createChatroomForm');
+        const searchBar = document.querySelector('.search-bar input');
 
         createChatroomButton.addEventListener('click', () => {
             modal.style.display = 'block';
@@ -81,7 +88,7 @@ export class MyRoomsContainer extends Component {
                 if (response.ok) {
                     alert('Chatroom created successfully!');
                     modal.style.display = 'none';
-                    this.fetchAndDisplayRooms();  // Refresh the rooms list after creating a new room
+                    this.fetchAndDisplayRooms();
                 } else {
                     alert('Failed to create chatroom. Please try again.');
                 }
@@ -93,9 +100,13 @@ export class MyRoomsContainer extends Component {
 
         window.addEventListener('click', (event) => {
             if (event.target === modal) {
-                console.log('Window click detected, closing modal');
                 modal.style.display = 'none';
             }
+        });
+
+        searchBar.addEventListener('input', (event) => {
+            const query = event.target.value;
+            this.fetchAndDisplayRooms(query);
         });
     }
 
