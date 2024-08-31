@@ -4,21 +4,20 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('chat', '0004_add_messages'),
+        ("chat", "0004_add_messages"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='rooms',
-            name='room_status_id',
+            model_name="rooms",
+            name="room_status_id",
         ),
         migrations.RemoveField(
-            model_name='rooms',
-            name='password',
+            model_name="rooms",
+            name="password",
         ),
         migrations.DeleteModel(
-            name='RoomStatus',
+            name="RoomStatus",
         ),
     ]
