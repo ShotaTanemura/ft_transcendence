@@ -26,12 +26,10 @@ def handle_get_rooms(request, user):
         query = request.GET.get("query", "")
 
         if query:
-            # ユーザーが所属していないルームを検索
             rooms = Rooms.objects.filter(
                 ~Q(userrooms__user_id_id=user.uuid) & Q(name__icontains=query)
             )
         else:
-            # ユーザーが所属していないルームを取得
             rooms = Rooms.objects.filter(~Q(userrooms__user_id_id=user.uuid))
 
         response_rooms = [serialize_rooms(room) for room in rooms]
@@ -51,12 +49,12 @@ def handle_get_rooms(request, user):
         return JsonResponse({"message": str(e)}, status=500)
 
 
-def handle_post_rooms(request, user):
+def join_room(request, user):
     try:
         data = json.loads(request.body)
         logger.info(data)
         try:
-            Rooms.objects.create_room(data["name"], user)
+            Rooms.objects.join_room(user, data["room_id"])
         except ValueError as e:
             return JsonResponse({"message": str(e)}, status=400)
         except Exception as e:
@@ -82,10 +80,7 @@ def handle_unjoined_rooms(request):
     if request.method == "GET":
         return handle_get_rooms(request, user)
     elif request.method == "POST":
-        return JsonResponse(
-            {"message": "Method is not allowed", "status": "invalidParams"},
-            status=400,
-        )
+        return join_room(request, user)
     else:
         return JsonResponse(
             {"message": "Method is not allowed", "status": "invalidParams"},

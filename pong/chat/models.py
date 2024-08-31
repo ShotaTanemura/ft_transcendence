@@ -25,6 +25,15 @@ class RoomsManager(models.Manager):
                 raise ValueError("同じ名前の部屋が既に存在します")
             else:
                 raise e
+    def join_room(self, user, room):
+        room = self.model.objects.get(uuid=room)
+        if not room:
+            raise ValueError("部屋が見つかりません")
+
+        user_room = UserRooms(user_id=user, room_id=room)
+        user_room.save(using=self._db)
+
+        return room
 
     def get_rooms(self):
         rooms = self.model.objects.all()

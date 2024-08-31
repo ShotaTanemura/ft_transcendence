@@ -8,7 +8,6 @@ export class DirectoryContainer extends Component {
     }
 
     initializeEventListeners() {
-        // ページがロードされたらDOMContentLoadedの処理を実行
         window.addEventListener('load', () => {
             this.handleDOMContentLoaded();
         });
@@ -50,12 +49,52 @@ export class DirectoryContainer extends Component {
         });
     }
 
+    handleRoomClick(room) {
+        const modal = document.getElementById('joinChatroomModal');
+        const modalRoomName = document.getElementById('modalRoomName');
+        const confirmJoinButton = document.getElementById('confirmJoinButton');
+        const cancelJoinButton = document.getElementById('cancelJoinButton');
+
+        modalRoomName.textContent = room.name;
+        modal.style.display = 'block';
+
+        confirmJoinButton.onclick = async () => {
+            try {
+                const response = await fetch('/chat/api/v1/rooms/unjoined', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ room_id: room.uuid }),
+                });
+
+                if (response.ok) {
+                    alert('You have successfully joined the chatroom!');
+                    modal.style.display = 'none';
+                    this.fetchAndDisplayRooms();
+                } else {
+                    alert('Failed to join the chatroom. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again later.');
+            }
+        };
+
+        cancelJoinButton.onclick = () => {
+            modal.style.display = 'none';
+        };
+
+        window.onclick = (event) => {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        };
+    }
+
     handleDOMContentLoaded() {
-        console.log('handleDOMContentLoaded called');
         const searchBar = document.querySelector('.unjoined-search-bar input');
-        console.log('searchBar:', searchBar);
         if (searchBar) {
-            console.log('searchBar found');
             searchBar.addEventListener('input', (event) => {
                 const query = event.target.value;
                 this.fetchAndDisplayRooms(query);
@@ -76,6 +115,17 @@ export class DirectoryContainer extends Component {
                     <input type="text" placeholder="Search Chatroom">
                 </div>
                 <div class="unjoined-rooms"></div>
+
+                <!-- Modal for joining chatroom -->
+                <div id="joinChatroomModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close-modal">&times;</span>
+                        <h2>Join Chatroom</h2>
+                        <p id="modalRoomName"></p>
+                        <button id="confirmJoinButton">Yes</button>
+                        <button id="cancelJoinButton">No</button>
+                    </div>
+                </div>
             </div>`
         );
     }
