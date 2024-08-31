@@ -45,6 +45,7 @@ export class Router {
     let component = new route.component(this, route.parameters, route.state);
 
     if (0 < this.pageStack.length) {
+      this.getForegroundPage.beforePageUnload();
       this.getForegroundPage.element.parentNode.removeChild(
         this.getForegroundPage.element,
       );
@@ -62,7 +63,7 @@ export class Router {
     }
     this.pageStack.push(component);
     this.rootElement.appendChild(component.element);
-    component.onEnterForeground();
+    component.afterPageLoaded();
     return component;
   }
 
@@ -73,15 +74,17 @@ export class Router {
     }
 
     let currentPage = this.pageStack.pop();
+    currentPage.beforePageUnload();
     currentPage.router = null;
     currentPage.element.parentNode.removeChild(currentPage.element);
 
     let page = this.getForegroundPage;
     this.rootElement.appendChild(page.element);
-    page.onEnterForeground();
+    page.afterPageLoaded();
   }
 
   onHistoryForward(data) {
+    this.getForegroundPage.beforePageUnload();
     this.getForegroundPage.element.parentNode.removeChild(
       this.getForegroundPage.element,
     );
@@ -95,7 +98,7 @@ export class Router {
     this.pageStack.push(component);
 
     this.rootElement.appendChild(component.element);
-    component.onEnterForeground();
+    component.afterPageLoaded();
   }
 
   searchRouteFromPath(path) {
