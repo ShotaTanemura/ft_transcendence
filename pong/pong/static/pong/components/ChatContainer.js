@@ -22,13 +22,8 @@ export class ChatContainer extends Component {
       this.socket.close();
     }
 
-    const wsUrl = 
-    'ws://'
-    + window.location.host
-    + '/ws/chat/'
-    + roomUuid
-    + '/';
-    
+    const wsUrl = "ws://" + window.location.host + "/ws/chat/" + roomUuid + "/";
+
     this.socket = new WebSocket(wsUrl);
 
     this.socket.addEventListener("open", () => {
@@ -102,10 +97,12 @@ export class ChatContainer extends Component {
 
   postMessage(roomUuid, message) {
     if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-      this.socket.send(JSON.stringify({
-        room_uuid: roomUuid,
-        message: message,
-      }));
+      this.socket.send(
+        JSON.stringify({
+          room_uuid: roomUuid,
+          message: message,
+        }),
+      );
       console.log("Message sent via WebSocket:", message);
     } else {
       console.error("WebSocket connection is not open");

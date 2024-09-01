@@ -23,6 +23,7 @@ from realtime_pong_game.consumers import PlayerConsumer
 from realtime_typing_game.consumers import TypingPlayerConsumer
 from channels.auth import AuthMiddlewareStack
 import chat.routing
+
 # is populated before importing code that may import ORM models.
 django_asgi_app = get_asgi_application()
 
@@ -35,11 +36,7 @@ application = ProtocolTypeRouter(
     {
         "http": django_asgi_app,
         "websocket": AllowedHostsOriginValidator(
-            AuthMiddlewareStack(
-                URLRouter(
-                    chat.routing.websocket_urlpatterns
-                )
-            )
+            AuthMiddlewareStack(URLRouter(chat.routing.websocket_urlpatterns))
         ),
     }
 )
@@ -76,4 +73,3 @@ application = ProtocolTypeRouter(
 #         ),
 #     }
 # )
-
