@@ -23,14 +23,12 @@ export class Chat extends Component {
         }
     }
 
-    handleRoomSelected = (room) => {
-        this.state.selectedRoom = room;
-        this.render();
-    }
-
     get html() {
-        const myRoomsContainer = new MyRoomsContainer(this.router, this.params, this.state, this.handleRoomSelected);
         const chatContainer = new ChatContainer(this.router, this.params, this.state);
+        const myRoomsContainer = new MyRoomsContainer(this.router, this.params, this.state, (room) => {
+            console.log('Room selected');
+            chatContainer.refreshChat(room);
+        });
         const directoryContainer = new DirectoryContainer(this.router, this.params, this.state, () => {
             myRoomsContainer.refreshRooms();
         });
