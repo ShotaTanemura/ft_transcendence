@@ -30,6 +30,7 @@ export class Chat extends Component {
       (room) => {
         console.log("Room selected");
         this.chatContainer.refreshChat(room);
+        this.chatContainer.render();
       },
     );
     this.directoryContainer = new DirectoryContainer(

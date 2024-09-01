@@ -13,7 +13,20 @@ export class ChatContainer extends Component {
       name: room.name,
     };
     console.log("ChatContainer: Refresh chat");
-    this.render();
+    this.fetchAnd(room);
+  }
+  fetchAnd(select) {
+    this.displayRooms(select);
+  }
+  displayRooms(select) {
+    const myRoomsContainer = document.querySelector(".chat");
+    myRoomsContainer.innerHTML = "";
+
+    const roomElement = document.createElement("div");
+    roomElement.classList.add("room");
+    roomElement.innerText = select.name;
+
+    myRoomsContainer.appendChild(roomElement);
   }
 
   get html() {
@@ -29,8 +42,6 @@ export class ChatContainer extends Component {
     console.log(this.selectedRoom);
     return `
             <div class="chat">
-                <h2>${this.selectedRoom.uuid}</h2>
-                <h2>${this.selectedRoom.name}</h2>
             </div>
         `;
   }
