@@ -12,6 +12,7 @@ class TournamentInfo(models.Model):
     def __str__(self):
         return self.tournament_name
 
+
 class MatchInfo(models.Model):
     tournament_info = models.ForeignKey(
         TournamentInfo, on_delete=models.CASCADE, null=False, blank=False
