@@ -18,7 +18,6 @@ export class Chat extends Component {
         const response = await fetch("/pong/api/v1/auth/token/verify", {
             method: "POST",
         });
-        const data = await response.json();
         if (!response.ok) {
             this.router.goNextPage("/");
         }
