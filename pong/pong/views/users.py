@@ -36,7 +36,7 @@ def get_user(request, uuid):
             try:
                 data = json.loads(request.body)
             except json.JSONDecodeError as e:
-                logger.error(f"Invalid JSON: {e}")
+                logger.error("Invalid JSON: {e}")
                 return JsonResponse(
                     {"message": "Invalid JSON", "status": "invalidJson"}, status=400
                 )
@@ -45,7 +45,13 @@ def get_user(request, uuid):
                 user.name = data["name"]
             if "email" in data:
                 user.email = data["email"]
-            user.save()
+            try:
+                user.save()
+            except Exception as e:
+                logger.error(f"Error saving user: {e}")
+                return JsonResponse(
+                    {"message": "Error saving user", "status": "saveFailed"}, status=500
+                )
 
             return JsonResponse(
                 {

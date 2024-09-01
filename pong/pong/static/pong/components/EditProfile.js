@@ -1,23 +1,26 @@
 import { Component } from "../core/component.js";
 
 export class EditProfile extends Component {
+  #uuid = null
+
   constructor(router, params, state) {
     super(router, params, state);
     this.loadUserProfile();
+
+    this.findElement("form.edit-profile-form").onsubmit = this.handleEditProfile;
   }
 
   async loadUserProfile() {
     try {
-      const uuid = await this.get_uuid();
-      if (!uuid) {
+      this.#uuid = await this.get_uuid();
+      if (!this.#uuid) {
         throw new Error("UUID not found");
       }
-      const user = await this.get_user_from_uuid(uuid);
+      const user = await this.get_user_from_uuid(this.#uuid);
       if (!user) {
         throw new Error("User not found");
       }
       this.updatePlaseholders(user);
-      this.findElement("button.submit-form").onsubmit = this.handleEditProfile(uuid);
     } catch (error) {
       console.error("Failed to load user profile:", error);
       window.alert("Failed to load user profile");
@@ -68,19 +71,21 @@ export class EditProfile extends Component {
     this.findElement("#email").placeholder = user.email;
   }
 
-  async handleEditProfile(uuid) {
+  handleEditProfile = async (event) => {
+    event.preventDefault();
     try {
       console.log(
-        this.findElement("#username").value,
-        this.findElement("#email").value,
+        'EditedProfile: ',
+        event.target.username.value,
+        event.target.email.value,
       )
-      const response = await fetch(`/pong/api/v1/users/${uuid}`, {
+      const response = await fetch(`/pong/api/v1/users/${this.#uuid}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({
-          name: this.findElement("#username").value,
-          email: this.findElement("#email").value,
+          name: event.target.username.value,
+          email: event.target.email.value,
         }),
       });
       console.log(response);
