@@ -14,7 +14,7 @@ export class ChatContainer extends Component {
       name: room.name,
     };
     this.connectToWebSocket(room.uuid);
-    this.fetchAnd(room);
+    this.displayRoom(room);
   }
 
   connectToWebSocket(roomUuid) {
@@ -27,7 +27,7 @@ export class ChatContainer extends Component {
     + window.location.host
     + '/ws/chat/'
     + roomUuid
-    + '/'
+    + '/';
     
     this.socket = new WebSocket(wsUrl);
 
@@ -59,10 +59,6 @@ export class ChatContainer extends Component {
     }
   }
 
-  fetchAnd(select) {
-    this.displayRoom(select);
-  }
-
   displayRoom(select) {
     const chatContainer = document.querySelector(".chat");
     chatContainer.innerHTML = "";
@@ -73,8 +69,6 @@ export class ChatContainer extends Component {
 
     const messages = document.createElement("div");
     messages.classList.add("messages");
-
-    this.fetchMessages(select.uuid, messages);
 
     const form = document.createElement("div");
     form.classList.add("form");
@@ -104,24 +98,6 @@ export class ChatContainer extends Component {
       this.postMessage(select.uuid, messageInput.value);
       messageInput.value = "";
     });
-  }
-
-  async fetchMessages(roomUuid, messagesContainer) {
-    try {
-      const response = await fetch(`/chat/api/v1/rooms/${roomUuid}/messages`);
-      if (response.ok) {
-        const data = await response.json();
-        const messages = data.messages || [];
-
-        messages.forEach((message) => {
-          this.appendMessage(message);
-        });
-      } else {
-        console.error("Failed to fetch messages");
-      }
-    } catch (error) {
-      console.error("Error fetching messages:", error);
-    }
   }
 
   postMessage(roomUuid, message) {
