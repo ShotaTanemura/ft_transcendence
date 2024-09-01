@@ -1,13 +1,14 @@
 import { Component } from "../core/component.js";
 
 export class EditProfile extends Component {
-  #uuid = null
+  #uuid = null;
 
   constructor(router, params, state) {
     super(router, params, state);
     this.loadUserProfile();
 
-    this.findElement("form.edit-profile-form").onsubmit = this.handleEditProfile;
+    this.findElement("form.edit-profile-form").onsubmit =
+      this.handleEditProfile;
   }
 
   async loadUserProfile() {
@@ -50,7 +51,7 @@ export class EditProfile extends Component {
   async get_user_from_uuid(uuid) {
     try {
       const response = await fetch(`/pong/api/v1/users/${uuid}`, {
-      method: "GET",
+        method: "GET",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
       });
@@ -101,7 +102,7 @@ export class EditProfile extends Component {
       console.error("Failed to edit user profile:", error);
       window.alert("Failed to edit user profile");
     }
-  }
+  };
 
   get html() {
     return `

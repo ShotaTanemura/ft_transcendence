@@ -7,6 +7,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 @csrf_exempt
 def user(request, uuid):
     try:
@@ -64,13 +65,15 @@ def user(request, uuid):
             )
         else:
             return JsonResponse(
-                {"message": "Method is not allowed", "status": "invalidParams"}, status=400
+                {"message": "Method is not allowed", "status": "invalidParams"},
+                status=400,
             )
     except Exception as e:
         logger.error(f"Server error: {e}")
         return JsonResponse(
             {"message": "Internal Server Error", "status": "serverError"}, status=500
         )
+
 
 @csrf_exempt
 @jwt_exempt

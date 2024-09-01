@@ -54,7 +54,7 @@ export class Profile extends Component {
   async get_user_from_uuid(uuid) {
     try {
       const response = await fetch(`/pong/api/v1/users/${uuid}`, {
-      method: "GET",
+        method: "GET",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
       });
@@ -72,7 +72,7 @@ export class Profile extends Component {
 
   goEditProfile = () => {
     this.router.goNextPage("/edit-profile");
-  }
+  };
 
   get html() {
     return `
