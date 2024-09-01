@@ -3,7 +3,7 @@ import { Router } from "./core/router.js";
 import { Signup } from "./components/Signup.js";
 import { Signin } from "./components/Signin.js";
 import { Home } from "./components/Home.js";
-import { Chat } from './components/Chat.js'
+import { Chat } from "./components/Chat.js";
 import { PongGameHome } from "./components/PongGameHome.js";
 import { PongGameRoom } from "./components/PongGameRoom.js";
 import { PongGameWaiting } from "./components/PongGameWaiting.js";
@@ -36,10 +36,10 @@ let router = new Router(
       state: {},
     },
     {
-			path: "/chat",
-			component: Chat,
-			state: {}
-		},
+      path: "/chat",
+      component: Chat,
+      state: {},
+    },
     {
       path: "/error",
       component: Error,

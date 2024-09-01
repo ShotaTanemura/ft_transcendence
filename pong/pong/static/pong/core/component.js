@@ -50,16 +50,16 @@ export class Component {
 
   render() {
     const newElement = Component.createElementFromHTML(
-        this.html,
-        this.containerTag,
+      this.html,
+      this.containerTag,
     );
 
     if (this.element && this.element.parentNode) {
-        this.element.parentNode.replaceChild(newElement, this.element);
+      this.element.parentNode.replaceChild(newElement, this.element);
     }
 
     this.element = newElement;
-}
+  }
 
   static createElementFromHTML(html, containerTag) {
     let new_element = document.createElement(containerTag);
