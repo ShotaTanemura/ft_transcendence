@@ -17,7 +17,6 @@ export class Chat extends Component {
   }
 
   initializeContainers() {
-    console.log("Chat: Initialize containers");
     this.chatContainer = new ChatContainer(
       this.router,
       this.params,
@@ -28,9 +27,7 @@ export class Chat extends Component {
       this.params,
       this.state,
       (room) => {
-        console.log("Room selected");
         this.chatContainer.refreshChat(room);
-        this.chatContainer.render();
       },
     );
     this.directoryContainer = new DirectoryContainer(

@@ -12,7 +12,6 @@ export class ChatContainer extends Component {
       uuid: room.uuid,
       name: room.name,
     };
-    console.log("ChatContainer: Refresh chat");
     this.fetchAnd(room);
   }
   fetchAnd(select) {
@@ -30,16 +29,10 @@ export class ChatContainer extends Component {
   }
 
   get html() {
-    console.log("ChatContainer: Get HTML");
-    console.log(this.selectedRoom);
     if (!this.selectedRoom) {
-      console.log("ChatContainer: No room selected");
-      console.log(this.selectedRoom);
       return `<div class="chat">Select a room</div>`;
     }
-
-    console.log("ChatContainer: Room selected");
-    console.log(this.selectedRoom);
+    
     return `
             <div class="chat">
             </div>
