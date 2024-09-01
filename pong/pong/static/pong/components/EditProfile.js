@@ -75,7 +75,7 @@ export class EditProfile extends Component {
   handleEditProfile = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch(`/pong/api/v1/users/${this.#uuid}`, {
+      const user_response = await fetch(`/pong/api/v1/users/${this.#uuid}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -84,20 +84,22 @@ export class EditProfile extends Component {
           email: event.target.email.value,
         }),
       });
-      console.log(response);
+      console.log(user_response);
 
       const fileField = event.target.icon;
       if (fileField.files.length <= 0) {
+        this.router.goNextPage("/home");
         return;
       }
       const formData = new FormData();
       formData.append("icon", fileField.files[0]);
 
-      const response2 = await fetch(`/pong/api/v1/users/${this.#uuid}/icon`, {
+      const icon_response = await fetch(`/pong/api/v1/users/${this.#uuid}/icon`, {
         method: "POST",
         body: formData,
       });
-      console.log(response2);
+      console.log(icon_response);
+      this.router.goNextPage("/home");
     } catch (error) {
       console.error("Failed to edit user profile:", error);
       window.alert("Failed to edit user profile");
