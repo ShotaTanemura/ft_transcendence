@@ -13,7 +13,6 @@ export class ChatContainer extends Component {
       name: room.name,
     };
     console.log("ChatContainer: Refresh chat");
-    super.render();
     this.render();
   }
 
