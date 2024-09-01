@@ -10,8 +10,36 @@ export class Chat extends Component {
       selectedRoom: null,
     };
 
+    this.initializeContainers();
+
     this.verifyJwtToken();
     this.render();
+  }
+
+  initializeContainers() {
+    console.log("Chat: Initialize containers");
+    this.chatContainer = new ChatContainer(
+      this.router,
+      this.params,
+      this.state,
+    );
+    this.myRoomsContainer = new MyRoomsContainer(
+      this.router,
+      this.params,
+      this.state,
+      (room) => {
+        console.log("Room selected");
+        this.chatContainer.refreshChat(room);
+      },
+    );
+    this.directoryContainer = new DirectoryContainer(
+      this.router,
+      this.params,
+      this.state,
+      () => {
+        this.myRoomsContainer.refreshRooms();
+      },
+    );
   }
 
   verifyJwtToken = async () => {
@@ -24,34 +52,19 @@ export class Chat extends Component {
   };
 
   get html() {
-    const chatContainer = new ChatContainer(
-      this.router,
-      this.params,
-      this.state,
-    );
-    const myRoomsContainer = new MyRoomsContainer(
-      this.router,
-      this.params,
-      this.state,
-      (room) => {
-        console.log("Room selected");
-        chatContainer.refreshChat(room);
-      },
-    );
-    const directoryContainer = new DirectoryContainer(
-      this.router,
-      this.params,
-      this.state,
-      () => {
-        myRoomsContainer.refreshRooms();
-      },
-    );
+    if (
+      !this.myRoomsContainer ||
+      !this.chatContainer ||
+      !this.directoryContainer
+    ) {
+      return "";
+    }
 
     return `
             <div class="parent-container">
-                ${myRoomsContainer.html}
-                ${chatContainer.html}
-                ${directoryContainer.html}
+                ${this.myRoomsContainer.html}
+                ${this.chatContainer.html}
+                ${this.directoryContainer.html}
             </div>
         `;
   }
