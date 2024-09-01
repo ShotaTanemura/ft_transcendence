@@ -8,7 +8,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 @csrf_exempt
-def get_user(request, uuid):
+def user(request, uuid):
     try:
         if request.method == "GET":
             user = User.objects.filter(uuid=uuid).first()

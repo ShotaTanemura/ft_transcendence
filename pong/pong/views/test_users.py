@@ -41,14 +41,14 @@ class GetUserTest(TestCase):
 
     def test_get_user_normal(self):
         response = self.client.get(
-            reverse("pong:get_user", kwargs={"uuid": self.user.uuid}),
+            reverse("pong:user", kwargs={"uuid": self.user.uuid}),
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
 
     def test_patch_user_normal(self):
         response = self.client.patch(
-            reverse("pong:get_user", kwargs={"uuid": self.user.uuid}),
+            reverse("pong:user", kwargs={"uuid": self.user.uuid}),
             {"name": "changed"},
             content_type="application/json",
         )
@@ -57,7 +57,7 @@ class GetUserTest(TestCase):
 
     def test_get_user_not_allowed_method(self):
         response = self.client.post(
-            reverse("pong:get_user", kwargs={"uuid": self.user.uuid}),
+            reverse("pong:user", kwargs={"uuid": self.user.uuid}),
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 400)
@@ -65,7 +65,7 @@ class GetUserTest(TestCase):
     def test_user_not_found(self):
         response = self.client.get(
             reverse(
-                "pong:get_user", kwargs={"uuid": "b4cf1ef4-1cab-490b-a32c-f6528f95c796"}
+                "pong:user", kwargs={"uuid": "b4cf1ef4-1cab-490b-a32c-f6528f95c796"}
             ),
             content_type="application/json",
         )
