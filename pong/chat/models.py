@@ -99,4 +99,4 @@ class Messages(models.Model):
         db_table = "messages"
         verbose_name = "message"
         verbose_name_plural = "messages"
-        ordering = ["-created_at"]
+        ordering = ["created_at"]
