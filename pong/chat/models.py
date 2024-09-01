@@ -81,12 +81,12 @@ class Messages(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    
     class MessagesManager(models.Manager):
         def create_message(self, user_id, room_id, message):
             message = self.model(user_id=user_id, room_id=room_id, message=message)
             message.save(using=self._db)
             return message
+
         def get_messages(self, room_id):
             messages = self.model.objects.filter(room_id=room_id)
             return messages

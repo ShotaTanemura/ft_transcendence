@@ -23,9 +23,7 @@ def handle_post_message(request, user, room_id):
         logger.info(data)
         room = Rooms.objects.get(uuid=room_id)
         try:
-            Messages.manager.create_message(
-                user, room, data["message"]
-            )
+            Messages.manager.create_message(user, room, data["message"])
         except ValueError as e:
             return JsonResponse({"message": str(e)}, status=400)
         except Exception as e:
@@ -42,19 +40,19 @@ def handle_post_message(request, user, room_id):
         logger.error(e)
         return JsonResponse({"message": e}, status=500)
 
+
 def handle_get_messages(request, user, room_id):
     try:
         room = Rooms.objects.get(uuid=room_id)
         messages = Messages.manager.get_messages(room)
-        return JsonResponse(
-            {"messages": messages, "status": "success"}, status=200
-        )
+        return JsonResponse({"messages": messages, "status": "success"}, status=200)
     except AppError as e:
         logger.error(e)
         return JsonResponse(e.to_dict(), status=e.status_code)
     except Exception as e:
         logger.error(e)
         return JsonResponse({"message": e}, status=500)
+
 
 @csrf_exempt
 @jwt_exempt
@@ -65,7 +63,7 @@ def handle_detail(request, room_id):
             {"message": "Method is not allowed", "status": "invalidParams"},
             status=400,
         )
-    
+
     elif request.method == "POST":
         return handle_post_message(request, user, room_id)
     else:
