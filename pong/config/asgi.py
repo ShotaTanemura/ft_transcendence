@@ -32,14 +32,6 @@ from channels.auth import AuthMiddlewareStack
 from channels.security.websocket import AllowedHostsOriginValidator
 import chat.routing
 
-application = ProtocolTypeRouter(
-    {
-        "http": django_asgi_app,
-        "websocket": AllowedHostsOriginValidator(
-            AuthMiddlewareStack(URLRouter(chat.routing.websocket_urlpatterns))
-        ),
-    }
-)
 # import chat.routing
 
 # application = ProtocolTypeRouter(
@@ -52,24 +44,15 @@ application = ProtocolTypeRouter(
 # )
 
 
-# application = ProtocolTypeRouter(
-#     {
-#         "http": django_asgi_app,
-#         "websocket": AllowedHostsOriginValidator(
-#             ChannelsJWTAuthenticationMiddleware(
-#                 URLRouter(
-#                     [
-#                         re_path(
-#                             r"realtime-pong/(?P<room_name>\w+)/(?P<user_role>\w+)/$",
-#                             PlayerConsumer.as_asgi(),
-#                         ),
-#                         re_path(
-#                             r"realtime-typing/(?P<room_name>\w+)/$",
-#                             TypingPlayerConsumer.as_asgi(),
-#                         ),
-#                     ]
-#                 )
-#             )
-#         ),
-#     }
-# )
+application = ProtocolTypeRouter(
+    {
+        "http": django_asgi_app,
+        "websocket": AllowedHostsOriginValidator(
+            ChannelsJWTAuthenticationMiddleware(
+                URLRouter(
+                    chat.routing.websocket_urlpatterns,
+                )
+            )
+        ),
+    }
+)

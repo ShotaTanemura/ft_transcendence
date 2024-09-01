@@ -27,7 +27,7 @@ export class ChatContainer extends Component {
     this.socket = new WebSocket(wsUrl);
 
     this.socket.addEventListener("open", () => {
-      console.log("WebSocket connected");
+      console.log("WebSocket connected URL:", wsUrl);
     });
 
     this.socket.addEventListener("message", (event) => {
