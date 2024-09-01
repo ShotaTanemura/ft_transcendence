@@ -88,7 +88,7 @@ class Messages(models.Model):
             return message
 
         def get_messages(self, room_id):
-            messages = self.model.objects.filter(room_id=room_id)
+            messages = self.model.objects.filter(room_id=room_id).select_related('user_id')
             return messages
 
     manager = MessagesManager()
