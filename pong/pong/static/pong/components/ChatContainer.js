@@ -16,16 +16,28 @@ export class ChatContainer extends Component {
   }
 
   fetchAnd(select) {
-    this.displayRooms(select);
+    this.displayRoom(select);
   }
 
-  displayRooms(select) {
+  displayRoom(select) {
     const chatContainer = document.querySelector(".chat");
     chatContainer.innerHTML = "";
 
-    const roomElement = document.createElement("div");
-    roomElement.classList.add("room");
-    roomElement.innerText = select.name;
+    // Create room-header div
+    const roomHeader = document.createElement("div");
+    roomHeader.classList.add("room-header");
+    roomHeader.innerText = select.name;
+
+    // Create messages div
+    const messages = document.createElement("div");
+    messages.classList.add("messages");
+
+    // Fetch and display messages (if necessary, add your own logic to populate messages here)
+    this.fetchMessages(select.uuid, messages);
+
+    // Create form div
+    const form = document.createElement("div");
+    form.classList.add("form");
 
     const messageForm = document.createElement("form");
     messageForm.classList.add("message-form");
@@ -41,15 +53,46 @@ export class ChatContainer extends Component {
 
     messageForm.appendChild(messageInput);
     messageForm.appendChild(sendButton);
+    form.appendChild(messageForm);
 
-    chatContainer.appendChild(roomElement);
-    chatContainer.appendChild(messageForm);
+    chatContainer.appendChild(roomHeader);
+    chatContainer.appendChild(messages);
+    chatContainer.appendChild(form);
 
     messageForm.addEventListener("submit", (event) => {
       event.preventDefault();
       this.postMessage(select.uuid, messageInput.value);
       messageInput.value = "";
     });
+  }
+
+  async fetchMessages(roomUuid, messagesContainer) {
+    try {
+      const response = await fetch(`/chat/api/v1/rooms/${roomUuid}/messages`);
+      if (response.ok) {
+        const data = await response.json();
+  
+        console.log("Fetched messages data:", data);
+  
+        const messages = data.messages || [];
+  
+        if (Array.isArray(messages)) {
+          messages.forEach((message) => {
+            console.log("Message:", message);
+            const messageElement = document.createElement("div");
+            messageElement.classList.add("message");
+            messageElement.innerText = `${message.user}: ${message.message}`;
+            messagesContainer.appendChild(messageElement);
+          });
+        } else {
+          console.error("Messages is not an array:", messages);
+        }
+      } else {
+        console.error("Failed to fetch messages");
+      }
+    } catch (error) {
+      console.error("Error fetching messages:", error);
+    }
   }
 
   async postMessage(roomUuid, message) {
