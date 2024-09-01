@@ -8,7 +8,7 @@ from threading import Lock
 from enum import Enum, auto
 from realtime_pong_game.ponggame import PongGame
 from realtime_pong_game.tournamentmanager import TournamentManager
-from realtime_pong_game.models import RoomInfo, MatchInfo, RoomParticipantMapper
+from realtime_pong_game.models import TournamentInfo, MatchInfo
 import time
 
 
@@ -180,14 +180,9 @@ class Room:
     def game_dispatcher(self, dummy_data):
         is_tournament_ongoing = True
         tournament_winner = None
-        # add RoomInfo to DB
-        room_info = RoomInfo(room_name=self.room_name)
-        room_info.save()
-        # create room participant mapper
-        for participant in self.participants:
-            RoomParticipantMapper.objects.create(
-                room_info=room_info, participant=participant
-            )
+        # add TournamentInfo to DB
+        tournament_info = TournamentInfo(tournament_name=self.room_name)
+        tournament_info.save()
 
         while is_tournament_ongoing:
             (player1, player2) = self.tournament_manager.get_next_match_players()
@@ -232,7 +227,7 @@ class Room:
             # TODO how to write the order of tournament?
             # update match db from exected game
             MatchInfo.objects.create(
-                room_info=room_info,
+                tournament_info=tournament_info,
                 player1=player1,
                 player2=player2,
                 player1_score=player1_score,
@@ -240,9 +235,9 @@ class Room:
             )
             # update trounament from executed game
             self.tournament_manager.update_current_match(player1_score, player2_score)
-        # save the tournament winner to RoomInfo
-        room_info.winner = tournament_winner
-        room_info.save()
+        # save the tournament winner to TournamentInfo
+        tournament_info.winner = tournament_winner
+        tournament_info.save()
         # send room status to client
         self.set_room_state(RoomState.Finished)
         async_to_sync(self.send_room_state_to_group)()

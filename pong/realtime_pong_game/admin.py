@@ -1,6 +1,5 @@
 from django.contrib import admin
-from realtime_pong_game.models import RoomInfo, MatchInfo, RoomParticipantMapper
+from realtime_pong_game.models import TournamentInfo, MatchInfo
 
-admin.site.register(RoomInfo)
+admin.site.register(TournamentInfo)
 admin.site.register(MatchInfo)
-admin.site.register(RoomParticipantMapper)
