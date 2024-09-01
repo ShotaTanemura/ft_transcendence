@@ -1,13 +1,11 @@
 import { Component } from "../core/component.js";
 
 export class DirectoryContainer extends Component {
-    constructor(router, params, state, onRoomSelected) {
-        super(router, params, state);
-        this.onRoomSelected = onRoomSelected;
-        this.handleRoomClick = this.handleRoomClick.bind(this);
-        this.fetchAndDisplayRooms().then(() => {
-            this.initializeEventListeners();
-        });
+    constructor(router, params, state, onRoomJoined) {
+        super(router, params, state, '.directory-container');
+        this.initializeEventListeners();
+        this.onRoomJoined = onRoomJoined;
+        this.fetchAndDisplayRooms();
     }
 
     initializeEventListeners() {

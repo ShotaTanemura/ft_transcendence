@@ -4,10 +4,13 @@ export class MyRoomsContainer extends Component {
     constructor(router, params, state, onRoomSelected) {
         super(router, params, state);
         this.onRoomSelected = onRoomSelected;
-        this.handleRoomClick = this.handleRoomClick.bind(this);
-        this.fetchAndDisplayRooms().then(() => {
-            this.initializeEventListeners();
-        });
+        this.initializeEventListeners();
+        this.fetchAndDisplayRooms();
+    }
+
+    initializeEventListeners() {
+        document.removeEventListener('DOMContentLoaded', this.handleDOMContentLoaded);
+        document.addEventListener('DOMContentLoaded', this.handleDOMContentLoaded.bind(this));
     }
 
     async fetchAndDisplayRooms(query = '') {
@@ -46,63 +49,58 @@ export class MyRoomsContainer extends Component {
         });
     }
 
-    handleRoomClick = (room) => {
+    handleRoomClick(room) {
         this.state.selectedRoom = room;
-        console.log('Room selected from MyRoomsContainer: room:', room);
-        console.log('Room selected from MyRoomsContainer: this', this.state.selectedRoom);
         if (this.onRoomSelected) {
-            console.log('Room selected from MyRoomsContainer:', room);
             this.onRoomSelected(room);
         }
     }
 
-    initializeEventListeners() {
+    refreshRooms() {
+        this.fetchAndDisplayRooms();
+    }
+
+    handleDOMContentLoaded() {
         const createChatroomButton = document.querySelector('.create-chatroom-button');
         const modal = document.getElementById('createChatroomModal');
         const closeModal = document.querySelector('.close-modal');
         const createChatroomForm = document.getElementById('createChatroomForm');
         const searchBar = document.querySelector('.search-bar input');
 
-        if (createChatroomButton) {
-            createChatroomButton.addEventListener('click', () => {
-                modal.style.display = 'block';
-            });
-        }
+        createChatroomButton.addEventListener('click', () => {
+            modal.style.display = 'block';
+        });
 
-        if (closeModal) {
-            closeModal.addEventListener('click', () => {
-                modal.style.display = 'none';
-            });
-        }
+        closeModal.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
 
-        if (createChatroomForm) {
-            createChatroomForm.addEventListener('submit', async (event) => {
-                event.preventDefault();
-                const formData = new FormData(createChatroomForm);
-                const data = Object.fromEntries(formData.entries());
+        createChatroomForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const formData = new FormData(createChatroomForm);
+            const data = Object.fromEntries(formData.entries());
 
-                try {
-                    const response = await fetch('/chat/api/v1/rooms', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(data),
-                    });
+            try {
+                const response = await fetch('/chat/api/v1/rooms', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
 
-                    if (response.ok) {
-                        alert('Chatroom created successfully!');
-                        modal.style.display = 'none';
-                        this.fetchAndDisplayRooms();
-                    } else {
-                        alert('Failed to create chatroom. Please try again.');
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                    alert('An error occurred. Please try again later.');
+                if (response.ok) {
+                    alert('Chatroom created successfully!');
+                    modal.style.display = 'none';
+                    this.fetchAndDisplayRooms();
+                } else {
+                    alert('Failed to create chatroom. Please try again.');
                 }
-            });
-        }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again later.');
+            }
+        });
 
         window.addEventListener('click', (event) => {
             if (event.target === modal) {
@@ -110,12 +108,10 @@ export class MyRoomsContainer extends Component {
             }
         });
 
-        if (searchBar) {
-            searchBar.addEventListener('input', (event) => {
-                const query = event.target.value;
-                this.fetchAndDisplayRooms(query);
-            });
-        }
+        searchBar.addEventListener('input', (event) => {
+            const query = event.target.value;
+            this.fetchAndDisplayRooms(query);
+        });
     }
 
     get html() {
