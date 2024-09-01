@@ -4,14 +4,17 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('chat', '0005_remove_rooms_room_status_id_remove_rooms_password_and_more'),
+        ("chat", "0005_remove_rooms_room_status_id_remove_rooms_password_and_more"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='messages',
-            options={'ordering': ['created_at'], 'verbose_name': 'message', 'verbose_name_plural': 'messages'},
+            name="messages",
+            options={
+                "ordering": ["created_at"],
+                "verbose_name": "message",
+                "verbose_name_plural": "messages",
+            },
         ),
     ]

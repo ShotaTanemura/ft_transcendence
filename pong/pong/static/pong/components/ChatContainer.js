@@ -23,19 +23,15 @@ export class ChatContainer extends Component {
     const chatContainer = document.querySelector(".chat");
     chatContainer.innerHTML = "";
 
-    // Create room-header div
     const roomHeader = document.createElement("div");
     roomHeader.classList.add("room-header");
     roomHeader.innerText = select.name;
 
-    // Create messages div
     const messages = document.createElement("div");
     messages.classList.add("messages");
 
-    // Fetch and display messages (if necessary, add your own logic to populate messages here)
     this.fetchMessages(select.uuid, messages);
 
-    // Create form div
     const form = document.createElement("div");
     form.classList.add("form");
 
@@ -71,11 +67,11 @@ export class ChatContainer extends Component {
       const response = await fetch(`/chat/api/v1/rooms/${roomUuid}/messages`);
       if (response.ok) {
         const data = await response.json();
-  
+
         console.log("Fetched messages data:", data);
-  
+
         const messages = data.messages || [];
-  
+
         if (Array.isArray(messages)) {
           messages.forEach((message) => {
             console.log("Message:", message);

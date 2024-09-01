@@ -57,13 +57,16 @@ def handle_get_messages(request, user, room_id):
             for message in messages
         ]
 
-        return JsonResponse({"messages": messages_list, "status": "success"}, status=200)
+        return JsonResponse(
+            {"messages": messages_list, "status": "success"}, status=200
+        )
     except AppError as e:
         logger.error(e)
         return JsonResponse(e.to_dict(), status=e.status_code)
     except Exception as e:
         logger.error(e)
         return JsonResponse({"message": str(e)}, status=500)
+
 
 @csrf_exempt
 @jwt_exempt
