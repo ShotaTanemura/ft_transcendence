@@ -41,9 +41,9 @@ def user(request, uuid):
                     {"message": "Invalid JSON", "status": "invalidJson"}, status=400
                 )
 
-            if "name" in data:
+            if data["name"]:
                 user.name = data["name"]
-            if "email" in data:
+            if data["email"]:
                 user.email = data["email"]
             try:
                 user.save()
@@ -81,26 +81,22 @@ def user_icon(request, uuid):
         )
 
     icon = request.FILES.get("icon", None)
-
     if not icon:
         return JsonResponse(
             {"message": "Invalid parameters", "status": "invalidParams"}, status=400
         )
 
     user = User.objects.filter(uuid=uuid).first()
-
     if not user:
         return JsonResponse(
             {"message": "User not found", "status": "userNotFound"}, status=404
         )
 
     form = UserIconUpdateForm(request.POST, request.FILES, instance=user)
-
     if not form.is_valid():
         return JsonResponse(
             {"message": "Invalid parameters", "status": "invalidParams"}, status=400
         )
-
     form.save()
 
     return JsonResponse(
