@@ -21,25 +21,59 @@ django_asgi_app = application = get_asgi_application()
 from pong.middleware.auth import ChannelsJWTAuthenticationMiddleware
 from realtime_pong_game.consumers import PlayerConsumer
 from realtime_typing_game.consumers import TypingPlayerConsumer
+from channels.auth import AuthMiddlewareStack
+import chat.routing
+# is populated before importing code that may import ORM models.
+django_asgi_app = get_asgi_application()
+
+from channels.routing import ProtocolTypeRouter, URLRouter
+from channels.auth import AuthMiddlewareStack
+from channels.security.websocket import AllowedHostsOriginValidator
+import chat.routing
 
 application = ProtocolTypeRouter(
     {
         "http": django_asgi_app,
         "websocket": AllowedHostsOriginValidator(
-            ChannelsJWTAuthenticationMiddleware(
+            AuthMiddlewareStack(
                 URLRouter(
-                    [
-                        re_path(
-                            r"realtime-pong/(?P<room_name>\w+)/(?P<user_role>\w+)/$",
-                            PlayerConsumer.as_asgi(),
-                        ),
-                        re_path(
-                            r"realtime-typing/(?P<room_name>\w+)/$",
-                            TypingPlayerConsumer.as_asgi(),
-                        ),
-                    ]
+                    chat.routing.websocket_urlpatterns
                 )
             )
         ),
     }
 )
+# import chat.routing
+
+# application = ProtocolTypeRouter(
+#     {
+#         "http": django_asgi_app,
+#         "websocket": AllowedHostsOriginValidator(
+#             AuthMiddlewareStack(URLRouter(chat.routing.websocket_urlpatterns))
+#         ),
+#     }
+# )
+
+
+# application = ProtocolTypeRouter(
+#     {
+#         "http": django_asgi_app,
+#         "websocket": AllowedHostsOriginValidator(
+#             ChannelsJWTAuthenticationMiddleware(
+#                 URLRouter(
+#                     [
+#                         re_path(
+#                             r"realtime-pong/(?P<room_name>\w+)/(?P<user_role>\w+)/$",
+#                             PlayerConsumer.as_asgi(),
+#                         ),
+#                         re_path(
+#                             r"realtime-typing/(?P<room_name>\w+)/$",
+#                             TypingPlayerConsumer.as_asgi(),
+#                         ),
+#                     ]
+#                 )
+#             )
+#         ),
+#     }
+# )
+

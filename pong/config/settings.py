@@ -32,6 +32,7 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -189,3 +190,5 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 ADMIN_PANEL_URL = os.getenv("ADMIN_PANEL_URL")
+
+ASGI_APPLICATION = "config.asgi.application"

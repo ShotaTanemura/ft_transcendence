@@ -4,6 +4,7 @@ export class ChatContainer extends Component {
   constructor(router, params, state) {
     super(router, params, state, ".chat-container");
     this.selectedRoom = undefined;
+    this.socket = null;
     this.render();
   }
 
@@ -12,7 +13,50 @@ export class ChatContainer extends Component {
       uuid: room.uuid,
       name: room.name,
     };
+    this.connectToWebSocket(room.uuid);
     this.fetchAnd(room);
+  }
+
+  connectToWebSocket(roomUuid) {
+    if (this.socket) {
+      this.socket.close();
+    }
+
+    const wsUrl = 
+    'ws://'
+    + window.location.host
+    + '/ws/chat/'
+    + roomUuid
+    + '/'
+    
+    this.socket = new WebSocket(wsUrl);
+
+    this.socket.addEventListener("open", () => {
+      console.log("WebSocket connected");
+    });
+
+    this.socket.addEventListener("message", (event) => {
+      const message = JSON.parse(event.data);
+      this.appendMessage(message);
+    });
+
+    this.socket.addEventListener("close", () => {
+      console.log("WebSocket disconnected");
+    });
+
+    this.socket.addEventListener("error", (error) => {
+      console.error("WebSocket error:", error);
+    });
+  }
+
+  appendMessage(message) {
+    const messagesContainer = document.querySelector(".messages");
+    if (messagesContainer) {
+      const messageElement = document.createElement("div");
+      messageElement.classList.add("message");
+      messageElement.innerText = `${message.user}: ${message.message}`;
+      messagesContainer.appendChild(messageElement);
+    }
   }
 
   fetchAnd(select) {
@@ -67,22 +111,11 @@ export class ChatContainer extends Component {
       const response = await fetch(`/chat/api/v1/rooms/${roomUuid}/messages`);
       if (response.ok) {
         const data = await response.json();
-
-        console.log("Fetched messages data:", data);
-
         const messages = data.messages || [];
 
-        if (Array.isArray(messages)) {
-          messages.forEach((message) => {
-            console.log("Message:", message);
-            const messageElement = document.createElement("div");
-            messageElement.classList.add("message");
-            messageElement.innerText = `${message.user}: ${message.message}`;
-            messagesContainer.appendChild(messageElement);
-          });
-        } else {
-          console.error("Messages is not an array:", messages);
-        }
+        messages.forEach((message) => {
+          this.appendMessage(message);
+        });
       } else {
         console.error("Failed to fetch messages");
       }
@@ -91,27 +124,15 @@ export class ChatContainer extends Component {
     }
   }
 
-  async postMessage(roomUuid, message) {
-    try {
-      const response = await fetch(`/chat/api/v1/rooms/${roomUuid}/messages`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          room_uuid: roomUuid,
-          message: message,
-        }),
-      });
-
-      if (response.ok) {
-        console.log("Message sent successfully");
-        this.refreshChat(this.selectedRoom);
-      } else {
-        console.error("Failed to send message");
-      }
-    } catch (error) {
-      console.error("Error sending message:", error);
+  postMessage(roomUuid, message) {
+    if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+      this.socket.send(JSON.stringify({
+        room_uuid: roomUuid,
+        message: message,
+      }));
+      console.log("Message sent via WebSocket:", message);
+    } else {
+      console.error("WebSocket connection is not open");
     }
   }
 
