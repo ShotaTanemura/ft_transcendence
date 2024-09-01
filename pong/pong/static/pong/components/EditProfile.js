@@ -94,10 +94,13 @@ export class EditProfile extends Component {
       const formData = new FormData();
       formData.append("icon", fileField.files[0]);
 
-      const icon_response = await fetch(`/pong/api/v1/users/${this.#uuid}/icon`, {
-        method: "POST",
-        body: formData,
-      });
+      const icon_response = await fetch(
+        `/pong/api/v1/users/${this.#uuid}/icon`,
+        {
+          method: "POST",
+          body: formData,
+        },
+      );
       console.log(icon_response);
       this.router.goNextPage("/home");
     } catch (error) {
