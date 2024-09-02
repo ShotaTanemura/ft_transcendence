@@ -6,6 +6,7 @@ export class MyRoomsContainer extends Component {
     this.onRoomSelected = onRoomSelected;
     this.initializeEventListeners();
     this.fetchAndDisplayRooms();
+    this.connectToWebSocket();
   }
 
   initializeEventListeners() {
@@ -17,6 +18,33 @@ export class MyRoomsContainer extends Component {
       "DOMContentLoaded",
       this.handleDOMContentLoaded.bind(this),
     );
+  }
+
+  connectToWebSocket(roomUuid) {
+    if (this.socket) {
+      this.socket.close();
+    }
+
+    const wsUrl = "ws://" + window.location.host + "/ws/chat/rooms/";
+
+    this.socket = new WebSocket(wsUrl);
+
+    this.socket.addEventListener("open", () => {
+      console.log("WebSocket connected URL:", wsUrl);
+    });
+
+    this.socket.addEventListener("message", (event) => {
+      const message = JSON.parse(event.data);
+      this.appendMessage(message);
+    });
+
+    this.socket.addEventListener("close", () => {
+      console.log("WebSocket disconnected");
+    });
+
+    this.socket.addEventListener("error", (error) => {
+      console.error("WebSocket error:", error);
+    });
   }
 
   async fetchAndDisplayRooms(query = "") {
