@@ -61,7 +61,7 @@ export class Header extends Component {
 
   get html() {
     return `
-      <nav class="navbar navbar-expand-lg bg-body-teriary navbar-light bg-light sticky-stop">
+      <nav class="navbar navbar-expand-lg bg-body-secondary navbar-light bg-light sticky-stop">
         <a class="btn border border-secondary border-2" data-bs-toggle="offcanvas" href="#header-offcanvas" role="button" aria-controls="header-offcanvas">
           <span class="navbar-toggler-icon"></span>
         </a>
@@ -82,7 +82,7 @@ export class Header extends Component {
           </button>
         </div>
       </nav>
-      <div class="offcanvas offcanvas-dark offcanvas-start rounded-end mw-100 p-3" tabindex="-1" id="header-offcanvas" aria-labelledby="offcanvasExampleLabel">
+      <div class="offcanvas offcanvas-dark offcanvas-start rounded-end mw-100 p-3 bg-body-secondary" tabindex="-1" id="header-offcanvas" aria-labelledby="offcanvasExampleLabel">
         <div class="offcanvas-header">
           <h5 class="offcanvas-title fa-2x" id="offcanvasExampleLabel">Transcendence</h5>
           <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
