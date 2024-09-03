@@ -6,54 +6,61 @@ export class Header extends Component {
   }
 
   afterPageLoaded() {
-    document.getElementById("search-user-form").onsubmit = this.onSubmitSearchUserForm;
+    document.getElementById("search-user-form").onsubmit =
+      this.onSubmitSearchUserForm;
     document.getElementById("title-link").onclick = this.onClickHomeLink;
-    document.getElementById("user-profile-button").onclick = this.onClickUserProfileButton;
-    document.getElementById("navigate-home-link").onclick = this.onClickHomeLink;
-    document.getElementById("navigate-chat-link").onclick = this.onClickChatLink;
-    document.getElementById("navigate-pong-game-link").onclick = this.onClickPongGameLink;
-    document.getElementById("navigate-typing-game-link").onclick = this.onClickTypingGameLink;
-    document.getElementById("navigate-settings-link").onclick = this.onClickSettingsLink;
+    document.getElementById("user-profile-button").onclick =
+      this.onClickUserProfileButton;
+    document.getElementById("navigate-home-link").onclick =
+      this.onClickHomeLink;
+    document.getElementById("navigate-chat-link").onclick =
+      this.onClickChatLink;
+    document.getElementById("navigate-pong-game-link").onclick =
+      this.onClickPongGameLink;
+    document.getElementById("navigate-typing-game-link").onclick =
+      this.onClickTypingGameLink;
+    document.getElementById("navigate-settings-link").onclick =
+      this.onClickSettingsLink;
   }
 
   onSubmitSearchUserForm = (event) => {
     //TODO handle action
     event.preventDefault();
     alert("#TODO ユーザーを検索する");
-  }
+  };
 
   onClickUserProfileButton = () => {
     //TODO handle action
     alert("#TODO ユーザープロフィールに移動する");
-  }
+  };
 
   onClickHomeLink = () => {
     //TODO handle action
     alert("#TODO ホームに移動する");
-  }
-  
+  };
+
   onClickChatLink = () => {
     //TODO handle action
     alert("#TODO チャットに移動する");
-  }
+  };
 
   onClickPongGameLink = () => {
     //TODO handle action
     alert("#TODO PongGameに移動する");
-  }
+  };
 
   onClickTypingGameLink = () => {
     //TODO handle action
     alert("#TODO TypingGameに移動する");
-  }
+  };
 
   onClickSettingsLink = () => {
     //TODO handle action
     alert("#TODO Settingsに移動する");
-  }
+  };
 
   get html() {
-    return (`
+    return `
       <nav class="navbar navbar-expand-lg bg-body-teriary navbar-light bg-light sticky-stop">
         <a class="btn border border-secondary border-2" data-bs-toggle="offcanvas" href="#header-offcanvas" role="button" aria-controls="header-offcanvas">
           <span class="navbar-toggler-icon"></span>
@@ -125,5 +132,6 @@ export class Header extends Component {
           </ul>
         </div>
       </div>
-    `)}
+    `;
+  }
 }
