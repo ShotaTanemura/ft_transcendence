@@ -9,8 +9,10 @@ from logging import getLogger
 
 logger = getLogger(__name__)
 
+
 def serialize_rooms(room):
     return {"uuid": str(room.uuid), "name": room.name}
+
 
 class RoomConsumer(WebsocketConsumer):
     def connect(self):
@@ -44,7 +46,6 @@ class RoomConsumer(WebsocketConsumer):
         except Rooms.DoesNotExist:
             logger.info("Room does not exist")
             self.close()
-        
 
     def disconnect(self, close_code):
         async_to_sync(self.channel_layer.group_discard)(

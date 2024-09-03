@@ -5,7 +5,6 @@ export class MyRoomsContainer extends Component {
     super(router, params, state);
     this.onRoomSelected = onRoomSelected;
     this.initializeEventListeners();
-    this.fetchAndDisplayRooms();
     this.connectToWebSocket();
   }
 
@@ -20,7 +19,7 @@ export class MyRoomsContainer extends Component {
     );
   }
 
-  connectToWebSocket(roomUuid) {
+  connectToWebSocket() {
     if (this.socket) {
       this.socket.close();
     }
@@ -35,7 +34,8 @@ export class MyRoomsContainer extends Component {
 
     this.socket.addEventListener("message", (event) => {
       const message = JSON.parse(event.data);
-      this.appendMessage(message);
+      console.log(message);
+      this.displayRooms(message.rooms);
     });
 
     this.socket.addEventListener("close", () => {
@@ -47,27 +47,15 @@ export class MyRoomsContainer extends Component {
     });
   }
 
-  async fetchAndDisplayRooms(query = "") {
-    try {
-      const response = await fetch("/chat/api/v1/rooms");
-      if (response.ok) {
-        const rooms = await response.json();
-        this.displayRooms(rooms.rooms, query);
-      } else {
-        console.error("Failed to fetch rooms");
-      }
-    } catch (error) {
-      alert("An error occurred. Please try again later.", error);
-      console.error("Error fetching rooms:", error);
-    }
-  }
-
-  displayRooms(rooms, query) {
+  displayRooms(rooms, query = "") {
     const myRoomsContainer = document.querySelector(".myrooms");
     myRoomsContainer.innerHTML = "";
 
-    const filteredRooms = rooms.filter((room) =>
-      room.name.toLowerCase().includes(query.toLowerCase()),
+    const filteredRooms = rooms.filter(
+      (room) =>
+        room.name &&
+        typeof room.name === "string" &&
+        room.name.toLowerCase().includes(query.toLowerCase()),
     );
 
     filteredRooms.forEach((room) => {
@@ -90,18 +78,14 @@ export class MyRoomsContainer extends Component {
     }
   }
 
-  refreshRooms() {
-    this.fetchAndDisplayRooms();
-  }
-
   handleDOMContentLoaded() {
     const createChatroomButton = document.querySelector(
       ".create-chatroom-button",
     );
     const modal = document.getElementById("createChatroomModal");
     const closeModal = document.querySelector(".close-modal");
-    const createChatroomForm = document.getElementById("createChatroomForm");
-    const searchBar = document.querySelector(".search-bar input");
+    // const createChatroomForm = document.getElementById("createChatroomForm");
+    // const searchBar = document.querySelector(".search-bar input");
 
     createChatroomButton.addEventListener("click", () => {
       modal.style.display = "block";
@@ -111,42 +95,10 @@ export class MyRoomsContainer extends Component {
       modal.style.display = "none";
     });
 
-    createChatroomForm.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      const formData = new FormData(createChatroomForm);
-      const data = Object.fromEntries(formData.entries());
-
-      try {
-        const response = await fetch("/chat/api/v1/rooms", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        });
-
-        if (response.ok) {
-          alert("Chatroom created successfully!");
-          modal.style.display = "none";
-          this.fetchAndDisplayRooms();
-        } else {
-          alert("Failed to create chatroom. Please try again.");
-        }
-      } catch (error) {
-        console.error("Error:", error);
-        alert("An error occurred. Please try again later.");
-      }
-    });
-
     window.addEventListener("click", (event) => {
       if (event.target === modal) {
         modal.style.display = "none";
       }
-    });
-
-    searchBar.addEventListener("input", (event) => {
-      const query = event.target.value;
-      this.fetchAndDisplayRooms(query);
     });
   }
 
