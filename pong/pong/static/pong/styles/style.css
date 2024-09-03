@@ -1,11 +1,4 @@
-/* App.css */
-/*
- *  Flex Layout Specifics
-*/
-main {
-  display: flex;
-  flex-direction: row;
-}
+/* tournament */
 .round {
   display: flex;
   flex-direction: column;
@@ -24,16 +17,6 @@ main {
 
 .round .game-spacer {
   flex-grow: 1;
-}
-
-/*
-   *  General Styles
-  */
-body {
-  font-family: sans-serif;
-  font-size: small;
-  padding: 10px;
-  line-height: 1.4em;
 }
 
 li.game {
@@ -58,4 +41,14 @@ li.game span {
 li.game-spacer {
   border-right: 5px solid black;
   min-height: 50px;
+}
+
+
+/* general */
+body {
+  margin: 0;
+  padding: 0;
+  background-size: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
 }

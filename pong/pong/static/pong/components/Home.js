@@ -1,6 +1,7 @@
 // signin後の仮ページ
 
 import { Component } from "../core/component.js";
+import { Header } from "./Header.js";
 
 export class Home extends Component {
   constructor(router, params, state) {
@@ -11,6 +12,15 @@ export class Home extends Component {
       this.goRealtimeTyping;
     this.findElement("form.signout-form").onsubmit = this.handleSignout;
     this.verifyJwtToken();
+  }
+
+  afterPageLoaded() {
+    this.headerComponent = new Header(this.router, this.params, this.state);
+    this.element.parentElement.prepend(this.headerComponent.element);
+  }
+
+  beforePageUnload() {
+    this.element.parentElement.removeChild(this.headerComponent.element);
   }
 
   goRealtimePong = () => {
@@ -64,12 +74,14 @@ export class Home extends Component {
 
   get html() {
     return `
-			<h1> signin後の仮ページ </h1>
-			<button class="go-realtime-pong-button">PONG GAMEをする</button>
-      <button class="go-realtime-typing-button">TYPING GAMEをする</button>
-            <form class="signout-form">
-                <button type="submit">signout</button>
-            </form>
+      <main>
+			  <h1> signin後の仮ページ </h1>
+			  <button class="go-realtime-pong-button">PONG GAMEをする</button>
+        <button class="go-realtime-typing-button">TYPING GAMEをする</button>
+          <form class="signout-form">
+            <button type="submit">signout</button>
+          </form>
+      </main>
 		`;
   }
 }
