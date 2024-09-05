@@ -162,21 +162,21 @@ export class PongGame extends Component {
   };
 
   get html() {
-    return `
-            <main class="game">
-              <div class="container">
-                <div class="player1">
-                  <span id="player1-name" class="name">Player 1</span> 
-                  &nbsp;
-                  <span class="score">Score: <span id="player1-score">0</span></span>
-                </div>
-                <div class="player2">
-                  <span id="player2-name" class="name">Player 2</span>
-                  <span class="score">Score: <span id="player2-score">0</span></span>
-                </div>
-              </div>
-              <canvas width="1500" height="585" class="ponggame"></canvas>
-            </main>
-        `;
+    return (`
+      <main class="game text-center p-5">
+        <div class="w-auto h-25 container bg-primary-subtle">
+          <div class="player1">
+            <span id="player1-name" class="name">Player 1</span> 
+            &nbsp;
+            <span class="score">Score: <span id="player1-score">0</span></span>
+          </div>
+          <div class="player2">
+            <span id="player2-name" class="name">Player 2</span>
+            <span class="score">Score: <span id="player2-score">0</span></span>
+          </div>
+        </div>
+        <canvas width="1500" height="585" class="ponggame"></canvas>
+      </main>
+    `);
   }
 }

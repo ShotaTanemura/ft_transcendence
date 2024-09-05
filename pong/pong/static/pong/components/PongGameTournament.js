@@ -14,9 +14,11 @@ export class PongGameTournament extends Component {
   }
 
   get html() {
-    return `
+    return (`
+      <main class="text-center p-5>
         <h1>Pong-Game Tournament</h1>
-    `;
+      </main>
+    `);
   }
 }
 

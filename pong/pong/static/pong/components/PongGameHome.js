@@ -1,11 +1,22 @@
 import { Component } from "../core/component.js";
 import { Load } from "./Load.js";
+import { Header } from "./Header.js";
 
 export class PongGameHome extends Component {
   constructor(router, parameters, state) {
-    new Load(router, parameters, state).onload();
     super(router, parameters, state);
     this.findElement("form.entering-room-form").onsubmit = this.submitForm;
+  }
+
+  afterPageLoaded = () => {
+    new Load(this.outer, this.parameters, this.state).onload();
+    this.headerComponent = new Header(this.router, this.params, this.state);
+    this.element.parentElement.prepend(this.headerComponent.element);
+    this.headerComponent.afterPageLoaded();
+  }
+
+  beforePageUnload = () => {
+    this.element.parentElement.removeChild(this.headerComponent.element);
   }
 
   onWebSocketOpen = () => {
@@ -83,16 +94,20 @@ export class PongGameHome extends Component {
     }
   };
   get html() {
-    return `
-			<h1>Welcome To Realtime Pong !</h1>
-			<form class="entering-room-form">
-				<label for="room-id">Room ID</label>
-				<input id="room-id" type="number" min="1000" max="9999" required><br>
-				<input id="enter-room-as-host-submit" name="host" type="submit" value="enter room as host">
-				<input id="enter-room-as-guest-submit" name="guest" type="submit" value="enter room as guest">
-			</form>
-
-		`;
+    return (`
+      <main class="text-center p-5">
+			  <h1>Welcome To Realtime Pong !</h1>
+			  <form class="entering-room-form">
+          <div class="form-group p-3">
+			  	  <label for="room-id">Room ID</label>
+			  	  <input id="room-id" type="number" min="1000" max="9999" required><br>
+            <small id="room-id-help">Room ID must be between 1000 and 9999</small>
+          </div>
+			  	<input id="enter-room-as-host-submit" name="host" class="btn btn-primary" type="submit" value="enter room as host">
+			  	<input id="enter-room-as-guest-submit" name="guest" class="btn btn-primary" type="submit" value="enter room as guest">
+			  </form>
+      </main>
+		`);
   }
 }
 

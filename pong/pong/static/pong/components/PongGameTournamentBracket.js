@@ -3,7 +3,7 @@ import { Component } from "../core/component.js";
 export class PongGameTournamentBracket extends Component {
   constructor(router, parameters, state, tournament = []) {
     super(router, parameters, state);
-    this.tournamentElement = this.findElement("main.tournament");
+    this.tournamentElement = this.findElement("div.tournament-bracket");
     this.tournamentChildElements = this.createTounamentObject(tournament);
 
     // TODO This code is a bit redundant.
@@ -32,7 +32,7 @@ export class PongGameTournamentBracket extends Component {
         );
         let topPlayerElement = document.createElement("li");
         topPlayerElement.className = `game game-top ${game.top.winner ? "winner" : "loser"}`;
-        topPlayerElement.innerHTML = `${game.top.name} <span>${game.top.score}</span>`;
+        topPlayerElement.innerHTML = `<span class="player-name">${game.top.name}</span> <span class="player-score">${game.top.score}</span>`;
         roundElement.appendChild(topPlayerElement);
 
         roundElement.appendChild(
@@ -45,7 +45,7 @@ export class PongGameTournamentBracket extends Component {
         //create Bottom Player Element;
         let bottomPlayerElement = document.createElement("li");
         bottomPlayerElement.className = `game game-top ${game.bottom.winner ? "winner" : "loser"}`;
-        bottomPlayerElement.innerHTML = `${game.bottom.name} <span>${game.bottom.score}</span>`;
+        bottomPlayerElement.innerHTML = `<span class="player-name">${game.bottom.name} <span class="player-score">${game.bottom.score}</span>`;
         roundElement.appendChild(bottomPlayerElement);
         roundElement.appendChild(
           Object.assign(document.createElement("li"), {
@@ -59,10 +59,10 @@ export class PongGameTournamentBracket extends Component {
     return parentElement;
   }
   get html() {
-    return `
-      <main class="tournament">
-      </main>
-    `;
+    return (`
+      <div class="tournament-bracket">
+      </div>
+    `);
   }
 }
 
