@@ -8,6 +8,9 @@ export class Router {
     this.routingList = routingList;
     this.context = context;
     window.addEventListener("popstate", (e) => {
+      if (e.state === null) {
+        return;
+      }
       if (e.state.depth < this.pageStack.length) {
         this.onHistoryBack();
       } else {
