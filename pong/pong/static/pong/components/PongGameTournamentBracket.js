@@ -3,61 +3,54 @@ import { Component } from "../core/component.js";
 export class PongGameTournamentBracket extends Component {
   constructor(router, parameters, state, tournament = []) {
     super(router, parameters, state);
-    this.tournamentElement = this.findElement("div.tournament-bracket");
-    this.tournamentChildElements = this.createTounamentObject(tournament);
-
-    // TODO This code is a bit redundant.
-    // Adding child nodes to avoid the first element being a div tag is unnecessary.
-    // If there's a better way, it should be rewritten.
-    while (this.tournamentChildElements.firstChild) {
-      this.tournamentElement.appendChild(
-        this.tournamentChildElements.firstChild,
-      );
-    }
+    this.tournamentElement = this.findElement("main.tournament");
+    this.tournamentChildElement = this.createTounamentObject(tournament);
+    this.tournamentElement.appendChild(this.tournamentChildElement)
   }
 
-  createTounamentObject(tournament) {
-    let parentElement = document.createElement("div");
-    tournament.map((round, roundIndex) => {
-      let roundElement = Object.assign(document.createElement("ul"), {
-        className: `round round-${roundIndex + 1}`,
-      });
-      round.map((game) => {
-        //create Top Player Element
-        roundElement.appendChild(
-          Object.assign(document.createElement("li"), {
-            className: "spacer",
-            innerHTML: "&nbsp;",
-          }),
-        );
-        let topPlayerElement = document.createElement("li");
-        topPlayerElement.className = `game game-top ${game.top.winner ? "winner" : "loser"}`;
-        topPlayerElement.innerHTML = `<span class="player-name">${game.top.name}</span> <span class="player-score">${game.top.score}</span>`;
-        roundElement.appendChild(topPlayerElement);
+  createTounamentObject(tournament) { 
+    let parentElement = Object.assign(document.createElement("div"), {className: `bracket`});
+     tournament.map((round, roundIndex)=>{
+        let roundElement = Object.assign(document.createElement('section'), {className: `round round-${roundIndex + 1}`});
+        let matchesElement;
+        let matchupsElement;
+        round.map((game, gameIndex)=>{
+          if (gameIndex % 2 === 0) {
+            matchesElement = (Object.assign(document.createElement('div'), {className: "matches"}));
+            matchupsElement = (Object.assign(document.createElement('div'), {className: "matchups"}));
+            matchesElement.appendChild(matchupsElement);
+          }
+          let matchupElement = (Object.assign(document.createElement('div'), {className: "matchup"}));
+          let participantsElement = (Object.assign(document.createElement('div'), {className: "participants"}));
 
-        roundElement.appendChild(
-          Object.assign(document.createElement("li"), {
-            className: "game game-spacer",
-            innerHTML: "&nbsp",
-          }),
-        );
+          //create Top Player Element;
+          let topPlayerElement = document.createElement('div');
+          topPlayerElement.className = `participant ${game.top.winner ? 'winner' : 'loser'}`;
+          topPlayerElement.innerHTML = `<span class="name">${game.top.name}</span><span class="score">${game.top.score}</span>`
 
-        //create Bottom Player Element;
-        let bottomPlayerElement = document.createElement("li");
-        bottomPlayerElement.className = `game game-top ${game.bottom.winner ? "winner" : "loser"}`;
-        bottomPlayerElement.innerHTML = `<span class="player-name">${game.bottom.name} <span class="player-score">${game.bottom.score}</span>`;
-        roundElement.appendChild(bottomPlayerElement);
-        roundElement.appendChild(
-          Object.assign(document.createElement("li"), {
-            className: "spacer",
-            innerHTML: "&nbsp;",
-          }),
-        );
-      });
-      parentElement.appendChild(roundElement);
-    });
-    return parentElement;
+          //create Bottom Player Element;
+          let bottomPlayerElement = document.createElement('div');
+          bottomPlayerElement.className = `participant game game-top ${game.bottom.winner ? 'winner' : 'loser'}`;
+          bottomPlayerElement.innerHTML = `<span class="name">${game.bottom.name}</span><span class="score">${game.bottom.score}</span>`;
+
+          participantsElement.appendChild(topPlayerElement);
+          participantsElement.appendChild(bottomPlayerElement);
+          matchupElement.appendChild(participantsElement);
+          matchupsElement.appendChild(matchupElement);
+          if (gameIndex % 2 === 1) {
+            let connectorElement = (Object.assign(document.createElement('div'), {className: "connector"}));
+            connectorElement.innerHTML = `<div class="merger"></div><div class="line"></div>`
+            matchesElement.appendChild(connectorElement)
+            roundElement.appendChild(matchesElement);
+          } else if (gameIndex === round.length - 1) {
+            roundElement.appendChild(matchesElement);
+          }
+        });
+        parentElement.appendChild(roundElement);
+     })
+     return (parentElement);
   }
+
   get html() {
     return (`
       <div class="tournament-bracket">
