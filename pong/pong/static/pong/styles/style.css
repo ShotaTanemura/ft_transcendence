@@ -33,22 +33,47 @@
   height: 3rem;
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.12);
 }
-.bracket .round .matches > div.matchups .matchup .participants .participant.winner {
+.bracket
+  .round
+  .matches
+  > div.matchups
+  .matchup
+  .participants
+  .participant.winner {
   color: #60c645;
   border-color: #60c645;
 }
-.bracket .round .matches > div.matchups .matchup .participants .participant.loser {
+.bracket
+  .round
+  .matches
+  > div.matchups
+  .matchup
+  .participants
+  .participant.loser {
   color: #dc563f;
   border-color: #dc563f;
 }
-.bracket .round .matches > div.matchups .matchup .participants .participant:not(:last-child) {
+.bracket
+  .round
+  .matches
+  > div.matchups
+  .matchup
+  .participants
+  .participant:not(:last-child) {
   border-bottom: thin solid #f0f2f2;
 }
-.bracket .round .matches > div.matchups .matchup .participants .participant{
+.bracket .round .matches > div.matchups .matchup .participants .participant {
   display: flex;
   justify-content: space-between;
 }
-.bracket .round .matches > div.matchups .matchup .participants .participant span{
+.bracket
+  .round
+  .matches
+  > div.matchups
+  .matchup
+  .participants
+  .participant
+  span {
   margin: 0 1.25rem;
   line-height: 3;
   font-size: 1rem;
@@ -56,10 +81,13 @@
   text-align: right;
   width: 80;
 }
-.bracket .round .matches > div.connector.filled .line, .bracket .round .matches > div.connector.filled.bottom .merger:after, .bracket .round .matches > div.connector.filled.top .merger:before {
+.bracket .round .matches > div.connector.filled .line,
+.bracket .round .matches > div.connector.filled.bottom .merger:after,
+.bracket .round .matches > div.connector.filled.top .merger:before {
   border-color: #60c645;
 }
-.bracket .round .matches > div.connector .line, .bracket .round .matches > div.connector .merger {
+.bracket .round .matches > div.connector .line,
+.bracket .round .matches > div.connector .merger {
   box-sizing: border-box;
   width: 2rem;
   display: inline-block;
@@ -73,7 +101,8 @@
   position: relative;
   height: 8rem;
 }
-.bracket .round .matches > div.connector .merger:before, .bracket .round .matches > div.connector .merger:after {
+.bracket .round .matches > div.connector .merger:before,
+.bracket .round .matches > div.connector .merger:after {
   content: "";
   display: block;
   box-sizing: border-box;

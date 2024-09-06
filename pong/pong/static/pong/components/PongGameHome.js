@@ -13,11 +13,11 @@ export class PongGameHome extends Component {
     this.headerComponent = new Header(this.router, this.params, this.state);
     this.element.parentElement.prepend(this.headerComponent.element);
     this.headerComponent.afterPageLoaded();
-  }
+  };
 
   beforePageUnload = () => {
     this.element.parentElement.removeChild(this.headerComponent.element);
-  }
+  };
 
   onWebSocketOpen = () => {
     this.goNextPage("/pong-game-waiting");
@@ -94,7 +94,7 @@ export class PongGameHome extends Component {
     }
   };
   get html() {
-    return (`
+    return `
       <main class="text-center p-5">
 			  <h1>Welcome To Realtime Pong !</h1>
 			  <form class="entering-room-form">
@@ -107,7 +107,7 @@ export class PongGameHome extends Component {
 			  	<input id="enter-room-as-guest-submit" name="guest" class="btn btn-primary" type="submit" value="enter room as guest">
 			  </form>
       </main>
-		`);
+		`;
   }
 }
 

@@ -13,23 +13,23 @@ export class PongGameFinished extends Component {
     this.headerComponent = new Header(this.router, this.params, this.state);
     this.element.parentElement.prepend(this.headerComponent.element);
     this.headerComponent.afterPageLoaded();
-  }
+  };
 
   beforePageUnload = () => {
     this.element.parentElement.removeChild(this.headerComponent.element);
-  }
+  };
 
   onClick = () => {
     this.goNextPage("/pong-game-home");
   };
 
   get html() {
-    return (`
+    return `
       <main class="text-center p-5">
 			  <h1>congratulation ${this.getRouteContext("TournamentWinner")}!!</h1>
         <button class="go-back-to-game-home btn bg-success">Game Home</button>
       </main>
-		`);
+		`;
   }
 }
 

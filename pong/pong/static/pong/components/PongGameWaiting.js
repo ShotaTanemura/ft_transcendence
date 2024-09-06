@@ -10,7 +10,7 @@ export class PongGameWaiting extends Component {
 
   afterPageLoaded = () => {
     new Load(this.router, this.parameters, this.state).onload();
-  }
+  };
 
   onClick = () => {
     this.connection.close();
@@ -18,7 +18,7 @@ export class PongGameWaiting extends Component {
   };
 
   get html() {
-    return (`
+    return `
       <main class="text-center p-5">
         <h1>Don't reload this page.</h1>
         <div class="spinner-border" role="status">
@@ -27,6 +27,6 @@ export class PongGameWaiting extends Component {
         <h2>waiting other paricipants...</h2>
         <button class="go-back-to-game-home btn btn-danger">Quit hosting</button>
       </main>
-    `);
+    `;
   }
 }

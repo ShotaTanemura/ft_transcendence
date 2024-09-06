@@ -119,7 +119,13 @@ export class PongGame extends Component {
     this.context.fillStyle = "white";
     // draw ball
     this.context.beginPath(); // パスの初期化
-    this.context.arc(this.ball.x + this.ball.width / 2, this.ball.y + this.ball.height / 2, this.grid / 2, 0, 2 * Math.PI);
+    this.context.arc(
+      this.ball.x + this.ball.width / 2,
+      this.ball.y + this.ball.height / 2,
+      this.grid / 2,
+      0,
+      2 * Math.PI,
+    );
     this.context.closePath(); // パスを閉じる
     this.context.fill(); // 軌跡の範囲を塗りつぶす
     // draw walls
@@ -160,7 +166,7 @@ export class PongGame extends Component {
   };
 
   get html() {
-    return (`
+    return `
       <main class="game text-center bg-dark">
         <div class="w-100 d-flex justify-content-around container bg-secondary-subtle">
           <div class="player1">
@@ -176,6 +182,6 @@ export class PongGame extends Component {
         </div>
         <canvas width="1500" height="585" class="ponggame"></canvas>
       </main>
-    `);
+    `;
   }
 }
