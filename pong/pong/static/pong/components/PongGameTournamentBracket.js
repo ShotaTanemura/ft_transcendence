@@ -3,7 +3,7 @@ import { Component } from "../core/component.js";
 export class PongGameTournamentBracket extends Component {
   constructor(router, parameters, state, tournament = []) {
     super(router, parameters, state);
-    this.tournamentElement = this.findElement("main.tournament");
+    this.tournamentElement = this.findElement("div.tournament-bracket");
     this.tournamentChildElement = this.createTounamentObject(tournament);
     this.tournamentElement.appendChild(this.tournamentChildElement)
   }

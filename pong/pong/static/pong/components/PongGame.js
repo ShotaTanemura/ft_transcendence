@@ -116,15 +116,13 @@ export class PongGame extends Component {
   loop = () => {
     requestAnimationFrame(this.loop);
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.context.fillStyle = "white";
     // draw ball
-    this.context.fillRect(
-      this.ball.x,
-      this.ball.y,
-      this.ball.width,
-      this.ball.height,
-    );
+    this.context.beginPath(); // パスの初期化
+    this.context.arc(this.ball.x + this.ball.width / 2, this.ball.y + this.ball.height / 2, this.grid / 2, 0, 2 * Math.PI);
+    this.context.closePath(); // パスを閉じる
+    this.context.fill(); // 軌跡の範囲を塗りつぶす
     // draw walls
-    this.context.fillStyle = "black";
     this.context.fillRect(0, 0, this.canvas.width, this.grid);
     this.context.fillRect(
       0,
@@ -163,16 +161,17 @@ export class PongGame extends Component {
 
   get html() {
     return (`
-      <main class="game text-center p-5">
-        <div class="w-auto h-25 container bg-primary-subtle">
+      <main class="game text-center bg-dark">
+        <div class="w-100 d-flex justify-content-around container bg-secondary-subtle">
           <div class="player1">
-            <span id="player1-name" class="name">Player 1</span> 
+            <h1 id="player1-name" class="name">Player 1</h1> 
             &nbsp;
-            <span class="score">Score: <span id="player1-score">0</span></span>
+            <h1 class="score">Score: <span id="player1-score">0</span></h1>
           </div>
           <div class="player2">
-            <span id="player2-name" class="name">Player 2</span>
-            <span class="score">Score: <span id="player2-score">0</span></span>
+            <h1 id="player2-name" class="name">Player 2</h1>
+              &nbsp;
+            <h1 class="score">Score: <span id="player2-score">0</span></h1>
           </div>
         </div>
         <canvas width="1500" height="585" class="ponggame"></canvas>
