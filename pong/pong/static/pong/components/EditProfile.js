@@ -90,7 +90,7 @@ export class EditProfile extends Component {
         const errorMessage = errorData.message;
         alert(`Error: ${errorMessage}`);
         return;
-    }
+      }
 
       const fileField = event.target.icon;
       if (fileField.files.length <= 0) {
