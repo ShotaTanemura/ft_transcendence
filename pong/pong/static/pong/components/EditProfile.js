@@ -88,7 +88,8 @@ export class EditProfile extends Component {
       if (!user_response.ok) {
         const errorData = await user_response.json();
         const errorMessage = errorData.message;
-        alert(`Error: ${errorMessage}`);
+        console.log(errorMessage);
+        alert(`既に存在するメールアドレスまたはユーザー名です`);
         return;
       }
 
