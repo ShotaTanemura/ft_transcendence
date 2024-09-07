@@ -55,7 +55,7 @@ export class TypingGame extends Component {
 
       case "time-up":
         document.getElementById("winner").innerHTML = `winner = ${message.contents.player}`
-        this.goNextPage("/typing-game-finished");
+        // this.goNextPage("/typing-game-finished");
         break;
 
       case "countdown-timer":

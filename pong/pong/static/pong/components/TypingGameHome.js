@@ -53,7 +53,7 @@ export class TypingGameHome extends Component {
 
   get html() {
     return `
-				<h1>Welcome To Realtime Pong !</h1>
+				<h1>Welcome To Realtime Typing Game !</h1>
 				<form class="entering-room-form">
 					<label for="room-id">Room ID</label>
 					<input id="room-id" type="number" min="1000" max="9999" required><br>
