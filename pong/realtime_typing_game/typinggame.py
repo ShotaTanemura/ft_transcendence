@@ -102,7 +102,6 @@ class TypingGame(MessageSender):
     # roommanager.pyから参加者の準備ができたら呼ばれる
     async def start_game(self):
         print(f"{GREEN}start_game()が呼ばれました{RESET}")
-        self.timer.start_countdown(self.player_to_input)
         await self.send_message_to_group(
             "send_game_information",
             {
@@ -112,6 +111,7 @@ class TypingGame(MessageSender):
             },
         )
         await self.next_word()
+        self.timer.start_countdown(self.player_to_input)
 
     def load_words(self):
         words = []
