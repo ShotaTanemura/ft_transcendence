@@ -1,6 +1,7 @@
 // signin後の仮ページ
 
 import { Component } from "../core/component.js";
+import { Header } from "./Header.js";
 
 export class Home extends Component {
   constructor(router, params, state) {
@@ -12,6 +13,16 @@ export class Home extends Component {
     this.findElement("form.signout-form").onsubmit = this.handleSignout;
     this.findElement("button.go-profile-button").onclick = this.goProfile;
     this.verifyJwtToken();
+  }
+
+  afterPageLoaded() {
+    this.headerComponent = new Header(this.router, this.params, this.state);
+    this.element.parentElement.prepend(this.headerComponent.element);
+    this.headerComponent.afterPageLoaded();
+  }
+
+  beforePageUnload() {
+    this.element.parentElement.removeChild(this.headerComponent.element);
   }
 
   goRealtimePong = () => {

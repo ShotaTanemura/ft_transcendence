@@ -51,7 +51,11 @@ def user(request, uuid):
                 user.save()
             except IntegrityError as e:
                 return JsonResponse(
-                    {"message": "User or email already exists", "status": "registerConflict"}, status=409
+                    {
+                        "message": "User or email already exists",
+                        "status": "registerConflict",
+                    },
+                    status=409,
                 )
             except Exception as e:
                 return JsonResponse(
