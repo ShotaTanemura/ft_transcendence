@@ -55,6 +55,7 @@ export class TypingGame extends Component {
 
       case "time-up":
         document.getElementById("winner").innerHTML = `winner = ${message.contents.player}`
+        this.goNextPage("/typing-game-finished");
         break;
 
       case "countdown-timer":
@@ -62,6 +63,10 @@ export class TypingGame extends Component {
           message.contents.timer
         break;
   
+      case "room-state":
+        this.changePageByRoomStatus(message);
+        break;
+        
       default:
         console.warn(`Unknown message type: ${message.type}`);
         break;
