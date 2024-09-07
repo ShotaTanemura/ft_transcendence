@@ -1,4 +1,5 @@
 from django.http.response import JsonResponse
+from django.db.utils import IntegrityError
 from pong.models import User, UserIconUpdateForm
 from django.views.decorators.csrf import csrf_exempt
 from pong.middleware.auth import jwt_exempt
@@ -48,8 +49,11 @@ def user(request, uuid):
                 user.email = data["email"]
             try:
                 user.save()
+            except IntegrityError as e:
+                return JsonResponse(
+                    {"message": "User or email already exists", "status": "registerConflict"}, status=409
+                )
             except Exception as e:
-                logger.error(f"Error saving user: {e}")
                 return JsonResponse(
                     {"message": "Error saving user", "status": "saveFailed"}, status=500
                 )

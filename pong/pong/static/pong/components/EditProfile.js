@@ -85,6 +85,12 @@ export class EditProfile extends Component {
         }),
       });
       console.log(user_response);
+      if (!user_response.ok) {
+        const errorData = await user_response.json();
+        const errorMessage = errorData.message;
+        alert(`Error: ${errorMessage}`);
+        return;
+    }
 
       const fileField = event.target.icon;
       if (fileField.files.length <= 0) {
