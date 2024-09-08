@@ -28,16 +28,18 @@ export class ChatContainer extends Component {
   }
 
   displayRoom(select) {
-    const chatContainer = document.querySelector(".chat");
+    const chatContainer = document.querySelector(".direct-message-content");
     chatContainer.innerHTML = "";
 
-    const roomHeader = document.createElement("div");
-    roomHeader.classList.add("room-header");
+    // header
+    const roomHeader = document.querySelector(".direct-message-header");
     roomHeader.innerText = select.name;
 
+    // content
     const messages = document.createElement("div");
     messages.classList.add("messages");
 
+    //form
     const form = document.createElement("div");
     form.classList.add("form");
 
@@ -57,7 +59,6 @@ export class ChatContainer extends Component {
     messageForm.appendChild(sendButton);
     form.appendChild(messageForm);
 
-    chatContainer.appendChild(roomHeader);
     chatContainer.appendChild(messages);
     chatContainer.appendChild(form);
 
@@ -77,11 +78,21 @@ export class ChatContainer extends Component {
 
   get html() {
     if (!this.selectedRoom) {
-      return `<div class="chat">Select a room</div>`;
+      return `
+      <div class="direct-message-container">
+        <div class="direct-message-header">Select a room</div>
+        <div class="direct-message-content"></div>
+      </div>
+      
+      `;
     }
 
     return `
-      <div class="chat"></div>
+      <div class="direct-message-container">
+        <div class="direct-message-header"></div>
+        <div class="direct-message-content"></div>
+        <div class="direct-message-form"></div>
+      </div>
     `;
   }
 }

@@ -116,7 +116,7 @@ body {
   top: 0.625rem;
 }
 /* chat */
-.chat {
+.direct-message-container {
   display: flex;
   flex-direction: column;
   /* width: 60rem; */
