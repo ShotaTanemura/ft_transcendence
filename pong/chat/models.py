@@ -167,3 +167,50 @@ class Messages(models.Model):
         verbose_name = "message"
         verbose_name_plural = "messages"
         ordering = ["created_at"]
+
+
+class UserBlockManager(models.Manager):
+    def block_user(self, blocker, blocked):
+        user_block = self.model(blocker_id=blocker, blocked_id=blocked)
+        user_block.save(using=self._db)
+        return user_block
+
+    def unblock_user(self, blocker, blocked):
+        user_block = self.model.objects.get(blocker_id=blocker, blocked_id=blocked)
+        user_block.delete()
+        return user_block
+
+    def get_blocked_users(self, blocker):
+        blocked_users = self.model.objects.filter(blocker_id=blocker)
+        return blocked_users
+
+    def get_blockers(self, blocked):
+        blockers = self.model.objects.filter(blocked_id=blocked)
+        return blockers
+
+    def is_blocked(self, blocker, blocked):
+        try:
+            user_block = self.model.objects.get(blocker_id=blocker, blocked_id=blocked)
+            return True
+        except self.model.DoesNotExist:
+            return False
+
+
+class UserBlock(models.Model):
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    blocker_id = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="blocker"
+    )
+    blocked_id = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="blocked"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    objects = UserBlockManager()
+
+    class Meta:
+        db_table = "user_blocks"
+        verbose_name = "user_block"
+        verbose_name_plural = "user_blocks"
+        ordering = ["created_at"]

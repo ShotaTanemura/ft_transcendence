@@ -4,7 +4,7 @@ import json
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 from django.contrib.auth.models import AnonymousUser
-from .models import Rooms, Messages, UserRooms
+from .models import Rooms, Messages, UserBlock, User
 from logging import getLogger
 
 logger = getLogger(__name__)
@@ -98,21 +98,38 @@ class ChatConsumer(WebsocketConsumer):
 
     def receive(self, text_data):
         text_data_json = json.loads(text_data)
-        message = text_data_json["message"]
-        room = Rooms.objects.get(uuid=self.room_name)
-        user = self.user
+        job_type = text_data_json["job_type"]
+        logger.info(f"Received job type: {job_type}")
+        if job_type == "send_message":
+            message = text_data_json["message"]
+            room = Rooms.objects.get(uuid=self.room_name)
+            user = self.user
+            if room.room_type == "dm":
+                other = Rooms.objects.get_users_in_room(room.uuid).exclude(
+                    uuid=user.uuid
+                )[0]
+                is_blocked = UserBlock.objects.is_blocked(user, other)
+                if is_blocked:
+                    logger.info(f"User is blocked")
+                    return
 
-        saved_message = Messages.manager.create_message(user, room, message)
+            saved_message = Messages.manager.create_message(user, room, message)
 
-        async_to_sync(self.channel_layer.group_send)(
-            self.room_group_name,
-            {
-                "type": "chat_message",
-                "user": saved_message.user_id.name,
-                "message": saved_message.message,
-                "created_at": saved_message.created_at.isoformat(),
-            },
-        )
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    "type": "chat_message",
+                    "user": saved_message.user_id.name,
+                    "message": saved_message.message,
+                    "created_at": saved_message.created_at.isoformat(),
+                },
+            )
+        elif job_type == "block_user":
+            block_user_uuid = text_data_json["user_uuid"]
+            blocked = User.objects.get(uuid=block_user_uuid)
+            logger.info(f"Block user: {block_user_uuid}")
+            block_user = UserBlock.objects.block_user(self.user, blocked)
+            logger.info(f"Blocked user: {block_user}")
 
     def chat_message(self, event):
         self.send(

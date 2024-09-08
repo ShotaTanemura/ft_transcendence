@@ -6,7 +6,7 @@ export class DirectoryContainer extends Component {
     this.onRoomJoined = onRoomJoined;
     this.socket = socket;
     this.initializeEventListeners();
-
+    this.chatSocket = null;
     if (this.socket) {
       this.setupWebSocketListeners();
     }
@@ -21,6 +21,9 @@ export class DirectoryContainer extends Component {
   setWebSocket(socket) {
     this.socket = socket;
     this.setupWebSocketListeners();
+  }
+  setupChatSocket(socket) {
+    this.chatSocket = socket;
   }
 
   refreshRoomMembers(users) {
@@ -74,7 +77,7 @@ export class DirectoryContainer extends Component {
   }
 
   blockUser(user, optionsContainer) {
-    if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+    if (this.chatSocket && this.chatSocket.readyState === WebSocket.OPEN) {
       const blockRequest = {
         job_type: "block_user",
         user_uuid: user.uuid,
@@ -82,7 +85,7 @@ export class DirectoryContainer extends Component {
       };
 
       console.log("Block Request:", blockRequest);
-      this.socket.send(JSON.stringify(blockRequest));
+      this.chatSocket.send(JSON.stringify(blockRequest));
 
       alert(`${user.name} をブロックしました。`);
 

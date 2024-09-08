@@ -76,6 +76,7 @@ export class Chat extends Component {
     socket.addEventListener("open", () => {
       console.log("WebSocket connected to room URL:", wsUrl);
       this.state.socketRoomSpecific = socket;
+      this.directoryContainer.setupChatSocket(socket);
     });
 
     socket.addEventListener("message", (event) => {
@@ -115,6 +116,7 @@ export class Chat extends Component {
       ) {
         this.state.socketRoomSpecific.send(
           JSON.stringify({
+            job_type: "send_message",
             room_uuid: roomUuid,
             message: message,
           }),
