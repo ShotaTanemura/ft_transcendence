@@ -34,17 +34,12 @@ class Timer(MessageSender):
         self.time_limit = 90
         self.timer = self.time_limit
         self.running = True
-        self.decrease_timer = False
 
     def start_countdown(self, player_to_input):
         def countdown():
             while self.running and self.timer > 0:
                 time.sleep(0.1)
-                if self.decrease_timer:  # 打ち間違えた時
-                    self.decrease_timer = False
-                    self.timer -= 2.0
-                else:  # 通常時
-                    self.timer -= 0.1
+                self.timer -= 0.1
                 # print(f"Timer: {self.timer:.1f}秒")
                 async_to_sync(self.send_message_to_group)(
                     "send_game_information",
@@ -147,7 +142,6 @@ class TypingGame(MessageSender):
         self.timer.reset(self.player_to_input)
         print(f"{GREEN}Selected word: {self.selected_word}{RESET}")
 
-        # TODO: 入力するユーザーの指定
         await self.send_message_to_group(
             "send_game_information",
             {
@@ -161,7 +155,6 @@ class TypingGame(MessageSender):
         )
 
     async def handle_typing_input(self, input_key):
-        # 入力された文字が正解の場合
         if (
             self.input_length < len(self.selected_word)
             and input_key == self.selected_word[self.input_length]
@@ -186,7 +179,6 @@ class TypingGame(MessageSender):
                     },
                 )
         else:
-            decrease_timer = True
             await self.send_message_to_group(
                 "send_game_information",
                 {
@@ -203,7 +195,6 @@ class TypingGame(MessageSender):
     async def recieve_player1_input(self, message_json):
         if self.player_to_input == self.PLAYER1:
             input_key = message_json["contents"]
-            print(f"{GREEN}Player1 input: {input_key}{RESET}")
             await self.handle_typing_input(input_key)
 
     async def recieve_player2_input(self, message_json):

@@ -4,7 +4,6 @@ export class TypingGame extends Component {
   constructor(router, parameters, state) {
     super(router, parameters, state);
 
-    // websocketでの接続テスト
     this.connection = this.getRouteContext("WebSocket");
     if (!this.connection) {
       console.error(
@@ -41,7 +40,6 @@ export class TypingGame extends Component {
         this.score++;
         document.getElementById("player_to_input").innerHTML = message.contents.player;
         document.getElementById("score").innerHTML = this.score;
-        // TODO: 入力プレイヤーを変更する
         break;
       case "correct-key":
         document.getElementById("inputCorrect").innerHTML =
