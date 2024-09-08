@@ -82,7 +82,7 @@ class RoomConsumer(WebsocketConsumer):
 
     def send_initial_messages(self):
         try:
-            rooms = Rooms.objects.filter(userrooms__user_id_id=self.user.uuid)
+            rooms = Rooms.objects.get_rooms_by_user_status(self.user)
             response_rooms = [serialize_rooms(room) for room in rooms]
             self.send(text_data=json.dumps({"rooms": response_rooms}))
         except Rooms.DoesNotExist:
