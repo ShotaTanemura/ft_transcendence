@@ -38,8 +38,9 @@ export class TypingGame extends Component {
         document.getElementById("inputCorrect").innerHTML = "";
         this.input_length = 0;
         document.getElementById("word").innerHTML = message.contents.word;
-        score++;
-        document.getElementById("score").innerHTML = score;
+        this.score++;
+        document.getElementById("player_to_input").innerHTML = message.contents.player;
+        document.getElementById("score").innerHTML = this.score;
         // TODO: 入力プレイヤーを変更する
         break;
       case "correct-key":
@@ -49,7 +50,6 @@ export class TypingGame extends Component {
         break;
 
       case "incorrect-key":
-        // TODO: 1番始めの単語が取得できないバグがあるため、一時的に対処
         document.getElementById("word").innerHTML = message.contents.word;
         break;
 
@@ -83,13 +83,16 @@ export class TypingGame extends Component {
       <div> input correct = 
         <span id="inputCorrect"></span><br>
       </div>
-      <div> 入力した単語数 = 
+      <div> 入力する人 = 
+        <span id="player_to_input">player1</span><br>
+      </div>
+      <div> 正解した単語数 = 
        <span id="score">0</span><br>
       </div>
-      <canvas id="timerCanvas" width="200" height="200"></canvas>
-      </div>
+      <div>
       <span id="winner"></span>
       </div>
+      <canvas id="timerCanvas" width="200" height="200"></canvas>
       <canvas class="typinggame"></canvas>
     </main>
     `;

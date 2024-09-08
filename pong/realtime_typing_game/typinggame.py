@@ -17,7 +17,7 @@ class MessageSender:
         self.channel_layer = get_channel_layer()
 
     async def send_message_to_group(self, method_type, content):
-        print(f"{GREEN}send_message_to_group: {method_type}, {content}{RESET}")
+        # print(f"{GREEN}send_message_to_group: {method_type}, {content}{RESET}")
         await self.channel_layer.group_send(
             self.room_name,
             {
@@ -30,7 +30,8 @@ class MessageSender:
 class Timer(MessageSender):
     def __init__(self, room_name):
         super().__init__(room_name)
-        self.time_limit = 10
+        # TODO: test用の制限時間。本番は10秒にする
+        self.time_limit = 90
         self.timer = self.time_limit
         self.running = True
         self.decrease_timer = False
@@ -44,14 +45,14 @@ class Timer(MessageSender):
                     self.timer -= 2.0
                 else:  # 通常時
                     self.timer -= 0.1
-                print(f"Timer: {self.timer:.1f}秒")
+                # print(f"Timer: {self.timer:.1f}秒")
                 async_to_sync(self.send_message_to_group)(
                     "send_game_information",
                     {
                         "sender": "TypingGame",
                         "type": "countdown-timer",
                         "contents": {
-                            "timer": self.timer,
+                            "timer": round(self.timer, 1),
                         },
                     },
                 )
@@ -97,7 +98,7 @@ class TypingGame(MessageSender):
         self.input_length = 0
         self.timer = Timer(room_name)
         self.words = self.load_words()
-        self.player_to_input = self.PLAYER1
+        self.player_to_input = self.PLAYER2
 
     # roommanager.pyから参加者の準備ができたら呼ばれる
     async def start_game(self):
@@ -185,6 +186,7 @@ class TypingGame(MessageSender):
                     },
                 )
         else:
+            decrease_timer = True
             await self.send_message_to_group(
                 "send_game_information",
                 {
@@ -199,14 +201,12 @@ class TypingGame(MessageSender):
             )
 
     async def recieve_player1_input(self, message_json):
-        self.player_to_input = self.PLAYER1
         if self.player_to_input == self.PLAYER1:
             input_key = message_json["contents"]
             print(f"{GREEN}Player1 input: {input_key}{RESET}")
             await self.handle_typing_input(input_key)
 
     async def recieve_player2_input(self, message_json):
-        self.player_to_input = self.PLAYER2
         if self.player_to_input == self.PLAYER2:
             input_key = message_json["contents"]
             await self.handle_typing_input(input_key)
