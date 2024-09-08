@@ -48,12 +48,10 @@ export class TypingGame extends Component {
         break;
 
       case "incorrect-key":
-        document.getElementById("word").innerHTML = message.contents.word;
         break;
 
       case "time-up":
         document.getElementById("winner").innerHTML = `winner = ${message.contents.player}`
-        // this.goNextPage("/typing-game-finished");
         break;
 
       case "countdown-timer":

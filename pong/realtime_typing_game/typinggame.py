@@ -37,34 +37,35 @@ class Timer(MessageSender):
 
     def start_countdown(self, player_to_input):
         def countdown():
-            while self.running and self.timer > 0:
-                time.sleep(0.1)
-                self.timer -= 0.1
-                # print(f"Timer: {self.timer:.1f}秒")
-                async_to_sync(self.send_message_to_group)(
-                    "send_game_information",
-                    {
-                        "sender": "TypingGame",
-                        "type": "countdown-timer",
-                        "contents": {
-                            "timer": round(self.timer, 1),
+            if self.running:
+                while self.timer > 0:
+                    time.sleep(0.1)
+                    self.timer -= 0.1
+                    # print(f"Timer: {self.timer:.1f}秒")
+                    async_to_sync(self.send_message_to_group)(
+                        "send_game_information",
+                        {
+                            "sender": "TypingGame",
+                            "type": "countdown-timer",
+                            "contents": {
+                                "timer": round(self.timer, 1),
+                            },
                         },
-                    },
-                )
-            if self.timer <= 0:  # 0秒以下になった場合の処理
-                print("Time's up!")
-                self.running = False
-                async_to_sync(self.send_message_to_group)(
-                    "send_game_information",
-                    {
-                        "sender": "TypingGame",
-                        "type": "time-up",
-                        "contents": {
-                            # 勝敗を判定。(負けたプレイヤーを送信)
-                            "player": player_to_input,
+                    )
+                if self.timer <= 0:  # 0秒以下になった場合の処理
+                    print("Time's up!")
+                    self.running = False
+                    async_to_sync(self.send_message_to_group)(
+                        "send_game_information",
+                        {
+                            "sender": "TypingGame",
+                            "type": "time-up",
+                            "contents": {
+                                # 勝敗を判定。(負けたプレイヤーを送信)
+                                "player": player_to_input,
+                            },
                         },
-                    },
-                )
+                    )
 
         threading.Thread(target=countdown, daemon=True).start()
 
@@ -73,16 +74,6 @@ class Timer(MessageSender):
         self.running = True
         print("Timerをリセットしました。")
         self.start_countdown(player_to_input)
-
-    def decrease_time_limit(self, amount):
-        self.time_limit = max(3, self.time_limit - amount)
-        self.timer = self.time_limit  # 現在のタイマーを新しい制限時間にリセット
-        print(f"制限時間が{self.time_limit}秒に減少しました。")
-
-    def trigger_timer_decrease(self):
-        self.decrease_timer = True
-
-
 class TypingGame(MessageSender):
     PLAYER1 = "player1"
     PLAYER2 = "player2"
@@ -135,7 +126,6 @@ class TypingGame(MessageSender):
             self.player_to_input = self.PLAYER1
 
     async def next_word(self):
-        self.selected_word = ""
         self.input_length = 0
         self.selected_word = random.choice(self.words)
         self.change_player_to_input()
