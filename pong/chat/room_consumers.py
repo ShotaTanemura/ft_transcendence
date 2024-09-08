@@ -2,7 +2,7 @@ import json
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 from django.contrib.auth.models import AnonymousUser
-from .models import Rooms, Messages, User, UserRooms
+from .models import Rooms, Messages, User, UserRooms, UserBlock
 from logging import getLogger
 
 logger = getLogger(__name__)
@@ -79,6 +79,14 @@ class RoomConsumer(WebsocketConsumer):
                             {"error": "招待するユーザーが見つかりません"}
                         )
                     )
+                is_blocked = UserBlock.objects.is_blocked(self.user, invited_user)
+                if is_blocked:
+                    self.send(
+                        text_data=json.dumps(
+                            {"error": "招待するユーザーがブロックされています"}
+                        )
+                    )
+                    return
                 UserRooms.objects.create_user_room(invited_user, room, "invited")
             logger.info(f"Room created: {room}")
             self.send_initial_messages()
