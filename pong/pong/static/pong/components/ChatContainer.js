@@ -39,7 +39,7 @@ export class ChatContainer extends Component {
     const messages = document.createElement("div");
     messages.classList.add("messages");
 
-    //form
+    // form
     const form = document.createElement("div");
     form.classList.add("form");
 
@@ -69,7 +69,6 @@ export class ChatContainer extends Component {
     });
   }
 
-  // WebSocketメッセージ送信
   emitMessage(roomUuid, message) {
     if (this.onSendMessage) {
       this.onSendMessage(roomUuid, message);
@@ -77,21 +76,18 @@ export class ChatContainer extends Component {
   }
 
   get html() {
-    if (!this.selectedRoom) {
-      return `
-      <div class="direct-message-container">
-        <div class="direct-message-header">Select a room</div>
-        <div class="direct-message-content"></div>
-      </div>
-      
-      `;
-    }
-
     return `
       <div class="direct-message-container">
-        <div class="direct-message-header"></div>
-        <div class="direct-message-content"></div>
-        <div class="direct-message-form"></div>
+        <div class="direct-message-header">${this.selectedRoom ? this.selectedRoom.name : "Select a room"}</div>
+        <div class="direct-message-content">
+          <div class="messages"></div>
+          <div class="form">
+            <form class="message-form">
+              <input type="text" name="message" placeholder="Enter your message" />
+              <button type="submit">Send</button>
+            </form>
+          </div>
+        </div>
       </div>
     `;
   }
