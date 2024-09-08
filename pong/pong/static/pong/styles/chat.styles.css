@@ -23,7 +23,7 @@ body {
 }
 
 /* myrooms */
-.myrooms-container {
+/* .myrooms-container {
   width: 30rem;
   border: 0.0625rem solid #e0e0e0;
   overflow: hidden;
@@ -43,9 +43,9 @@ body {
   border: 0.0625rem solid #ddd;
   border-radius: 1rem;
   font-size: 0.875rem;
-}
+} */
 
-.myrooms {
+/* .myrooms {
   overflow-y: auto;
   flex-grow: 1;
 }
@@ -61,7 +61,7 @@ body {
   padding: 0.625rem;
   border-bottom: 0.0625rem solid #e0e0e0;
   position: relative;
-}
+} */
 
 .myroom:last-child {
   border-bottom: none;
@@ -392,7 +392,7 @@ body {
   display: flex;
   flex-direction: column;
   height: 90vh;
-  max-width: 600px;
+  width: 70vw;
   margin: auto;
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -478,4 +478,185 @@ body {
 .direct-message-messages::-webkit-scrollbar-thumb {
   background-color: #4A90E2;
   border-radius: 8px;
+}
+
+
+/* MyRooms */
+.myrooms-container {
+  padding: 20px;
+  background-color: #f7f9fc;
+  border-radius: 8px;
+  max-width: 600px;
+  width: 20vw;
+  margin: 0 auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.create-chatroom {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 15px;
+}
+
+.create-chatroom-button {
+  padding: 10px 20px;
+  background-color: #4a90e2;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.create-chatroom-button:hover {
+  background-color: #357abd;
+}
+
+.search-bar {
+  margin-bottom: 15px;
+}
+
+.search-bar input[type="text"] {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #e2e8f0;
+  border-radius: 6px;
+  outline: none;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.search-bar input[type="text"]:focus {
+  border-color: #4a90e2;
+}
+
+.myrooms {
+  padding: 15px;
+  background-color: #fff;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 20px;
+  max-height: 200px; 
+  overflow-y: auto;  
+}
+
+.invited-rooms-container {
+  margin-top: 20px;
+}
+
+.invited-rooms-container h3 {
+  font-size: 1.2rem;
+  color: #4a90e2;
+  margin-bottom: 10px;
+}
+
+.invited-rooms {
+  padding: 15px;
+  background-color: #fff;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  max-height: 150px; 
+  overflow-y: auto;  
+}
+
+.modal {
+  display: none;
+  position: fixed; 
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); 
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 100px auto;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.close-modal {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  color: #aaa;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close-modal:hover,
+.close-modal:focus {
+  color: #4a90e2;
+}
+
+#createChatroomForm {
+  display: flex;
+  flex-direction: column;
+}
+
+#createChatroomForm label {
+  margin-bottom: 8px;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+#chatroomName,
+#roomType,
+#email {
+  padding: 12px;
+  border: 2px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 1rem;
+  margin-bottom: 15px;
+  transition: border-color 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#chatroomName:focus,
+#roomType:focus,
+#email:focus {
+  border-color: #4a90e2;
+}
+
+#createChatroomForm button[type="submit"] {
+  padding: 12px;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+#createChatroomForm button[type="submit"]:hover {
+  background-color: #357abd;
+}
+
+.myrooms::-webkit-scrollbar,
+.invited-rooms::-webkit-scrollbar {
+  width: 8px;
+}
+
+.myrooms::-webkit-scrollbar-thumb,
+.invited-rooms::-webkit-scrollbar-thumb {
+  background-color: #4a90e2;
+  border-radius: 8px;
+}
+
+@media (max-width: 600px) {
+  .modal-content {
+    width: 90%;
+  }
 }
