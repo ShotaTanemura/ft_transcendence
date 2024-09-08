@@ -42,6 +42,15 @@ class ChatConsumer(WebsocketConsumer):
 
             messages = Messages.manager.get_messages(room_id)
             logger.info(f"Retrieved messages: {len(messages)}")
+            if not messages:
+                logger.info(f"No messages found")
+                self.send(
+                    text_data=json.dumps(
+                        {
+                            "users": "hello",
+                        }
+                    )
+                )               
 
             for message in messages:
                 logger.info(f"Sending message: {message.message}") 
@@ -50,6 +59,7 @@ class ChatConsumer(WebsocketConsumer):
                         {
                             "user": message.user_id.name,
                             "message": message.message,
+                            "users": "hello",
                             "created_at": message.created_at.isoformat(),
                         }
                     )

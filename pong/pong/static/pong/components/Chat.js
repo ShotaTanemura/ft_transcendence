@@ -82,7 +82,10 @@ export class Chat extends Component {
       const message = JSON.parse(event.data);
       console.log("Received message (room-specific):", message);
 
-      this.chatContainer.appendMessage(message);
+      if (message.user && message.message) {
+        this.chatContainer.appendMessage(message);
+      }
+      this.directoryContainer.refreshRoomMembers(message.users);
     });
 
     socket.addEventListener("close", () => {

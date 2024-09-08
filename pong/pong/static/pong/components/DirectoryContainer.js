@@ -23,6 +23,10 @@ export class DirectoryContainer extends Component {
     this.setupWebSocketListeners();
   }
 
+  refreshRoomMembers(users){
+
+  }
+
   setupWebSocketListeners() {
     this.socket.addEventListener("message", (event) => {
       const message = JSON.parse(event.data);
