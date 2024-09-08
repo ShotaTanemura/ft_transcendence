@@ -82,9 +82,7 @@ export class Chat extends Component {
       const message = JSON.parse(event.data);
       console.log("Received message (room-specific):", message);
 
-      if (this.chatContainer && message.room_uuid === this.state.selectedRoom) {
-        this.chatContainer.appendMessage(message);
-      }
+      this.chatContainer.appendMessage(message);
     });
 
     socket.addEventListener("close", () => {

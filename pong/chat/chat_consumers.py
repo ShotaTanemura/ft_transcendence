@@ -44,6 +44,7 @@ class ChatConsumer(WebsocketConsumer):
             logger.info(f"Retrieved messages: {len(messages)}")
 
             for message in messages:
+                logger.info(f"Sending message: {message.message}")  # ログを追加
                 self.send(
                     text_data=json.dumps(
                         {
@@ -56,6 +57,28 @@ class ChatConsumer(WebsocketConsumer):
         except Rooms.DoesNotExist:
             logger.info("Room does not exist")
             self.close()
+    # def send_initial_messages(self):
+    #     try:
+    #         room = Rooms.objects.get(uuid=self.room_name)
+    #         room_id = room.uuid
+    #         logger.info(f"Room ID: {room_id}")
+
+    #         messages = Messages.manager.get_messages(room_id)
+    #         logger.info(f"Retrieved messages: {len(messages)}")
+
+    #         for message in messages:
+    #             self.send(
+    #                 text_data=json.dumps(
+    #                     {
+    #                         "user": message.user_id.name,
+    #                         "message": message.message,
+    #                         "created_at": message.created_at.isoformat(),
+    #                     }
+    #                 )
+    #             )
+    #     except Rooms.DoesNotExist:
+    #         logger.info("Room does not exist")
+    #         self.close()
 
     def disconnect(self, close_code):
         async_to_sync(self.channel_layer.group_discard)(
