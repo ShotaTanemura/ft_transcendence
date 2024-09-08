@@ -70,7 +70,7 @@ let router = new Router(
       component: PongGameFinished,
       state: {},
     },
-    { 
+    {
       path: "/pong-game-match-result",
       component: PongGameResult,
       state: {},

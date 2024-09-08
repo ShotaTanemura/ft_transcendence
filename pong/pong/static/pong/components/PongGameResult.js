@@ -5,8 +5,9 @@ import { Header } from "./Header.js";
 export class PongGameResult extends Component {
   constructor(router, parameters, state) {
     super(router, parameters, state);
+    this.findElement("button.go-back-to-pong-game-home-button").onclick =
+      this.backToGameHome;
   }
-
 
   afterPageLoaded = async () => {
     new Load(this.router, this.parameters, this.state).onload();
@@ -18,6 +19,10 @@ export class PongGameResult extends Component {
 
   beforePageUnload = () => {
     this.element.parentElement.removeChild(this.headerComponent.element);
+  };
+
+  backToGameHome = () => {
+    this.goNextPage("/pong-game-home");
   };
 
   //TODO this fucntion is duplicate
@@ -42,30 +47,32 @@ export class PongGameResult extends Component {
   getMatchResultsData = async () => {
     const uuid = await this.getUuid();
     if (!uuid) {
-        return 
+      return;
     }
 
     try {
-        const response = await fetch(`/ponggame/api/v1/match-result/${uuid}`, {
-            method: "GET",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-        });
-        const matchResultsData = await response.json();
-        if (!response.ok) {
-            throw new Error(data.message || "Failed to fetch user data");
-        }
-        return matchResultsData;
+      const response = await fetch(`/ponggame/api/v1/match-result/${uuid}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
+      const matchResultsData = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to fetch user data");
+      }
+      return matchResultsData;
     } catch (error) {
-        console.error("Error fetching user data:", error);
+      console.error("Error fetching user data:", error);
       return null;
     }
-  }
+  };
 
   craeteTableFromMatchResult = (matchResultsData) => {
-    const tableElement = Object.assign(document.createElement("table"), {"className": "table"});
+    const tableElement = Object.assign(document.createElement("table"), {
+      className: "table",
+    });
     const theadElement = document.createElement("thead");
-    const tbodyElement = document.createElement("tbody")
+    const tbodyElement = document.createElement("tbody");
     theadElement.innerHTML = `<tr>
         <th scope="col">#</th>
         <th scope="col">Player</th>
@@ -75,25 +82,29 @@ export class PongGameResult extends Component {
         </tr>`;
 
     tableElement.appendChild(theadElement);
-    Object.entries(matchResultsData).forEach(([key,result])=>{
-        const trElement = document.createElement("tr");
-        trElement.innerHTML = `<tr>
+    Object.entries(matchResultsData).forEach(([key, result]) => {
+      const trElement = document.createElement("tr");
+      trElement.innerHTML = `<tr>
             <th scope="row">${Number(key) + 1}</th>
             <td>${result.player1}</td>
             <td>${result.player1_score}</td>
             <td>${result.player2_score}</td>
             <td>${result.player2}</td>
             </tr>`;
-        tbodyElement.appendChild(trElement);
-        console.log(trElement.innerHTML);
+      tbodyElement.appendChild(trElement);
     });
     tableElement.appendChild(tbodyElement);
-    this.element.appendChild(tableElement);
+    this.findElement("div.match-result-table").appendChild(tableElement);
   };
 
   get html() {
     return `
-      <main class="">
+      <main class="p-5 text-center">
+        <h1 class="match-result-title">Pong Game Last 10 Match Results</h1>
+        <br>
+        <div class="match-result-table">
+        </div>
+        <button class="go-back-to-pong-game-home-button btn btn-primary">Back</button>
       </main>
 		`;
   }
