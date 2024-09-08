@@ -38,7 +38,7 @@ class RoomsManager(models.Manager):
         return room
 
     def get_rooms(self):
-        rooms = self.model.objects.all()
+        rooms = self.model.objects.all().filter(user_room_status="active")
         return rooms
 
 
@@ -70,6 +70,17 @@ class Rooms(models.Model):
         ordering = ["-created_at"]
 
 
+class UserRoomManaager(models.Manager):
+    def create_user_room(self, user, room, status="active"):
+        user_room = self.model(user_id=user, room_id=room, user_room_status=status)
+        user_room.save(using=self._db)
+        return user_room
+
+    def get_user_rooms(self, user):
+        user_rooms = self.model.objects.filter(user_id=user)
+        return user_rooms
+
+
 class UserRooms(models.Model):
     class UserRoomStatus(models.TextChoices):
         ACTIVE = "active", "Active"
@@ -85,6 +96,8 @@ class UserRooms(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    objects = UserRoomManaager()
 
     class Meta:
         db_table = "user_rooms"

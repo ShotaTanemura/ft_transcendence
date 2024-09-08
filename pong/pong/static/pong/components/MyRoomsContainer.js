@@ -49,43 +49,63 @@ export class MyRoomsContainer extends Component {
   }
 
   handleDOMContentLoaded() {
-    const createChatroomButton = document.querySelector(".create-chatroom-button");
+    const createChatroomButton = document.querySelector(
+      ".create-chatroom-button",
+    );
     const modal = document.getElementById("createChatroomModal");
     const closeModal = document.querySelector(".close-modal");
     const createChatroomForm = document.getElementById("createChatroomForm");
+    const roomTypeSelect = document.getElementById("roomType");
+    const emailField = document.getElementById("emailField");
+    const emailInput = document.getElementById("email");
+
+    roomTypeSelect.addEventListener("change", (event) => {
+      if (event.target.value === "dm") {
+        emailField.style.display = "block";
+        emailInput.setAttribute("required", "true");
+      } else {
+        emailField.style.display = "none";
+        emailInput.removeAttribute("required");
+      }
+    });
 
     createChatroomButton.addEventListener("click", () => {
-        modal.style.display = "block";
+      modal.style.display = "block";
     });
 
     closeModal.addEventListener("click", () => {
-        modal.style.display = "none";
+      modal.style.display = "none";
     });
 
     createChatroomForm.addEventListener("submit", (event) => {
-        event.preventDefault();
-        const chatroomName = document.getElementById("chatroomName").value;
-        const roomType = document.getElementById("roomType").value;
+      event.preventDefault();
+      const chatroomName = document.getElementById("chatroomName").value;
+      const roomType = document.getElementById("roomType").value;
+      const email = document.getElementById("email").value;
 
-        if (this.socket.readyState === WebSocket.OPEN) {
-            this.socket.send(
-                JSON.stringify({
-                    type: "create_chatroom",
-                    name: chatroomName,
-                    room_type: roomType,
-                })
-            );
+      if (this.socket.readyState === WebSocket.OPEN) {
+        const chatroomData = {
+          type: "create_chatroom",
+          name: chatroomName,
+          room_type: roomType,
+        };
+
+        if (roomType === "dm") {
+          chatroomData.email = email;
         }
 
-        modal.style.display = "none";
+        this.socket.send(JSON.stringify(chatroomData));
+      }
+
+      modal.style.display = "none";
     });
 
     window.addEventListener("click", (event) => {
-        if (event.target === modal) {
-            modal.style.display = "none";
-        }
+      if (event.target === modal) {
+        modal.style.display = "none";
+      }
     });
-}
+  }
 
   displayRooms(rooms, query = "") {
     const myRoomsContainer = document.querySelector(".myrooms");
@@ -110,12 +130,14 @@ export class MyRoomsContainer extends Component {
       myRoomsContainer.appendChild(roomElement);
     });
   }
+
   handleRoomClick(room) {
     this.state.selectedRoom = room;
     if (this.onRoomSelected) {
       this.onRoomSelected(room);
     }
   }
+
   get html() {
     return `
         <div class="myrooms-container">
@@ -141,10 +163,15 @@ export class MyRoomsContainer extends Component {
                         <option value="dm">Direct Message</option>
                     </select>
 
+                    <div id="emailField" style="display:none;">
+                        <label for="email">Invite Email</label>
+                        <input type="email" id="email" name="email">
+                    </div>
+
                     <button type="submit">Create</button>
                 </form>
             </div>
         </div>
     `;
-}
+  }
 }

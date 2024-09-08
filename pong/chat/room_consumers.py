@@ -3,7 +3,7 @@ import json
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 from django.contrib.auth.models import AnonymousUser
-from .models import Rooms, Messages
+from .models import Rooms, Messages, User, UserRooms
 from django.contrib.auth.models import AnonymousUser
 from logging import getLogger
 
@@ -38,23 +38,35 @@ class RoomConsumer(WebsocketConsumer):
 
     def receive(self, text_data):
         text_data_json = json.loads(text_data)
-        message_type = text_data_json.get("type")
-
-        if message_type == "create_chatroom":
+        message_type = text_data_json.get("room_type")
+        if message_type == "dm":
+            chatroom_name = text_data_json.get("name")
+            room_type = text_data_json.get("room_type", "dm")
+            invited_user_email = text_data_json.get("email", None)
+            if invited_user_email is None:
+                self.send(text_data=json.dumps({"error": "No email provided"}))
+            self.create_chatroom(chatroom_name, room_type, invited_user_email)
+        elif message_type == "group":
             chatroom_name = text_data_json.get("name")
             room_type = text_data_json.get("room_type", "group")
             self.create_chatroom(chatroom_name, room_type)
-        else:
-            message = text_data_json["message"]
-            async_to_sync(self.channel_layer.group_send)(
-                self.room_group_name, {"type": "room_message", "message": message}
-            )
 
-    def create_chatroom(self, chatroom_name, room_type):
+    def create_chatroom(self, chatroom_name, room_type, invited_user_email=None):
         try:
             room = Rooms.objects.create_room(chatroom_name, self.user, room_type)
+            logger.info(f"Room created: {room}")
             if not room:
                 self.send(text_data=json.dumps({"error": "Failed to create chatroom"}))
+            logger.info(f"inivted_user_email: {invited_user_email}")
+            if invited_user_email is not None:
+                invited_user = User.objects.get_user_email(invited_user_email)
+                if not invited_user:
+                    self.send(
+                        text_data=json.dumps(
+                            {"error": "招待するユーザーが見つかりません"}
+                        )
+                    )
+                UserRooms.objects.create_user_room(invited_user, room, "invited")
             rooms = Rooms.objects.filter(userrooms__user_id_id=self.user.uuid)
             response_rooms = [serialize_rooms(room) for room in rooms]
             async_to_sync(self.channel_layer.group_send)(
