@@ -17,6 +17,7 @@ export class DirectoryContainer extends Component {
       this.handleDOMContentLoaded();
     });
   }
+
   setWebSocket(socket) {
     this.socket = socket;
     this.setupWebSocketListeners();
@@ -27,7 +28,6 @@ export class DirectoryContainer extends Component {
       const message = JSON.parse(event.data);
       console.log("WebSocket Message:", message);
 
-      console.log("Non-participation:", message.non_participation);
       if (message.non_participation) {
         this.displayRooms(message.non_participation);
       }
@@ -64,28 +64,21 @@ export class DirectoryContainer extends Component {
     modalRoomName.textContent = room.name;
     modal.style.display = "block";
 
-    confirmJoinButton.onclick = async () => {
-      try {
-        const response = await fetch("/chat/api/v1/rooms/unjoined", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ room_id: room.uuid }),
-        });
+    confirmJoinButton.onclick = () => {
+      if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+        const joinRequest = {
+          job_type: "join_chatroom",
+          room_uuid: room.uuid,
+          status: "active",
+        };
+        console.log("Join Request:", joinRequest);
+        this.socket.send(JSON.stringify(joinRequest));
 
-        if (response.ok) {
-          alert("You have successfully joined the chatroom!");
-          modal.style.display = "none";
-          if (this.onRoomJoined) {
-            this.onRoomJoined();
-          }
-        } else {
-          alert("Failed to join the chatroom. Please try again.");
-        }
-      } catch (error) {
-        console.error("Error:", error);
-        alert("An error occurred. Please try again later.");
+        alert("参加リクエストを送信しました。");
+
+        modal.style.display = "none";
+      } else {
+        alert("WebSocketが接続されていません。");
       }
     };
 

@@ -60,6 +60,10 @@ class RoomConsumer(WebsocketConsumer):
             status = text_data_json.get("status")
             UserRooms.objects.update_status(self.user, room_id, status)
             self.send_initial_messages()
+        elif job_type == "join_chatroom":
+            room_id = text_data_json.get("room_uuid")
+            Rooms.objects.join_room(self.user, room_id)
+            self.send_initial_messages()
 
     def create_chatroom(self, chatroom_name, room_type, invited_user_email=None):
         try:
