@@ -79,6 +79,11 @@ class Rooms(models.Model):
         verbose_name_plural = "rooms"
         ordering = ["-created_at"]
 
+class UserRoomsManager(models.Manager):
+    def create_user_room(self, user, room, status):
+        user_room = self.model(user_id=user, room_id=room, user_room_status=status)
+        user_room.save(using=self._db)
+        return user_room
 
 class UserRooms(models.Model):
     class UserRoomStatus(models.TextChoices):
@@ -95,6 +100,8 @@ class UserRooms(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    objects = UserRoomsManager()
 
     class Meta:
         db_table = "user_rooms"
