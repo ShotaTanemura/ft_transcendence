@@ -42,8 +42,17 @@ class RoomsManager(models.Manager):
 
 
 class Rooms(models.Model):
+    class RoomType(models.TextChoices):
+        DM = "dm", "Direct Message"
+        GROUP = "group", "Group"
+
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(unique=True, blank=False, max_length=20)
+    room_type = models.CharField(
+        max_length=5,
+        choices=RoomType.choices,
+        default=RoomType.GROUP,
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -51,7 +60,7 @@ class Rooms(models.Model):
     objects = RoomsManager()
 
     def __str__(self):
-        return self.name
+        return f"{self.name} ({self.get_room_type_display()})"
 
     class Meta:
         db_table = "rooms"
