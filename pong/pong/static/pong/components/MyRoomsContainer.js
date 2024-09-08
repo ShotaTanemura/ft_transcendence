@@ -37,6 +37,9 @@ export class MyRoomsContainer extends Component {
       if (message.rooms) {
         this.displayRooms(message.rooms);
       }
+      if (message.invited_rooms) {
+        this.displayInvitedRooms(message.invited_rooms);
+      }
     });
 
     this.socket.addEventListener("close", () => {
@@ -85,7 +88,7 @@ export class MyRoomsContainer extends Component {
 
       if (this.socket.readyState === WebSocket.OPEN) {
         const chatroomData = {
-          type: "create_chatroom",
+          job_type: "create_chatroom",
           name: chatroomName,
           room_type: roomType,
         };
@@ -131,10 +134,41 @@ export class MyRoomsContainer extends Component {
     });
   }
 
+  displayInvitedRooms(invitedRooms) {
+    const invitedRoomsContainer = document.querySelector(".invited-rooms");
+    invitedRoomsContainer.innerHTML = "";
+
+    invitedRooms.forEach((room) => {
+      console.log(room);
+      const roomElement = document.createElement("div");
+      roomElement.className = "invited-room";
+      roomElement.textContent = room.name;
+
+      roomElement.addEventListener("click", () => {
+        this.handleInvitedRoomClick(room);
+      });
+
+      invitedRoomsContainer.appendChild(roomElement);
+    });
+  }
+
   handleRoomClick(room) {
     this.state.selectedRoom = room;
     if (this.onRoomSelected) {
       this.onRoomSelected(room);
+    }
+  }
+
+  handleInvitedRoomClick(room) {
+    if (this.socket.readyState === WebSocket.OPEN) {
+      const inviteRequest = {
+        job_type: "invited_room",
+        room_uuid: room.uuid,
+        status: "active",
+      };
+      console.log("Invited room clicked", inviteRequest);
+
+      this.socket.send(JSON.stringify(inviteRequest));
     }
   }
 
@@ -148,6 +182,10 @@ export class MyRoomsContainer extends Component {
                 <input type="text" placeholder="Search Chatroom">
             </div>
             <div class="myrooms"></div>
+            <div class="invited-rooms-container">
+                <h3>Invited Rooms</h3>
+                <div class="invited-rooms"></div>
+            </div>
         </div>
         <div id="createChatroomModal" class="modal">
             <div class="modal-content">

@@ -38,18 +38,28 @@ class RoomConsumer(WebsocketConsumer):
 
     def receive(self, text_data):
         text_data_json = json.loads(text_data)
-        message_type = text_data_json.get("room_type")
-        if message_type == "dm":
-            chatroom_name = text_data_json.get("name")
-            room_type = text_data_json.get("room_type", "dm")
-            invited_user_email = text_data_json.get("email", None)
-            if invited_user_email is None:
-                self.send(text_data=json.dumps({"error": "No email provided"}))
-            self.create_chatroom(chatroom_name, room_type, invited_user_email)
-        elif message_type == "group":
-            chatroom_name = text_data_json.get("name")
-            room_type = text_data_json.get("room_type", "group")
-            self.create_chatroom(chatroom_name, room_type)
+        logger.info(f"Received data: {text_data_json}")
+        job_type = text_data_json.get("job_type")
+
+        if job_type == "create_room":
+            message_type = text_data_json.get("room_type")
+            if message_type == "dm":
+                chatroom_name = text_data_json.get("name")
+                room_type = text_data_json.get("room_type", "dm")
+                invited_user_email = text_data_json.get("email", None)
+                if invited_user_email is None:
+                    self.send(text_data=json.dumps({"error": "No email provided"}))
+                self.create_chatroom(chatroom_name, room_type, invited_user_email)
+            elif message_type == "group":
+                chatroom_name = text_data_json.get("name")
+                room_type = text_data_json.get("room_type", "group")
+                self.create_chatroom(chatroom_name, room_type)
+
+        elif job_type == "invited_room":
+            room_id = text_data_json.get("room_uuid")
+            status = text_data_json.get("status")
+            UserRooms.objects.update_status(self.user, room_id, status)
+            self.send_initial_messages()
 
     def create_chatroom(self, chatroom_name, room_type, invited_user_email=None):
         try:
@@ -83,13 +93,25 @@ class RoomConsumer(WebsocketConsumer):
     def send_initial_messages(self):
         try:
             rooms = Rooms.objects.get_rooms_by_user_status(self.user)
-            invited_rooms = Rooms.objects.get_rooms_by_user_status(self.user, UserRooms.UserRoomStatus.INVITED)
+            invited_rooms = Rooms.objects.get_rooms_by_user_status(
+                self.user, UserRooms.UserRoomStatus.INVITED
+            )
             non_participation = Rooms.objects.get_rooms_non_participation(self.user)
-            
+
             response_rooms = [serialize_rooms(room) for room in rooms]
             response_invited_rooms = [serialize_rooms(room) for room in invited_rooms]
-            response_non_participation = [serialize_rooms(room) for room in non_participation]
-            self.send(text_data=json.dumps({"rooms": response_rooms, "invited_rooms": response_invited_rooms, "non_participation": response_non_participation}))
+            response_non_participation = [
+                serialize_rooms(room) for room in non_participation
+            ]
+            self.send(
+                text_data=json.dumps(
+                    {
+                        "rooms": response_rooms,
+                        "invited_rooms": response_invited_rooms,
+                        "non_participation": response_non_participation,
+                    }
+                )
+            )
         except Rooms.DoesNotExist:
             self.send(text_data=json.dumps({"rooms": []}))
 

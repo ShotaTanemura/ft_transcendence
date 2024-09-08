@@ -50,6 +50,7 @@ class RoomsManager(models.Manager):
             userrooms__user_id=user, userrooms__user_room_status=user_rooms_status
         )
         return rooms
+
     def get_rooms_non_participation(self, user):
         rooms = self.model.objects.exclude(userrooms__user_id=user)
         return rooms
@@ -82,11 +83,19 @@ class Rooms(models.Model):
         verbose_name_plural = "rooms"
         ordering = ["-created_at"]
 
+
 class UserRoomsManager(models.Manager):
     def create_user_room(self, user, room, status):
         user_room = self.model(user_id=user, room_id=room, user_room_status=status)
         user_room.save(using=self._db)
         return user_room
+
+    def update_status(self, user, room, status):
+        user_room = self.model.objects.get(user_id=user, room_id=room)
+        user_room.user_room_status = status
+        user_room.save(using=self._db)
+        return user_room
+
 
 class UserRooms(models.Model):
     class UserRoomStatus(models.TextChoices):
