@@ -113,14 +113,8 @@ class TypingRoomManager:
                 asyncio.new_event_loop().run_in_executor(
                     None,
                     self.game_dispatcher,
-                    self.participants[0].name,
-                    self.participants[1].name,
                 )
 
-    def game_dispatcher(self, player1_name, player2_name):
-        self.pong_game.execute(player1_name=player1_name, player2_name=player2_name)
-        # TODO update db to record match result
-        self.room_state = RoomState.Finished
-        async_to_sync(self.send_messege_to_group)(
-            "send_room_information", {"sender": "room-manager", "type": "game-ended"}
-        )
+    def game_dispatcher(self):
+        
+        print("Game started!")
