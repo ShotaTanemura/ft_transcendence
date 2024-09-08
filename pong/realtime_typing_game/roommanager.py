@@ -6,6 +6,9 @@ from asgiref.sync import async_to_sync
 from threading import Lock
 from enum import Enum, auto
 
+RED = "\033[91m"
+GREEN = "\033[92m"
+RESET = "\033[0m"
 
 class RoomState(Enum):
     Queuing = "queuing"
@@ -47,6 +50,11 @@ class TypingRoomManager:
         self.participants_state = dict()
         self.max_of_participants = 2
 
+    def set_participant_state(self, participant, new_participant_state):
+        with self.instance_lock:
+            self.participants_state[participant] = new_participant_state
+            return True
+
     async def on_user_connected(self, user):
         with self.instance_lock:
             if self.room_state != RoomState.Queuing:
@@ -67,9 +75,16 @@ class TypingRoomManager:
                         ],
                     },
                 )
-                # 全ての参加者が準備完了したらゲーム開始
-                await self.typing_game.start_game()
         return (True, "")
+
+    def change_participants_state_for_game(self, player1, player2):
+        for participant in self.participants_state.keys():
+            if participant == player1:
+                self.set_participant_state(participant, ParticipantState.Player1)
+            elif participant == player2:
+                self.set_participant_state(participant, ParticipantState.Player2)
+            else:
+                self.set_participant_state(participant, ParticipantState.Observer)
 
     async def on_user_disconnected(self, user):
         with self.instance_lock:
@@ -92,9 +107,9 @@ class TypingRoomManager:
         if self.room_state == RoomState.Ready:
             await self.user_became_ready_for_game(participant, message_json)
         elif self.room_state == RoomState.In_Game:
-            await self.typing_game.handle_typing_input(
+            await self.handle_game_action(
                 participant, message_json
-            )  # TypingGameでの処理
+            ) 
 
     async def user_became_ready_for_game(self, participant, message_json):
         with self.instance_lock:
@@ -108,13 +123,20 @@ class TypingRoomManager:
                     "send_room_information",
                     {"sender": "room-manager", "type": "all-participants-ready"},
                 )
-                self.participants_state[self.participants[0]] = ParticipantState.Player1
-                self.participants_state[self.participants[1]] = ParticipantState.Player2
                 asyncio.new_event_loop().run_in_executor(
                     None,
                     self.game_dispatcher,
                 )
 
     def game_dispatcher(self):
-        
-        print("Game started!")
+        print(f"{GREEN}Game started!{RESET}")
+        self.change_participants_state_for_game(
+            self.participants[0], self.participants[1]
+        )
+        async_to_sync(self.typing_game.start_game)()
+    
+    async def handle_game_action(self, participant, message_json):
+        if self.participants_state[participant] == ParticipantState.Player1:
+            await self.typing_game.recieve_player1_input(message_json)
+        elif self.participants_state[participant] == ParticipantState.Player2:
+            await self.typing_game.recieve_player2_input(message_json)

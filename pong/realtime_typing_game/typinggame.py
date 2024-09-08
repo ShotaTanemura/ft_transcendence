@@ -159,10 +159,7 @@ class TypingGame(MessageSender):
             },
         )
 
-    async def handle_typing_input(self, participant, message_json):
-        print(f"Participant: {participant} sent: {message_json['contents']}")
-        input_key = message_json["contents"]
-
+    async def handle_typing_input(self, input_key):
         # 入力された文字が正解の場合
         if (
             self.input_length < len(self.selected_word)
@@ -200,3 +197,16 @@ class TypingGame(MessageSender):
                     },
                 },
             )
+
+    async def recieve_player1_input(self, message_json):
+        self.player_to_input = self.PLAYER1
+        if self.player_to_input == self.PLAYER1:
+            input_key = message_json["contents"]
+            print(f"{GREEN}Player1 input: {input_key}{RESET}")
+            await self.handle_typing_input(input_key)
+
+    async def recieve_player2_input(self, message_json):
+        self.player_to_input = self.PLAYER2
+        if self.player_to_input == self.PLAYER2:
+            input_key = message_json["contents"]
+            await self.handle_typing_input(input_key)
