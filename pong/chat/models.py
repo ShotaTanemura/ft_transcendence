@@ -8,11 +8,12 @@ logger = getLogger(__name__)
 
 
 class RoomsManager(models.Manager):
-    def create_room(self, name, user):
+    def create_room(self, name, user, room_type="group"):
         if not name:
             raise ValueError("nameを入力してください")
         try:
             room = self.model(name=name)
+            room.room_type = room_type
             room.save(using=self._db)
 
             user_room = UserRooms(user_id=user, room_id=room)

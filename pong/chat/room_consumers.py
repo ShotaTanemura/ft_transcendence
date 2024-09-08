@@ -42,16 +42,17 @@ class RoomConsumer(WebsocketConsumer):
 
         if message_type == "create_chatroom":
             chatroom_name = text_data_json.get("name")
-            self.create_chatroom(chatroom_name)
+            room_type = text_data_json.get("room_type", "group")
+            self.create_chatroom(chatroom_name, room_type)
         else:
             message = text_data_json["message"]
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name, {"type": "room_message", "message": message}
             )
 
-    def create_chatroom(self, chatroom_name):
+    def create_chatroom(self, chatroom_name, room_type):
         try:
-            room = Rooms.objects.create_room(chatroom_name, self.user)
+            room = Rooms.objects.create_room(chatroom_name, self.user, room_type)
             if not room:
                 self.send(text_data=json.dumps({"error": "Failed to create chatroom"}))
             rooms = Rooms.objects.filter(userrooms__user_id_id=self.user.uuid)

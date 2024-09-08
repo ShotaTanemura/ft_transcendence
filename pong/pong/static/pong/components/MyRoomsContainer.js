@@ -49,43 +49,43 @@ export class MyRoomsContainer extends Component {
   }
 
   handleDOMContentLoaded() {
-    const createChatroomButton = document.querySelector(
-      ".create-chatroom-button",
-    );
+    const createChatroomButton = document.querySelector(".create-chatroom-button");
     const modal = document.getElementById("createChatroomModal");
     const closeModal = document.querySelector(".close-modal");
     const createChatroomForm = document.getElementById("createChatroomForm");
 
     createChatroomButton.addEventListener("click", () => {
-      modal.style.display = "block";
+        modal.style.display = "block";
     });
 
     closeModal.addEventListener("click", () => {
-      modal.style.display = "none";
+        modal.style.display = "none";
     });
 
     createChatroomForm.addEventListener("submit", (event) => {
-      event.preventDefault();
-      const chatroomName = document.getElementById("chatroomName").value;
+        event.preventDefault();
+        const chatroomName = document.getElementById("chatroomName").value;
+        const roomType = document.getElementById("roomType").value;
 
-      if (this.socket.readyState === WebSocket.OPEN) {
-        this.socket.send(
-          JSON.stringify({
-            type: "create_chatroom",
-            name: chatroomName,
-          }),
-        );
-      }
+        if (this.socket.readyState === WebSocket.OPEN) {
+            this.socket.send(
+                JSON.stringify({
+                    type: "create_chatroom",
+                    name: chatroomName,
+                    room_type: roomType,
+                })
+            );
+        }
 
-      modal.style.display = "none";
+        modal.style.display = "none";
     });
 
     window.addEventListener("click", (event) => {
-      if (event.target === modal) {
-        modal.style.display = "none";
-      }
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
     });
-  }
+}
 
   displayRooms(rooms, query = "") {
     const myRoomsContainer = document.querySelector(".myrooms");
@@ -118,26 +118,33 @@ export class MyRoomsContainer extends Component {
   }
   get html() {
     return `
-            <div class="myrooms-container">
-                <div class="create-chatroom">
-                    <button class="create-chatroom-button" type="button">Create Chatroom</button>
-                </div>
-                <div class="search-bar">
-                    <input type="text" placeholder="Search Chatroom">
-                </div>
-                <div class="myrooms"></div>
+        <div class="myrooms-container">
+            <div class="create-chatroom">
+                <button class="create-chatroom-button" type="button">Create Chatroom</button>
             </div>
-            <div id="createChatroomModal" class="modal">
-                <div class="modal-content">
-                    <span class="close-modal">&times;</span>
-                    <h2>Create Chatroom</h2>
-                    <form id="createChatroomForm">
-                        <label for="chatroomName">Chatroom Name</label>
-                        <input type="text" id="chatroomName" name="name" required>
-                        <button type="submit">Create</button>
-                    </form>
-                </div>
+            <div class="search-bar">
+                <input type="text" placeholder="Search Chatroom">
             </div>
-        `;
-  }
+            <div class="myrooms"></div>
+        </div>
+        <div id="createChatroomModal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h2>Create Chatroom</h2>
+                <form id="createChatroomForm">
+                    <label for="chatroomName">Chatroom Name</label>
+                    <input type="text" id="chatroomName" name="name" required>
+
+                    <label for="roomType">Room Type</label>
+                    <select id="roomType" name="room_type" required>
+                        <option value="group">Group</option>
+                        <option value="dm">Direct Message</option>
+                    </select>
+
+                    <button type="submit">Create</button>
+                </form>
+            </div>
+        </div>
+    `;
+}
 }
