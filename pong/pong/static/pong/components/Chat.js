@@ -4,7 +4,6 @@ import { MyRoomsContainer } from "./MyRoomsContainer.js";
 import { ChatContainer } from "./ChatContainer.js";
 import { DirectoryContainer } from "./DirectoryContainer.js";
 
-
 export class Chat extends Component {
   constructor(router, params, state) {
     super(router, params, state, ".parent-container");
@@ -163,7 +162,7 @@ export class Chat extends Component {
     this.element.parentElement.prepend(this.headerComponent.element);
     this.headerComponent.afterPageLoaded();
   }
-  
+
   get html() {
     if (
       !this.myRoomsContainer ||

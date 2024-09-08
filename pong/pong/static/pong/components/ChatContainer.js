@@ -16,7 +16,9 @@ export class ChatContainer extends Component {
   }
 
   appendMessage(message) {
-    const messagesContainer = document.querySelector(".direct-message-messages");
+    const messagesContainer = document.querySelector(
+      ".direct-message-messages",
+    );
     if (messagesContainer) {
       const messageElement = document.createElement("div");
       messageElement.classList.add("message");
