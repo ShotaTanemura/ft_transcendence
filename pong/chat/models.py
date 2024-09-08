@@ -57,6 +57,14 @@ class RoomsManager(models.Manager):
         )
         return rooms
 
+    def get_users_in_room(self, room_id):
+        try:
+            room = self.model.objects.get(uuid=room_id)
+            users = User.objects.filter(userrooms__room_id=room)
+            return users
+        except self.model.DoesNotExist:
+            raise ValueError("指定された部屋が存在しません")
+
 
 class Rooms(models.Model):
     class RoomType(models.TextChoices):
@@ -97,6 +105,10 @@ class UserRoomsManager(models.Manager):
         user_room.user_room_status = status
         user_room.save(using=self._db)
         return user_room
+
+    def get_users(self, room_id):
+        users = self.model.objects.filter(room_id=room_id)
+        return users
 
 
 class UserRooms(models.Model):

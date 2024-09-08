@@ -4,10 +4,14 @@ import json
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 from django.contrib.auth.models import AnonymousUser
-from .models import Rooms, Messages
+from .models import Rooms, Messages, UserRooms
 from logging import getLogger
 
 logger = getLogger(__name__)
+
+
+def serialize_user(user):
+    return {"uuid": str(user.uuid), "name": user.name}
 
 
 class ChatConsumer(WebsocketConsumer):
@@ -42,24 +46,28 @@ class ChatConsumer(WebsocketConsumer):
 
             messages = Messages.manager.get_messages(room_id)
             logger.info(f"Retrieved messages: {len(messages)}")
+            users = Rooms.objects.get_users_in_room(room_id)
+
+            users = [serialize_user(user) for user in users]
+
             if not messages:
                 logger.info(f"No messages found")
                 self.send(
                     text_data=json.dumps(
                         {
-                            "users": "hello",
+                            "users": users,
                         }
                     )
-                )               
+                )
 
             for message in messages:
-                logger.info(f"Sending message: {message.message}") 
+                logger.info(f"Sending message: {message.message}")
                 self.send(
                     text_data=json.dumps(
                         {
                             "user": message.user_id.name,
                             "message": message.message,
-                            "users": "hello",
+                            "users": users,
                             "created_at": message.created_at.isoformat(),
                         }
                     )

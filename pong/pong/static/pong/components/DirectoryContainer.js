@@ -23,8 +23,18 @@ export class DirectoryContainer extends Component {
     this.setupWebSocketListeners();
   }
 
-  refreshRoomMembers(users){
+  // メンバーリストを表示するためのメソッド
+  refreshRoomMembers(users) {
+    const membersContainer = document.querySelector(".members-list");
+    membersContainer.innerHTML = ""; // 既存のメンバーリストをクリア
 
+    // ユーザー情報を追加
+    users.forEach((user) => {
+      const memberElement = document.createElement("div");
+      memberElement.className = "member";
+      memberElement.textContent = user.name; // ユーザー名を表示
+      membersContainer.appendChild(memberElement);
+    });
   }
 
   setupWebSocketListeners() {
@@ -34,6 +44,11 @@ export class DirectoryContainer extends Component {
 
       if (message.non_participation) {
         this.displayRooms(message.non_participation);
+      }
+
+      // ユーザーリストが送信された場合、表示を更新
+      if (message.users) {
+        this.refreshRoomMembers(message.users);
       }
     });
   }
@@ -123,6 +138,12 @@ export class DirectoryContainer extends Component {
                     <input type="text" placeholder="Search Chatroom">
                 </div>
                 <div class="unjoined-rooms"></div>
+
+                <!-- メンバーリストの表示領域 -->
+                <div class="members-container">
+                    <h3>Members</h3>
+                    <div class="members-list"></div> <!-- メンバーリストのコンテナ -->
+                </div>
 
                 <!-- Modal for joining chatroom -->
                 <div id="joinChatroomModal" class="modal">
