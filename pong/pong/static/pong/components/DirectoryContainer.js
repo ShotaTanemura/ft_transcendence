@@ -23,18 +23,73 @@ export class DirectoryContainer extends Component {
     this.setupWebSocketListeners();
   }
 
-  // メンバーリストを表示するためのメソッド
   refreshRoomMembers(users) {
     const membersContainer = document.querySelector(".members-list");
-    membersContainer.innerHTML = ""; // 既存のメンバーリストをクリア
+    membersContainer.innerHTML = "";
 
-    // ユーザー情報を追加
     users.forEach((user) => {
       const memberElement = document.createElement("div");
       memberElement.className = "member";
-      memberElement.textContent = user.name; // ユーザー名を表示
+      memberElement.textContent = user.name;
+
+      memberElement.addEventListener("click", (event) => {
+        this.showMemberOptions(event, user);
+      });
+
       membersContainer.appendChild(memberElement);
     });
+  }
+
+  showMemberOptions(event, user) {
+    const optionsContainer = document.createElement("div");
+    optionsContainer.className = "member-options";
+
+    const select = document.createElement("select");
+    select.innerHTML = `
+      <option value="">選択してください</option>
+      <option value="profile">プロフィール表示</option>
+      <option value="block">ブロック</option>
+    `;
+
+    select.addEventListener("change", (event) => {
+      const selectedOption = event.target.value;
+      if (selectedOption === "profile") {
+        this.showUserProfile(user, optionsContainer);
+      } else if (selectedOption === "block") {
+        this.blockUser(user, optionsContainer);
+      }
+    });
+
+    optionsContainer.appendChild(select);
+    document.body.appendChild(optionsContainer);
+
+    optionsContainer.style.position = "absolute";
+    optionsContainer.style.top = `${event.clientY}px`;
+    optionsContainer.style.left = `${event.clientX}px`;
+  }
+
+  showUserProfile(user, optionsContainer) {
+    optionsContainer.remove();
+    alert(`ユーザー ${user.name} のプロフィールを表示します。`);
+  }
+
+  blockUser(user, optionsContainer) {
+    if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+      const blockRequest = {
+        job_type: "block_user",
+        user_uuid: user.uuid,
+        status: "blocked",
+      };
+
+      console.log("Block Request:", blockRequest);
+      this.socket.send(JSON.stringify(blockRequest));
+
+      alert(`${user.name} をブロックしました。`);
+
+      optionsContainer.remove();
+    } else {
+      alert("WebSocketが接続されていません。");
+    }
   }
 
   setupWebSocketListeners() {
@@ -43,10 +98,9 @@ export class DirectoryContainer extends Component {
       console.log("WebSocket Message:", message);
 
       if (message.non_participation) {
-        this.displayRooms(message.non_participation);
+        this.updateNonParticipationRoomsUI(message.non_participation);
       }
 
-      // ユーザーリストが送信された場合、表示を更新
       if (message.users) {
         this.refreshRoomMembers(message.users);
       }
