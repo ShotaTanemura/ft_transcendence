@@ -40,13 +40,15 @@ class RoomsManager(models.Manager):
     def get_rooms(self):
         rooms = self.model.objects.all().filter(user_room_status="active")
         return rooms
-    
+
     def get_rooms_by_user_status(self, user, status=None):
         if status:
             user_rooms_status = status
         else:
             user_rooms_status = UserRooms.UserRoomStatus.ACTIVE
-        rooms = self.model.objects.filter(userrooms__user_id=user, userrooms__user_room_status=user_rooms_status)
+        rooms = self.model.objects.filter(
+            userrooms__user_id=user, userrooms__user_room_status=user_rooms_status
+        )
         return rooms
 
 

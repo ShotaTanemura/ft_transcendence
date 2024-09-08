@@ -67,7 +67,7 @@ class RoomConsumer(WebsocketConsumer):
                         )
                     )
                 UserRooms.objects.create_user_room(invited_user, room, "invited")
-            rooms = Rooms.objects.filter(userrooms__user_id_id=self.user.uuid)
+            rooms = Rooms.objects.get_rooms_by_user_status(self.user)
             response_rooms = [serialize_rooms(room) for room in rooms]
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name, {"type": "room_created", "rooms": response_rooms}
