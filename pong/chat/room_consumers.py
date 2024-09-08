@@ -41,7 +41,7 @@ class RoomConsumer(WebsocketConsumer):
         logger.info(f"Received data: {text_data_json}")
         job_type = text_data_json.get("job_type")
 
-        if job_type == "create_room":
+        if job_type == "create_chatroom":
             message_type = text_data_json.get("room_type")
             if message_type == "dm":
                 chatroom_name = text_data_json.get("name")
