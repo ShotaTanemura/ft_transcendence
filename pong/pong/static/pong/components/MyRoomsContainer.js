@@ -6,6 +6,7 @@ export class MyRoomsContainer extends Component {
     this.onRoomSelected = onRoomSelected;
     this.socket = socket;
     this.initializeEventListeners();
+    this.rooms = [];
 
     if (this.socket) {
       this.setupWebSocketListeners();
@@ -22,6 +23,7 @@ export class MyRoomsContainer extends Component {
       const message = JSON.parse(event.data);
       if (message.rooms) {
         this.displayRooms(message.rooms);
+        this.rooms = message.rooms;
       }
       if (message.invited_rooms) {
         this.displayInvitedRooms(message.invited_rooms);
@@ -31,6 +33,7 @@ export class MyRoomsContainer extends Component {
 
   updateRoomsUI(rooms) {
     this.displayRooms(rooms);
+    this.rooms = rooms;
   }
 
   updateInvitedRoomsUI(invitedRooms) {
@@ -58,6 +61,12 @@ export class MyRoomsContainer extends Component {
     const roomTypeSelect = document.getElementById("roomType");
     const emailField = document.getElementById("emailField");
     const emailInput = document.getElementById("email");
+    const searchBar = document.querySelector(".search-bar input");
+
+    searchBar.addEventListener("input", (event) => {
+      const query = event.target.value.toLowerCase();
+      this.displayRooms(this.rooms, query);
+    });
 
     roomTypeSelect.addEventListener("change", (event) => {
       if (event.target.value === "dm") {
