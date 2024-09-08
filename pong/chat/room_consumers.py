@@ -83,8 +83,13 @@ class RoomConsumer(WebsocketConsumer):
     def send_initial_messages(self):
         try:
             rooms = Rooms.objects.get_rooms_by_user_status(self.user)
+            invited_rooms = Rooms.objects.get_rooms_by_user_status(self.user, UserRooms.UserRoomStatus.INVITED)
+            non_participation = Rooms.objects.get_rooms_non_participation(self.user)
+            
             response_rooms = [serialize_rooms(room) for room in rooms]
-            self.send(text_data=json.dumps({"rooms": response_rooms}))
+            response_invited_rooms = [serialize_rooms(room) for room in invited_rooms]
+            response_non_participation = [serialize_rooms(room) for room in non_participation]
+            self.send(text_data=json.dumps({"rooms": response_rooms, "invited_rooms": response_invited_rooms, "non_participation": response_non_participation}))
         except Rooms.DoesNotExist:
             self.send(text_data=json.dumps({"rooms": []}))
 
