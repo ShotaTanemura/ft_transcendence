@@ -15,6 +15,7 @@ import { TypingGameWaiting } from "./components/TypingGameWaiting.js";
 import { TypingGame } from "./components/TypingGame.js";
 import { PongGameTournament } from "./components/PongGameTournament.js";
 import { PongGameFinished } from "./components/PongGameFinished.js";
+import { PongGameResult } from "./components/PongGameResult.js";
 
 let router = new Router(
   document.getElementById("app"),
@@ -67,6 +68,11 @@ let router = new Router(
     {
       path: "/pong-game-finished",
       component: PongGameFinished,
+      state: {},
+    },
+    { 
+      path: "/pong-game-match-result",
+      component: PongGameResult,
       state: {},
     },
     {
