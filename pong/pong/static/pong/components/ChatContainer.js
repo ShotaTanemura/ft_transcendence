@@ -39,33 +39,36 @@ export class ChatContainer extends Component {
     const messages = document.createElement("div");
     messages.classList.add("direct-message-messages");
 
-    const form = document.createElement("div");
-    form.classList.add("form");
-
-    const messageForm = document.createElement("form");
-    messageForm.classList.add("direct-message-form");
-
-    const messageInput = document.createElement("input");
-    messageInput.type = "text";
-    messageInput.name = "message";
-    messageInput.placeholder = "Enter your message";
-
-    const sendButton = document.createElement("button");
-    sendButton.type = "submit";
-    sendButton.innerText = "Send";
-
-    messageForm.appendChild(messageInput);
-    messageForm.appendChild(sendButton);
-    form.appendChild(messageForm);
-
     chatContainer.appendChild(messages);
-    chatContainer.appendChild(form);
 
-    messageForm.addEventListener("submit", (event) => {
-      event.preventDefault();
-      this.emitMessage(select.uuid, messageInput.value);
-      messageInput.value = "";
-    });
+    if (this.selectedRoom) {
+      const form = document.createElement("div");
+      form.classList.add("form");
+
+      const messageForm = document.createElement("form");
+      messageForm.classList.add("direct-message-form");
+
+      const messageInput = document.createElement("input");
+      messageInput.type = "text";
+      messageInput.name = "message";
+      messageInput.placeholder = "Enter your message";
+
+      const sendButton = document.createElement("button");
+      sendButton.type = "submit";
+      sendButton.innerText = "Send";
+
+      messageForm.appendChild(messageInput);
+      messageForm.appendChild(sendButton);
+      form.appendChild(messageForm);
+
+      chatContainer.appendChild(form);
+
+      messageForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        this.emitMessage(select.uuid, messageInput.value);
+        messageInput.value = "";
+      });
+    }
   }
 
   emitMessage(roomUuid, message) {
@@ -77,15 +80,23 @@ export class ChatContainer extends Component {
   get html() {
     return `
       <div class="direct-message-container">
-        <div class="direct-message-header">${this.selectedRoom ? this.selectedRoom.name : "Select a room"}</div>
+        <div class="direct-message-header">
+          ${this.selectedRoom ? this.selectedRoom.name : "Select a room"}
+        </div>
         <div class="direct-message-content">
           <div class="direct-message-messages"></div>
+          ${
+            this.selectedRoom
+              ? `
           <div class="form">
             <form class="direct-message-form">
               <input type="text" name="message" placeholder="Enter your message" />
               <button type="submit">Send</button>
             </form>
           </div>
+          `
+              : ""
+          }
         </div>
       </div>
     `;
