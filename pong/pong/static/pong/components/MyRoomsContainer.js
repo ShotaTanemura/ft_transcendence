@@ -1,11 +1,33 @@
 import { Component } from "../core/component.js";
 
 export class MyRoomsContainer extends Component {
-  constructor(router, params, state, onRoomSelected) {
+  constructor(router, params, state, onRoomSelected, socket) {
     super(router, params, state);
     this.onRoomSelected = onRoomSelected;
+    this.socket = socket;
     this.initializeEventListeners();
-    this.connectToWebSocket();
+
+    if (this.socket) {
+      this.setupWebSocketListeners();
+    }
+  }
+
+  setWebSocket(socket) {
+    this.socket = socket;
+    this.setupWebSocketListeners();
+  }
+
+  setupWebSocketListeners() {
+    this.socket.addEventListener("message", (event) => {
+      const message = JSON.parse(event.data);
+      console.log(message);
+      if (message.rooms) {
+        this.displayRooms(message.rooms);
+      }
+      if (message.invited_rooms) {
+        this.displayInvitedRooms(message.invited_rooms);
+      }
+    });
   }
 
   initializeEventListeners() {
@@ -17,38 +39,6 @@ export class MyRoomsContainer extends Component {
       "DOMContentLoaded",
       this.handleDOMContentLoaded.bind(this),
     );
-  }
-
-  connectToWebSocket() {
-    if (this.socket) {
-      this.socket.close();
-    }
-
-    const wsUrl = "ws://" + window.location.host + "/ws/chat/rooms/";
-    this.socket = new WebSocket(wsUrl);
-
-    this.socket.addEventListener("open", () => {
-      console.log("WebSocket connected URL:", wsUrl);
-    });
-
-    this.socket.addEventListener("message", (event) => {
-      const message = JSON.parse(event.data);
-      console.log(message);
-      if (message.rooms) {
-        this.displayRooms(message.rooms);
-      }
-      if (message.invited_rooms) {
-        this.displayInvitedRooms(message.invited_rooms);
-      }
-    });
-
-    this.socket.addEventListener("close", () => {
-      console.log("WebSocket disconnected");
-    });
-
-    this.socket.addEventListener("error", (error) => {
-      console.error("WebSocket error:", error);
-    });
   }
 
   handleDOMContentLoaded() {
@@ -86,7 +76,7 @@ export class MyRoomsContainer extends Component {
       const roomType = document.getElementById("roomType").value;
       const email = document.getElementById("email").value;
 
-      if (this.socket.readyState === WebSocket.OPEN) {
+      if (this.socket && this.socket.readyState === WebSocket.OPEN) {
         const chatroomData = {
           job_type: "create_chatroom",
           name: chatroomName,
@@ -139,7 +129,6 @@ export class MyRoomsContainer extends Component {
     invitedRoomsContainer.innerHTML = "";
 
     invitedRooms.forEach((room) => {
-      console.log(room);
       const roomElement = document.createElement("div");
       roomElement.className = "invited-room";
       roomElement.textContent = room.name;
