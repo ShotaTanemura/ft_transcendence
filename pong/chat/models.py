@@ -66,6 +66,17 @@ class RoomsManager(models.Manager):
             return users
         except self.model.DoesNotExist:
             raise ValueError("指定された部屋が存在しません")
+    
+    def leave_room(self, user, room):
+        room = self.model.objects.get(uuid=room)
+        if not room:
+            raise ValueError("部屋が見つかりません")
+        user_room = UserRooms.objects.get(user_id=user, room_id=room)
+        user_room.delete()
+        users = UserRooms.objects.get_users(room)
+        if not users:
+            room.delete()
+        return room
 
 
 class Rooms(models.Model):

@@ -130,7 +130,10 @@ class ChatConsumer(WebsocketConsumer):
             logger.info(f"Block user: {block_user_uuid}")
             block_user = UserBlock.objects.block_user(self.user, blocked)
             logger.info(f"Blocked user: {block_user}")
-
+        elif job_type == "leave":
+            room_id = text_data_json.get("room_uuid")
+            Rooms.objects.leave_room(self.user, room_id)
+            self.send_initial_messages()
     def chat_message(self, event):
         self.send(
             text_data=json.dumps(
