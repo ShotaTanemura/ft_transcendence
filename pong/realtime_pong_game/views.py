@@ -5,6 +5,7 @@ from pong.models import User
 from django.db.models import Q
 from .models import TournamentInfo, MatchInfo
 
+
 @csrf_exempt
 def get_user_match_result(request, uuid):
     if request.method != "GET":
@@ -19,17 +20,19 @@ def get_user_match_result(request, uuid):
             {"message": "User not found", "status": "userNotFound"}, status=404
         )
 
-    user_last_10_match_results = MatchInfo.objects.filter(Q(player1=user) | Q(player2=user)).order_by('-created_at')[:10]
+    user_last_10_match_results = MatchInfo.objects.filter(
+        Q(player1=user) | Q(player2=user)
+    ).order_by("-created_at")[:10]
 
     user_match_results_json = {}
 
     for index, user_match_result in enumerate(user_last_10_match_results):
         user_match_results_json[index] = {
-                "player1": user_match_result.player1.name, \
-                "player2": user_match_result.player2.name, \
-                "player1_score": user_match_result.player1_score, \
-                "player2_score": user_match_result.player2_score,
-            } 
+            "player1": user_match_result.player1.name,
+            "player2": user_match_result.player2.name,
+            "player1_score": user_match_result.player1_score,
+            "player2_score": user_match_result.player2_score,
+        }
 
     return JsonResponse(
         user_match_results_json,
