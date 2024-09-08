@@ -29,6 +29,14 @@ export class MyRoomsContainer extends Component {
     });
   }
 
+  updateRoomsUI(rooms) {
+    this.displayRooms(rooms);
+  }
+
+  updateInvitedRoomsUI(invitedRooms) {
+    this.displayInvitedRooms(invitedRooms);
+  }
+
   initializeEventListeners() {
     document.removeEventListener(
       "DOMContentLoaded",

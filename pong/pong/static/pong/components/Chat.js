@@ -41,6 +41,28 @@ export class Chat extends Component {
       console.log(message);
     });
 
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      console.log("Received message:", data);
+
+      if (data.rooms) {
+        console.log("Rooms:", data.rooms);
+        this.myRoomsContainer.updateRoomsUI(data.rooms);
+      }
+
+      if (data.invited_rooms) {
+        console.log("Invited Rooms:", data.invited_rooms);
+        this.myRoomsContainer.updateInvitedRoomsUI(data.invited_rooms);
+      }
+
+      if (data.non_participation) {
+        console.log("Non-Participation Rooms:", data.non_participation);
+        this.directoryContainer.updateNonParticipationRoomsUI(
+          data.non_participation,
+        );
+      }
+    };
+
     socket.addEventListener("close", () => {
       console.log("WebSocket disconnected");
     });

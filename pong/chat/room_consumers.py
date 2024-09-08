@@ -1,10 +1,8 @@
 import json
-
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 from django.contrib.auth.models import AnonymousUser
 from .models import Rooms, Messages, User, UserRooms
-from django.contrib.auth.models import AnonymousUser
 from logging import getLogger
 
 logger = getLogger(__name__)
@@ -67,6 +65,7 @@ class RoomConsumer(WebsocketConsumer):
 
     def create_chatroom(self, chatroom_name, room_type, invited_user_email=None):
         try:
+            logger.info(f"my user: {self.user}")
             room = Rooms.objects.create_room(chatroom_name, self.user, room_type)
             logger.info(f"Room created: {room}")
             if not room:
@@ -81,11 +80,8 @@ class RoomConsumer(WebsocketConsumer):
                         )
                     )
                 UserRooms.objects.create_user_room(invited_user, room, "invited")
-            rooms = Rooms.objects.get_rooms_by_user_status(self.user)
-            response_rooms = [serialize_rooms(room) for room in rooms]
-            async_to_sync(self.channel_layer.group_send)(
-                self.room_group_name, {"type": "room_created", "rooms": response_rooms}
-            )
+            logger.info(f"Room created: {room}")
+            self.send_initial_messages()
         except Exception as e:
             logger.error(f"Failed to create chatroom: {e}")
             self.send(text_data=json.dumps({"error": "Failed to create chatroom"}))
@@ -107,6 +103,16 @@ class RoomConsumer(WebsocketConsumer):
             response_non_participation = [
                 serialize_rooms(room) for room in non_participation
             ]
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    "type": "init",
+                    "rooms": response_rooms,
+                    "invited_rooms": response_invited_rooms,
+                    "non_participation": response_non_participation,
+                },
+            )
+
             self.send(
                 text_data=json.dumps(
                     {
@@ -119,7 +125,36 @@ class RoomConsumer(WebsocketConsumer):
         except Rooms.DoesNotExist:
             self.send(text_data=json.dumps({"rooms": []}))
 
-    def disconnect(self, close_code):
-        async_to_sync(self.channel_layer.group_discard)(
-            self.room_group_name, self.channel_name
+    def init(self, event):
+        logger.info(f"Event: {event}")
+        rooms = Rooms.objects.get_rooms_by_user_status(self.user)
+        invited_rooms = Rooms.objects.get_rooms_by_user_status(
+            self.user, UserRooms.UserRoomStatus.INVITED
         )
+        non_participation = Rooms.objects.get_rooms_non_participation(self.user)
+
+        response_rooms = [serialize_rooms(room) for room in rooms]
+        response_invited_rooms = [serialize_rooms(room) for room in invited_rooms]
+        response_non_participation = [
+            serialize_rooms(room) for room in non_participation
+        ]
+        self.send(
+            text_data=json.dumps(
+                {
+                    "rooms": response_rooms,
+                    "invited_rooms": response_invited_rooms,
+                    "non_participation": response_non_participation,
+                }
+            )
+        )
+        # self.send(text_data=json.dumps({
+        #     "rooms": event["rooms"],
+        #     "invited_rooms": event["invited_rooms"],
+        #     "non_participation": event["non_participation"]
+        # }))
+
+    def disconnect(self, close_code):
+        if hasattr(self, "room_group_name"):
+            async_to_sync(self.channel_layer.group_discard)(
+                self.room_group_name, self.channel_name
+            )

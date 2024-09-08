@@ -34,6 +34,10 @@ export class DirectoryContainer extends Component {
     });
   }
 
+  updateNonParticipationRoomsUI(rooms) {
+    this.displayRooms(rooms);
+  }
+
   displayRooms(rooms, query = "") {
     const unjoinedRoomsContainer = document.querySelector(".unjoined-rooms");
     unjoinedRoomsContainer.innerHTML = "";
