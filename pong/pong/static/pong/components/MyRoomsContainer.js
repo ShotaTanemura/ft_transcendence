@@ -25,7 +25,6 @@ export class MyRoomsContainer extends Component {
     }
 
     const wsUrl = "ws://" + window.location.host + "/ws/chat/rooms/";
-
     this.socket = new WebSocket(wsUrl);
 
     this.socket.addEventListener("open", () => {
@@ -35,7 +34,9 @@ export class MyRoomsContainer extends Component {
     this.socket.addEventListener("message", (event) => {
       const message = JSON.parse(event.data);
       console.log(message);
-      this.displayRooms(message.rooms);
+      if (message.rooms) {
+        this.displayRooms(message.rooms);
+      }
     });
 
     this.socket.addEventListener("close", () => {
@@ -44,6 +45,45 @@ export class MyRoomsContainer extends Component {
 
     this.socket.addEventListener("error", (error) => {
       console.error("WebSocket error:", error);
+    });
+  }
+
+  handleDOMContentLoaded() {
+    const createChatroomButton = document.querySelector(
+      ".create-chatroom-button",
+    );
+    const modal = document.getElementById("createChatroomModal");
+    const closeModal = document.querySelector(".close-modal");
+    const createChatroomForm = document.getElementById("createChatroomForm");
+
+    createChatroomButton.addEventListener("click", () => {
+      modal.style.display = "block";
+    });
+
+    closeModal.addEventListener("click", () => {
+      modal.style.display = "none";
+    });
+
+    createChatroomForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const chatroomName = document.getElementById("chatroomName").value;
+
+      if (this.socket.readyState === WebSocket.OPEN) {
+        this.socket.send(
+          JSON.stringify({
+            type: "create_chatroom",
+            name: chatroomName,
+          }),
+        );
+      }
+
+      modal.style.display = "none";
+    });
+
+    window.addEventListener("click", (event) => {
+      if (event.target === modal) {
+        modal.style.display = "none";
+      }
     });
   }
 
@@ -70,38 +110,12 @@ export class MyRoomsContainer extends Component {
       myRoomsContainer.appendChild(roomElement);
     });
   }
-
   handleRoomClick(room) {
     this.state.selectedRoom = room;
     if (this.onRoomSelected) {
       this.onRoomSelected(room);
     }
   }
-
-  handleDOMContentLoaded() {
-    const createChatroomButton = document.querySelector(
-      ".create-chatroom-button",
-    );
-    const modal = document.getElementById("createChatroomModal");
-    const closeModal = document.querySelector(".close-modal");
-    // const createChatroomForm = document.getElementById("createChatroomForm");
-    // const searchBar = document.querySelector(".search-bar input");
-
-    createChatroomButton.addEventListener("click", () => {
-      modal.style.display = "block";
-    });
-
-    closeModal.addEventListener("click", () => {
-      modal.style.display = "none";
-    });
-
-    window.addEventListener("click", (event) => {
-      if (event.target === modal) {
-        modal.style.display = "none";
-      }
-    });
-  }
-
   get html() {
     return `
             <div class="myrooms-container">

@@ -30,37 +30,52 @@ class RoomConsumer(WebsocketConsumer):
         except Exception as e:
             logger.error(f"Error during initial message sending: {str(e)}")
             self.close()
-        print(self.user)
         try:
             self.send_initial_messages()
         except Exception as e:
             logger.info(f"Error during initial message sending: {e}")
             self.close()
 
+    def receive(self, text_data):
+        text_data_json = json.loads(text_data)
+        message_type = text_data_json.get("type")
+
+        if message_type == "create_chatroom":
+            chatroom_name = text_data_json.get("name")
+            self.create_chatroom(chatroom_name)
+        else:
+            message = text_data_json["message"]
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name, {"type": "room_message", "message": message}
+            )
+
+    def create_chatroom(self, chatroom_name):
+        try:
+            room = Rooms.objects.create_room(chatroom_name, self.user)
+            if not room:
+                self.send(text_data=json.dumps({"error": "Failed to create chatroom"}))
+            rooms = Rooms.objects.filter(userrooms__user_id_id=self.user.uuid)
+            response_rooms = [serialize_rooms(room) for room in rooms]
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name, {"type": "room_created", "rooms": response_rooms}
+            )
+        except Exception as e:
+            logger.error(f"Failed to create chatroom: {e}")
+            self.send(text_data=json.dumps({"error": "Failed to create chatroom"}))
+
+    def room_created(self, event):
+        rooms = event["rooms"]
+        self.send(text_data=json.dumps({"rooms": rooms}))
+
     def send_initial_messages(self):
         try:
             rooms = Rooms.objects.filter(userrooms__user_id_id=self.user.uuid)
-            logger.info(f"Retrieved rooms: {rooms}")
             response_rooms = [serialize_rooms(room) for room in rooms]
             self.send(text_data=json.dumps({"rooms": response_rooms}))
         except Rooms.DoesNotExist:
-            logger.info("Room does not exist")
-            self.close()
+            self.send(text_data=json.dumps({"rooms": []}))
 
     def disconnect(self, close_code):
         async_to_sync(self.channel_layer.group_discard)(
             self.room_group_name, self.channel_name
         )
-
-    def receive(self, text_data):
-        text_data_json = json.loads(text_data)
-        message = text_data_json["message"]
-
-        async_to_sync(self.channel_layer.group_send)(
-            self.room_group_name, {"type": "room_message", "message": message}
-        )
-
-    def room_message(self, event):
-        message = event["message"]
-
-        self.send(text_data=json.dumps({"message": message}))
