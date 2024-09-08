@@ -68,7 +68,15 @@ export class ChatContainer extends Component {
         this.emitMessage(select.uuid, messageInput.value);
         messageInput.value = "";
       });
+
+      const header = document.querySelector(".direct-message-header");
+      header.innerHTML = `${select.name} <button class="leave-button">Leave</button>`;
     }
+  }
+
+  leaveRoom() {
+    this.selectedRoom = undefined;
+    this.render();
   }
 
   emitMessage(roomUuid, message) {
