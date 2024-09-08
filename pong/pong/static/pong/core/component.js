@@ -20,7 +20,9 @@ export class Component {
   }
   set html(newHtml) {}
 
-  onEnterForeground() {}
+  afterPageLoaded() {}
+
+  beforePageUnload() {}
 
   goNextPage = (path) => {
     this.router.goNextPage(path);

@@ -2,11 +2,13 @@ import json
 import asyncio
 import random
 from channels.layers import get_channel_layer
+from channels.db import database_sync_to_async
 from asgiref.sync import async_to_sync
 from threading import Lock
 from enum import Enum, auto
 from realtime_pong_game.ponggame import PongGame
 from realtime_pong_game.tournamentmanager import TournamentManager
+from realtime_pong_game.models import TournamentInfo, MatchInfo
 import time
 
 
@@ -178,6 +180,10 @@ class Room:
     def game_dispatcher(self, dummy_data):
         is_tournament_ongoing = True
         tournament_winner = None
+        # add TournamentInfo to DB
+        tournament_info = TournamentInfo(tournament_name=self.room_name)
+        tournament_info.save()
+
         while is_tournament_ongoing:
             (player1, player2) = self.tournament_manager.get_next_match_players()
             # if player2 is None, player1 is the tournament winner
@@ -218,9 +224,20 @@ class Room:
             (player1_score, player2_score) = self.pong_game.execute(
                 player1_name=player1.name, player2_name=player2.name
             )
+            # TODO how to write the order of tournament?
+            # update match db from exected game
+            MatchInfo.objects.create(
+                tournament_info=tournament_info,
+                player1=player1,
+                player2=player2,
+                player1_score=player1_score,
+                player2_score=player2_score,
+            )
             # update trounament from executed game
             self.tournament_manager.update_current_match(player1_score, player2_score)
-        # TODO update db to record match and tournament results
+        # save the tournament winner to TournamentInfo
+        tournament_info.winner = tournament_winner
+        tournament_info.save()
         # send room status to client
         self.set_room_state(RoomState.Finished)
         async_to_sync(self.send_room_state_to_group)()
