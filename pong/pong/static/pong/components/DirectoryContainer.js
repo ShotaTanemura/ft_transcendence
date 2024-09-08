@@ -188,7 +188,6 @@ export class DirectoryContainer extends Component {
     return `<div class="dir-container">
                 <div class="header">
                     <h2>未参加</h2>
-                    <div class="options">•••</div>
                 </div>
                 <div class="unjoined-search-bar">
                     <input type="text" placeholder="Search Chatroom">

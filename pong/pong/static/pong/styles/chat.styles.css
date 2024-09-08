@@ -36,23 +36,38 @@ body {
 }
 
 .direct-message-header {
-  padding: 15px;
-  background-color: #3a7abc;
-  color: #ffffff;
-  font-size: 1.25rem;
-  font-weight: 500;
-  text-align: center;
-  border-bottom: 1px solid #d1d5db;
-}
-
-/* .direct-message-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 12px;
-  background-color: #f0f4f8; 
+  background-color: #f0f4f8;
   color: #333;
   font-size: 1rem;
   font-weight: normal;
   border-bottom: 1px solid #e2e8f0;
-} */
+}
+
+.leave-button {
+  padding: 6px 12px;
+  background-color: #778bf0; 
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.leave-button:hover {
+  background-color: #ff3333; 
+}
+
+@media (max-width: 600px) {
+  .leave-button {
+    font-size: 0.8rem;
+    padding: 5px 10px;
+  }
+}
 
 .direct-message-content {
   display: flex;
