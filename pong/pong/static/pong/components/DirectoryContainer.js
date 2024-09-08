@@ -1,11 +1,15 @@
 import { Component } from "../core/component.js";
 
 export class DirectoryContainer extends Component {
-  constructor(router, params, state, onRoomJoined) {
+  constructor(router, params, state, onRoomJoined, socket) {
     super(router, params, state, ".directory-container");
-    this.initializeEventListeners();
     this.onRoomJoined = onRoomJoined;
-    this.fetchAndDisplayRooms();
+    this.socket = socket;
+    this.initializeEventListeners();
+
+    if (this.socket) {
+      this.setupWebSocketListeners();
+    }
   }
 
   initializeEventListeners() {
@@ -13,25 +17,26 @@ export class DirectoryContainer extends Component {
       this.handleDOMContentLoaded();
     });
   }
-
-  async fetchAndDisplayRooms(query = "") {
-    try {
-      const response = await fetch("/chat/api/v1/rooms/unjoined");
-      if (response.ok) {
-        const rooms = await response.json();
-        this.displayRooms(rooms.rooms, query);
-      } else {
-        console.error("Failed to fetch rooms");
-      }
-    } catch (error) {
-      alert("An error occurred. Please try again later.", error);
-      console.error("Error fetching rooms:", error);
-    }
+  setWebSocket(socket) {
+    this.socket = socket;
+    this.setupWebSocketListeners();
   }
 
-  displayRooms(rooms, query) {
-    const myRoomsContainer = document.querySelector(".unjoined-rooms");
-    myRoomsContainer.innerHTML = "";
+  setupWebSocketListeners() {
+    this.socket.addEventListener("message", (event) => {
+      const message = JSON.parse(event.data);
+      console.log("WebSocket Message:", message);
+
+      console.log("Non-participation:", message.non_participation);
+      if (message.non_participation) {
+        this.displayRooms(message.non_participation);
+      }
+    });
+  }
+
+  displayRooms(rooms, query = "") {
+    const unjoinedRoomsContainer = document.querySelector(".unjoined-rooms");
+    unjoinedRoomsContainer.innerHTML = "";
 
     const filteredRooms = rooms.filter((room) =>
       room.name.toLowerCase().includes(query.toLowerCase()),
@@ -46,7 +51,7 @@ export class DirectoryContainer extends Component {
         this.handleRoomClick(room);
       });
 
-      myRoomsContainer.appendChild(roomElement);
+      unjoinedRoomsContainer.appendChild(roomElement);
     });
   }
 
@@ -72,7 +77,6 @@ export class DirectoryContainer extends Component {
         if (response.ok) {
           alert("You have successfully joined the chatroom!");
           modal.style.display = "none";
-          this.fetchAndDisplayRooms();
           if (this.onRoomJoined) {
             this.onRoomJoined();
           }
@@ -111,7 +115,7 @@ export class DirectoryContainer extends Component {
   get html() {
     return `<div class="dir-container">
                 <div class="header">
-                    <h2>Directory</h2>
+                    <h2>未参加</h2>
                     <div class="options">•••</div>
                 </div>
                 <div class="unjoined-search-bar">

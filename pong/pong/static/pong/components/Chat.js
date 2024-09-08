@@ -32,6 +32,7 @@ export class Chat extends Component {
 
       if (this.myRoomsContainer) {
         this.myRoomsContainer.setWebSocket(socket);
+        this.directoryContainer.setWebSocket(socket);
       }
     });
 
@@ -71,6 +72,7 @@ export class Chat extends Component {
       () => {
         this.myRoomsContainer.refreshRooms();
       },
+      this.state.socket,
     );
   }
 

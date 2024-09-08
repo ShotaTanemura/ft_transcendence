@@ -20,7 +20,6 @@ export class MyRoomsContainer extends Component {
   setupWebSocketListeners() {
     this.socket.addEventListener("message", (event) => {
       const message = JSON.parse(event.data);
-      console.log(message);
       if (message.rooms) {
         this.displayRooms(message.rooms);
       }
@@ -155,7 +154,6 @@ export class MyRoomsContainer extends Component {
         room_uuid: room.uuid,
         status: "active",
       };
-      console.log("Invited room clicked", inviteRequest);
 
       this.socket.send(JSON.stringify(inviteRequest));
     }
