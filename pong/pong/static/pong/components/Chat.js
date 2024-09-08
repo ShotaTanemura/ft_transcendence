@@ -40,7 +40,6 @@ export class Chat extends Component {
 
     socket.addEventListener("message", (event) => {
       const message = JSON.parse(event.data);
-      console.log("Received message (rooms):", message);
 
       if (message.rooms) {
         this.myRoomsContainer.updateRoomsUI(message.rooms);
@@ -66,6 +65,18 @@ export class Chat extends Component {
     });
   }
 
+  requestRoomRefresh() {
+    if (
+      this.state.socketRooms &&
+      this.state.socketRooms.readyState === WebSocket.OPEN
+    ) {
+      const refreshMessage = JSON.stringify({ job_type: "refresh_rooms" });
+      this.state.socketRooms.send(refreshMessage);
+    } else {
+      console.error("WebSocket connection is not open.");
+    }
+  }
+
   connectToRoomWebSocket(roomUuid) {
     if (this.state.socketRoomSpecific) {
       this.state.socketRoomSpecific.close();
@@ -82,14 +93,11 @@ export class Chat extends Component {
 
     socket.addEventListener("message", (event) => {
       const message = JSON.parse(event.data);
-      console.log("Received message (room-specific):", message);
 
       if (message.user && message.message) {
-        console.log("Appending message:", message);
         this.chatContainer.appendMessage(message);
       }
       if (message.users) {
-        console.log("Refreshing room members:", message.users);
         this.directoryContainer.refreshRoomMembers(message.users);
       }
     });
@@ -127,6 +135,24 @@ export class Chat extends Component {
       }
     };
 
+    this.chatContainer.onLeaveRoom = (roomUuid) => {
+      if (
+        this.state.socketRoomSpecific &&
+        this.state.socketRoomSpecific.readyState === WebSocket.OPEN
+      ) {
+        this.state.socketRoomSpecific.send(
+          JSON.stringify({
+            job_type: "leave_room",
+            room_uuid: roomUuid,
+          }),
+        );
+
+        this.chatContainer.clear();
+        this.requestRoomRefresh();
+      } else {
+        console.error("WebSocket connection is not open for the rooms");
+      }
+    };
     this.myRoomsContainer = new MyRoomsContainer(
       this.router,
       this.params,

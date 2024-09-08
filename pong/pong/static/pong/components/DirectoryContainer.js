@@ -98,7 +98,6 @@ export class DirectoryContainer extends Component {
   setupWebSocketListeners() {
     this.socket.addEventListener("message", (event) => {
       const message = JSON.parse(event.data);
-      console.log("WebSocket Message:", message);
 
       if (message.non_participation) {
         this.updateNonParticipationRoomsUI(message.non_participation);

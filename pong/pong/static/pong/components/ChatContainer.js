@@ -4,6 +4,7 @@ export class ChatContainer extends Component {
   constructor(router, params, state) {
     super(router, params, state, ".chat-container");
     this.selectedRoom = undefined;
+    this.socket = state.socket;
     this.render();
   }
 
@@ -71,18 +72,44 @@ export class ChatContainer extends Component {
 
       const header = document.querySelector(".direct-message-header");
       header.innerHTML = `${select.name} <button class="leave-button">Leave</button>`;
+
+      const leaveButton = document.querySelector(".leave-button");
+      leaveButton.addEventListener("click", () => this.confirmLeaveRoom());
+    }
+  }
+
+  confirmLeaveRoom() {
+    const confirmation = window.confirm("本当に退出しますか？");
+    if (confirmation) {
+      this.leaveRoom();
     }
   }
 
   leaveRoom() {
-    this.selectedRoom = undefined;
-    this.render();
+    if (this.selectedRoom) {
+      this.onLeaveRoom(this.selectedRoom.uuid);
+      this.clear();
+    }
   }
 
   emitMessage(roomUuid, message) {
     if (this.onSendMessage) {
       this.onSendMessage(roomUuid, message);
     }
+  }
+
+  clear() {
+    console.log("Clearing chat container");
+    this.selectedRoom = undefined;
+    const messagesContainer = document.querySelector(
+      ".direct-message-messages",
+    );
+    if (messagesContainer) {
+      messagesContainer.innerHTML = "";
+    }
+    const header = document.querySelector(".direct-message-header");
+    header.innerHTML = "Select a room";
+    this.render();
   }
 
   get html() {

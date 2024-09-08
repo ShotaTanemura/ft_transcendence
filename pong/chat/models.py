@@ -66,16 +66,30 @@ class RoomsManager(models.Manager):
             return users
         except self.model.DoesNotExist:
             raise ValueError("指定された部屋が存在しません")
-    
-    def leave_room(self, user, room):
-        room = self.model.objects.get(uuid=room)
+
+    def leave_room(self, user, room_uuid):
+        room = self.model.objects.get(uuid=room_uuid)
         if not room:
             raise ValueError("部屋が見つかりません")
+
         user_room = UserRooms.objects.get(user_id=user, room_id=room)
+        logger.info(f"User room before deletion: {user_room}")
+
         user_room.delete()
+
+        try:
+            UserRooms.objects.get(user_id=user, room_id=room)
+            logger.warning("User room was not deleted.")
+        except UserRooms.DoesNotExist:
+            logger.info("User room was successfully deleted.")
+
         users = UserRooms.objects.get_users(room)
         if not users:
+            logger.info(f"No users left in the room, deleting room: {room}")
             room.delete()
+        else:
+            logger.info(f"Users still exist in the room: {room}")
+
         return room
 
 

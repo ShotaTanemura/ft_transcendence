@@ -62,6 +62,8 @@ class RoomConsumer(WebsocketConsumer):
             room_id = text_data_json.get("room_uuid")
             Rooms.objects.join_room(self.user, room_id)
             self.send_initial_messages()
+        elif job_type == "refresh_rooms":
+            self.send_initial_messages()
 
     def create_chatroom(self, chatroom_name, room_type, invited_user_email=None):
         try:
@@ -89,7 +91,7 @@ class RoomConsumer(WebsocketConsumer):
                     return
                 UserRooms.objects.create_user_room(invited_user, room, "invited")
             logger.info(f"Room created: {room}")
-            self.send_initial_messages()
+            self.refresh_rooms()
         except Exception as e:
             logger.error(f"Failed to create chatroom: {e}")
             self.send(text_data=json.dumps({"error": "Failed to create chatroom"}))
@@ -97,6 +99,31 @@ class RoomConsumer(WebsocketConsumer):
     def room_created(self, event):
         rooms = event["rooms"]
         self.send(text_data=json.dumps({"rooms": rooms}))
+
+    def refresh_rooms(self):
+        rooms = Rooms.objects.get_rooms_by_user_status(self.user)
+        invited_rooms = Rooms.objects.get_rooms_by_user_status(
+            self.user, UserRooms.UserRoomStatus.INVITED
+        )
+        non_participation = Rooms.objects.get_rooms_non_participation(self.user)
+
+        response_rooms = [serialize_rooms(room) for room in rooms]
+        response_invited_rooms = [serialize_rooms(room) for room in invited_rooms]
+        response_non_participation = [
+            serialize_rooms(room) for room in non_participation
+        ]
+
+        logger.info("refresh_rooms: send")
+
+        async_to_sync(self.channel_layer.group_send)(
+            self.room_group_name,
+            {
+                "type": "init",
+                "rooms": response_rooms,
+                "invited_rooms": response_invited_rooms,
+                "non_participation": response_non_participation,
+            },
+        )
 
     def send_initial_messages(self):
         try:
