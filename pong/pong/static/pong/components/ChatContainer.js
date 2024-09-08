@@ -16,10 +16,8 @@ export class ChatContainer extends Component {
   }
 
   appendMessage(message) {
-    console.log("Appending message to UI:", message); // ログを追加
     const messagesContainer = document.querySelector(".messages");
     if (messagesContainer) {
-      console.log("Appending message to UI:", message); // ログを追加
       const messageElement = document.createElement("div");
       messageElement.classList.add("message");
       messageElement.innerText = `${message.user}: ${message.message}`;
@@ -28,15 +26,6 @@ export class ChatContainer extends Component {
       console.error("Messages container not found");
     }
   }
-  // appendMessage(message) {
-  //   const messagesContainer = document.querySelector(".messages");
-  //   if (messagesContainer) {
-  //     const messageElement = document.createElement("div");
-  //     messageElement.classList.add("message");
-  //     messageElement.innerText = `${message.user}: ${message.message}`;
-  //     messagesContainer.appendChild(messageElement);
-  //   }
-  // }
 
   displayRoom(select) {
     const chatContainer = document.querySelector(".chat");
