@@ -1,7 +1,9 @@
 import { Component } from "../core/component.js";
+import { Header } from "./Header.js";
 import { MyRoomsContainer } from "./MyRoomsContainer.js";
 import { ChatContainer } from "./ChatContainer.js";
 import { DirectoryContainer } from "./DirectoryContainer.js";
+
 
 export class Chat extends Component {
   constructor(router, params, state) {
@@ -156,6 +158,12 @@ export class Chat extends Component {
     }
   };
 
+  afterPageLoaded() {
+    this.headerComponent = new Header(this.router, this.params, this.state);
+    this.element.parentElement.prepend(this.headerComponent.element);
+    this.headerComponent.afterPageLoaded();
+  }
+  
   get html() {
     if (
       !this.myRoomsContainer ||
@@ -166,6 +174,7 @@ export class Chat extends Component {
     }
 
     return `
+
       <div class="parent-container">
         ${this.myRoomsContainer.html}
         ${this.chatContainer.html}
