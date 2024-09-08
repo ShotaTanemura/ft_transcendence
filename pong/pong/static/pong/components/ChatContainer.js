@@ -4,7 +4,6 @@ export class ChatContainer extends Component {
   constructor(router, params, state) {
     super(router, params, state, ".chat-container");
     this.selectedRoom = undefined;
-    this.socket = null;
     this.render();
   }
 
@@ -13,35 +12,7 @@ export class ChatContainer extends Component {
       uuid: room.uuid,
       name: room.name,
     };
-    this.connectToWebSocket(room.uuid);
     this.displayRoom(room);
-  }
-
-  connectToWebSocket(roomUuid) {
-    if (this.socket) {
-      this.socket.close();
-    }
-
-    const wsUrl = "ws://" + window.location.host + "/ws/chat/" + roomUuid + "/";
-
-    this.socket = new WebSocket(wsUrl);
-
-    this.socket.addEventListener("open", () => {
-      console.log("WebSocket connected URL:", wsUrl);
-    });
-
-    this.socket.addEventListener("message", (event) => {
-      const message = JSON.parse(event.data);
-      this.appendMessage(message);
-    });
-
-    this.socket.addEventListener("close", () => {
-      console.log("WebSocket disconnected");
-    });
-
-    this.socket.addEventListener("error", (error) => {
-      console.error("WebSocket error:", error);
-    });
   }
 
   appendMessage(message) {
@@ -90,22 +61,15 @@ export class ChatContainer extends Component {
 
     messageForm.addEventListener("submit", (event) => {
       event.preventDefault();
-      this.postMessage(select.uuid, messageInput.value);
+      this.emitMessage(select.uuid, messageInput.value);
       messageInput.value = "";
     });
   }
 
-  postMessage(roomUuid, message) {
-    if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-      this.socket.send(
-        JSON.stringify({
-          room_uuid: roomUuid,
-          message: message,
-        }),
-      );
-      console.log("Message sent via WebSocket:", message);
-    } else {
-      console.error("WebSocket connection is not open");
+  // WebSocketメッセージ送信
+  emitMessage(roomUuid, message) {
+    if (this.onSendMessage) {
+      this.onSendMessage(roomUuid, message);
     }
   }
 
