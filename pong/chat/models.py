@@ -60,7 +60,9 @@ class RoomsManager(models.Manager):
     def get_users_in_room(self, room_id):
         try:
             room = self.model.objects.get(uuid=room_id)
-            users = User.objects.filter(userrooms__room_id=room)
+            users = User.objects.filter(
+                userrooms__room_id=room, userrooms__user_room_status="active"
+            )
             return users
         except self.model.DoesNotExist:
             raise ValueError("指定された部屋が存在しません")

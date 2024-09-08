@@ -83,9 +83,11 @@ export class Chat extends Component {
       console.log("Received message (room-specific):", message);
 
       if (message.user && message.message) {
+        console.log("Appending message:", message);
         this.chatContainer.appendMessage(message);
       }
       if (message.users) {
+        console.log("Refreshing room members:", message.users);
         this.directoryContainer.refreshRoomMembers(message.users);
       }
     });

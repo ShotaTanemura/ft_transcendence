@@ -113,15 +113,15 @@ class RoomConsumer(WebsocketConsumer):
                 },
             )
 
-            self.send(
-                text_data=json.dumps(
-                    {
-                        "rooms": response_rooms,
-                        "invited_rooms": response_invited_rooms,
-                        "non_participation": response_non_participation,
-                    }
-                )
-            )
+            # self.send(
+            #     text_data=json.dumps(
+            #         {
+            #             "rooms": response_rooms,
+            #             "invited_rooms": response_invited_rooms,
+            #             "non_participation": response_non_participation,
+            #         }
+            #     )
+            # )
         except Rooms.DoesNotExist:
             self.send(text_data=json.dumps({"rooms": []}))
 
@@ -147,11 +147,6 @@ class RoomConsumer(WebsocketConsumer):
                 }
             )
         )
-        # self.send(text_data=json.dumps({
-        #     "rooms": event["rooms"],
-        #     "invited_rooms": event["invited_rooms"],
-        #     "non_participation": event["non_participation"]
-        # }))
 
     def disconnect(self, close_code):
         if hasattr(self, "room_group_name"):

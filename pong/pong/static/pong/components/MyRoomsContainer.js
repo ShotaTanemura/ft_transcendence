@@ -165,6 +165,10 @@ export class MyRoomsContainer extends Component {
 
       this.socket.send(JSON.stringify(inviteRequest));
     }
+    this.state.selectedRoom = room;
+    if (this.onRoomSelected) {
+      this.onRoomSelected(room);
+    }
   }
 
   get html() {

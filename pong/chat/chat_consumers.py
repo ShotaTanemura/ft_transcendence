@@ -32,6 +32,19 @@ class ChatConsumer(WebsocketConsumer):
 
         self.accept()
 
+        room = Rooms.objects.get(uuid=self.room_name)
+        room_id = room.uuid
+        users = Rooms.objects.get_users_in_room(room_id)
+
+        users = [serialize_user(user) for user in users]
+        async_to_sync(self.channel_layer.group_send)(
+            self.room_group_name,
+            {
+                "type": "init",
+                "users": users,
+            },
+        )
+
         try:
             self.send_initial_messages()
         except Exception as e:
@@ -50,6 +63,7 @@ class ChatConsumer(WebsocketConsumer):
 
             users = [serialize_user(user) for user in users]
 
+            logger.info(f"Users in room: {users}")
             if not messages:
                 logger.info(f"No messages found")
                 self.send(
@@ -59,6 +73,7 @@ class ChatConsumer(WebsocketConsumer):
                         }
                     )
                 )
+                return
 
             for message in messages:
                 logger.info(f"Sending message: {message.message}")
@@ -106,6 +121,16 @@ class ChatConsumer(WebsocketConsumer):
                     "user": event["user"],
                     "message": event["message"],
                     "created_at": event["created_at"],
+                }
+            )
+        )
+
+    def init(self, event):
+        logger.info(f"Event: {event}")
+        self.send(
+            text_data=json.dumps(
+                {
+                    "users": event["users"],
                 }
             )
         )
