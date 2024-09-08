@@ -52,7 +52,9 @@ class RoomsManager(models.Manager):
         return rooms
 
     def get_rooms_non_participation(self, user):
-        rooms = self.model.objects.exclude(userrooms__user_id=user)
+        rooms = self.model.objects.exclude(userrooms__user_id=user).filter(
+            room_type=Rooms.RoomType.GROUP
+        )
         return rooms
 
 
