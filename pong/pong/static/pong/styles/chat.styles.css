@@ -115,14 +115,6 @@ body {
   right: 0.625rem;
   top: 0.625rem;
 }
-/* chat */
-.direct-message-container {
-  display: flex;
-  flex-direction: column;
-  /* width: 60rem; */
-  width: 100%;
-  height: 100%;
-}
 
 .header {
   display: flex;
@@ -385,4 +377,105 @@ body {
   color: black;
   text-decoration: none;
   cursor: pointer;
+}
+
+
+/* Direct Messages */
+/* .direct-message-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+} */
+
+.direct-message-container {
+  display: flex;
+  flex-direction: column;
+  height: 90vh;
+  max-width: 600px;
+  margin: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  background-color: #ffffff;
+}
+
+.direct-message-header {
+  padding: 20px;
+  background-color: #4A90E2;
+  color: #ffffff;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+  border-bottom: 2px solid #E2E8F0;
+}
+
+.direct-message-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+  flex-grow: 1;
+  background-color: #F7FAFC;
+}
+
+.direct-message-messages {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding-right: 10px;
+  margin-bottom: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.form {
+  display: flex;
+  align-items: center;
+  border-top: 1px solid #E2E8F0;
+  padding: 10px;
+  gap: 10px;
+  box-sizing: border-box;
+  justify-content: space-between;
+}
+
+.direct-message-form input[type="text"] {
+  flex-grow: 1;
+  padding: 12px;
+  border: 2px solid #E2E8F0;
+  border-radius: 8px;
+  outline: none;
+  font-size: 1rem;
+  width: calc(100% - 90px);
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+.direct-message-form input[type="text"]:focus {
+  border-color: #4A90E2;
+}
+
+.direct-message-form button {
+  padding: 12px 20px;
+  background-color: #4A90E2;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+  white-space: nowrap;
+}
+
+.direct-message-form button:hover {
+  background-color: #357ABD;
+}
+
+.direct-message-messages::-webkit-scrollbar {
+  width: 8px;
+}
+
+.direct-message-messages::-webkit-scrollbar-thumb {
+  background-color: #4A90E2;
+  border-radius: 8px;
 }

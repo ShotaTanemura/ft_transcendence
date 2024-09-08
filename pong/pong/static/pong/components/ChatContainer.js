@@ -16,7 +16,7 @@ export class ChatContainer extends Component {
   }
 
   appendMessage(message) {
-    const messagesContainer = document.querySelector(".messages");
+    const messagesContainer = document.querySelector(".direct-message-messages");
     if (messagesContainer) {
       const messageElement = document.createElement("div");
       messageElement.classList.add("message");
@@ -31,20 +31,17 @@ export class ChatContainer extends Component {
     const chatContainer = document.querySelector(".direct-message-content");
     chatContainer.innerHTML = "";
 
-    // header
     const roomHeader = document.querySelector(".direct-message-header");
     roomHeader.innerText = select.name;
 
-    // content
     const messages = document.createElement("div");
-    messages.classList.add("messages");
+    messages.classList.add("direct-message-messages");
 
-    // form
     const form = document.createElement("div");
     form.classList.add("form");
 
     const messageForm = document.createElement("form");
-    messageForm.classList.add("message-form");
+    messageForm.classList.add("direct-message-form");
 
     const messageInput = document.createElement("input");
     messageInput.type = "text";
@@ -80,9 +77,9 @@ export class ChatContainer extends Component {
       <div class="direct-message-container">
         <div class="direct-message-header">${this.selectedRoom ? this.selectedRoom.name : "Select a room"}</div>
         <div class="direct-message-content">
-          <div class="messages"></div>
+          <div class="direct-message-messages"></div>
           <div class="form">
-            <form class="message-form">
+            <form class="direct-message-form">
               <input type="text" name="message" placeholder="Enter your message" />
               <button type="submit">Send</button>
             </form>
