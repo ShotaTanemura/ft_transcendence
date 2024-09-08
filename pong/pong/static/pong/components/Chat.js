@@ -85,7 +85,9 @@ export class Chat extends Component {
       if (message.user && message.message) {
         this.chatContainer.appendMessage(message);
       }
-      this.directoryContainer.refreshRoomMembers(message.users);
+      if (message.users) {
+        this.directoryContainer.refreshRoomMembers(message.users);
+      }
     });
 
     socket.addEventListener("close", () => {
