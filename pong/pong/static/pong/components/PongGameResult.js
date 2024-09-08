@@ -58,9 +58,14 @@ export class PongGameResult extends Component {
       });
       const matchResultsData = await response.json();
       if (!response.ok) {
-        throw new Error(data.message || "Failed to fetch user data");
+        throw new Error(
+          matchResultsData.message || "Failed to fetch user data",
+        );
       }
-      return matchResultsData;
+      if (!matchResultsData["match-results"]) {
+        throw new Error("Failed to fetch match results");
+      }
+      return matchResultsData["match-results"];
     } catch (error) {
       console.error("Error fetching user data:", error);
       return null;
@@ -82,14 +87,14 @@ export class PongGameResult extends Component {
         </tr>`;
 
     tableElement.appendChild(theadElement);
-    Object.entries(matchResultsData).forEach(([key, result]) => {
+    matchResultsData.forEach((matchResult) => {
       const trElement = document.createElement("tr");
       trElement.innerHTML = `<tr>
-            <th scope="row">${Number(key) + 1}</th>
-            <td>${result.player1}</td>
-            <td>${result.player1_score}</td>
-            <td>${result.player2_score}</td>
-            <td>${result.player2}</td>
+            <th scope="row">${Number(matchResult.id) + 1}</th>
+            <td>${matchResult.contents.player1}</td>
+            <td>${matchResult.contents.player1_score}</td>
+            <td>${matchResult.contents.player2_score}</td>
+            <td>${matchResult.contents.player2}</td>
             </tr>`;
       tbodyElement.appendChild(trElement);
     });
