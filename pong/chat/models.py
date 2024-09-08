@@ -70,8 +70,18 @@ class Rooms(models.Model):
 
 
 class UserRooms(models.Model):
+    class UserRoomStatus(models.TextChoices):
+        ACTIVE = "active", "Active"
+        INACTIVE = "inactive", "Inactive"
+        INVITED = "invited", "Invited"
+
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     room_id = models.ForeignKey(Rooms, on_delete=models.CASCADE)
+    user_room_status = models.CharField(
+        max_length=8,
+        choices=UserRoomStatus.choices,
+        default=UserRoomStatus.ACTIVE,
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
