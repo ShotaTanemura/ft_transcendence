@@ -164,7 +164,6 @@ class Room:
 
     # TODO Make sure it functions correctly even without dummy data
     def game_dispatcher(self, dummy_data):
-
         # set parameter for tournament
         is_tournament_ongoing = True
         tournament_winner = None

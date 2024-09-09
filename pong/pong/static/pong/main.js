@@ -4,7 +4,6 @@ import { Signup } from "./components/Signup.js";
 import { Signin } from "./components/Signin.js";
 import { Home } from "./components/Home.js";
 import { PongGameHome } from "./components/PongGameHome.js";
-import { PongGameRoom } from "./components/PongGameRoom.js";
 import { PongGameWaiting } from "./components/PongGameWaiting.js";
 import { PongGame } from "./components/PongGame.js";
 import { Error } from "./components/Error.js";
