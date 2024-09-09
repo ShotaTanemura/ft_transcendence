@@ -8,6 +8,7 @@ import { PongGameWaiting } from "./components/PongGameWaiting.js";
 import { PongGame } from "./components/PongGame.js";
 import { Error } from "./components/Error.js";
 import { Profile } from "./components/Profile.js";
+import { EditProfile } from "./components/EditProfile.js";
 import { TypingGameHome } from "./components/TypingGameHome.js";
 import { TypingGameRoom } from "./components/TypingGameRoom.js";
 import { TypingGameWaiting } from "./components/TypingGameWaiting.js";
@@ -66,6 +67,11 @@ let router = new Router(
     {
       path: "/profile",
       component: Profile,
+      state: {},
+    },
+    {
+      path: "/edit-profile",
+      component: EditProfile,
       state: {},
     },
     {
