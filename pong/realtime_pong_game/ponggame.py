@@ -53,6 +53,11 @@ class PongGame:
 
     # execture pong game and return the scores
     def execute(self, player1_name, player2_name):
+        self.ball = Ball(FIELD_WIDTH / 2, FIELD_HEIGHT / 2)
+        self.player1_paddle = Paddle()
+        self.player2_paddle = Paddle()
+        self.player1_score = 0
+        self.player2_score = 0
         while self.player1_score < 5 and self.player2_score < 5:
             async_to_sync(self.send_message_to_group)(
                 "send_game_information",

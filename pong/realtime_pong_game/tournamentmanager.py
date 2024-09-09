@@ -101,6 +101,7 @@ class TournamentManager:
         for match in self.tournament_list[self.round]:
             if match.winner == None:
                 match.set_result(player1_score, player2_score)
+                break
 
     def is_round_finished(self):
         for match in self.tournament_list[self.round]:

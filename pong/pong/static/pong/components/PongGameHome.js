@@ -61,6 +61,8 @@ export class PongGameHome extends Component {
       event.target.elements["room-id"].value +
       "/" +
       event.submitter.name +
+      "/" +
+      event.target.elements["number-of-players-selector"].value +
       "/";
 
     this.connection = new WebSocket(socketPath);
@@ -102,6 +104,13 @@ export class PongGameHome extends Component {
 			  	  <label for="room-id">Room ID</label>
 			  	  <input id="room-id" type="number" min="1000" max="9999" required><br>
             <small id="room-id-help">Room ID must be between 1000 and 9999</small>
+          </div>
+          <div class="number-of-players-selector-container p-3">
+            <label for="number-of-players-selector">Select Number of Players: <label>
+            <select name="number-of-players-selector form-select" id="number-of-players-selecor">
+              <option value="2" selected>2</option>
+              <option value="4">4</option>
+            </select>
           </div>
 			  	<input id="enter-room-as-host-submit" name="host" class="btn btn-primary" type="submit" value="enter room as host">
 			  	<input id="enter-room-as-guest-submit" name="guest" class="btn btn-primary" type="submit" value="enter room as guest">
