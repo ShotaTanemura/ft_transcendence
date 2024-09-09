@@ -45,11 +45,6 @@ let router = new Router(
       state: {},
     },
     {
-      path: "/pong-game-room",
-      component: PongGameRoom,
-      state: {},
-    },
-    {
       path: "/pong-game-waiting",
       component: PongGameWaiting,
       state: {},
