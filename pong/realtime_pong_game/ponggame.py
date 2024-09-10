@@ -1,14 +1,18 @@
 import json
 import asyncio
 import time
+import random
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from threading import Lock
 
 # set them to the same values as frontend
 FIELD_WIDTH = 1500
-FIELD_HEIGHT = 585
-PADDLE_SIZE = 80
+FIELD_HEIGHT = 800
+PADDLE_SIZE = 100
+PADDLE_ACCELERATION = 4
+PADDLE_DECELERATION = 0.08
+COEFFICIENT_OF_RESTITUTION = 0.7
 GRID = 15
 FPS = 120
 
@@ -17,8 +21,8 @@ class Ball:
     def __init__(self, x_position, y_position):
         self.x_position = x_position
         self.y_position = y_position
-        self.x_velocity = GRID / 3
-        self.y_velocity = GRID / 3
+        self.x_velocity = GRID / 3 if random.randint(0, 1) else -1 * GRID / 3
+        self.y_velocity = GRID / 3 if random.randint(0, 1) else -1 * GRID / 3
 
     def move(self):
         self.x_position += self.x_velocity
@@ -37,7 +41,12 @@ class Paddle:
             self.position - self.size / 2 + self.velocity < 0
             or FIELD_HEIGHT < self.position + self.size / 2 + self.velocity
         ):
+            self.velocity = -1 * COEFFICIENT_OF_RESTITUTION * self.velocity
             return
+        if 0 < self.velocity:
+            self.velocity = max(0, self.velocity - PADDLE_DECELERATION)
+        elif self.velocity < 0:
+            self.velocity = min(0, self.velocity + PADDLE_DECELERATION)
         self.position += self.velocity
 
 
@@ -67,6 +76,8 @@ class PongGame:
             )
             time.sleep(2)
             self.ball = Ball(FIELD_WIDTH / 2, FIELD_HEIGHT / 2)
+            self.player1_paddle = Paddle()
+            self.player2_paddle = Paddle()
             async_to_sync(self.run)()
         async_to_sync(self.send_message_to_group)(
             "send_game_information",
@@ -140,19 +151,15 @@ class PongGame:
     # recieve player message
     async def recieve_player1_input(self, message_json):
         if message_json["contents"] == "keyup-go-up":
-            self.player1_paddle.velocity = -1 * GRID / 2
+            self.player1_paddle.velocity -= PADDLE_ACCELERATION
         elif message_json["contents"] == "keyup-go-down":
-            self.player1_paddle.velocity = GRID / 2
-        elif message_json["contents"] == "keydown":
-            self.player1_paddle.velocity = 0
+            self.player1_paddle.velocity += PADDLE_ACCELERATION
 
     async def recieve_player2_input(self, message_json):
         if message_json["contents"] == "keyup-go-up":
-            self.player2_paddle.velocity = -1 * GRID / 2
+            self.player2_paddle.velocity -= PADDLE_ACCELERATION
         elif message_json["contents"] == "keyup-go-down":
-            self.player2_paddle.velocity = GRID / 2
-        elif message_json["contents"] == "keydown":
-            self.player2_paddle.velocity = 0
+            self.player2_paddle.velocity += PADDLE_ACCELERATION
 
     # send message to Group that belogs to this room
     async def send_message_to_group(self, method_type, content):
