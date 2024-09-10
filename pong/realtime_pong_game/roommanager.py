@@ -71,6 +71,7 @@ class Room:
         self.room_name = room_name
         self.room_state = RoomState.Not_All_Participants_Connected
         self.participants = []
+        self.participant_nickname_dict = dict()
         self.participants_state = dict()
         self.max_of_participants = 2
         self.game_results = []
@@ -85,13 +86,16 @@ class Room:
             self.participants_state[participant] = new_participant_state
             return True
 
-    def add_new_participant(self, new_participant):
+    def add_new_participant(self, new_participant, new_participant_nickname):
         with self.instance_lock:
             if self.room_state != RoomState.Not_All_Participants_Connected:
                 return False
             if new_participant in self.participants:
                 return False
             self.participants.append(new_participant)
+            self.participant_nickname_dict[new_participant] = (
+                f"{new_participant_nickname} #{len(self.participants)}"
+            )
         self.set_participant_state(new_participant, ParticipantState.Not_In_Place)
         return True
 
@@ -104,8 +108,8 @@ class Room:
             return False
 
     # add user to Room
-    async def on_user_connected(self, user):
-        if not self.add_new_participant(user):
+    async def on_user_connected(self, user, user_nickname):
+        if not self.add_new_participant(user, user_nickname):
             return False
         if len(self.participants) == self.max_of_participants:
             self.set_room_state(RoomState.Display_Tournament)
@@ -167,7 +171,7 @@ class Room:
         # set parameter for tournament
         is_tournament_ongoing = True
         tournament_winner = None
-        self.tournament_manager = TournamentManager(self.participants)
+        self.tournament_manager = TournamentManager(self.participants, self.participant_nickname_dict)
         # add TournamentInfo to DB
         tournament_info = TournamentInfo(tournament_name=self.room_name)
         tournament_info.save()
@@ -182,7 +186,7 @@ class Room:
                     {
                         "sender": "room_manager",
                         "type": "tournament-winner",
-                        "contents": tournament_winner.name,
+                        "contents": self.participant_nickname_dict[tournament_winner],
                     },
                 )
                 break
@@ -210,7 +214,8 @@ class Room:
             async_to_sync(self.send_room_state_to_group)()
             # execute game
             (player1_score, player2_score) = self.pong_game.execute(
-                player1_name=player1.name, player2_name=player2.name
+                player1_name=self.participant_nickname_dict[player1],
+                player2_name=self.participant_nickname_dict[player2],
             )
             # update match db from exected game
             MatchInfo.objects.create(

@@ -28,6 +28,7 @@ class PlayerConsumer(AsyncWebsocketConsumer):
         # register group name
         self.room_name = self.scope["url_route"]["kwargs"].get("room_name")
         self.user_role = self.scope["url_route"]["kwargs"].get("user_role")
+        self.user_nickname = self.scope["url_route"]["kwargs"].get("user_nickname")
         # if url path is not valid, close connection
         if self.room_name == None or self.user_role == None:
             await self.send(
@@ -89,7 +90,9 @@ class PlayerConsumer(AsyncWebsocketConsumer):
         # add user to group
         await self.channel_layer.group_add(self.room_name, self.channel_name)
         # add user to Room
-        is_success = await self.room_manager.on_user_connected(self.user)
+        is_success = await self.room_manager.on_user_connected(
+            self.user, self.user_nickname
+        )
         if not is_success:
             await self.send(
                 text_data=json.dumps(
@@ -131,7 +134,7 @@ class PlayerConsumer(AsyncWebsocketConsumer):
         await self.room_manager.on_receive_user_message(self.user, message_json)
 
     async def disconnect(self, close_code):
-        if self.room_manager != None:
+        if hasattr(self, "room_manager"):
             await self.room_manager.on_user_disconnected(self.user)
         await self.channel_layer.group_discard(self.room_name, self.channel_name)
 
