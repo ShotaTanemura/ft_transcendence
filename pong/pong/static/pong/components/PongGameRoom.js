@@ -1,5 +1,4 @@
 import { Component } from "../core/component.js";
-import { Load } from "./Load.js";
 
 export class PongGameRoom extends Component {
   constructor(router, parameters, state) {

@@ -1,5 +1,4 @@
 import { Component } from "../core/component.js";
-import { Load } from "./Load.js";
 import { Header } from "./Header.js";
 
 export class PongGameHome extends Component {

@@ -1,6 +1,5 @@
 import { Component } from "../core/component.js";
 import { Header } from "./Header.js";
-import { Load } from "./Load.js";
 
 export class EditProfile extends Component {
   #uuid = null;
