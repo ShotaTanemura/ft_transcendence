@@ -171,7 +171,9 @@ class Room:
         # set parameter for tournament
         is_tournament_ongoing = True
         tournament_winner = None
-        self.tournament_manager = TournamentManager(self.participants, self.participant_nickname_dict)
+        self.tournament_manager = TournamentManager(
+            self.participants, self.participant_nickname_dict
+        )
         # add TournamentInfo to DB
         tournament_info = TournamentInfo(tournament_name=self.room_name)
         tournament_info.save()
