@@ -61,10 +61,10 @@ def user(request, uuid):
                     {"message": "Invalid JSON", "status": "invalidJson"}, status=400
                 )
 
-            if data["name"]:
-                user.name = data["name"]
-            if data["email"]:
-                user.email = data["email"]
+            if data.get("name", None):
+                user.name = data.get("name", None)
+            if data.get("email", None):
+                user.email = data.get("name", None)
             try:
                 user.save()
             except IntegrityError as e:
