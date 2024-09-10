@@ -26,7 +26,7 @@ export class PongGameFinished extends Component {
   get html() {
     return `
       <main class="text-center p-5">
-			  <h1>congratulation ${this.getRouteContext("TournamentWinner")}!!</h1>
+			  <h1>Congratulation <span class="text-primary">${this.getRouteContext("TournamentWinner")}</span>!!</h1>
         <button class="go-back-to-game-home btn bg-success">Game Home</button>
       </main>
 		`;
