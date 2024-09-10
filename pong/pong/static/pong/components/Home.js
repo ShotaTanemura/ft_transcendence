@@ -12,7 +12,6 @@ export class Home extends Component {
       this.goRealtimeTyping;
     this.findElement("form.signout-form").onsubmit = this.handleSignout;
     this.findElement("button.go-profile-button").onclick = this.goProfile;
-    this.verifyJwtToken();
   }
 
   afterPageLoaded() {

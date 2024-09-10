@@ -3,7 +3,6 @@ import { Load } from "./Load.js";
 
 export class PongGameRoom extends Component {
   constructor(router, parameters, state) {
-    new Load(router, parameters, state).onload();
     super(router, parameters, state);
     this.findElement("button.ready").onclick = this.onClick;
     this.connection = this.getRouteContext("WebSocket");

@@ -22,7 +22,7 @@ let router = new Router(
   [
     {
       path: "/",
-      component: Signin,
+      component: Home,
       state: {},
     },
     {
@@ -31,8 +31,8 @@ let router = new Router(
       state: {},
     },
     {
-      path: "/home",
-      component: Home,
+      path: "/signin",
+      component: Signin,
       state: {},
     },
     {

@@ -9,7 +9,6 @@ export class PongGameHome extends Component {
   }
 
   afterPageLoaded = () => {
-    new Load(this.outer, this.parameters, this.state).onload();
     this.headerComponent = new Header(this.router, this.params, this.state);
     this.element.parentElement.prepend(this.headerComponent.element);
     this.headerComponent.afterPageLoaded();
