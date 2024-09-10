@@ -68,9 +68,6 @@ export class PongGameHome extends Component {
       case "Not_All_Participants_Connected":
         this.goNextPage("/pong-game-waiting");
         break;
-      case "Waiting_For_Participants_To_Approve_Room":
-        this.goNextPage("/pong-game-room");
-        break;
       case "Display_Tournament":
         this.goNextPage("/pong-game-tournament");
         break;
