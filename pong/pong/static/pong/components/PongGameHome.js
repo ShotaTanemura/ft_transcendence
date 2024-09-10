@@ -106,8 +106,8 @@ export class PongGameHome extends Component {
             <small id="room-id-help">Room ID must be between 1000 and 9999</small>
           </div>
           <div class="number-of-players-selector-container p-3">
-            <label for="number-of-players-selector">Select Number of Players: <label>
-            <select name="number-of-players-selector form-select" id="number-of-players-selecor">
+            <label for="number-of-players-selector">Select Number of Players:  <label>
+            <select name="number-of-players-selector" id="number-of-players-selecor" class="form-select">
               <option value="2" selected>2</option>
               <option value="4">4</option>
             </select>
