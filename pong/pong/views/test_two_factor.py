@@ -37,7 +37,7 @@ class GetUserTest(TestCase):
         self.client.cookies["refresh_token"] = self.refresh_token
 
     def test_register_normal(self):
-        response = self.client.post(reverse("pong:provisioning"))
+        response = self.client.post(reverse("pong:tfa_provisioning"))
         data = response.json()
         tfa = Users2FA.objects.filter(user=self.user.uuid).first()
         actual = two_factor.generateOtpUri(

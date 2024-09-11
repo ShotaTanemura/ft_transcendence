@@ -16,7 +16,7 @@ urlpatterns = [
     path(
         "api/v1/auth/two-factor/provisioning",
         two_factor.provisioning,
-        name="provisioning",
+        name="tfa_provisioning",
     ),
     path("oauth/42/signup", oauth.oauth_42_signup, name="oauth42_signup"),
     path("oauth/42/signin", oauth.oauth_42_signin, name="oauth42_signin"),
