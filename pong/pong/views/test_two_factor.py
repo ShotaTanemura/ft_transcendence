@@ -6,6 +6,7 @@ from pong.views import two_factor
 from datetime import datetime
 import jwt
 
+
 class GetUserTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
@@ -36,9 +37,13 @@ class GetUserTest(TestCase):
         self.client.cookies["refresh_token"] = self.refresh_token
 
     def test_register_normal(self):
-        response = self.client.post(reverse("pong:two_factor"))
+        response = self.client.post(reverse("pong:provisioning"))
         data = response.json()
         tfa = Users2FA.objects.filter(user=self.user.uuid).first()
-        actual = two_factor.generateOtpUri(secret=tfa.secret, account_name=settings.DJANGO_2FA_ACCOUNT_NAME, issuer=settings.DJANGO_2FA_ISSUER)
+        actual = two_factor.generateOtpUri(
+            secret=tfa.secret,
+            account_name=settings.DJANGO_2FA_ACCOUNT_NAME,
+            issuer=settings.DJANGO_2FA_ISSUER,
+        )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data["uri"], actual)

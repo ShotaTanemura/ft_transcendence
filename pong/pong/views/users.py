@@ -30,7 +30,11 @@ def user(request, uuid):
 
             if not tfa:
                 return JsonResponse(
-                    {"message": "User 2FA status is not found", "status": "userNotFound"}, status=404
+                    {
+                        "message": "User 2FA status is not found",
+                        "status": "userNotFound",
+                    },
+                    status=404,
                 )
 
             is_active = tfa.is_active
@@ -99,6 +103,7 @@ def user(request, uuid):
         return JsonResponse(
             {"message": "Internal Server Error", "status": "serverError"}, status=500
         )
+
 
 @csrf_exempt
 @jwt_exempt

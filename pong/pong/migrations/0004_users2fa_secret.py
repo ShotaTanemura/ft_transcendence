@@ -5,15 +5,16 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('pong', '0003_uses2fa'),
+        ("pong", "0003_uses2fa"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='users2fa',
-            name='secret',
-            field=models.CharField(default=pong.utils.random_string.generate_base32_encoded_raondom_string),
+            model_name="users2fa",
+            name="secret",
+            field=models.CharField(
+                default=pong.utils.random_string.generate_base32_encoded_raondom_string
+            ),
         ),
     ]
