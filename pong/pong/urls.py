@@ -13,7 +13,11 @@ urlpatterns = [
     path("api/v1/users/<uuid:uuid>", users.user, name="user"),
     path("api/v1/users/<uuid:uuid>/icon", users.user_icon, name="user_icon"),
     path("api/v1/auth/token/revoke", auth.revoke_token, name="revoke"),
-    path("api/v1/auth/two-factor/register", two_factor.register, name="two_factor"),
+    path(
+        "api/v1/auth/two-factor/provisioning",
+        two_factor.provisioning,
+        name="provisioning",
+    ),
     path("oauth/42/signup", oauth.oauth_42_signup, name="oauth42_signup"),
     path("oauth/42/signin", oauth.oauth_42_signin, name="oauth42_signin"),
     path("oauth/callback/42", oauth.callback_42, name="callback42"),

@@ -86,7 +86,7 @@ paths:
                   $ref: "#/components/schemas/postTokenVerifyResponse"
         "401":
           $ref: "#/components/responses/badRequest"
-   /pong/api/v1/auth/two-factor/register:
+   /pong/api/v1/auth/two-factor/provisioning:
       post:
         summary: TOTPの登録とURIの生成
         description: TOTPの登録とURIの生成
@@ -96,7 +96,7 @@ paths:
             content:
                 "application/json":
                   schema:
-                    $ref: "#/components/schemas/post2FARegisterResponse"
+                    $ref: "#/components/schemas/post2FAProvosoningResponse"
           "400":
             $ref: "#/components/responses/badRequest"
    /pong/api/v1/users/{uuid}:
@@ -249,7 +249,7 @@ components:
             type: string
             description: ユーザーのUUID
             example: b4cf1ef4-1cab-490b-a32c-f6528f95c796
-    post2FARegisterResponse:
+    post2FAProvosoningResponse:
       type: object
       description: TOTPの登録とURIの生成
       properties:
