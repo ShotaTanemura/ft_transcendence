@@ -15,18 +15,16 @@ class MessageSender:
     PLAYER1 = "player1"
     PLAYER2 = "player2"
     players = {
-    PLAYER1: None,
-    PLAYER2: None
+        PLAYER1: "",
+        PLAYER2: ""
     }
     game_finished = False
 
     def __init__(self, room_name):
         self.room_name = room_name
         self.channel_layer = get_channel_layer()
-        # TODO: ゲーム終了フラグの定義場所は適切か？
 
     async def send_message_to_group(self, method_type, content):
-        # print(f"{GREEN}send_message_to_group: {method_type}, {content}{RESET}")
         await self.channel_layer.group_send(
             self.room_name,
             {
@@ -34,10 +32,22 @@ class MessageSender:
                 "contents": content,
             },
         )
+
+    def set_player_name(self, player, participant):
+        print(f"Participant ({player}): {participant} (Type: {type(participant)})")        
+        self.players[player] = str(participant)  # 文字列に変換
+        print(f"{player}: {self.players[player]} (Type: {type(self.players[player])})")
+
+
+    def set_player1_name(self, participant):
+        self.set_player_name(self.PLAYER1, participant)
+
+    def set_player2_name(self, participant):
+        self.set_player_name(self.PLAYER2, participant)
     
-    # プレイヤー名を取得するメソッド（例）
+    # プレイヤー名を取得するメソッド
     def get_player_name(self, player):
-        print(f"{GREEN}get_player_name: {self.players.get(player)}{RESET}")
+        print(f"get_player_name: {self.players.get(player)} (Type: {type(self.players.get(player))})")
         return self.players.get(player)
 
 
@@ -206,10 +216,3 @@ class TypingGame(MessageSender):
         if self.player_to_input == self.PLAYER2 and not self.timer.game_finished:
             input_key = message_json["contents"]
             await self.handle_typing_input(input_key)
-
-    def set_player1_name(self, participant):
-        self.players[self.PLAYER1] = participant
-    def set_player2_name(self, participant):
-        self.players[self.PLAYER2] = participant
-        print(f"{GREEN}set_player2_name: {self.get_player_name(self.PLAYER2)}{RESET}")
-    
