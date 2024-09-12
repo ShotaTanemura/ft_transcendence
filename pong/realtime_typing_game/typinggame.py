@@ -14,16 +14,16 @@ RESET = "\033[0m"
 class MessageSender:
     PLAYER1 = "player1"
     PLAYER2 = "player2"
+    players = {
+    PLAYER1: None,
+    PLAYER2: None
+    }
 
     def __init__(self, room_name):
         self.room_name = room_name
         self.channel_layer = get_channel_layer()
         # TODO: ゲーム終了フラグの定義場所は適切か？
         self.game_finished = False
-        self.players = {
-            self.PLAYER1: None,
-            self.PLAYER2: None
-        }
 
     async def send_message_to_group(self, method_type, content):
         # print(f"{GREEN}send_message_to_group: {method_type}, {content}{RESET}")
