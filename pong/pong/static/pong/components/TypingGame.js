@@ -50,8 +50,10 @@ export class TypingGame extends Component {
       case "incorrect-key":
         break;
 
-      case "time-up":
-        document.getElementById("winner").innerHTML = `winner = ${message.contents.player}`
+      case "game-finished":
+        document.getElementById("winner").innerHTML = `winner = ${message.contents.winner}`
+        // TODO: 値が正しくせってとされているか確認
+        this.setRouteContext("TypingGameWinner", message.contents.winner);
         break;
 
       case "countdown-timer":

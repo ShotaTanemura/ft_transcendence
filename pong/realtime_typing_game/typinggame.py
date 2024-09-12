@@ -12,6 +12,9 @@ RESET = "\033[0m"
 
 
 class MessageSender:
+    PLAYER1 = "player1"
+    PLAYER2 = "player2"
+
     def __init__(self, room_name):
         self.room_name = room_name
         self.channel_layer = get_channel_layer()
@@ -31,7 +34,7 @@ class Timer(MessageSender):
     def __init__(self, room_name):
         super().__init__(room_name)
         # TODO: test用の制限時間。本番は10秒にする
-        self.time_limit = 90
+        self.time_limit = 10
         self.timer = self.time_limit
         self.running = True
 
@@ -55,6 +58,7 @@ class Timer(MessageSender):
                 if self.timer <= 0:  # 0秒以下になった場合の処理
                     print("Time's up!")
                     self.running = False
+                    print(f"{GREEN}Game finished!{RESET}")
                     async_to_sync(self.send_message_to_group)(
                         "send_game_information",
                         {
@@ -63,6 +67,17 @@ class Timer(MessageSender):
                             "contents": {
                                 # 勝敗を判定。(負けたプレイヤーを送信)
                                 "player": player_to_input,
+                            },
+                        },
+                    )
+                    winner = self.PLAYER1 if player_to_input == self.PLAYER2 else self.PLAYER2
+                    async_to_sync(self.send_message_to_group)(
+                        "send_game_information",
+                        {
+                            "sender": "TypingGame",
+                            "type": "game-finished",
+                            "contents": {
+                                "winner": winner,
                             },
                         },
                     )
@@ -75,9 +90,6 @@ class Timer(MessageSender):
         print("Timerをリセットしました。")
         self.start_countdown(player_to_input)
 class TypingGame(MessageSender):
-    PLAYER1 = "player1"
-    PLAYER2 = "player2"
-
     def __init__(self, room_name):
         super().__init__(room_name)
         self.selected_word = ""
