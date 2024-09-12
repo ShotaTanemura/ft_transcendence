@@ -13,7 +13,8 @@ export class TypingGame extends Component {
     this.connection.onmessage = this.onMessage;
     this.input_length = 0
     this.timer = 10
-    this.score = 0
+    // ゲーム開始前にnext-wordが来るので、-1からスタート
+    this.score = -1
     this.isMyTurn = false
 
     document.addEventListener("keydown", (e) => {
@@ -55,7 +56,7 @@ export class TypingGame extends Component {
         this.setRouteContext("TypingGameWinner", message.contents.winner);
         setTimeout(() => {
           this.goNextPage("/typing-game-finished");
-      }, 3000);
+      }, 5000);
         break;
 
       case "countdown-timer":

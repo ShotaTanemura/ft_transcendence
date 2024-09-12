@@ -34,9 +34,7 @@ class MessageSender:
         )
 
     def set_player_name(self, player, participant):
-        print(f"Participant ({player}): {participant} (Type: {type(participant)})")        
         self.players[player] = str(participant)  # 文字列に変換
-        print(f"{player}: {self.players[player]} (Type: {type(self.players[player])})")
 
 
     def set_player1_name(self, participant):
@@ -47,7 +45,6 @@ class MessageSender:
     
     # プレイヤー名を取得するメソッド
     def get_player_name(self, player):
-        print(f"get_player_name: {self.players.get(player)} (Type: {type(self.players.get(player))})")
         return self.players.get(player)
 
 
@@ -70,6 +67,8 @@ class Timer(MessageSender):
                         "type": "countdown-timer",
                         "contents": {
                             "timer": round(self.timer, 1),
+                            # TODO: 確認終わったら消す
+                            "player": self.get_player_name(player_to_input),
                         },
                     },
                 )
@@ -77,12 +76,6 @@ class Timer(MessageSender):
             if self.timer <= 0 and not self.game_finished:  # フラグが既にTrueかどうかをチェック
                 print(f"{GREEN}Game finished!{RESET}")
                 self.game_finished = True
-
-                winner_id = self.PLAYER1 if player_to_input == self.PLAYER2 else self.PLAYER2
-                winner_name = self.get_player_name(winner_id)
-
-                print(f"{GREEN}Winner: {winner_name}{RESET}")
-
                 # 勝者名だけを送信して、Userオブジェクトを避ける
                 async_to_sync(self.send_message_to_group)(
                     "send_game_information",
@@ -90,7 +83,8 @@ class Timer(MessageSender):
                         "sender": "TypingGame",
                         "type": "game-finished",
                         "contents": {
-                            "winner": winner_name,
+                            "winner":  self.get_player_name(self.PLAYER1 if player_to_input == self.PLAYER2 else self.PLAYER2),
+                            "player": self.get_player_name(player_to_input),
                         },
                     },
                 )
@@ -99,7 +93,6 @@ class Timer(MessageSender):
 
     def reset(self, player_to_input):
         self.timer = self.time_limit
-        print("Timerをリセットしました。")
         self.start_countdown(player_to_input)
 
 class TypingGame(MessageSender):
@@ -156,7 +149,6 @@ class TypingGame(MessageSender):
         self.change_player_to_input()
         self.timer.reset(self.player_to_input)
         print(f"{GREEN}Selected word: {self.selected_word}{RESET}")
-
         await self.send_message_to_group(
             "send_game_information",
             {
@@ -164,7 +156,7 @@ class TypingGame(MessageSender):
                 "type": "next-word",
                 "contents": {
                     "word": self.selected_word,
-                    "player": self.player_to_input,
+                    "player": self.get_player_name(self.player_to_input),
                 },
             },
         )
@@ -189,7 +181,7 @@ class TypingGame(MessageSender):
                         "contents": {
                             "word": self.selected_word,
                             "input_length": self.input_length,
-                            "player": self.player_to_input,
+                            "player": self.get_player_name(self.player_to_input),
                         },
                     },
                 )
@@ -202,7 +194,7 @@ class TypingGame(MessageSender):
                     "contents": {
                         "word": self.selected_word,
                         "input_length": self.input_length,
-                        "player": self.player_to_input,
+                        "player": self.get_player_name(self.player_to_input),
                     },
                 },
             )
