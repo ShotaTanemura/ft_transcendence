@@ -2,19 +2,18 @@ import json
 import asyncio
 import random
 from channels.layers import get_channel_layer
+from channels.db import database_sync_to_async
 from asgiref.sync import async_to_sync
 from threading import Lock
 from enum import Enum, auto
 from realtime_pong_game.ponggame import PongGame
 from realtime_pong_game.tournamentmanager import TournamentManager
+from realtime_pong_game.models import TournamentInfo, MatchInfo
 import time
 
 
 class RoomState(Enum):
     Not_All_Participants_Connected = "Not_All_Participants_Connected"
-    Waiting_For_Participants_To_Approve_Room = (
-        "Waiting_For_Participants_To_Approve_Room"
-    )
     Display_Tournament = "Display_Tournament"
     In_Game = "In_Game"
     Finished = "Finished"
@@ -72,6 +71,7 @@ class Room:
         self.room_name = room_name
         self.room_state = RoomState.Not_All_Participants_Connected
         self.participants = []
+        self.participant_nickname_dict = dict()
         self.participants_state = dict()
         self.max_of_participants = 2
         self.game_results = []
@@ -86,13 +86,16 @@ class Room:
             self.participants_state[participant] = new_participant_state
             return True
 
-    def add_new_participant(self, new_participant):
+    def add_new_participant(self, new_participant, new_participant_nickname):
         with self.instance_lock:
             if self.room_state != RoomState.Not_All_Participants_Connected:
                 return False
             if new_participant in self.participants:
                 return False
             self.participants.append(new_participant)
+            self.participant_nickname_dict[new_participant] = (
+                f"{new_participant_nickname} #{len(self.participants)}"
+            )
         self.set_participant_state(new_participant, ParticipantState.Not_In_Place)
         return True
 
@@ -105,12 +108,17 @@ class Room:
             return False
 
     # add user to Room
-    async def on_user_connected(self, user):
-        if not self.add_new_participant(user):
+    async def on_user_connected(self, user, user_nickname):
+        if not self.add_new_participant(user, user_nickname):
             return False
         if len(self.participants) == self.max_of_participants:
-            self.set_room_state(RoomState.Waiting_For_Participants_To_Approve_Room)
+            self.set_room_state(RoomState.Display_Tournament)
             await self.send_room_state_to_group()
+            asyncio.new_event_loop().run_in_executor(
+                None,
+                self.game_dispatcher,
+                "",
+            )
         return True
 
     # delete user from Room
@@ -146,24 +154,8 @@ class Room:
 
     # event handler when receiving user message
     async def on_receive_user_message(self, participant, message_json):
-        if self.room_state == RoomState.Waiting_For_Participants_To_Approve_Room:
-            await self.user_became_ready_for_game(participant, message_json)
-        elif self.room_state == RoomState.In_Game:
+        if self.room_state == RoomState.In_Game:
             await self.handle_game_action(participant, message_json)
-
-    async def user_became_ready_for_game(self, participant, message_json):
-        self.set_participant_state(participant, ParticipantState.Ready)
-        if all(
-            ParticipantState.Ready == self.participants_state[key]
-            for key in self.participants_state
-        ):
-            self.set_room_state(RoomState.Display_Tournament)
-            self.tournament_manager = TournamentManager(self.participants)
-            asyncio.new_event_loop().run_in_executor(
-                None,
-                self.game_dispatcher,
-                "",
-            )
 
     def change_participants_state_for_game(self, player1, player2):
         for participant in self.participants_state.keys():
@@ -176,8 +168,16 @@ class Room:
 
     # TODO Make sure it functions correctly even without dummy data
     def game_dispatcher(self, dummy_data):
+        # set parameter for tournament
         is_tournament_ongoing = True
         tournament_winner = None
+        self.tournament_manager = TournamentManager(
+            self.participants, self.participant_nickname_dict
+        )
+        # add TournamentInfo to DB
+        tournament_info = TournamentInfo(tournament_name=self.room_name)
+        tournament_info.save()
+
         while is_tournament_ongoing:
             (player1, player2) = self.tournament_manager.get_next_match_players()
             # if player2 is None, player1 is the tournament winner
@@ -188,7 +188,7 @@ class Room:
                     {
                         "sender": "room_manager",
                         "type": "tournament-winner",
-                        "contents": tournament_winner.name,
+                        "contents": self.participant_nickname_dict[tournament_winner],
                     },
                 )
                 break
@@ -216,11 +216,22 @@ class Room:
             async_to_sync(self.send_room_state_to_group)()
             # execute game
             (player1_score, player2_score) = self.pong_game.execute(
-                player1_name=player1.name, player2_name=player2.name
+                player1_name=self.participant_nickname_dict[player1],
+                player2_name=self.participant_nickname_dict[player2],
+            )
+            # update match db from exected game
+            MatchInfo.objects.create(
+                tournament_info=tournament_info,
+                player1=player1,
+                player2=player2,
+                player1_score=player1_score,
+                player2_score=player2_score,
             )
             # update trounament from executed game
             self.tournament_manager.update_current_match(player1_score, player2_score)
-        # TODO update db to record match and tournament results
+        # save the tournament winner to TournamentInfo
+        tournament_info.winner = tournament_winner
+        tournament_info.save()
         # send room status to client
         self.set_room_state(RoomState.Finished)
         async_to_sync(self.send_room_state_to_group)()
