@@ -18,12 +18,12 @@ class MessageSender:
     PLAYER1: None,
     PLAYER2: None
     }
+    game_finished = False
 
     def __init__(self, room_name):
         self.room_name = room_name
         self.channel_layer = get_channel_layer()
         # TODO: ゲーム終了フラグの定義場所は適切か？
-        self.game_finished = False
 
     async def send_message_to_group(self, method_type, content):
         # print(f"{GREEN}send_message_to_group: {method_type}, {content}{RESET}")
