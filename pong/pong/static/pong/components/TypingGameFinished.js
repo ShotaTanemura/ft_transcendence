@@ -13,9 +13,11 @@ export class TypingGameFinished extends Component {
   };
 
   get html() {
-    return `	
-    <h1>congratulation ${this.getRouteContext("TypingGameWinner")}!!</h1>
-      <button class="go-back-to-game-home">go back to game home</button>
+    return `
+      <main class="text-center p-5">
+			  <h1>Congratulation <span class="text-primary">${this.getRouteContext("TypingGameWinner")}</span>!!</h1>
+        <button class="go-back-to-game-home">go back to game home</button>
+      </main>
 		`;
   }
 }

@@ -52,8 +52,10 @@ export class TypingGame extends Component {
 
       case "game-finished":
         document.getElementById("winner").innerHTML = `winner = ${message.contents.winner}`
-        // TODO: 値が正しくせってとされているか確認
         this.setRouteContext("TypingGameWinner", message.contents.winner);
+        setTimeout(() => {
+          this.goNextPage("/typing-game-finished");
+      }, 3000);
         break;
 
       case "countdown-timer":

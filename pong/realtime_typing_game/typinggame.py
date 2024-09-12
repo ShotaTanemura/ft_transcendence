@@ -18,6 +18,8 @@ class MessageSender:
     def __init__(self, room_name):
         self.room_name = room_name
         self.channel_layer = get_channel_layer()
+        # TODO: ゲーム終了フラグの定義場所は適切か？
+        self.game_finished = False
 
     async def send_message_to_group(self, method_type, content):
         # print(f"{GREEN}send_message_to_group: {method_type}, {content}{RESET}")
@@ -70,6 +72,7 @@ class Timer(MessageSender):
                             },
                         },
                     )
+                    self.game_finished = True
                     winner = self.PLAYER1 if player_to_input == self.PLAYER2 else self.PLAYER2
                     async_to_sync(self.send_message_to_group)(
                         "send_game_information",
@@ -195,11 +198,11 @@ class TypingGame(MessageSender):
             )
 
     async def recieve_player1_input(self, message_json):
-        if self.player_to_input == self.PLAYER1:
+        if self.player_to_input == self.PLAYER1 and not self.timer.game_finished:
             input_key = message_json["contents"]
             await self.handle_typing_input(input_key)
 
     async def recieve_player2_input(self, message_json):
-        if self.player_to_input == self.PLAYER2:
+        if self.player_to_input == self.PLAYER2 and not self.timer.game_finished:
             input_key = message_json["contents"]
             await self.handle_typing_input(input_key)
