@@ -20,6 +20,10 @@ class MessageSender:
         self.channel_layer = get_channel_layer()
         # TODO: ゲーム終了フラグの定義場所は適切か？
         self.game_finished = False
+        self.players = {
+            self.PLAYER1: None,
+            self.PLAYER2: None
+        }
 
     async def send_message_to_group(self, method_type, content):
         # print(f"{GREEN}send_message_to_group: {method_type}, {content}{RESET}")
@@ -30,6 +34,10 @@ class MessageSender:
                 "contents": content,
             },
         )
+    
+    # プレイヤー名を取得するメソッド（例）
+    def get_player_name(self, player):
+        return self.players.get(player)
 
 
 class Timer(MessageSender):
@@ -67,13 +75,15 @@ class Timer(MessageSender):
                             "sender": "TypingGame",
                             "type": "time-up",
                             "contents": {
-                                # 勝敗を判定。(負けたプレイヤーを送信)
-                                "player": player_to_input,
+                                # TODO: こっちはいらないかも勝敗を判定。(負けたプレイヤーを送信)
+                                "player": self.get_player_name(player_to_input),
                             },
                         },
                     )
                     self.game_finished = True
-                    winner = self.PLAYER1 if player_to_input == self.PLAYER2 else self.PLAYER2
+                    print (f"winner playerID = {self.PLAYER1 if player_to_input == self.PLAYER2 else self.PLAYER2}")
+                    winner = self.get_player_name(self.PLAYER1 if player_to_input == self.PLAYER2 else self.PLAYER2)
+                    print(f"{GREEN}Winner: {winner}{RESET}")
                     async_to_sync(self.send_message_to_group)(
                         "send_game_information",
                         {
@@ -146,6 +156,9 @@ class TypingGame(MessageSender):
         self.change_player_to_input()
         self.timer.reset(self.player_to_input)
         print(f"{GREEN}Selected word: {self.selected_word}{RESET}")
+        print(f"{GREEN}player_to_inputを呼ぶよ{RESET}")
+        print(f"{GREEN}{self.get_player_name(self.player_to_input)}{RESET}")
+        print(f"{GREEN}player_to_inputを呼んだよ{RESET}")
 
         await self.send_message_to_group(
             "send_game_information",
@@ -206,3 +219,11 @@ class TypingGame(MessageSender):
         if self.player_to_input == self.PLAYER2 and not self.timer.game_finished:
             input_key = message_json["contents"]
             await self.handle_typing_input(input_key)
+
+    def set_player1_name(self, participant):
+        self.players[self.PLAYER1] = participant
+        print(f"{GREEN}set_player1_name: {self.get_player_name(self.PLAYER1)}{RESET}")
+    def set_player2_name(self, participant):
+        self.players[self.PLAYER2] = participant
+        print(f"{GREEN}set_player2_name: {self.get_player_name(self.PLAYER2)}{RESET}")
+    

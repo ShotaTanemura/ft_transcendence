@@ -133,6 +133,8 @@ class TypingRoomManager:
         self.change_participants_state_for_game(
             self.participants[0], self.participants[1]
         )
+        self.typing_game.set_player1_name(self.participants[0])
+        self.typing_game.set_player2_name(self.participants[1])
         async_to_sync(self.typing_game.start_game)()
     
     async def handle_game_action(self, participant, message_json):
