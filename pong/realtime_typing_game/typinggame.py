@@ -37,71 +37,61 @@ class MessageSender:
     
     # プレイヤー名を取得するメソッド（例）
     def get_player_name(self, player):
+        print(f"{GREEN}get_player_name: {self.players.get(player)}{RESET}")
         return self.players.get(player)
 
 
 class Timer(MessageSender):
     def __init__(self, room_name):
         super().__init__(room_name)
-        # TODO: test用の制限時間。本番は10秒にする
         self.time_limit = 10
         self.timer = self.time_limit
-        self.running = True
+        self.game_finished = False
 
     def start_countdown(self, player_to_input):
         def countdown():
-            if self.running:
-                while self.timer > 0:
-                    time.sleep(0.1)
-                    self.timer -= 0.1
-                    # print(f"Timer: {self.timer:.1f}秒")
-                    async_to_sync(self.send_message_to_group)(
-                        "send_game_information",
-                        {
-                            "sender": "TypingGame",
-                            "type": "countdown-timer",
-                            "contents": {
-                                "timer": round(self.timer, 1),
-                            },
+            while self.timer > 0 and not self.game_finished:
+                time.sleep(0.1)
+                self.timer -= 0.1
+                async_to_sync(self.send_message_to_group)(
+                    "send_game_information",
+                    {
+                        "sender": "TypingGame",
+                        "type": "countdown-timer",
+                        "contents": {
+                            "timer": round(self.timer, 1),
                         },
-                    )
-                if self.timer <= 0:  # 0秒以下になった場合の処理
-                    print("Time's up!")
-                    self.running = False
-                    print(f"{GREEN}Game finished!{RESET}")
-                    async_to_sync(self.send_message_to_group)(
-                        "send_game_information",
-                        {
-                            "sender": "TypingGame",
-                            "type": "time-up",
-                            "contents": {
-                                # TODO: こっちはいらないかも勝敗を判定。(負けたプレイヤーを送信)
-                                "player": self.get_player_name(player_to_input),
-                            },
+                    },
+                )
+            
+            if self.timer <= 0 and not self.game_finished:  # フラグが既にTrueかどうかをチェック
+                print(f"{GREEN}Game finished!{RESET}")
+                self.game_finished = True
+
+                winner_id = self.PLAYER1 if player_to_input == self.PLAYER2 else self.PLAYER2
+                winner_name = self.get_player_name(winner_id)
+
+                print(f"{GREEN}Winner: {winner_name}{RESET}")
+
+                # 勝者名だけを送信して、Userオブジェクトを避ける
+                async_to_sync(self.send_message_to_group)(
+                    "send_game_information",
+                    {
+                        "sender": "TypingGame",
+                        "type": "game-finished",
+                        "contents": {
+                            "winner": winner_name,
                         },
-                    )
-                    self.game_finished = True
-                    print (f"winner playerID = {self.PLAYER1 if player_to_input == self.PLAYER2 else self.PLAYER2}")
-                    winner = self.get_player_name(self.PLAYER1 if player_to_input == self.PLAYER2 else self.PLAYER2)
-                    print(f"{GREEN}Winner: {winner}{RESET}")
-                    async_to_sync(self.send_message_to_group)(
-                        "send_game_information",
-                        {
-                            "sender": "TypingGame",
-                            "type": "game-finished",
-                            "contents": {
-                                "winner": winner,
-                            },
-                        },
-                    )
+                    },
+                )
 
         threading.Thread(target=countdown, daemon=True).start()
 
     def reset(self, player_to_input):
         self.timer = self.time_limit
-        self.running = True
         print("Timerをリセットしました。")
         self.start_countdown(player_to_input)
+
 class TypingGame(MessageSender):
     def __init__(self, room_name):
         super().__init__(room_name)
@@ -156,9 +146,6 @@ class TypingGame(MessageSender):
         self.change_player_to_input()
         self.timer.reset(self.player_to_input)
         print(f"{GREEN}Selected word: {self.selected_word}{RESET}")
-        print(f"{GREEN}player_to_inputを呼ぶよ{RESET}")
-        print(f"{GREEN}{self.get_player_name(self.player_to_input)}{RESET}")
-        print(f"{GREEN}player_to_inputを呼んだよ{RESET}")
 
         await self.send_message_to_group(
             "send_game_information",
@@ -222,7 +209,6 @@ class TypingGame(MessageSender):
 
     def set_player1_name(self, participant):
         self.players[self.PLAYER1] = participant
-        print(f"{GREEN}set_player1_name: {self.get_player_name(self.PLAYER1)}{RESET}")
     def set_player2_name(self, participant):
         self.players[self.PLAYER2] = participant
         print(f"{GREEN}set_player2_name: {self.get_player_name(self.PLAYER2)}{RESET}")
