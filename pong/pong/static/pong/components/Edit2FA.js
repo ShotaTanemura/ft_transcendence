@@ -32,7 +32,7 @@ export class Edit2FA extends Component {
     
         const uri = uri_challange;
     
-        const qrcodeContainer = document.getElementById("qrcode");
+        const qrcodeContainer = this.findElement("div.qrcode-container");
     
         qrcodeContainer.innerHTML = "";
     
@@ -49,7 +49,7 @@ export class Edit2FA extends Component {
     get html() {
         return `
           <button class="generate-qrcode" type="submit">二要素認証アプリケーション用QRコードを取得する</button>
-          <div id="qrcode"></div>
+          <div class="qrcode-container"></div>
         `;
       }
 }
