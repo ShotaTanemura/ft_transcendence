@@ -18,6 +18,7 @@ urlpatterns = [
         two_factor.provisioning,
         name="tfa_provisioning",
     ),
+    path("/pong/api/v1/auth/two-factor/register", two_factor.register, name="tfa_register"),
     path("oauth/42/signup", oauth.oauth_42_signup, name="oauth42_signup"),
     path("oauth/42/signin", oauth.oauth_42_signin, name="oauth42_signin"),
     path("oauth/callback/42", oauth.callback_42, name="callback42"),
