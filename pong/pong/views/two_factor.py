@@ -3,7 +3,7 @@ from pong.middleware.auth import getJwtPayloadCookie
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from pong.models import Users2FA
-from pong.utils.random_string import generate_base32_encoded_raondom_string
+from pong.utils.random_string import generate_base32_encoded_random_string
 import urllib
 import hmac
 import hashlib
@@ -26,7 +26,7 @@ def provisioning(request):
         )
 
     tfa = Users2FA.objects.filter(user=uuid).first()
-    tfa.secret = generate_base32_encoded_raondom_string()
+    tfa.secret = generate_base32_encoded_random_string()
     tfa.save()
 
     # Generate
