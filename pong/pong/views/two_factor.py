@@ -40,7 +40,7 @@ def provisioning(request):
 
 
 def generateOtpUri(
-    secret, account_name, issuer, digits=6, period=30, algorithm="SHA256"
+    secret, account_name, issuer, digits=6, period=30, algorithm="SHA1"
 ):
     query_params = {
         "secret": secret,
@@ -105,7 +105,7 @@ def generate_totp(secret, time_step=30, timestamp=None):
 
     time_counter_bytes = struct.pack(">Q", time_counter)
     
-    hmac_hash = hmac.new(secret, time_counter_bytes, hashlib.SHA256).digest()
+    hmac_hash = hmac.new(secret, time_counter_bytes, hashlib.SHA1).digest()
     
     offset = hmac_hash[-1] & 0x0F
     binary_code = struct.unpack(">I", hmac_hash[offset:offset+4])[0] & 0x7FFFFFFF
