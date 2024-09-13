@@ -39,9 +39,7 @@ def provisioning(request):
     return JsonResponse({"uri": uri}, status=200)
 
 
-def generateOtpUri(
-    secret, account_name, issuer, digits=6, period=30, algorithm="SHA1"
-):
+def generateOtpUri(secret, account_name, issuer, digits=6, period=30, algorithm="SHA1"):
     query_params = {
         "secret": secret,
         "issuer": issuer,
@@ -53,6 +51,7 @@ def generateOtpUri(
     uri = f"otpauth://totp/{urllib.parse.quote(issuer)}:{urllib.parse.quote(account_name)}?{urllib.parse.urlencode(query_params)}"
 
     return uri
+
 
 @csrf_exempt
 def register(request):
@@ -74,7 +73,7 @@ def register(request):
         return JsonResponse(
             {"message": "Invalid JSON", "status": "invalidJson"}, status=400
         )
-    
+
     code = data.get("code", None)
     if not code:
         return JsonResponse(
@@ -82,7 +81,6 @@ def register(request):
         )
 
     tfa = Users2FA.objects.filter(user=uuid).first()
-    otp = generate_otp(tfa.secret)
 
     if code is not otp:
         return JsonResponse(
@@ -93,8 +91,8 @@ def register(request):
     tfa.save()
 
     return JsonResponse(
-            {"message": "OTP Authentication is succeeded", "status": "success"}, status=200
-        )
+        {"message": "OTP Authentication is succeeded", "status": "success"}, status=200
+    )
 
 
 def generate_totp(secret, time_step=30, timestamp=None):
