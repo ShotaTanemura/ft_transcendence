@@ -92,7 +92,7 @@ export class Edit2FA extends Component {
     });
     let response;
     try {
-      response = await this.register2FA(signupJson);
+      await this.register2FA(signupJson);
     } catch (error) {
       alert(error);
       return;
