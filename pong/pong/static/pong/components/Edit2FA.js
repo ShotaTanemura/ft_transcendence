@@ -90,7 +90,6 @@ export class Edit2FA extends Component {
     const signupJson = JSON.stringify({
       code: event.target["totp-code"].value,
     });
-    let response;
     try {
       await this.register2FA(signupJson);
     } catch (error) {
