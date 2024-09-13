@@ -9,6 +9,8 @@ import hmac
 import hashlib
 import time
 import struct
+import json
+import base64
 
 
 @csrf_exempt
@@ -82,7 +84,7 @@ def register(request):
 
     tfa = Users2FA.objects.filter(user=uuid).first()
 
-    if code is not otp:
+    if not is_valid_totp_code(secret=tfa.secret, code=code):
         return JsonResponse(
             {"message": "OTP is invalid", "status": "invalidParams"}, status=400
         )
@@ -95,18 +97,34 @@ def register(request):
     )
 
 
-def generate_totp(secret, time_step=30, timestamp=None):
-    if timestamp is None:
-        timestamp = int(time.time())
+def is_valid_totp_code(secret, code, window=1, digits=6, period=30, algorithm="SHA1"):
+    def add_padding(secret):
+        return secret + "=" * ((8 - len(secret) % 8) % 8)
 
-    time_counter = timestamp // time_step
+    def generate_totp(secret, time_counter, digits=6, algorithm="SHA1"):
+        padded_secret = add_padding(secret)
+        key = base64.b32decode(padded_secret, casefold=True)
+        time_counter_bytes = time_counter.to_bytes(8, "big")
 
-    time_counter_bytes = struct.pack(">Q", time_counter)
-    
-    hmac_hash = hmac.new(secret, time_counter_bytes, hashlib.SHA1).digest()
-    
-    offset = hmac_hash[-1] & 0x0F
-    binary_code = struct.unpack(">I", hmac_hash[offset:offset+4])[0] & 0x7FFFFFFF
-    
-    otp = binary_code % 1000000
-    return otp
+        hmac_hash = hmac.new(
+            key, time_counter_bytes, getattr(hashlib, algorithm.lower())
+        ).digest()
+
+        offset = hmac_hash[-1] & 0x0F
+        truncated_hash = hmac_hash[offset : offset + 4]
+        binary_code = int.from_bytes(truncated_hash, byteorder="big") & 0x7FFFFFFF
+
+        otp = str(binary_code % (10**digits)).zfill(digits)
+        return otp
+
+    current_time = int(time.time())
+    time_counter = current_time // period
+
+    for error_window in range(-window, window + 1):
+        calculated_code = generate_totp(
+            secret, time_counter + error_window, digits, algorithm
+        )
+        if calculated_code == code:
+            return True
+
+    return False

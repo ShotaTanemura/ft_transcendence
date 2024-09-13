@@ -32,6 +32,7 @@ export class Edit2FA extends Component {
         `;
 
         formTotpCodeContainer.innerHTML = formHTML;
+        formTotpCodeContainer.onsubmit = this.handleRegister2FA;
     }
 
     generateQRCode = async () => {
@@ -61,6 +62,44 @@ export class Edit2FA extends Component {
 
         this.insertTotpCodeForm();
     };
+
+    register2FA = async (jsonData) => {
+        const response = await fetch("/pong/api/v1/auth/two-factor/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: jsonData,
+        });
+        console.log(response);
+        const data = await response.json();
+    
+        if (!response.ok) {
+          switch (response.status) {
+            case 400:
+              throw Error("不正なリクエストです");
+            default:
+              throw Error(data.status);
+          }
+        }
+        return data;
+      };
+
+    handleRegister2FA = async (event) => {
+        event.preventDefault();
+        const signupJson = JSON.stringify({
+          code: event.target.totp-code.value,
+        });
+        let response;
+        try {
+          response = await this.register2FA(signupJson);
+        } catch (error) {
+          alert(error);
+          return;
+        }
+        alert("二要素認証の登録が完了しました。");
+        this.router.goNextPage("/profile");
+    }
 
     get html() {
         return `
