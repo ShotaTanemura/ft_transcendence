@@ -1,6 +1,7 @@
 import { Component } from "../core/component.js";
 import { Load } from "./Load.js";
 import { Header } from "./Header.js";
+import { getUuid, getUserFromUuid } from "../api/api.js";
 
 export class PongGameResult extends Component {
   constructor(router, parameters, state) {
@@ -26,18 +27,18 @@ export class PongGameResult extends Component {
   };
 
   //TODO this fucntion is duplicate
-  getUuid = async () => {
+  getUserName = async () => {
     try {
-      const response = await fetch("/pong/api/v1/auth/token/verify", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to verify token");
+      const userUuid = await getUuid();
+      if (!userUuid) {
+        throw new Error("getUserName: Failed to get user uuid.");
       }
-      return data.uuid;
+      const userInfo = await getUserFromUuid(userUuid);
+      const userName = userInfo.name;
+      if (!userInfo || !userName) {
+        throw new Error("getUserName: Failed to get user or user name");
+      }
+      return userName;
     } catch (error) {
       console.error("Error verifying token:", error);
       return null;
@@ -45,17 +46,20 @@ export class PongGameResult extends Component {
   };
 
   getMatchResultsData = async () => {
-    const uuid = await this.getUuid();
-    if (!uuid) {
+    const userName = await this.getUserName();
+    if (!userName) {
       return;
     }
 
     try {
-      const response = await fetch(`/ponggame/api/v1/match-result/${uuid}`, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-      });
+      const response = await fetch(
+        `/ponggame/api/v1/match-result/${userName}`,
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+        },
+      );
       const matchResultsData = await response.json();
       if (!response.ok) {
         throw new Error(
@@ -90,7 +94,7 @@ export class PongGameResult extends Component {
     matchResultsData.forEach((matchResult) => {
       const trElement = document.createElement("tr");
       trElement.innerHTML = `<tr>
-            <th scope="row">${Number(matchResult.id) + 1}</th>
+            <th scope="row">${Number(matchResult.id)}</th>
             <td>${matchResult.contents.player1}</td>
             <td>${matchResult.contents.player1_score}</td>
             <td>${matchResult.contents.player2_score}</td>

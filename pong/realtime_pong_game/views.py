@@ -7,13 +7,13 @@ from .models import TournamentInfo, MatchInfo
 
 
 @csrf_exempt
-def get_user_match_result(request, uuid):
+def get_user_match_result(request, name):
     if request.method != "GET":
         return JsonResponse(
             {"message": "Method is not allowed", "status": "invalidParams"}, status=400
         )
 
-    user = User.objects.filter(uuid=uuid).first()
+    user = User.objects.filter(name=name).first()
 
     if not user:
         return JsonResponse(
