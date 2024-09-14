@@ -51,10 +51,7 @@ export class Component {
   }
 
   render() {
-    this.element = Component.createElementFromHTML(
-      this.html,
-      this.containerTag,
-    );
+    this.element.innerHTML = this.html;
   }
 
   static createElementFromHTML(html, containerTag) {
