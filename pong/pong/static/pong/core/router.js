@@ -113,6 +113,7 @@ export class Router {
   }
 
   searchRouteFromPath(path) {
+    path = path.replace(/\/$/, "");
     if (path === "") path = "/";
     for (let i = 0; i < this.routingList.length; i++) {
       let route = this.routingList[i];

@@ -10,6 +10,7 @@ export class Home extends Component {
       this.goRealtimePong;
     this.findElement("button.go-realtime-typing-button").onclick =
       this.goRealtimeTyping;
+    this.findElement("button.go-chat-button").onclick = this.goChat;
     this.findElement("form.signout-form").onsubmit = this.handleSignout;
     this.findElement("button.go-profile-button").onclick = this.goProfile;
   }
@@ -29,6 +30,9 @@ export class Home extends Component {
   };
   goRealtimeTyping = () => {
     this.router.goNextPage("/typing-game-home");
+  };
+  goChat = () => {
+    this.router.goNextPage("/chat");
   };
 
   verifyJwtToken = async () => {
@@ -82,6 +86,7 @@ export class Home extends Component {
 			<h1> signin後の仮ページ </h1>
 			<button class="go-realtime-pong-button">PONG GAMEをする</button>
       <button class="go-realtime-typing-button">TYPING GAMEをする</button>
+      <button class="go-chat-button">CHATをする</button>
       <button class="go-profile-button">profile</button>
             <form class="signout-form">
                 <button type="submit">signout</button>
