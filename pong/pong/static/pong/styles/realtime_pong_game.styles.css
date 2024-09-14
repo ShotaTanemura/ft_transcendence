@@ -1,48 +1,151 @@
 /* tournament */
-.round {
+.bracket {
+  display: inline-block;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+  font-size: 0;
+}
+
+.bracket .round {
+  display: inline-block;
+  vertical-align: middle;
+}
+.bracket .round .matches > div {
+  display: inline-block;
+  vertical-align: middle;
+}
+.bracket .round .matches > div.matchups .matchup:last-child {
+  margin-bottom: 0 !important;
+}
+.bracket .round .matches > div.matchups .matchup .participants {
+  border-radius: 0.25rem;
+  overflow: hidden;
+}
+.bracket .round .matches > div.matchups .matchup .participants .participant {
+  box-sizing: border-box;
+  color: #858585;
+  border-left: 0.25rem solid #858585;
+  background: white;
+  width: 14rem;
+  height: 3rem;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.12);
+}
+.bracket
+  .round
+  .matches
+  > div.matchups
+  .matchup
+  .participants
+  .participant.winner {
+  color: #60c645;
+  border-color: #60c645;
+}
+.bracket
+  .round
+  .matches
+  > div.matchups
+  .matchup
+  .participants
+  .participant.loser {
+  color: #dc563f;
+  border-color: #dc563f;
+}
+.bracket
+  .round
+  .matches
+  > div.matchups
+  .matchup
+  .participants
+  .participant:not(:last-child) {
+  border-bottom: thin solid #f0f2f2;
+}
+.bracket .round .matches > div.matchups .matchup .participants .participant {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  width: 200px;
-  list-style: none;
-  padding: 0;
+  justify-content: space-between;
 }
-.round .spacer {
-  flex-grow: 1;
+.bracket
+  .round
+  .matches
+  > div.matchups
+  .matchup
+  .participants
+  .participant
+  span {
+  margin: 0 1.25rem;
+  line-height: 3;
+  font-size: 1rem;
+  font-family: "Roboto Slab";
+  text-align: right;
+  width: 80;
 }
-.round .spacer:first-child,
-.round .spacer:last-child {
-  flex-grow: 0.5;
+.bracket .round .matches > div.connector.filled .line,
+.bracket .round .matches > div.connector.filled.bottom .merger:after,
+.bracket .round .matches > div.connector.filled.top .merger:before {
+  border-color: #60c645;
+}
+.bracket .round .matches > div.connector .line,
+.bracket .round .matches > div.connector .merger {
+  box-sizing: border-box;
+  width: 2rem;
+  display: inline-block;
+  vertical-align: top;
+}
+.bracket .round .matches > div.connector .line {
+  border-bottom: thin solid #c0c0c8;
+  height: 4rem;
+}
+.bracket .round .matches > div.connector .merger {
+  position: relative;
+  height: 8rem;
+}
+.bracket .round .matches > div.connector .merger:before,
+.bracket .round .matches > div.connector .merger:after {
+  content: "";
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  height: 50%;
+  border: 0 solid;
+  border-color: #c0c0c8;
+}
+.bracket .round .matches > div.connector .merger:before {
+  border-right-width: thin;
+  border-top-width: thin;
+}
+.bracket .round .matches > div.connector .merger:after {
+  border-right-width: thin;
+  border-bottom-width: thin;
+}
+.bracket .round-1 .matches:not(:last-child) {
+  margin-bottom: 2rem;
 }
 
-.round .game-spacer {
-  flex-grow: 1;
+.bracket .round-1 .matches .matchups .matchup:not(:last-child) {
+  margin-bottom: 2rem;
 }
 
-li.game {
-  padding-left: 20px;
+.bracket .round-2 .matches .matchups .matchup:not(:last-child) {
+  margin-bottom: 10rem;
 }
 
-li.game.winner {
-  font-weight: bold;
-  border-bottom: 5px solid black;
+.bracket .round-2 .matches .connector .merger {
+  height: 16rem;
 }
 
-li.game.loser {
-  color: red;
-  border-bottom: 5px solid red;
+.bracket .round-2 .matches .connector .line {
+  height: 8rem;
 }
 
-li.game span {
-  float: right;
-  margin-right: 5px;
+.bracket .round-3 .matches .connector .merger {
+  height: 3rem;
 }
 
-li.game-spacer {
-  border-right: 5px solid black;
-  min-height: 50px;
+.bracket .round-3 .matches .connector .line {
+  height: 1.5rem;
 }
-
 /* general */
 body {
   margin: 0;
