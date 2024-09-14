@@ -1,0 +1,84 @@
+main.signin {
+  background-color: white;
+  padding: 2.5rem;
+  border-radius: 0.625rem;
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+  width: 100vw;
+  height: 100vh;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+main.signin .signin-container {
+  max-width: 40rem;
+  min-width: 30rem;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: white;
+  border-radius: 0.625rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+}
+
+main.signin h1 {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 1.25rem;
+}
+
+main.signin form {
+  margin-bottom: 1.25rem;
+}
+
+main.signin label {
+  display: block;
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+  text-align: left;
+}
+
+main.signin input {
+  width: 100%;
+  padding: 0.625rem;
+  margin-bottom: 0.9375rem;
+  border: 1px solid #ddd;
+  border-radius: 0.3125rem;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+main.signin button {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #0077b5;
+  color: white;
+  border: none;
+  border-radius: 0.3125rem;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+}
+
+main.signin button:hover {
+  background-color: #0077b5;
+}
+
+main.signin button.form-42oauth {
+  background-color: #0077b5;
+  margin-bottom: 1.25rem;
+}
+
+main.signin button.form-42oauth:hover {
+  background-color: #005a87;
+}
+
+#go-signin {
+  background-color: #0077b5;
+  margin-top: 0.625rem;
+}
+
+#go-signin:hover {
+  background-color: #0077b5;
+}
