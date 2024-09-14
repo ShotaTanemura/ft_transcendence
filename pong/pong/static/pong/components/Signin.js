@@ -40,7 +40,7 @@ export class Signin extends Component {
     });
     try {
       await this.generateToken(signinJson);
-      this.router.goNextPage("/home");
+      this.router.goNextPage("/");
     } catch (error) {
       alert(error);
     }
