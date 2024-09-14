@@ -157,7 +157,52 @@ class UserIconTest(TestCase):
         self.user.refresh_from_db()
         self.assertFalse(self.user.icon.name.startswith("uploads/"))
 
-    def tearDown(self):
-        if self.user.icon:
-            if os.path.exists(self.user.icon.path):
-                os.remove(self.user.icon.path)
+class OtherUserTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            name="ユーザー名", email="example@email.com", password="p4s$W0rd"
+        )
+        self.token_payload = {
+            "uuid": str(self.user.uuid),
+            "exp": datetime.utcnow() + settings.JWT_AUTH["JWT_EXPIRATION_DELTA"],
+            "iat": datetime.utcnow(),
+        }
+        self.token = jwt.encode(
+            self.token_payload,
+            settings.JWT_AUTH["JWT_PRIVATE_KEY"],
+            algorithm=settings.JWT_AUTH["JWT_ALGORITHM"],
+        )
+        self.refresh_token_payload = {
+            "uuid": str(self.user.uuid),
+            "exp": datetime.utcnow()
+            + settings.JWT_AUTH["JWT_REFRESH_EXPIRATION_DELTA"],
+            "iat": datetime.utcnow(),
+        }
+        self.refresh_token = jwt.encode(
+            self.refresh_token_payload,
+            settings.JWT_AUTH["JWT_PRIVATE_KEY"],
+            algorithm=settings.JWT_AUTH["JWT_ALGORITHM"],
+        )
+        self.client.cookies["token"] = self.token
+        self.client.cookies["refresh_token"] = self.refresh_token
+
+    def test_get_other_user_normal(self):
+        response = self.client.get(
+            reverse("pong:other_user", kwargs={"name": self.user.name}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_other_user_not_found(self):
+        response = self.client.get(
+            reverse("pong:other_user", kwargs={"name": "notfound"}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_get_other_user_not_allowed_method(self):
+        response = self.client.post(
+            reverse("pong:other_user", kwargs={"name": self.user.name}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
