@@ -34,7 +34,7 @@ class MessageSender:
         )
 
     def set_player_name(self, player, participant):
-        self.players[player] = str(participant)  # 文字列に変換
+        self.players[player] = str(participant)
 
 
     def set_player1_name(self, participant):
@@ -69,15 +69,13 @@ class Timer(MessageSender):
                         "type": "countdown-timer",
                         "contents": {
                             "timer": round(self.timer, 1),
-                            "player": self.get_player_name(MessageSender.player_to_input),
                         },
                     },
                 )
             
-            if self.timer <= 0 and not self.game_finished:  # フラグが既にTrueかどうかをチェック
+            if self.timer <= 0 and not self.game_finished:
                 print(f"{GREEN}Game finished!{RESET}")
                 self.game_finished = True
-                # 勝者名だけを送信して、Userオブジェクトを避ける
                 async_to_sync(self.send_message_to_group)(
                     "send_game_information",
                     {
@@ -85,7 +83,6 @@ class Timer(MessageSender):
                         "type": "game-finished",
                         "contents": {
                             "winner":  self.get_player_name(self.PLAYER1 if MessageSender.player_to_input == self.PLAYER2 else self.PLAYER2),
-                            "player": self.get_player_name(MessageSender.player_to_input),
                         },
                     },
                 )
@@ -95,7 +92,6 @@ class Timer(MessageSender):
 
     def reset(self):
         self.timer = self.time_limit
-        print(f"{GREEN}player_to_input = {self.get_player_name(MessageSender.player_to_input)}{RESET}")
         self.start_countdown()
 
 class TypingGame(MessageSender):
@@ -128,13 +124,13 @@ class TypingGame(MessageSender):
                 reader = csv.reader(csvfile)
                 next(reader)  # ヘッダーをスキップ
                 for row in reader:
-                    word = row[0].strip()  # 単語をトリムしてリストに追加
+                    word = row[0].strip()
                     if word:
                         words.append(word)
         except FileNotFoundError:
-            print(f"{RED}Error: {csv_file_path} ファイルが見つかりません{RESET}")  # 赤色で表示
+            print(f"{RED}Error: {csv_file_path} ファイルが見つかりません{RESET}")
         except Exception as e:
-            print(f"{RED}Error: {e}{RESET}")  # 赤色で表示
+            print(f"{RED}Error: {e}{RESET}")
         print(f"{GREEN}words.csvファイルが読み込まれました{RESET}")
         print(f"{GREEN}Loaded {len(words)} words{RESET}")
         return words
