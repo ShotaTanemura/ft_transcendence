@@ -46,6 +46,7 @@ export class TypingGame extends Component {
         document.getElementById("inputCorrect").innerHTML =
         message.contents.word[this.input_length];
         this.input_length++;
+        // TODO: 文字が合っていたら、文字色を変える
         break;
 
       case "incorrect-key":
@@ -87,7 +88,7 @@ export class TypingGame extends Component {
       <div> 入力する人 = 
         <span id="player_to_input">player1</span><br>
       </div>
-      <div> 正解した単語数 = 
+      <div> ２人が入力した単語数 = 
        <span id="score">0</span><br>
       </div>
       <div>

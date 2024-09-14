@@ -11,7 +11,7 @@ GREEN = "\033[92m"
 RESET = "\033[0m"
 
 
-class MessageSender:
+class GameManager:
     PLAYER1 = "player1"
     PLAYER2 = "player2"
     players = {
@@ -36,19 +36,17 @@ class MessageSender:
     def set_player_name(self, player, participant):
         self.players[player] = str(participant)
 
-
     def set_player1_name(self, participant):
         self.set_player_name(self.PLAYER1, participant)
 
     def set_player2_name(self, participant):
         self.set_player_name(self.PLAYER2, participant)
     
-    # プレイヤー名を取得するメソッド
     def get_player_name(self, player):
         return self.players.get(player)
 
 
-class Timer(MessageSender):
+class Timer(GameManager):
     def __init__(self, room_name):
         super().__init__(room_name)
         self.time_limit = 10
@@ -82,7 +80,7 @@ class Timer(MessageSender):
                         "sender": "TypingGame",
                         "type": "game-finished",
                         "contents": {
-                            "winner":  self.get_player_name(self.PLAYER1 if MessageSender.player_to_input == self.PLAYER2 else self.PLAYER2),
+                            "winner":  self.get_player_name(self.PLAYER1 if GameManager.player_to_input == self.PLAYER2 else self.PLAYER2),
                         },
                     },
                 )
@@ -94,7 +92,7 @@ class Timer(MessageSender):
         self.timer = self.time_limit
         self.start_countdown()
 
-class TypingGame(MessageSender):
+class TypingGame(GameManager):
     def __init__(self, room_name):
         super().__init__(room_name)
         self.selected_word = ""
@@ -136,10 +134,10 @@ class TypingGame(MessageSender):
         return words
 
     def change_player_to_input(self):
-        if MessageSender.player_to_input == self.PLAYER1:
-            MessageSender.player_to_input = self.PLAYER2
+        if GameManager.player_to_input == self.PLAYER1:
+            GameManager.player_to_input = self.PLAYER2
         else:
-            MessageSender.player_to_input = self.PLAYER1
+            GameManager.player_to_input = self.PLAYER1
 
     async def next_word(self):
         self.input_length = 0
@@ -154,7 +152,7 @@ class TypingGame(MessageSender):
                 "type": "next-word",
                 "contents": {
                     "word": self.selected_word,
-                    "player": self.get_player_name(MessageSender.player_to_input),
+                    "player": self.get_player_name(GameManager.player_to_input),
                 },
             },
         )
@@ -179,7 +177,7 @@ class TypingGame(MessageSender):
                         "contents": {
                             "word": self.selected_word,
                             "input_length": self.input_length,
-                            "player": self.get_player_name(MessageSender.player_to_input),
+                            "player": self.get_player_name(GameManager.player_to_input),
                         },
                     },
                 )
@@ -192,17 +190,17 @@ class TypingGame(MessageSender):
                     "contents": {
                         "word": self.selected_word,
                         "input_length": self.input_length,
-                        "player": self.get_player_name(MessageSender.player_to_input),
+                        "player": self.get_player_name(GameManager.player_to_input),
                     },
                 },
             )
 
     async def recieve_player1_input(self, message_json):
-        if MessageSender.player_to_input == self.PLAYER1 and not self.timer.game_finished:
+        if GameManager.player_to_input == self.PLAYER1 and not self.timer.game_finished:
             input_key = message_json["contents"]
             await self.handle_typing_input(input_key)
 
     async def recieve_player2_input(self, message_json):
-        if MessageSender.player_to_input == self.PLAYER2 and not self.timer.game_finished:
+        if GameManager.player_to_input == self.PLAYER2 and not self.timer.game_finished:
             input_key = message_json["contents"]
             await self.handle_typing_input(input_key)
