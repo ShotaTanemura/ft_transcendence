@@ -1,10 +1,10 @@
-from .typinggame import TypingGame  # 新たに追加
 import json
 import asyncio
+from threading import Lock
+from enum import Enum
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
-from threading import Lock
-from enum import Enum, auto
+from .typinggame import TypingGame
 
 RED = "\033[91m"
 GREEN = "\033[92m"
