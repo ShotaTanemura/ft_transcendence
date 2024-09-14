@@ -81,6 +81,13 @@ class RoomConsumer(WebsocketConsumer):
                             {"error": "招待するユーザーが見つかりません"}
                         )
                     )
+                if invited_user == self.user:
+                    self.send(
+                        text_data=json.dumps(
+                            {"error": "自分自身を招待することはできません"}
+                        )
+                    )
+                    return
                 is_blocked = UserBlock.objects.is_blocked(self.user, invited_user)
                 if is_blocked:
                     self.send(
