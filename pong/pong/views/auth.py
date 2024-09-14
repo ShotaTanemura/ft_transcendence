@@ -2,7 +2,7 @@ import json
 from django.http.response import JsonResponse
 from pong.models import User, Users2FA
 from django.views.decorators.csrf import csrf_exempt
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.conf import settings
 from pong.middleware.auth import jwt_exempt, getJwtPayloadCookie, getJwtPayload
 from pong.utils.create_response import (
@@ -12,7 +12,6 @@ from pong.utils.create_response import (
 from pong.utils.redis_client import redis_client
 from pong.views.two_factor import is_valid_totp_code
 import jwt
-import datetime
 
 
 @jwt_exempt
@@ -85,7 +84,7 @@ def create_token(request):
                 },
                 status=401,
             ),
-            exp_delta=datetime.timedelta(minutes=3),
+            exp_delta=timedelta(minutes=3),
             status="2FAPending",
             auth_level="partial",
         )
