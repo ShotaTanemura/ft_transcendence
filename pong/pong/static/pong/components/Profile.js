@@ -5,6 +5,7 @@ export class Profile extends Component {
   constructor(router, params, state) {
     super(router, params, state);
     this.loadUserProfile();
+    this.findElement("button.edit-profile-button").onclick = this.goEditProfile;
   }
 
   async loadUserProfile() {
@@ -20,7 +21,7 @@ export class Profile extends Component {
       this.updateProfileUI(user);
     } catch (error) {
       console.error("Failed to load user profile:", error);
-      // アラート出してから
+      window.alert("Failed to load user profile");
       this.router.goNextPage("/");
     }
   }
@@ -32,12 +33,18 @@ export class Profile extends Component {
     console.log(user.icon);
   }
 
+  goEditProfile = () => {
+    this.router.goNextPage("/edit-profile");
+  };
+
   get html() {
     return `
             <h1>プロフィールページ</h1>
             <img id="user-icon">
             <p><strong>Username:</strong> <span id="username"></span></p>
             <p><strong>E-mail:</strong> <span id="email"></span></p>
+            <br>
+            <button class="edit-profile-button">プロフィールを変更する</button>
         `;
   }
 }

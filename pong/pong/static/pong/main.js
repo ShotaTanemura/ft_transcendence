@@ -4,11 +4,11 @@ import { Signup } from "./components/Signup.js";
 import { Signin } from "./components/Signin.js";
 import { Home } from "./components/Home.js";
 import { PongGameHome } from "./components/PongGameHome.js";
-import { PongGameRoom } from "./components/PongGameRoom.js";
 import { PongGameWaiting } from "./components/PongGameWaiting.js";
 import { PongGame } from "./components/PongGame.js";
 import { Error } from "./components/Error.js";
 import { Profile } from "./components/Profile.js";
+import { EditProfile } from "./components/EditProfile.js";
 import { TypingGameHome } from "./components/TypingGameHome.js";
 import { TypingGameRoom } from "./components/TypingGameRoom.js";
 import { TypingGameWaiting } from "./components/TypingGameWaiting.js";
@@ -46,11 +46,6 @@ let router = new Router(
       state: {},
     },
     {
-      path: "/pong-game-room",
-      component: PongGameRoom,
-      state: {},
-    },
-    {
       path: "/pong-game-waiting",
       component: PongGameWaiting,
       state: {},
@@ -78,6 +73,11 @@ let router = new Router(
     {
       path: "/profile",
       component: Profile,
+      state: {},
+    },
+    {
+      path: "/edit-profile",
+      component: EditProfile,
       state: {},
     },
     {
