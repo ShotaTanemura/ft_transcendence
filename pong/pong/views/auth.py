@@ -121,7 +121,8 @@ def create_token_totp(request):
 
     status = session_payload.get("status")
     uuid = session_payload.get("uuid")
-    if not status or not uuid or status == "2FAPending":
+    if not status or not uuid or status != "2FAPending":
+        print(session_payload)
         return JsonResponse(
             {"message": "Invalid Session token", "status": "invalidParams"}, status=400
         )
@@ -141,7 +142,7 @@ def create_token_totp(request):
         )
 
     tfa = Users2FA.objects.filter(user=uuid).first()
-    if not tfa or tfa.is_active:
+    if not tfa or not tfa.is_active:
         return JsonResponse(
             {"message": "2FA is not activated", "status": "invalidParams"}, status=400
         )
