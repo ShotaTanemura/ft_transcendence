@@ -30,23 +30,23 @@ export class Header extends Component {
   };
 
   onClickUserProfileButton = () => {
-    //TODO handle action
-    alert("#TODO ユーザープロフィールに移動する");
+    this.router.goNextPage("/profile");
+    this.render();
   };
 
   onClickHomeLink = () => {
-    //TODO handle action
-    alert("#TODO ホームに移動する");
+    this.router.goNextPage("/home");
+    this.render();
   };
 
   onClickChatLink = () => {
-    //TODO handle action
-    alert("#TODO チャットに移動する");
+    this.router.goNextPage("/chat");
+    this.render();
   };
 
   onClickPongGameLink = () => {
-    //TODO handle action
-    alert("#TODO PongGameに移動する");
+    this.router.goNextPage("/pong-game-home");
+    this.render();
   };
 
   onClickTypingGameLink = () => {
