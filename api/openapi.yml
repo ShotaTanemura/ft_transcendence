@@ -142,7 +142,7 @@ paths:
           $ref: "#/components/responses/badRequest"
         "404":
           $ref: "#/components/responses/notFoundError"
-  /pong/api/v1/users/{name}:
+  /pong/api/v1/users/others/{name}:
     get:
       summary: 他のユーザー情報取得
       description: 名前で他のユーザーの情報を取得
