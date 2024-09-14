@@ -5,17 +5,18 @@ import { Signin } from "./components/Signin.js";
 import { Home } from "./components/Home.js";
 import { Chat } from "./components/Chat.js";
 import { PongGameHome } from "./components/PongGameHome.js";
-import { PongGameRoom } from "./components/PongGameRoom.js";
 import { PongGameWaiting } from "./components/PongGameWaiting.js";
 import { PongGame } from "./components/PongGame.js";
 import { Error } from "./components/Error.js";
 import { Profile } from "./components/Profile.js";
+import { EditProfile } from "./components/EditProfile.js";
 import { TypingGameHome } from "./components/TypingGameHome.js";
 import { TypingGameRoom } from "./components/TypingGameRoom.js";
 import { TypingGameWaiting } from "./components/TypingGameWaiting.js";
 import { TypingGame } from "./components/TypingGame.js";
 import { PongGameTournament } from "./components/PongGameTournament.js";
 import { PongGameFinished } from "./components/PongGameFinished.js";
+import { PongGameResult } from "./components/PongGameResult.js";
 
 let router = new Router(
   document.getElementById("app"),
@@ -51,11 +52,6 @@ let router = new Router(
       state: {},
     },
     {
-      path: "/pong-game-room",
-      component: PongGameRoom,
-      state: {},
-    },
-    {
       path: "/pong-game-waiting",
       component: PongGameWaiting,
       state: {},
@@ -76,8 +72,18 @@ let router = new Router(
       state: {},
     },
     {
+      path: "/pong-game-match-result",
+      component: PongGameResult,
+      state: {},
+    },
+    {
       path: "/profile",
       component: Profile,
+      state: {},
+    },
+    {
+      path: "/edit-profile",
+      component: EditProfile,
       state: {},
     },
     {

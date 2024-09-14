@@ -24,5 +24,6 @@ urlpatterns = [
     path(settings.ADMIN_PANEL_URL, admin.site.urls),
     path("pong/", include("pong.urls")),
     path("chat/", include("chat.urls")),
+    path("ponggame/", include("realtime_pong_game.urls")),
     re_path(r"^.*$", index, name="index"),
 ]

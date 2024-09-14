@@ -6,6 +6,8 @@ export class PongGameHome extends Component {
   constructor(router, parameters, state) {
     super(router, parameters, state);
     this.findElement("form.entering-room-form").onsubmit = this.submitForm;
+    this.findElement("button.view-pong-match-results").onclick =
+      this.goViewMatchResultsPage;
   }
 
   afterPageLoaded = () => {
@@ -52,16 +54,7 @@ export class PongGameHome extends Component {
   submitForm = (event) => {
     event.preventDefault();
     this.setRouteContext("RoomID", event.target.elements["room-id"].value);
-    const socketPath =
-      "ws://" +
-      window.location.hostname +
-      ":" +
-      window.location.port +
-      "/realtime-pong/" +
-      event.target.elements["room-id"].value +
-      "/" +
-      event.submitter.name +
-      "/";
+    const socketPath = `ws://${window.location.hostname}:${window.location.port}/realtime-pong/${event.target.elements["room-id"].value}/${event.submitter.name}/${event.target.elements["user-nickname"].value}/`;
 
     this.connection = new WebSocket(socketPath);
     this.setRouteContext("WebSocket", this.connection);
@@ -77,9 +70,6 @@ export class PongGameHome extends Component {
       case "Not_All_Participants_Connected":
         this.goNextPage("/pong-game-waiting");
         break;
-      case "Waiting_For_Participants_To_Approve_Room":
-        this.goNextPage("/pong-game-room");
-        break;
       case "Display_Tournament":
         this.goNextPage("/pong-game-tournament");
         break;
@@ -93,6 +83,10 @@ export class PongGameHome extends Component {
         throw Error("changePageByRoomStatus: doesn't match any room states.");
     }
   };
+  goViewMatchResultsPage = () => {
+    this.goNextPage("/pong-game-match-result");
+  };
+
   get html() {
     return `
       <main class="text-center p-5">
@@ -101,10 +95,14 @@ export class PongGameHome extends Component {
           <div class="form-group p-3">
 			  	  <label for="room-id">Room ID</label>
 			  	  <input id="room-id" type="number" min="1000" max="9999" required><br>
-            <small id="room-id-help">Room ID must be between 1000 and 9999</small>
+            <small id="room-id-help">Room ID must be between 1000 and 9999</small><br><br>
+				    <label for="user-nickname">Nickname</label>
+            <input id="user-nickname" type="text" placeholder="nickname" maxlength=20 required><br>
           </div>
 			  	<input id="enter-room-as-host-submit" name="host" class="btn btn-primary" type="submit" value="enter room as host">
 			  	<input id="enter-room-as-guest-submit" name="guest" class="btn btn-primary" type="submit" value="enter room as guest">
+          <br><br>
+          <button class="view-pong-match-results btn btn-primary">view match results</button>
 			  </form>
       </main>
 		`;
