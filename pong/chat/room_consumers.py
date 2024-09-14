@@ -155,15 +155,6 @@ class RoomConsumer(WebsocketConsumer):
                 },
             )
 
-            # self.send(
-            #     text_data=json.dumps(
-            #         {
-            #             "rooms": response_rooms,
-            #             "invited_rooms": response_invited_rooms,
-            #             "non_participation": response_non_participation,
-            #         }
-            #     )
-            # )
         except Rooms.DoesNotExist:
             self.send(text_data=json.dumps({"rooms": []}))
 
