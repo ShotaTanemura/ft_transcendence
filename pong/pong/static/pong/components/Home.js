@@ -34,7 +34,7 @@ export class Home extends Component {
   };
   goChat = () => {
     this.router.goNextPage("/chat");
-  }
+  };
 
   verifyJwtToken = async () => {
     const responseToken = await fetch("/pong/api/v1/auth/token/verify", {
