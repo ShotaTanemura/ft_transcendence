@@ -37,6 +37,15 @@ class ChatConsumer(WebsocketConsumer):
         users = Rooms.objects.get_users_in_room(room_id)
 
         users = [serialize_user(user) for user in users]
+        if room.room_type == "dm":
+            other = Rooms.objects.get_users_in_room(room.uuid).exclude(
+                uuid=self.user.uuid
+            )[0]
+            is_blocked = UserBlock.objects.is_blocked(self.user, other)
+            if is_blocked:
+                logger.info(f"User is blocked")
+                self.block_response()
+                return
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,
             {
@@ -51,6 +60,35 @@ class ChatConsumer(WebsocketConsumer):
             logger.info(f"Error during initial message sending: {e}")
             self.close()
 
+    def block_response(self):
+        logger.info(f"Sending block response")
+        try:
+            room = Rooms.objects.get(uuid=self.room_name)
+            room_id = room.uuid
+            logger.info(f"Room ID: {room_id}")
+
+            messages = Messages.manager.get_messages(room_id)
+            logger.info(f"Retrieved messages: {len(messages)}")
+            users = Rooms.objects.get_users_in_room(room_id)
+
+            users = [serialize_user(user) for user in users]
+
+            logger.info(f"Users in room: {users}")
+    
+            self.send(
+                text_data=json.dumps(
+                    {
+                        "user": self.user.name,
+                        "message": "You are blocked",
+                        "users": users,
+                        "created_at": "",
+                    }
+                )
+            )
+        except Rooms.DoesNotExist:
+            logger.info("Room does not exist")
+            self.close()
+        
     def send_initial_messages(self):
         try:
             room = Rooms.objects.get(uuid=self.room_name)
@@ -92,6 +130,7 @@ class ChatConsumer(WebsocketConsumer):
             self.close()
 
     def disconnect(self, close_code):
+        logger.info(f"Disconnecting from room: {self.room_name}")
         async_to_sync(self.channel_layer.group_discard)(
             self.room_group_name, self.channel_name
         )
@@ -112,6 +151,20 @@ class ChatConsumer(WebsocketConsumer):
                 if is_blocked:
                     logger.info(f"User is blocked")
                     return
+                is_blocked_by = UserBlock.objects.is_blocked(other, user)
+                if is_blocked_by:
+                    self.send(
+                        text_data=json.dumps(
+                            {
+                                "user": saved_message.user_id.name,
+                                "message": saved_message.message,
+                                "created_at": saved_message.created_at.isoformat(),
+                            }
+                        )
+                    )
+                    lofger.info(f"User is blocked by other user")
+                return
+                    
 
             saved_message = Messages.manager.create_message(user, room, message)
 
