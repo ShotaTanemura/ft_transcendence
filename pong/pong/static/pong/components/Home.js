@@ -83,14 +83,16 @@ export class Home extends Component {
 
   get html() {
     return `
-			<h1> signin後の仮ページ </h1>
-			<button class="go-realtime-pong-button">PONG GAMEをする</button>
-      <button class="go-realtime-typing-button">TYPING GAMEをする</button>
-      <button class="go-chat-button">CHATをする</button>
-      <button class="go-profile-button">profile</button>
-            <form class="signout-form">
-                <button type="submit">signout</button>
-            </form>
+      <main class="home">
+        <h1> signin後の仮ページ </h1>
+        <button class="go-realtime-pong-button">PONG GAMEをする</button>
+        <button class="go-realtime-typing-button">TYPING GAMEをする</button>
+        <button class="go-chat-button">CHATをする</button>
+        <button class="go-profile-button">profile</button>
+        <form class="signout-form">
+            <button type="submit">signout</button>
+        </form>
+      </main>
 		`;
   }
 }
