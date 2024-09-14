@@ -21,12 +21,7 @@ django_asgi_app = application = get_asgi_application()
 from pong.middleware.auth import ChannelsJWTAuthenticationMiddleware
 from realtime_pong_game.consumers import PlayerConsumer
 from realtime_typing_game.consumers import TypingPlayerConsumer
-from channels.auth import AuthMiddlewareStack
 import chat.routing
-
-# is populated before importing code that may import ORM models.
-django_asgi_app = get_asgi_application()
-
 
 application = ProtocolTypeRouter(
     {
