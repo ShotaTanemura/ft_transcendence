@@ -39,8 +39,8 @@ export class Profile extends Component {
   };
 
   goEdit2FA = () => {
-    this.router.goNextPage("/edit-2fa")
-  }
+    this.router.goNextPage("/edit-2fa");
+  };
 
   get html() {
     return `
