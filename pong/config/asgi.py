@@ -50,7 +50,17 @@ application = ProtocolTypeRouter(
         "websocket": AllowedHostsOriginValidator(
             ChannelsJWTAuthenticationMiddleware(
                 URLRouter(
-                    chat.routing.websocket_urlpatterns,
+                    [
+                        re_path(
+                            r"realtime-pong/(?P<room_name>\w+)/(?P<user_role>\w+)/$",
+                            PlayerConsumer.as_asgi(),
+                        ),
+                        re_path(
+                            r"realtime-typing/(?P<room_name>\w+)/$",
+                            TypingPlayerConsumer.as_asgi(),
+                        ),
+                        *chat.routing.websocket_urlpatterns
+                    ]
                 )
             )
         ),
