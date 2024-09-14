@@ -1,14 +1,8 @@
 html,
 body {
-  height: 100%;
-  margin: 0;
   font-size: 1rem;
   font-family: Arial, sans-serif;
-  width: 100vw;
   overflow-x: hidden;
-}
-
-body {
   display: flex;
   flex-direction: column;
   width: 100vw;
