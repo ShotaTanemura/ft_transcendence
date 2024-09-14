@@ -99,28 +99,31 @@ export class Signup extends Component {
 
   get html() {
     return `
-            <div>
-                <h1>Signup</h1>
-				<form
-					action="/pong/oauth/42/signup"
-					method="GET"
-					class="form-42oauth">
-					<button class="form-42oauth" type=submit>42 Signup</button>
-				</form>
-                <form class="signup-form">
-                    <label for="username">Username</label>
-                    <input type="text" placeholder="username" id="username" name="name" required><br/>
-                    <label for="password">Password</label>
-                    <input type="password" placeholder="enter password" id="password" name="password" required><br/>
-                    <label for="repeat-password">Repeat Password</label>
-                    <input type="password" placeholder="repeat password" id="repeat-password" name="repeat-password" required><br/>
-                    <label for="email">Email</label>
-                    <input type="email" placeholder="email" id="email" name="email" required><br/>
-                    <label for="icon">Icon</label>
-                    <input type="file" id="icon" name="icon" accept="image/*"><br/>
-                    <button class="form-submit" type="submit">sign up</button>
-                </form>
-            </div>
+    	<main class="signup">
+        <div class="signup-container">
+          <h1>Signup</h1>
+				  <form
+				  	action="/pong/oauth/42/signup"
+				  	method="GET"
+            class="form-42oauth"
+          >
+				  	<button class="form-42oauth" type=submit>42 Signup</button>
+				  </form>
+          <form class="signup-form">
+            <label for="username">Username</label>
+            <input type="text" placeholder="username" id="username" name="name" required><br/>
+            <label for="email">Email</label>
+            <input type="email" placeholder="email" id="email" name="email" required><br/>
+            <label for="password">Password</label>
+            <input type="password" placeholder="enter password" id="password" name="password" required><br/>
+            <label for="repeat-password">Repeat Password</label>
+            <input type="password" placeholder="repeat password" id="repeat-password" name="repeat-password" required><br/>
+            <label for="icon">Icon</label>
+            <input type="file" id="icon" name="icon" accept="image/*"><br/>
+            <button class="form-submit" type="submit">sign up</button>
+          </form>
+          </div>
+        </main>
         `;
   }
 }
