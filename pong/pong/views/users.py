@@ -120,6 +120,7 @@ def user_icon(request, uuid):
         status=200,
     )
 
+
 @csrf_exempt
 def other_user(request, name):
     if request.method != "GET":

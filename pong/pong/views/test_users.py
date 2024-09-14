@@ -9,6 +9,7 @@ import tempfile
 import os
 import uuid
 
+
 def create_user_with_tokens():
     user = User.objects.create_user(
         name="ユーザー名", email="example@email.com", password="p4s$W0rd"
@@ -34,6 +35,7 @@ def create_user_with_tokens():
         algorithm=settings.JWT_AUTH["JWT_ALGORITHM"],
     )
     return user, token, refresh_token
+
 
 class GetUserTest(TestCase):
     def setUp(self):
@@ -135,6 +137,7 @@ class UserIconTest(TestCase):
         self.assertEqual(response.status_code, 404)
         self.user.refresh_from_db()
         self.assertFalse(self.user.icon.name.startswith("uploads/"))
+
 
 class OtherUserTest(TestCase):
     def setUp(self):
