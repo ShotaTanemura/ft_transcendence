@@ -51,7 +51,7 @@ export class Signin extends Component {
         this.goNextPage("/totp");
         break;
       default:
-        this.router.goNextPage("/home");
+        this.router.goNextPage("/");
         break;
     }
   };

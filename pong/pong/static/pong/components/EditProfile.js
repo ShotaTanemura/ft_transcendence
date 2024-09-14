@@ -1,15 +1,22 @@
 import { Component } from "../core/component.js";
+import { Header } from "./Header.js";
 
 export class EditProfile extends Component {
   #uuid = null;
 
   constructor(router, params, state) {
     super(router, params, state);
-    this.loadUserProfile();
 
     this.findElement("form.edit-profile-form").onsubmit =
       this.handleEditProfile;
   }
+
+  afterPageLoaded = () => {
+    this.loadUserProfile();
+    this.headerComponent = new Header(this.router, this.params, this.state);
+    this.element.parentElement.prepend(this.headerComponent.element);
+    this.headerComponent.afterPageLoaded();
+  };
 
   async loadUserProfile() {
     try {
@@ -95,7 +102,7 @@ export class EditProfile extends Component {
 
       const fileField = event.target.icon;
       if (fileField.files.length <= 0) {
-        this.router.goNextPage("/home");
+        this.router.goNextPage("/");
         return;
       }
       const formData = new FormData();
@@ -109,7 +116,7 @@ export class EditProfile extends Component {
         },
       );
       console.log(icon_response);
-      this.router.goNextPage("/home");
+      this.router.goNextPage("/");
     } catch (error) {
       console.error("Failed to edit user profile:", error);
       window.alert("Failed to edit user profile");

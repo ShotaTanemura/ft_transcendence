@@ -42,6 +42,9 @@ class UserManager(BaseUserManager):
 
         return self.create_user(name, email, password, **extra_fields)
 
+    def get_user_email(self, email):
+        return self.get(email=email)
+
 
 class User(AbstractBaseUser, PermissionsMixin):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
