@@ -4,7 +4,9 @@ import random
 import time
 import threading
 from channels.layers import get_channel_layer
+from asgiref.sync import sync_to_async
 from asgiref.sync import async_to_sync
+from realtime_typing_game.models import TypingGameInfo
 
 RED = "\033[91m"
 GREEN = "\033[92m"
@@ -15,11 +17,12 @@ class GameManager:
     PLAYER1 = "player1"
     PLAYER2 = "player2"
     players = {PLAYER1: "", PLAYER2: ""}
-    player_to_input = PLAYER2
 
     def __init__(self, room_name):
         self.room_name = room_name
         self.channel_layer = get_channel_layer()
+        self.typingGameInfo = None  # インスタンス変数として定義
+        self.player_to_input = self.PLAYER2
 
     async def send_message_to_group(self, method_type, content):
         await self.channel_layer.group_send(
@@ -31,7 +34,7 @@ class GameManager:
         )
 
     def set_player_name(self, player, participant):
-        self.players[player] = str(participant)
+        self.players[player] = participant
 
     def set_player1_name(self, participant):
         self.set_player_name(self.PLAYER1, participant)
@@ -40,16 +43,60 @@ class GameManager:
         self.set_player_name(self.PLAYER2, participant)
 
     def get_player_name(self, player):
+        user = self.players.get(player)
+        if user:
+            return str(user)
+        else:
+            return None
+
+    def get_player_user_object(self, player):
         return self.players.get(player)
 
+    def get_winner_player_user_object(self):
+        return self.players.get(self.PLAYER1 if self.player_to_input == self.PLAYER2 else self.PLAYER2)
 
-class Timer(GameManager):
+    def get_winner_player_name(self):
+        return self.get_player_name(self.PLAYER1 if self.player_to_input == self.PLAYER2 else self.PLAYER2)
+    
+    def create_typing_game_record(self):
+        print(f"{GREEN}create_typing_game_record()が呼ばれました{RESET}")
+        try:
+            # プレイヤーオブジェクトを直接取得
+            player1 = self.players.get(self.PLAYER1)
+            player2 = self.players.get(self.PLAYER2)
+
+            if not player1 or not player2:
+                print(f"{RED}Error: Player not found{RESET}")
+                return
+
+            # TypingGameInfo オブジェクトを作成
+            self.typingGameInfo = TypingGameInfo.objects.create(
+                player1=player1,
+                player2=player2,
+            )
+            self.typingGameInfo.save()
+            print(f"{GREEN}TypingGameInfo created: {self.typingGameInfo}{RESET}")
+        
+        except Exception as e:
+            print(f"{RED}Error during creating TypingGameInfo: {str(e)}{RESET}")
+
+    def update_winner_in_db(self):
+        if self.typingGameInfo:  # typingGameInfo が存在するか確認
+            self.typingGameInfo.winner = self.get_winner_player_user_object()
+            self.typingGameInfo.save()
+        else:
+            print(f"{RED}Error: typingGameInfo is not set{RESET}")
+        
+class TypingGame(GameManager):
     def __init__(self, room_name):
         super().__init__(room_name)
+        self.selected_word = ""
+        self.input_length = 0
         self.time_limit = 10
         self.timer = self.time_limit
         self.game_finished = False
         self.thread_running = False
+        self.words = self.load_words()
 
     def start_countdown(self):
         def countdown():
@@ -71,17 +118,14 @@ class Timer(GameManager):
             if self.timer <= 0 and not self.game_finished:
                 print(f"{GREEN}Game finished!{RESET}")
                 self.game_finished = True
+                self.update_winner_in_db()
                 async_to_sync(self.send_message_to_group)(
                     "send_game_information",
                     {
                         "sender": "TypingGame",
                         "type": "game-finished",
                         "contents": {
-                            "winner": self.get_player_name(
-                                self.PLAYER1
-                                if GameManager.player_to_input == self.PLAYER2
-                                else self.PLAYER2
-                            ),
+                            "winner": self.get_winner_player_name(),
                         },
                     },
                 )
@@ -90,22 +134,14 @@ class Timer(GameManager):
         if not self.thread_running:
             threading.Thread(target=countdown, daemon=True).start()
 
-    def reset(self):
+    def timerReset(self):
         self.timer = self.time_limit
         self.start_countdown()
-
-
-class TypingGame(GameManager):
-    def __init__(self, room_name):
-        super().__init__(room_name)
-        self.selected_word = ""
-        self.input_length = 0
-        self.timer = Timer(room_name)
-        self.words = self.load_words()
 
     # roommanager.pyから参加者の準備ができたら呼ばれる
     async def start_game(self):
         print(f"{GREEN}start_game()が呼ばれました{RESET}")
+        await sync_to_async(self.create_typing_game_record)()
         await self.send_message_to_group(
             "send_game_information",
             {
@@ -115,7 +151,7 @@ class TypingGame(GameManager):
             },
         )
         await self.next_word()
-        self.timer.start_countdown()
+        self.start_countdown()
 
     def load_words(self):
         words = []
@@ -137,16 +173,16 @@ class TypingGame(GameManager):
         return words
 
     def change_player_to_input(self):
-        if GameManager.player_to_input == self.PLAYER1:
-            GameManager.player_to_input = self.PLAYER2
+        if self.player_to_input == self.PLAYER1:
+            self.player_to_input = self.PLAYER2
         else:
-            GameManager.player_to_input = self.PLAYER1
+            self.player_to_input = self.PLAYER1
 
     async def next_word(self):
         self.input_length = 0
         self.selected_word = random.choice(self.words)
         self.change_player_to_input()
-        self.timer.reset()
+        self.timerReset()
         print(f"{GREEN}Selected word: {self.selected_word}{RESET}")
         await self.send_message_to_group(
             "send_game_information",
@@ -155,7 +191,7 @@ class TypingGame(GameManager):
                 "type": "next-word",
                 "contents": {
                     "word": self.selected_word,
-                    "player": self.get_player_name(GameManager.player_to_input),
+                    "player": self.get_player_name(self.player_to_input),
                 },
             },
         )
@@ -180,7 +216,7 @@ class TypingGame(GameManager):
                         "contents": {
                             "word": self.selected_word,
                             "input_length": self.input_length,
-                            "player": self.get_player_name(GameManager.player_to_input),
+                            "player": self.get_player_name(self.player_to_input),
                         },
                     },
                 )
@@ -193,17 +229,17 @@ class TypingGame(GameManager):
                     "contents": {
                         "word": self.selected_word,
                         "input_length": self.input_length,
-                        "player": self.get_player_name(GameManager.player_to_input),
+                        "player": self.get_player_name(self.player_to_input),
                     },
                 },
             )
 
     async def recieve_player1_input(self, message_json):
-        if GameManager.player_to_input == self.PLAYER1 and not self.timer.game_finished:
+        if self.player_to_input == self.PLAYER1 and not self.game_finished:
             input_key = message_json["contents"]
             await self.handle_typing_input(input_key)
 
     async def recieve_player2_input(self, message_json):
-        if GameManager.player_to_input == self.PLAYER2 and not self.timer.game_finished:
+        if self.player_to_input == self.PLAYER2 and not self.game_finished:
             input_key = message_json["contents"]
             await self.handle_typing_input(input_key)

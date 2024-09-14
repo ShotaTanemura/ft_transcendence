@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 
 class TypingGameInfo(models.Model):
+    # TODO: 日本時間にする
     created_at = models.DateTimeField(auto_now=True)
     winner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
