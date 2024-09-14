@@ -6,6 +6,7 @@ export class Profile extends Component {
     super(router, params, state);
     this.loadUserProfile();
     this.findElement("button.edit-profile-button").onclick = this.goEditProfile;
+    this.findElement("button.edit-2fa-button").onclick = this.goEdit2FA;
   }
 
   async loadUserProfile() {
@@ -37,6 +38,10 @@ export class Profile extends Component {
     this.router.goNextPage("/edit-profile");
   };
 
+  goEdit2FA = () => {
+    this.router.goNextPage("/edit-2fa")
+  }
+
   get html() {
     return `
             <h1>プロフィールページ</h1>
@@ -45,6 +50,7 @@ export class Profile extends Component {
             <p><strong>E-mail:</strong> <span id="email"></span></p>
             <br>
             <button class="edit-profile-button">プロフィールを変更する</button>
+            <button class="edit-2fa-button">二要素認証の設定を変更する</button>
         `;
   }
 }
