@@ -35,7 +35,7 @@ export class Header extends Component {
   };
 
   onClickHomeLink = () => {
-    this.router.goNextPage("/home");
+    this.router.goNextPage("/");
     this.render();
   };
 

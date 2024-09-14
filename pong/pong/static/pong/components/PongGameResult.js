@@ -1,5 +1,4 @@
 import { Component } from "../core/component.js";
-import { Load } from "./Load.js";
 import { Header } from "./Header.js";
 import { getUuid, getUserFromUuid } from "../api/api.js";
 
@@ -11,7 +10,6 @@ export class PongGameResult extends Component {
   }
 
   afterPageLoaded = async () => {
-    new Load(this.router, this.parameters, this.state).onload();
     this.headerComponent = new Header(this.router, this.params, this.state);
     this.element.parentElement.prepend(this.headerComponent.element);
     this.headerComponent.afterPageLoaded();
