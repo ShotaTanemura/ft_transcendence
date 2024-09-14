@@ -138,6 +138,11 @@ class UserIconTest(TestCase):
         self.user.refresh_from_db()
         self.assertFalse(self.user.icon.name.startswith("uploads/"))
 
+    def tearDown(self):
+        if self.user.icon:
+            if os.path.exists(self.user.icon.path):
+                os.remove(self.user.icon.path)
+
 
 class OtherUserTest(TestCase):
     def setUp(self):
