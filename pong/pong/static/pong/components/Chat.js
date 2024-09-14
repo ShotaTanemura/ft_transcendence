@@ -3,7 +3,6 @@ import { Header } from "./Header.js";
 import { MyRoomsContainer } from "./MyRoomsContainer.js";
 import { ChatContainer } from "./ChatContainer.js";
 import { DirectoryContainer } from "./DirectoryContainer.js";
-import { Load } from "./Load.js";
 
 export class Chat extends Component {
   constructor(router, params, state) {
@@ -185,7 +184,6 @@ export class Chat extends Component {
   };
 
   afterPageLoaded() {
-    new Load(this.router, this.parameters, this.state).onload();
     this.headerComponent = new Header(this.router, this.params, this.state);
     this.element.parentElement.prepend(this.headerComponent.element);
     this.headerComponent.afterPageLoaded();
