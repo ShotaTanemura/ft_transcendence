@@ -10,6 +10,7 @@ RED = "\033[91m"
 GREEN = "\033[92m"
 RESET = "\033[0m"
 
+
 class RoomState(Enum):
     Queuing = "queuing"
     Ready = "ready"
@@ -107,9 +108,7 @@ class TypingRoomManager:
         if self.room_state == RoomState.Ready:
             await self.user_became_ready_for_game(participant, message_json)
         elif self.room_state == RoomState.In_Game:
-            await self.handle_game_action(
-                participant, message_json
-            ) 
+            await self.handle_game_action(participant, message_json)
 
     async def user_became_ready_for_game(self, participant, message_json):
         with self.instance_lock:
@@ -136,7 +135,7 @@ class TypingRoomManager:
         self.typing_game.set_player1_name(self.participants[0])
         self.typing_game.set_player2_name(self.participants[1])
         async_to_sync(self.typing_game.start_game)()
-    
+
     async def handle_game_action(self, participant, message_json):
         if self.participants_state[participant] == ParticipantState.Player1:
             await self.typing_game.recieve_player1_input(message_json)

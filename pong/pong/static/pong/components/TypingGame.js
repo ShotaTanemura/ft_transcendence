@@ -11,11 +11,11 @@ export class TypingGame extends Component {
       );
     }
     this.connection.onmessage = this.onMessage;
-    this.input_length = 0
-    this.timer = 10
+    this.input_length = 0;
+    this.timer = 10;
     // ゲーム開始前にnext-wordが来るので、-1からスタート
-    this.score = -1
-    this.isMyTurn = false
+    this.score = -1;
+    this.isMyTurn = false;
 
     document.addEventListener("keydown", (e) => {
       this.connection.send(
@@ -39,12 +39,13 @@ export class TypingGame extends Component {
         this.input_length = 0;
         document.getElementById("word").innerHTML = message.contents.word;
         this.score++;
-        document.getElementById("player_to_input").innerHTML = message.contents.player;
+        document.getElementById("player_to_input").innerHTML =
+          message.contents.player;
         document.getElementById("score").innerHTML = this.score;
         break;
       case "correct-key":
         document.getElementById("inputCorrect").innerHTML =
-        message.contents.word[this.input_length];
+          message.contents.word[this.input_length];
         this.input_length++;
         // TODO: 文字が合っていたら、文字色を変える
         break;
@@ -53,22 +54,22 @@ export class TypingGame extends Component {
         break;
 
       case "game-finished":
-        document.getElementById("winner").innerHTML = `winner = ${message.contents.winner}`
+        document.getElementById("winner").innerHTML =
+          `winner = ${message.contents.winner}`;
         this.setRouteContext("TypingGameWinner", message.contents.winner);
         setTimeout(() => {
           this.goNextPage("/typing-game-finished");
-      }, 5000);
+        }, 5000);
         break;
 
       case "countdown-timer":
-        document.getElementById("timer").innerHTML =
-          message.contents.timer
+        document.getElementById("timer").innerHTML = message.contents.timer;
         break;
-  
+
       case "room-state":
         this.changePageByRoomStatus(message);
         break;
-        
+
       default:
         console.warn(`Unknown message type: ${message.type}`);
         break;

@@ -14,10 +14,7 @@ RESET = "\033[0m"
 class GameManager:
     PLAYER1 = "player1"
     PLAYER2 = "player2"
-    players = {
-        PLAYER1: "",
-        PLAYER2: ""
-    }
+    players = {PLAYER1: "", PLAYER2: ""}
     player_to_input = PLAYER2
 
     def __init__(self, room_name):
@@ -41,7 +38,7 @@ class GameManager:
 
     def set_player2_name(self, participant):
         self.set_player_name(self.PLAYER2, participant)
-    
+
     def get_player_name(self, player):
         return self.players.get(player)
 
@@ -70,7 +67,7 @@ class Timer(GameManager):
                         },
                     },
                 )
-            
+
             if self.timer <= 0 and not self.game_finished:
                 print(f"{GREEN}Game finished!{RESET}")
                 self.game_finished = True
@@ -80,17 +77,23 @@ class Timer(GameManager):
                         "sender": "TypingGame",
                         "type": "game-finished",
                         "contents": {
-                            "winner":  self.get_player_name(self.PLAYER1 if GameManager.player_to_input == self.PLAYER2 else self.PLAYER2),
+                            "winner": self.get_player_name(
+                                self.PLAYER1
+                                if GameManager.player_to_input == self.PLAYER2
+                                else self.PLAYER2
+                            ),
                         },
                     },
                 )
                 self.thread_running = False
+
         if not self.thread_running:
             threading.Thread(target=countdown, daemon=True).start()
 
     def reset(self):
         self.timer = self.time_limit
         self.start_countdown()
+
 
 class TypingGame(GameManager):
     def __init__(self, room_name):
