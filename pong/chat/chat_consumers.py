@@ -38,13 +38,14 @@ class ChatConsumer(WebsocketConsumer):
 
         users = [serialize_user(user) for user in users]
         if room.room_type == "dm":
-            other = Rooms.objects.get_users_in_room(room.uuid).exclude(
-                uuid=self.user.uuid
+            other = (
+                Rooms.objects.get_users_in_room(room.uuid)
+                .exclude(uuid=self.user.uuid)
+                .first()
             )
             if not other:
                 logger.info(f"Other user not found")
                 return
-            other = other[0]
             logger.info(f"Other user: {other}")
 
             is_blocked = UserBlock.objects.is_blocked(self.user, other)
@@ -149,13 +150,14 @@ class ChatConsumer(WebsocketConsumer):
             message = text_data_json["message"]
             room = Rooms.objects.get(uuid=self.room_name)
             if room.room_type == "dm":
-                other = Rooms.objects.get_users_in_room(room.uuid).exclude(
-                    uuid=self.user.uuid
+                other = (
+                    Rooms.objects.get_users_in_room(room.uuid)
+                    .exclude(uuid=self.user.uuid)
+                    .first()
                 )
                 if not other:
                     logger.info(f"Other user not found")
                     return
-                other = other[0]
                 is_blocked = UserBlock.objects.is_blocked(self.user, other)
                 if is_blocked:
                     logger.info(f"User is blocked")
