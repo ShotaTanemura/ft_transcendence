@@ -13,7 +13,6 @@ export class Home extends Component {
     this.findElement("button.go-chat-button").onclick = this.goChat;
     this.findElement("form.signout-form").onsubmit = this.handleSignout;
     this.findElement("button.go-profile-button").onclick = this.goProfile;
-    this.verifyJwtToken();
   }
 
   afterPageLoaded() {
