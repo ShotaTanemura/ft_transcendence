@@ -51,6 +51,7 @@ export class Edit2FA extends Component {
 
     qrcodeContainer.innerHTML = "";
 
+    /*global QRCode*/
     new QRCode(qrcodeContainer, {
       text: uri,
       width: 128,

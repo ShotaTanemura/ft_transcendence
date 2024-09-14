@@ -5,7 +5,10 @@ from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
 from django.conf import settings
 from pong.middleware.auth import jwt_exempt, getJwtPayloadCookie, getJwtPayload
-from pong.utils.create_response import create_token_response, create_session_token_response
+from pong.utils.create_response import (
+    create_token_response,
+    create_session_token_response,
+)
 from pong.utils.redis_client import redis_client
 from pong.views.two_factor import is_valid_totp_code
 import jwt
@@ -76,12 +79,15 @@ def create_token(request):
         return create_session_token_response(
             user.uuid,
             JsonResponse(
-                {"message": "Password correct, but TOTP is required.", "status": "2FAIsRequired"}, status=401
+                {
+                    "message": "Password correct, but TOTP is required.",
+                    "status": "2FAIsRequired",
+                },
+                status=401,
             ),
             exp_delta=datetime.timedelta(minutes=3),
             status="2FAPending",
             auth_level="partial",
-
         )
 
     return create_token_response(
@@ -93,9 +99,9 @@ def create_token(request):
 @csrf_exempt
 def create_token_totp(request):
     if request.method != "POST":
-            return JsonResponse(
-                {"message": "Method is not allowed", "status": "invalidParams"}, status=400
-            )
+        return JsonResponse(
+            {"message": "Method is not allowed", "status": "invalidParams"}, status=400
+        )
 
     session_token = request.COOKIES.get("session_token")
     if not session_token:
@@ -126,7 +132,7 @@ def create_token_totp(request):
         return JsonResponse(
             {"message": "Invalid Session token", "status": "invalidParams"}, status=400
         )
-    
+
     try:
         data = json.loads(request.body)
     except json.JSONDecodeError as e:
@@ -146,12 +152,12 @@ def create_token_totp(request):
         return JsonResponse(
             {"message": "2FA is not activated", "status": "invalidParams"}, status=400
         )
-    
+
     if not is_valid_totp_code(secret=tfa.secret, code=code):
         return JsonResponse(
             {"message": "OTP is invalid", "status": "invalidParams"}, status=400
         )
-    
+
     return create_token_response(
         uuid, JsonResponse({"uuid": uuid}, content_type="application/json")
     )

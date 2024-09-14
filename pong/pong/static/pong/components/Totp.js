@@ -1,49 +1,49 @@
 import { Component } from "../core/component.js";
 
 export class Totp extends Component {
-    constructor(router, params, state) {
-        super(router, params, state);
-        this.findElement("form.totp-form").onsubmit = this.handleTotp;
+  constructor(router, params, state) {
+    super(router, params, state);
+    this.findElement("form.totp-form").onsubmit = this.handleTotp;
+  }
+
+  postTotp = async (jsonData) => {
+    const response = await fetch("/pong/api/v1/auth/token/totp", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: jsonData,
+    });
+    console.log(response);
+    const data = await response.json();
+
+    if (!response.ok) {
+      switch (response.status) {
+        case 400:
+          throw Error("認証コードに誤りがあります");
+        default:
+          throw Error(data.status);
+      }
     }
+    return data;
+  };
 
-    postTotp = async (jsonData) => {
-        const response = await fetch("/pong/api/v1/auth/token/totp", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: jsonData,
-        });
-        console.log(response);
-        const data = await response.json();
-    
-        if (!response.ok) {
-          switch (response.status) {
-            case 400:
-              throw Error("認証コードに誤りがあります");
-            default:
-              throw Error(data.status);
-          }
-        }
-        return data;
-      };
+  handleTotp = async (event) => {
+    event.preventDefault();
+    const totpJson = JSON.stringify({
+      code: event.target["totp-code"].value,
+    });
+    try {
+      await this.postTotp(totpJson);
+    } catch (error) {
+      alert(error);
+      return;
+    }
+    this.router.goNextPage("/home");
+  };
 
-    handleTotp = async (event) => {
-        event.preventDefault();
-        const totpJson = JSON.stringify({
-            code: event.target["totp-code"].value,
-        });
-        try {
-            await this.postTotp(totpJson);
-        } catch (error) {
-            alert(error);
-            return;
-        }
-        this.router.goNextPage("/home");
-    };
-
-    get html() {
-        return `
+  get html() {
+    return `
                 <h1>二要素認証</h1>
                 <br/>
                 <form class="totp-form">
@@ -54,5 +54,5 @@ export class Totp extends Component {
                 </form>
                 </br>
             `;
-      }
+  }
 }

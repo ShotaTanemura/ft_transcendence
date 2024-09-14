@@ -44,15 +44,15 @@ export class Signin extends Component {
       data = await this.generateToken(signinJson);
     } catch (error) {
       alert(error);
-      return ;
+      return;
     }
     switch (data.status) {
       case "2FAIsRequired":
         this.goNextPage("/totp");
-        break ;
+        break;
       default:
         this.router.goNextPage("/home");
-        break ;
+        break;
     }
   };
 
