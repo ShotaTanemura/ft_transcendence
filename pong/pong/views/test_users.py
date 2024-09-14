@@ -9,33 +9,35 @@ import tempfile
 import os
 import uuid
 
+def create_user_with_tokens():
+    user = User.objects.create_user(
+        name="ユーザー名", email="example@email.com", password="p4s$W0rd"
+    )
+    token_payload = {
+        "uuid": str(user.uuid),
+        "exp": datetime.utcnow() + settings.JWT_AUTH["JWT_EXPIRATION_DELTA"],
+        "iat": datetime.utcnow(),
+    }
+    token = jwt.encode(
+        token_payload,
+        settings.JWT_AUTH["JWT_PRIVATE_KEY"],
+        algorithm=settings.JWT_AUTH["JWT_ALGORITHM"],
+    )
+    refresh_token_payload = {
+        "uuid": str(user.uuid),
+        "exp": datetime.utcnow() + settings.JWT_AUTH["JWT_REFRESH_EXPIRATION_DELTA"],
+        "iat": datetime.utcnow(),
+    }
+    refresh_token = jwt.encode(
+        refresh_token_payload,
+        settings.JWT_AUTH["JWT_PRIVATE_KEY"],
+        algorithm=settings.JWT_AUTH["JWT_ALGORITHM"],
+    )
+    return user, token, refresh_token
 
 class GetUserTest(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(
-            name="ユーザー名", email="example@email.com", password="p4s$W0rd"
-        )
-        self.token_payload = {
-            "uuid": str(self.user.uuid),
-            "exp": datetime.utcnow() + settings.JWT_AUTH["JWT_EXPIRATION_DELTA"],
-            "iat": datetime.utcnow(),
-        }
-        self.token = jwt.encode(
-            self.token_payload,
-            settings.JWT_AUTH["JWT_PRIVATE_KEY"],
-            algorithm=settings.JWT_AUTH["JWT_ALGORITHM"],
-        )
-        self.refresh_token_payload = {
-            "uuid": str(self.user.uuid),
-            "exp": datetime.utcnow()
-            + settings.JWT_AUTH["JWT_REFRESH_EXPIRATION_DELTA"],
-            "iat": datetime.utcnow(),
-        }
-        self.refresh_token = jwt.encode(
-            self.refresh_token_payload,
-            settings.JWT_AUTH["JWT_PRIVATE_KEY"],
-            algorithm=settings.JWT_AUTH["JWT_ALGORITHM"],
-        )
+        self.user, self.token, self.refresh_token = create_user_with_tokens()
         self.client.cookies["token"] = self.token
         self.client.cookies["refresh_token"] = self.refresh_token
 
@@ -74,30 +76,7 @@ class GetUserTest(TestCase):
 
 class UserIconTest(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(
-            name="ユーザー名", email="example@email.com", password="p4s$W0rd"
-        )
-        self.token_payload = {
-            "uuid": str(self.user.uuid),
-            "exp": datetime.utcnow() + settings.JWT_AUTH["JWT_EXPIRATION_DELTA"],
-            "iat": datetime.utcnow(),
-        }
-        self.token = jwt.encode(
-            self.token_payload,
-            settings.JWT_AUTH["JWT_PRIVATE_KEY"],
-            algorithm=settings.JWT_AUTH["JWT_ALGORITHM"],
-        )
-        self.refresh_token_payload = {
-            "uuid": str(self.user.uuid),
-            "exp": datetime.utcnow()
-            + settings.JWT_AUTH["JWT_REFRESH_EXPIRATION_DELTA"],
-            "iat": datetime.utcnow(),
-        }
-        self.refresh_token = jwt.encode(
-            self.refresh_token_payload,
-            settings.JWT_AUTH["JWT_PRIVATE_KEY"],
-            algorithm=settings.JWT_AUTH["JWT_ALGORITHM"],
-        )
+        self.user, self.token, self.refresh_token = create_user_with_tokens()
         self.client.cookies["token"] = self.token
         self.client.cookies["refresh_token"] = self.refresh_token
 
@@ -159,30 +138,7 @@ class UserIconTest(TestCase):
 
 class OtherUserTest(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(
-            name="ユーザー名", email="example@email.com", password="p4s$W0rd"
-        )
-        self.token_payload = {
-            "uuid": str(self.user.uuid),
-            "exp": datetime.utcnow() + settings.JWT_AUTH["JWT_EXPIRATION_DELTA"],
-            "iat": datetime.utcnow(),
-        }
-        self.token = jwt.encode(
-            self.token_payload,
-            settings.JWT_AUTH["JWT_PRIVATE_KEY"],
-            algorithm=settings.JWT_AUTH["JWT_ALGORITHM"],
-        )
-        self.refresh_token_payload = {
-            "uuid": str(self.user.uuid),
-            "exp": datetime.utcnow()
-            + settings.JWT_AUTH["JWT_REFRESH_EXPIRATION_DELTA"],
-            "iat": datetime.utcnow(),
-        }
-        self.refresh_token = jwt.encode(
-            self.refresh_token_payload,
-            settings.JWT_AUTH["JWT_PRIVATE_KEY"],
-            algorithm=settings.JWT_AUTH["JWT_ALGORITHM"],
-        )
+        self.user, self.token, self.refresh_token = create_user_with_tokens()
         self.client.cookies["token"] = self.token
         self.client.cookies["refresh_token"] = self.refresh_token
 
