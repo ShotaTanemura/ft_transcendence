@@ -30,23 +30,23 @@ export class Header extends Component {
   };
 
   onClickUserProfileButton = () => {
-    //TODO handle action
-    alert("#TODO ユーザープロフィールに移動する");
+    this.router.goNextPage("/profile");
+    this.render();
   };
 
   onClickHomeLink = () => {
-    //TODO handle action
-    alert("#TODO ホームに移動する");
+    this.router.goNextPage("/");
+    this.render();
   };
 
   onClickChatLink = () => {
-    //TODO handle action
-    alert("#TODO チャットに移動する");
+    this.router.goNextPage("/chat");
+    this.render();
   };
 
   onClickPongGameLink = () => {
-    //TODO handle action
-    alert("#TODO PongGameに移動する");
+    this.router.goNextPage("/pong-game-home");
+    this.render();
   };
 
   onClickTypingGameLink = () => {
@@ -65,7 +65,7 @@ export class Header extends Component {
         <a class="btn border border-secondary border-2" data-bs-toggle="offcanvas" href="#header-offcanvas" role="button" aria-controls="header-offcanvas">
           <span class="navbar-toggler-icon"></span>
         </a>
-        <a id="title-link" class="navbar-brand ps-4 display-4" href="#">Transcendence</a>
+        <a id="title-link" class="navbar-brand ps-4 display-4">Transcendence</a>
         <div class="ms-auto px-5 d-flex">
           <form id="search-user-form" class="form-inline px-4 d-none d-md-block">
             <div class="input-group">
@@ -90,7 +90,7 @@ export class Header extends Component {
         <div class="offcanvas-body">
           <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
             <li class="nav-item">
-              <a id="navigate-home-link" class="nav-link active" aria-current="page" href="#">
+              <a id="navigate-home-link" class="nav-link active" aria-current="page">
                 <i class="bi bi-house px-2 fa-2x"></i>
                 <span class="fa-2x align-bottom">
                   Home
@@ -98,7 +98,7 @@ export class Header extends Component {
               </a>
             </li>
             <li class="nav-item">
-              <a id="navigate-chat-link" class="nav-link active" aria-current="page" href="#">
+              <a id="navigate-chat-link" class="nav-link active" aria-current="page">
                 <i class="bi bi-chat-dots px-2 fa-2x"></i>
                 <span class="fa-2x align-bottom">
                   Chat
@@ -106,7 +106,7 @@ export class Header extends Component {
               </a>
             </li>
             <li class="nav-item">
-              <a id="navigate-pong-game-link" class="nav-link active" aria-current="page" href="#">
+              <a id="navigate-pong-game-link" class="nav-link active" aria-current="page">
                 <i class="bi bi-controller px-2 fa-2x"></i>
                 <span class="fa-2x align-bottom">
                   PongGame
@@ -114,7 +114,7 @@ export class Header extends Component {
               </a>
             </li>
             <li class="nav-item">
-              <a id="navigate-typing-game-link" class="nav-link active" aria-current="page" href="#">
+              <a id="navigate-typing-game-link" class="nav-link active" aria-current="page">
                 <i class="bi bi-keyboard px-2 fa-2x"></i>
                 <span class="fa-2x align-bottom">
                   TypingGame
@@ -122,7 +122,7 @@ export class Header extends Component {
               </a>
             </li>
             <li class="nav-item">
-              <a id="navigate-settings-link" class="nav-link active" aria-current="page" href="#">
+              <a id="navigate-settings-link" class="nav-link active" aria-current="page">
                 <i class="bi bi-gear px-2 fa-2x"></i>
                 <span class="fa-2x align-bottom">
                   Settings
