@@ -8,6 +8,7 @@ export class DirectoryContainer extends Component {
     this.initializeEventListeners();
     this.chatSocket = null;
     this.modalVisible = false;
+    this.non_participation = [];
     if (this.socket) {
       this.setupWebSocketListeners();
     }
@@ -156,6 +157,7 @@ export class DirectoryContainer extends Component {
 
   updateNonParticipationRoomsUI(rooms) {
     this.displayRooms(rooms);
+    this.non_participation = rooms;
   }
 
   displayRooms(rooms, query = "") {
@@ -222,7 +224,7 @@ export class DirectoryContainer extends Component {
     if (searchBar) {
       searchBar.addEventListener("input", (event) => {
         const query = event.target.value;
-        this.fetchAndDisplayRooms(query);
+        this.displayRooms(this.non_participation, query);
       });
     } else {
       console.error("Search bar element not found.");
