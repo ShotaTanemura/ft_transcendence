@@ -102,7 +102,7 @@
 
 .direct-message-form button {
   padding: 12px 20px;
-  background-color: #4a90e2;
+  background-color: #778bf0;
   color: #ffffff;
   border: none;
   border-radius: 8px;
@@ -121,7 +121,7 @@
 }
 
 .direct-message-messages::-webkit-scrollbar-thumb {
-  background-color: #4a90e2;
+  background-color: #778bf0;
   border-radius: 8px;
 }
 
@@ -147,7 +147,7 @@
 
 .create-chatroom-button {
   padding: 10px 20px;
-  background-color: #4a90e2;
+  background-color: #778bf0;
   color: #fff;
   border: none;
   border-radius: 6px;
@@ -275,7 +275,7 @@
 
 #createChatroomForm button[type="submit"] {
   padding: 12px;
-  background-color: #4a90e2;
+  background-color: #778bf0;
   color: white;
   border: none;
   border-radius: 6px;
@@ -295,7 +295,7 @@
 
 .myrooms::-webkit-scrollbar-thumb,
 .invited-rooms::-webkit-scrollbar-thumb {
-  background-color: #4a90e2;
+  background-color: #778bf0;
   border-radius: 8px;
 }
 
@@ -372,7 +372,7 @@
 }
 
 .unjoined-rooms::-webkit-scrollbar-thumb {
-  background-color: #4a90e2;
+  background-color: #778bf0;
   border-radius: 8px;
 }
 
@@ -400,7 +400,7 @@
 }
 
 .members-list::-webkit-scrollbar-thumb {
-  background-color: #4a90e2;
+  background-color: #778bf0;
   border-radius: 8px;
 }
 
@@ -450,7 +450,7 @@
 }
 
 #confirmJoinButton {
-  background-color: #4a90e2;
+  background-color: #778bf0;
   color: white;
 }
 

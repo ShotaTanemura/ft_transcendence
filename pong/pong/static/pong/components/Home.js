@@ -1,5 +1,3 @@
-// signin後の仮ページ
-
 import { Component } from "../core/component.js";
 import { Header } from "./Header.js";
 
@@ -11,8 +9,6 @@ export class Home extends Component {
     this.findElement("button.go-realtime-typing-button").onclick =
       this.goRealtimeTyping;
     this.findElement("button.go-chat-button").onclick = this.goChat;
-    this.findElement("form.signout-form").onsubmit = this.handleSignout;
-    this.findElement("button.go-profile-button").onclick = this.goProfile;
   }
 
   afterPageLoaded() {
@@ -60,16 +56,6 @@ export class Home extends Component {
     this.router.goNextPage("/profile");
   };
 
-  handleSignout = async (event) => {
-    event.preventDefault();
-    try {
-      await this.revokeToken();
-      this.router.goNextPage("/");
-    } catch (error) {
-      alert(error);
-    }
-  };
-
   revokeToken = async () => {
     const response = await fetch("/pong/api/v1/auth/token/revoke", {
       method: "POST",
@@ -84,15 +70,34 @@ export class Home extends Component {
   get html() {
     return `
       <main class="home">
-        <h1> signin後の仮ページ </h1>
-        <button class="go-realtime-pong-button">PONG GAMEをする</button>
-        <button class="go-realtime-typing-button">TYPING GAMEをする</button>
-        <button class="go-chat-button">CHATをする</button>
-        <button class="go-profile-button">profile</button>
-        <form class="signout-form">
-            <button type="submit">signout</button>
-        </form>
-      </main>
-		`;
+        <div class="home-container">
+          <div class="home-description">
+            <h1>Realtime Pong Game</h1>
+            <p>2人対戦が可能なPONG GAMEです</p>
+          </div>
+          <div class="home-card">
+          <button class="go-realtime-pong-button">PONG GAMEをする</button>
+          </div>
+        </div>
+        <div class="home-container">
+          <div class="home-card">
+            <button class="go-chat-button">CHATをする</button>
+          </div>
+          <div class="home-description">
+            <h1>Realtime Chat Application</h1>
+            <p>チャットが可能です</p>
+          </div>
+        </div>
+        <div class="home-container">
+          <div class="home-description">
+            <h1>Realtime Typing Game</h1>
+            <p>2人対戦が可能なTYPING GAMEです</p>
+          </div>
+          <div class="home-card">
+            <button class="go-realtime-typing-button">TYPING GAMEをする</button>
+          </div>
+        </div>
+        </main>
+        `;
   }
 }
