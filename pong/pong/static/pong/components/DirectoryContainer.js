@@ -7,6 +7,7 @@ export class DirectoryContainer extends Component {
     this.socket = socket;
     this.initializeEventListeners();
     this.chatSocket = null;
+    this.modalVisible = false;
     if (this.socket) {
       this.setupWebSocketListeners();
     }
@@ -22,6 +23,7 @@ export class DirectoryContainer extends Component {
     this.socket = socket;
     this.setupWebSocketListeners();
   }
+
   setupChatSocket(socket) {
     this.chatSocket = socket;
   }
@@ -36,47 +38,91 @@ export class DirectoryContainer extends Component {
       memberElement.textContent = user.name;
 
       memberElement.addEventListener("click", (event) => {
-        this.showMemberOptions(event, user);
+        this.showMemberOptionsModal(event, user);
       });
 
       membersContainer.appendChild(memberElement);
     });
   }
 
-  showMemberOptions(event, user) {
-    const optionsContainer = document.createElement("div");
-    optionsContainer.className = "member-options";
+  showMemberOptionsModal(event, user) {
+    if (this.modalVisible) {
+      return;
+    }
+
+    const modalContainer = document.createElement("div");
+    modalContainer.className = "modal member-options-modal";
+
+    const modalContent = document.createElement("div");
+    modalContent.className = "modal-content";
+
+    const closeButton = document.createElement("span");
+    closeButton.className = "close-modal";
+    closeButton.textContent = "×";
+    closeButton.addEventListener("click", () => {
+      this.closeModal(modalContainer);
+    });
 
     const select = document.createElement("select");
     select.innerHTML = `
       <option value="">選択してください</option>
       <option value="profile">プロフィール表示</option>
+      <option value="invite">招待</option>
       <option value="block">ブロック</option>
+      <option value="close">閉じる</option>
     `;
 
     select.addEventListener("change", (event) => {
       const selectedOption = event.target.value;
       if (selectedOption === "profile") {
-        this.showUserProfile(user, optionsContainer);
+        this.showUserProfile(user, modalContainer);
+      } else if (selectedOption === "invite") {
+        this.inviteUser(user, modalContainer);
       } else if (selectedOption === "block") {
-        this.blockUser(user, optionsContainer);
+        this.blockUser(user, modalContainer);
+      } else if (selectedOption === "close") {
+        this.closeModal(modalContainer);
       }
     });
 
-    optionsContainer.appendChild(select);
-    document.body.appendChild(optionsContainer);
+    modalContent.appendChild(closeButton);
+    modalContent.appendChild(select);
+    modalContainer.appendChild(modalContent);
+    document.body.appendChild(modalContainer);
 
-    optionsContainer.style.position = "absolute";
-    optionsContainer.style.top = `${event.clientY}px`;
-    optionsContainer.style.left = `${event.clientX}px`;
+    this.modalVisible = true;
+
+    modalContainer.style.display = "block";
   }
 
-  showUserProfile(user, optionsContainer) {
-    optionsContainer.remove();
-    alert(`ユーザー ${user.name} のプロフィールを表示します。`);
+  closeModal(modalContainer) {
+    modalContainer.remove();
+    this.modalVisible = false;
   }
 
-  blockUser(user, optionsContainer) {
+  showUserProfile(user, modalContainer) {
+    alert(`ユーザー ${user.name} のプロフィールを表示aaします。`);
+    this.closeModal(modalContainer);
+  }
+
+  inviteUser(user, modalContainer) {
+    alert(`ユーザー ${user.name} をチャットルームに招待します。`);
+
+    if (this.chatSocket && this.chatSocket.readyState === WebSocket.OPEN) {
+      const inviteRequest = {
+        job_type: "invite_user",
+        user_uuid: user.uuid,
+        status: "invited",
+      };
+
+      console.log("Invite Request:", inviteRequest);
+      this.chatSocket.send(JSON.stringify(inviteRequest));
+    }
+
+    this.closeModal(modalContainer);
+  }
+
+  blockUser(user, modalContainer) {
     if (this.chatSocket && this.chatSocket.readyState === WebSocket.OPEN) {
       const blockRequest = {
         job_type: "block_user",
@@ -88,8 +134,7 @@ export class DirectoryContainer extends Component {
       this.chatSocket.send(JSON.stringify(blockRequest));
 
       alert(`${user.name} をブロックしました。`);
-
-      optionsContainer.remove();
+      this.closeModal(modalContainer);
     } else {
       alert("WebSocketが接続されていません。");
     }
@@ -118,7 +163,7 @@ export class DirectoryContainer extends Component {
     unjoinedRoomsContainer.innerHTML = "";
 
     const filteredRooms = rooms.filter((room) =>
-      room.name.toLowerCase().includes(query.toLowerCase()),
+      room.name.toLowerCase().includes(query.toLowerCase())
     );
 
     filteredRooms.forEach((room) => {
@@ -194,13 +239,11 @@ export class DirectoryContainer extends Component {
                 </div>
                 <div class="unjoined-rooms"></div>
 
-                <!-- メンバーリストの表示領域 -->
                 <div class="members-container">
                     <h3>Members</h3>
-                    <div class="members-list"></div> <!-- メンバーリストのコンテナ -->
+                    <div class="members-list"></div> 
                 </div>
 
-                <!-- Modal for joining chatroom -->
                 <div id="joinChatroomModal" class="modal">
                     <div class="modal-content">
                         <span class="close-modal">&times;</span>
