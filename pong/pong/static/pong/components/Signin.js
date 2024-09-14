@@ -38,11 +38,21 @@ export class Signin extends Component {
       email: event.target.email.value,
       password: event.target.password.value,
     });
+
+    let data;
     try {
-      await this.generateToken(signinJson);
-      this.router.goNextPage("/home");
+      data = await this.generateToken(signinJson);
     } catch (error) {
       alert(error);
+      return ;
+    }
+    switch (data.status) {
+      case "2FAIsRequired":
+        this.goNextPage("/totp");
+        break ;
+      default:
+        this.router.goNextPage("/home");
+        break ;
     }
   };
 
@@ -56,9 +66,7 @@ export class Signin extends Component {
     });
     console.log(response);
     const data = await response.json();
-    if (!response.ok) {
-      throw Error(data.status);
-    }
+    return data;
   };
 
   goSignup = () => {
