@@ -136,7 +136,6 @@ export class Router {
     const verifyResponse = await fetch("/pong/api/v1/auth/token/verify", {
       method: "POST",
     });
-    console.log(verifyResponse);
     if (verifyResponse.ok) {
       return true;
     }
