@@ -177,6 +177,16 @@ class ChatConsumer(WebsocketConsumer):
                         )
                     )
                     logger.info(f"User is blocked by other user")
+                else:
+                    async_to_sync(self.channel_layer.group_send)(
+                        self.room_group_name,
+                        {
+                            "type": "chat_message",
+                            "user": saved_message.user_id.name,
+                            "message": saved_message.message,
+                            "created_at": saved_message.created_at.isoformat(),
+                        },
+                    )
                 return
 
             saved_message = Messages.manager.create_message(self.user, room, message)
