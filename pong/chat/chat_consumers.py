@@ -133,12 +133,16 @@ class ChatConsumer(WebsocketConsumer):
         elif job_type == "leave_room":
             room_id = text_data_json.get("room_uuid")
             Rooms.objects.leave_room(self.user, room_id)
-            self.send(
-                text_data=json.dumps(
-                    {
-                        "job_type": "leave_room",
-                    }
-                )
+            users = Rooms.objects.get_users_in_room(room_id)
+
+            users = [serialize_user(user) for user in users]
+            logger.info(f"Users in room: {users}")
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    "type": "leave_room",
+                    "users": users,
+                },
             )
 
     def chat_message(self, event):
@@ -151,7 +155,17 @@ class ChatConsumer(WebsocketConsumer):
                 }
             )
         )
-
+    
+    def leave_room(self, event):
+        logger.info(f"Event: {event}")
+        self.send(
+            text_data=json.dumps(
+                {
+                    "users": event["users"],
+                }
+            )
+        )
+    
     def init(self, event):
         logger.info(f"Event: {event}")
         self.send(
