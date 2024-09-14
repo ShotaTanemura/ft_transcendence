@@ -46,7 +46,7 @@ class ChatConsumer(WebsocketConsumer):
                 return
             other = other[0]
             logger.info(f"Other user: {other}")
-            
+
             is_blocked = UserBlock.objects.is_blocked(self.user, other)
             if is_blocked:
                 logger.info(f"User is blocked")

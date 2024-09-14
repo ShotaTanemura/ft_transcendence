@@ -38,7 +38,7 @@ application = ProtocolTypeRouter(
                             r"realtime-typing/(?P<room_name>\w+)/$",
                             TypingPlayerConsumer.as_asgi(),
                         ),
-                        *chat.routing.websocket_urlpatterns
+                        *chat.routing.websocket_urlpatterns,
                     ]
                 )
             )
