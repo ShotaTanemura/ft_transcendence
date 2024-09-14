@@ -51,3 +51,5 @@ def create_session_token_response(uuid, response, exp_delta, status, auth_level)
     )
 
     response.set_cookie("session_token", new_token, httponly=True)
+
+    return response
