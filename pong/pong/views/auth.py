@@ -68,6 +68,20 @@ def create_token(request):
             {"message": "User not found", "status": "userNotFound"}, status=404
         )
 
+    tfa = Users2FA.objects.filter(user=user.uuid).first()
+
+    if tfa.is_active:
+        return create_session_token_response(
+            user.uuid,
+            JsonResponse(
+                {"message": "Password correct, but TOTP is required.", "status": "2FAIsRequired"}, status=401
+            ),
+            exp_delta=datetime.timedelta(minutes=3),
+            status="2FAPending",
+            auth_level="partial",
+
+        )
+
     return create_token_response(
         user.uuid, JsonResponse({"uuid": user.uuid}, content_type="application/json")
     )
