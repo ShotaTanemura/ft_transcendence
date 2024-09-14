@@ -7,8 +7,9 @@ from django.conf import settings
 from pong.middleware.auth import jwt_exempt, getJwtPayloadCookie, getJwtPayload
 from pong.utils.create_response import create_token_response, create_session_token_response
 from pong.utils.redis_client import redis_client
-from pong.two_factor import is_valid_totp_code
+from pong.views.two_factor import is_valid_totp_code
 import jwt
+import datetime
 
 
 @jwt_exempt
