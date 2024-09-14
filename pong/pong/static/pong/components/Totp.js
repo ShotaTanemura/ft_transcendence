@@ -39,7 +39,7 @@ export class Totp extends Component {
       alert(error);
       return;
     }
-    this.router.goNextPage("/home");
+    this.router.goNextPage("/");
   };
 
   get html() {
