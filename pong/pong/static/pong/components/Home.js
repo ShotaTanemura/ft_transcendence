@@ -69,35 +69,35 @@ export class Home extends Component {
 
   get html() {
     return `
-      <main class="home">
-        <div class="home-container">
-          <div class="home-description">
-            <h1>Realtime Pong Game</h1>
-            <p>2人対戦が可能なPONG GAMEです</p>
-          </div>
-          <div class="home-card">
-          <button class="go-realtime-pong-button">PONG GAMEをする</button>
-          </div>
+    <main class="home">
+      <div class="home-container">
+        <div class="home-description">
+          <h1>Realtime Pong Game</h1>
+          <p>2人対戦が可能なPONG GAMEです。<br />操作はシンプルで、ボールを相手側に弾き返すだけの簡単なルールです。</p>
         </div>
-        <div class="home-container">
-          <div class="home-card">
-            <button class="go-chat-button">CHATをする</button>
-          </div>
-          <div class="home-description">
-            <h1>Realtime Chat Application</h1>
-            <p>チャットが可能です</p>
-          </div>
+        <div class="home-card">
+        <button class="go-realtime-pong-button">PONG GAMEをする</button>
         </div>
-        <div class="home-container">
-          <div class="home-description">
-            <h1>Realtime Typing Game</h1>
-            <p>2人対戦が可能なTYPING GAMEです</p>
-          </div>
-          <div class="home-card">
-            <button class="go-realtime-typing-button">TYPING GAMEをする</button>
-          </div>
+      </div>
+      <div class="home-container">
+        <div class="home-card">
+          <button class="go-chat-button">CHATをする</button>
         </div>
-        </main>
-        `;
+        <div class="home-description">
+          <h1>Realtime Chat Application</h1>
+          <p>チャットが可能です。<br />リアルタイムで友人や他のプレイヤーとコミュニケーションが取れます。</p>
+        </div>
+      </div>
+      <div class="home-container">
+        <div class="home-description">
+          <h1>Realtime Typing Game</h1>
+          <p>2人対戦が可能なTYPING GAMEです。<br />タイピング速度を競って、より早く正確に文字を入力するゲームです。</p>
+        </div>
+        <div class="home-card">
+          <button class="go-realtime-typing-button">TYPING GAMEをする</button>
+        </div>
+      </div>
+      </main>
+      `;
   }
 }

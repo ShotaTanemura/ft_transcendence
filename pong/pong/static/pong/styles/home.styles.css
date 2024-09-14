@@ -41,14 +41,21 @@ main.home .home-card {
 
 main.home .home-description h1,
 main.home .home-card h1 {
-  font-size: 1.5rem;
-  margin-bottom: 10px;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 15px;
+  text-align: center;
 }
 
 main.home .home-description p,
 main.home .home-card p {
-  font-size: 1rem;
-  margin-bottom: 20px;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 30px;
+  padding: 0 20px;
+  color: #555;
+  text-align: center;
 }
 
 main.home button {
