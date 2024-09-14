@@ -67,6 +67,8 @@ export class Signin extends Component {
 
   get html() {
     return `
+        <main class="signin">
+        	<div class="signin-container">
             <h1>Signin</h1>
             <br/>
             <form 
@@ -76,18 +78,20 @@ export class Signin extends Component {
                 <button class="form-42oauth" type=submit>42 Signin</button>
             </form>
             <form class="signin-form">
-                <label for="email">email: </label>
-                <input id="email" name="email" placeholder="email" type="email" max="320" required/>
-                </br>
-                <class="password">
-                <label for="password">password: </label>
-                <input id="password" name="password" placeholder="password" type="password" max="64" required/>
-                </br>
-                <button type="submit">signin</button>
+              <label for="email">email: </label>
+              <input id="email" name="email" placeholder="email" type="email" max="320" required/>
+              </br>
+              <class="password">
+              <label for="password">password: </label>
+              <input id="password" name="password" placeholder="password" type="password" max="64" required/>
+              </br>
+              <button type="submit">signin</button>
             </form>
             </br>
             <label for="go-signup">You don't have account ?</label>
             <button id="go-signup" name="go-signup" type="button">signup</button>
+          </div>
+        </main>
         `;
   }
 }
