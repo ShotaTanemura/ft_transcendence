@@ -1,15 +1,15 @@
 import { Component } from "../core/component.js";
-import { Load } from "./Load.js";
 import { Header } from "./Header.js";
 
 export class PongGameHome extends Component {
   constructor(router, parameters, state) {
     super(router, parameters, state);
     this.findElement("form.entering-room-form").onsubmit = this.submitForm;
+    this.findElement("button.view-pong-match-results").onclick =
+      this.goViewMatchResultsPage;
   }
 
   afterPageLoaded = () => {
-    new Load(this.outer, this.parameters, this.state).onload();
     this.headerComponent = new Header(this.router, this.params, this.state);
     this.element.parentElement.prepend(this.headerComponent.element);
     this.headerComponent.afterPageLoaded();
@@ -81,6 +81,10 @@ export class PongGameHome extends Component {
         throw Error("changePageByRoomStatus: doesn't match any room states.");
     }
   };
+  goViewMatchResultsPage = () => {
+    this.goNextPage("/pong-game-match-result");
+  };
+
   get html() {
     return `
       <main class="text-center p-5">
@@ -95,6 +99,8 @@ export class PongGameHome extends Component {
           </div>
 			  	<input id="enter-room-as-host-submit" name="host" class="btn btn-primary" type="submit" value="enter room as host">
 			  	<input id="enter-room-as-guest-submit" name="guest" class="btn btn-primary" type="submit" value="enter room as guest">
+          <br><br>
+          <button class="view-pong-match-results btn btn-primary">view match results</button>
 			  </form>
       </main>
 		`;

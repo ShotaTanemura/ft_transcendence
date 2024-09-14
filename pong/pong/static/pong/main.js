@@ -3,6 +3,7 @@ import { Router } from "./core/router.js";
 import { Signup } from "./components/Signup.js";
 import { Signin } from "./components/Signin.js";
 import { Home } from "./components/Home.js";
+import { Chat } from "./components/Chat.js";
 import { PongGameHome } from "./components/PongGameHome.js";
 import { PongGameWaiting } from "./components/PongGameWaiting.js";
 import { PongGame } from "./components/PongGame.js";
@@ -16,13 +17,14 @@ import { TypingGame } from "./components/TypingGame.js";
 import { PongGameTournament } from "./components/PongGameTournament.js";
 import { PongGameFinished } from "./components/PongGameFinished.js";
 import { TypingGameFinished } from "./components/TypingGameFinished.js";
+import { PongGameResult } from "./components/PongGameResult.js";
 
 let router = new Router(
   document.getElementById("app"),
   [
     {
       path: "/",
-      component: Signin,
+      component: Home,
       state: {},
     },
     {
@@ -31,8 +33,13 @@ let router = new Router(
       state: {},
     },
     {
-      path: "/home",
-      component: Home,
+      path: "/signin",
+      component: Signin,
+      state: {},
+    },
+    {
+      path: "/chat",
+      component: Chat,
       state: {},
     },
     {
@@ -63,6 +70,11 @@ let router = new Router(
     {
       path: "/pong-game-finished",
       component: PongGameFinished,
+      state: {},
+    },
+    {
+      path: "/pong-game-match-result",
+      component: PongGameResult,
       state: {},
     },
     {

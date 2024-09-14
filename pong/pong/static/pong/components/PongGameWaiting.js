@@ -1,5 +1,4 @@
 import { Component } from "../core/component.js";
-import { Load } from "./Load.js";
 
 export class PongGameWaiting extends Component {
   constructor(router, parameters, state) {
@@ -7,10 +6,6 @@ export class PongGameWaiting extends Component {
     this.connection = this.getRouteContext("WebSocket");
     this.findElement("button.go-back-to-game-home").onclick = this.onClick;
   }
-
-  afterPageLoaded = () => {
-    new Load(this.router, this.parameters, this.state).onload();
-  };
 
   onClick = () => {
     this.connection.close();
