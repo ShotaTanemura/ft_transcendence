@@ -1,5 +1,4 @@
 import { Component } from "../core/component.js";
-import { Load } from "./Load.js";
 import { Header } from "./Header.js";
 
 export class PongGameHome extends Component {
@@ -11,7 +10,6 @@ export class PongGameHome extends Component {
   }
 
   afterPageLoaded = () => {
-    new Load(this.outer, this.parameters, this.state).onload();
     this.headerComponent = new Header(this.router, this.params, this.state);
     this.element.parentElement.prepend(this.headerComponent.element);
     this.headerComponent.afterPageLoaded();
