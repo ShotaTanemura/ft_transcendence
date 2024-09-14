@@ -169,3 +169,4 @@ node_modules/
 
 # ignore Authorization keys
 *.pem
+*.png

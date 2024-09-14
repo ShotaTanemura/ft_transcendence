@@ -1,0 +1,486 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+  font-size: 1rem;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  display: flex;
+}
+
+.parent-container {
+  display: flex;
+  flex-direction: row;
+  height: 80vh;
+  width: 100vw;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Direct Messages */
+.direct-message-container {
+  display: flex;
+  flex-direction: column;
+  height: 95vh;
+  width: 80vw;
+  margin: auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  background-color: #ffffff;
+}
+
+.direct-message-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background-color: #f0f4f8;
+  color: #333;
+  font-size: 1rem;
+  font-weight: normal;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.leave-button {
+  padding: 6px 12px;
+  background-color: #778bf0;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.leave-button:hover {
+  background-color: #ff3333;
+}
+
+@media (max-width: 600px) {
+  .leave-button {
+    font-size: 0.8rem;
+    padding: 5px 10px;
+  }
+}
+
+.direct-message-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+  flex-grow: 1;
+  background-color: #f7fafc;
+}
+
+.direct-message-messages {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding-right: 10px;
+  margin-bottom: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: none;
+}
+
+.form {
+  display: flex;
+  align-items: center;
+  border-top: 1px solid #e2e8f0;
+  padding: 10px;
+  gap: 10px;
+  box-sizing: border-box;
+  justify-content: space-between;
+}
+
+.direct-message-form input[type="text"] {
+  flex-grow: 1;
+  padding: 12px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  outline: none;
+  font-size: 1rem;
+  width: calc(100% - 90px);
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+.direct-message-form input[type="text"]:focus {
+  border-color: #4a90e2;
+}
+
+.direct-message-form button {
+  padding: 12px 20px;
+  background-color: #4a90e2;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+  white-space: nowrap;
+}
+
+.direct-message-form button:hover {
+  background-color: #357abd;
+}
+
+.direct-message-messages::-webkit-scrollbar {
+  width: 8px;
+}
+
+.direct-message-messages::-webkit-scrollbar-thumb {
+  background-color: #4a90e2;
+  border-radius: 8px;
+}
+
+/* MyRooms */
+.myrooms-container {
+  padding: 20px;
+  background-color: #f7f9fc;
+  border-radius: 8px;
+  max-width: 600px;
+  width: 20vw;
+  margin: 0 auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  height: 95vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.create-chatroom {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 15px;
+}
+
+.create-chatroom-button {
+  padding: 10px 20px;
+  background-color: #4a90e2;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.create-chatroom-button:hover {
+  background-color: #357abd;
+}
+
+.search-bar {
+  margin-bottom: 15px;
+}
+
+.search-bar input[type="text"] {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #e2e8f0;
+  border-radius: 6px;
+  outline: none;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.search-bar input[type="text"]:focus {
+  border-color: #4a90e2;
+}
+
+.myrooms {
+  padding: 15px;
+  background-color: #fff;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 20px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.invited-rooms-container {
+  margin-top: 20px;
+}
+
+.invited-rooms-container h3 {
+  font-size: 1.2rem;
+  color: #4a90e2;
+  margin-bottom: 10px;
+}
+
+.invited-rooms {
+  padding: 15px;
+  background-color: #fff;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 100px auto;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.close-modal {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  color: #aaa;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close-modal:hover,
+.close-modal:focus {
+  color: #4a90e2;
+}
+
+#createChatroomForm {
+  display: flex;
+  flex-direction: column;
+}
+
+#createChatroomForm label {
+  margin-bottom: 8px;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+#chatroomName,
+#roomType,
+#email {
+  padding: 12px;
+  border: 2px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 1rem;
+  margin-bottom: 15px;
+  transition: border-color 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#chatroomName:focus,
+#roomType:focus,
+#email:focus {
+  border-color: #4a90e2;
+}
+
+#createChatroomForm button[type="submit"] {
+  padding: 12px;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+#createChatroomForm button[type="submit"]:hover {
+  background-color: #357abd;
+}
+
+.myrooms::-webkit-scrollbar,
+.invited-rooms::-webkit-scrollbar {
+  width: 8px;
+}
+
+.myrooms::-webkit-scrollbar-thumb,
+.invited-rooms::-webkit-scrollbar-thumb {
+  background-color: #4a90e2;
+  border-radius: 8px;
+}
+
+@media (max-width: 600px) {
+  .modal-content {
+    width: 90%;
+  }
+}
+
+/* Directory */
+.dir-container {
+  padding: 20px;
+  background-color: #f7f9fc;
+  border-radius: 8px;
+  max-width: 600px;
+  margin: 0 auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  height: 95vh;
+  gap: 20px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header h2 {
+  font-size: 1.5rem;
+  color: #4a90e2;
+}
+
+.options {
+  font-size: 1.5rem;
+  color: #4a90e2;
+  cursor: pointer;
+}
+
+.options:hover {
+  color: #357abd;
+}
+
+.unjoined-search-bar {
+  margin-bottom: 15px;
+}
+
+.unjoined-search-bar input[type="text"] {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #e2e8f0;
+  border-radius: 6px;
+  outline: none;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.unjoined-search-bar input[type="text"]:focus {
+  border-color: #4a90e2;
+}
+
+.unjoined-rooms {
+  padding: 15px;
+  background-color: #fff;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.unjoined-rooms::-webkit-scrollbar {
+  width: 8px;
+}
+
+.unjoined-rooms::-webkit-scrollbar-thumb {
+  background-color: #4a90e2;
+  border-radius: 8px;
+}
+
+.members-container {
+  margin-top: 20px;
+}
+
+.members-container h3 {
+  font-size: 1.2rem;
+  color: #4a90e2;
+  margin-bottom: 10px;
+}
+
+.members-list {
+  padding: 15px;
+  background-color: #fff;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.members-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.members-list::-webkit-scrollbar-thumb {
+  background-color: #4a90e2;
+  border-radius: 8px;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 100px auto;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.close-modal {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  color: #aaa;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close-modal:hover,
+.close-modal:focus {
+  color: #4a90e2;
+}
+
+.modal-content button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+#confirmJoinButton {
+  background-color: #4a90e2;
+  color: white;
+}
+
+#confirmJoinButton:hover {
+  background-color: #357abd;
+}
+
+#cancelJoinButton {
+  background-color: #e2e8f0;
+  color: black;
+}
+
+#cancelJoinButton:hover {
+  background-color: #d1d5db;
+}
+
+@media (max-width: 600px) {
+  .modal-content {
+    width: 90%;
+  }
+}
