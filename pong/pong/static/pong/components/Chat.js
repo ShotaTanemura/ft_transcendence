@@ -186,7 +186,10 @@ export class Chat extends Component {
   afterPageLoaded() {
     this.headerComponent = new Header(this.router, this.params, this.state);
     this.element.parentElement.prepend(this.headerComponent.element);
-    this.headerComponent.afterPageLoaded();
+  }
+
+  beforePageUnload() {
+    this.element.parentElement.removeChild(this.headerComponent.element);
   }
 
   get html() {
