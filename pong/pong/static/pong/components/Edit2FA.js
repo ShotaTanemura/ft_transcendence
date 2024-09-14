@@ -77,7 +77,7 @@ export class Edit2FA extends Component {
     if (!response.ok) {
       switch (response.status) {
         case 400:
-          throw Error("不正なリクエストです");
+          throw Error("認証コードに誤りがあります");
         default:
           throw Error(data.status);
       }
