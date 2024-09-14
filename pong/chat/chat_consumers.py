@@ -74,7 +74,7 @@ class ChatConsumer(WebsocketConsumer):
             users = [serialize_user(user) for user in users]
 
             logger.info(f"Users in room: {users}")
-    
+
             self.send(
                 text_data=json.dumps(
                     {
@@ -88,7 +88,7 @@ class ChatConsumer(WebsocketConsumer):
         except Rooms.DoesNotExist:
             logger.info("Room does not exist")
             self.close()
-        
+
     def send_initial_messages(self):
         try:
             room = Rooms.objects.get(uuid=self.room_name)
@@ -165,7 +165,6 @@ class ChatConsumer(WebsocketConsumer):
                     )
                     logger.info(f"User is blocked by other user")
                 return
-                    
 
             saved_message = Messages.manager.create_message(user, room, message)
 
@@ -209,7 +208,7 @@ class ChatConsumer(WebsocketConsumer):
                 }
             )
         )
-    
+
     def leave_room(self, event):
         logger.info(f"Event: {event}")
         self.send(
@@ -219,7 +218,7 @@ class ChatConsumer(WebsocketConsumer):
                 }
             )
         )
-    
+
     def init(self, event):
         logger.info(f"Event: {event}")
         self.send(

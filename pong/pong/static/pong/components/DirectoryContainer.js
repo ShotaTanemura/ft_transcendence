@@ -165,7 +165,7 @@ export class DirectoryContainer extends Component {
     unjoinedRoomsContainer.innerHTML = "";
 
     const filteredRooms = rooms.filter((room) =>
-      room.name.toLowerCase().includes(query.toLowerCase())
+      room.name.toLowerCase().includes(query.toLowerCase()),
     );
 
     filteredRooms.forEach((room) => {
