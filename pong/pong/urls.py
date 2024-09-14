@@ -13,6 +13,7 @@ urlpatterns = [
     path("api/v1/auth/token/verify", auth.verify_token, name="verify"),
     path("api/v1/users/<uuid:uuid>", users.user, name="user"),
     path("api/v1/users/<uuid:uuid>/icon", users.user_icon, name="user_icon"),
+    path("api/v1/users/others/<str:name>", users.other_user, name="other_user"),
     path("api/v1/auth/token/revoke", auth.revoke_token, name="revoke"),
     path(
         "api/v1/auth/two-factor/provisioning",

@@ -141,3 +141,17 @@ def user_icon(request, uuid):
         },
         status=200,
     )
+
+
+@csrf_exempt
+def other_user(request, name):
+    if request.method != "GET":
+        return JsonResponse(
+            {"message": "Method is not allowed", "status": "invalidParams"}, status=400
+        )
+    user = User.objects.filter(name=name).first()
+    if not user:
+        return JsonResponse(
+            {"message": "User not found", "status": "userNotFound"}, status=404
+        )
+    return JsonResponse({"name": user.name, "icon": user.icon.url}, status=200)
