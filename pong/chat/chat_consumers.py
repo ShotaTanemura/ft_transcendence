@@ -148,21 +148,20 @@ class ChatConsumer(WebsocketConsumer):
         if job_type == "send_message":
             message = text_data_json["message"]
             room = Rooms.objects.get(uuid=self.room_name)
-            user = self.user
             if room.room_type == "dm":
                 other = Rooms.objects.get_users_in_room(room.uuid).exclude(
-                    uuid=user.uuid
+                    uuid=self.user.uuid
                 )
                 if not other:
                     logger.info(f"Other user not found")
                     return
                 other = other[0]
-                is_blocked = UserBlock.objects.is_blocked(user, other)
+                is_blocked = UserBlock.objects.is_blocked(self.user, other)
                 if is_blocked:
                     logger.info(f"User is blocked")
                     return
-                is_blocked_by = UserBlock.objects.is_blocked(other, user)
-                saved_message = Messages.manager.create_message(user, room, message)
+                is_blocked_by = UserBlock.objects.is_blocked(other, self.user)
+                saved_message = Messages.manager.create_message(self.user, room, message)
                 if is_blocked_by:
                     self.send(
                         text_data=json.dumps(
@@ -176,7 +175,7 @@ class ChatConsumer(WebsocketConsumer):
                     logger.info(f"User is blocked by other user")
                 return
 
-            saved_message = Messages.manager.create_message(user, room, message)
+            saved_message = Messages.manager.create_message(self.user, room, message)
 
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name,
