@@ -161,7 +161,9 @@ class ChatConsumer(WebsocketConsumer):
                     logger.info(f"User is blocked")
                     return
                 is_blocked_by = UserBlock.objects.is_blocked(other, self.user)
-                saved_message = Messages.manager.create_message(self.user, room, message)
+                saved_message = Messages.manager.create_message(
+                    self.user, room, message
+                )
                 if is_blocked_by:
                     self.send(
                         text_data=json.dumps(
