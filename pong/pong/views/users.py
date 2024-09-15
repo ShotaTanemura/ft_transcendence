@@ -133,3 +133,34 @@ def other_user(request, name):
             {"message": "User not found", "status": "userNotFound"}, status=404
         )
     return JsonResponse({"name": user.name, "icon": user.icon.url}, status=200)
+
+
+@csrf_exempt
+def searched_users(request, name):
+    try:
+        if request.method == "GET":
+            users = User.objects.filter(name__icontains=name)
+            if not users:
+                return JsonResponse(
+                    {"message": "Users not found", "status": "userNotFound"}, status=404
+                )
+            hitted_user_list = []
+            for user in users:
+                hitted_user_list.append(
+                    {"name": user.name, "icon": user.icon.url if user.icon else None}
+                )
+
+            return JsonResponse(
+                {"users": hitted_user_list},
+                status=200,
+            )
+        else:
+            return JsonResponse(
+                {"message": "Method is not allowed", "status": "invalidParams"},
+                status=400,
+            )
+    except Exception as e:
+        logger.error(f"Server error: {e}")
+        return JsonResponse(
+            {"message": "Internal Server Error", "status": "serverError"}, status=500
+        )

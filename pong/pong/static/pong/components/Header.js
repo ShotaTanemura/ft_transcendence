@@ -1,4 +1,5 @@
 import { Component } from "../core/component.js";
+import { getUsersDataFromName } from "../api/api.js";
 
 export class Header extends Component {
   constructor(router, params, state) {
@@ -23,10 +24,14 @@ export class Header extends Component {
       this.onClickSettingsLink;
   }
 
-  onSubmitSearchUserForm = (event) => {
-    //TODO handle action
+  onSubmitSearchUserForm = async (event) => {
     event.preventDefault();
-    alert("#TODO ユーザーを検索する");
+    const searchedName = event.target.elements["search-user-input"].value;
+    this.setRouteContext(
+      "searchedUsersData",
+      await getUsersDataFromName(searchedName),
+    );
+    this.goNextPage("/search-users");
   };
 
   onClickUserProfileButton = () => {
@@ -72,7 +77,7 @@ export class Header extends Component {
               <div class="input-group-prepend">
                 <span class="input-group-text" id="basic-addon1">@</span>
               </div>
-              <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+              <input id="search-user-input" type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
             </div>
           </form>
           <button id="user-profile-button" class="btn btn-link"">
