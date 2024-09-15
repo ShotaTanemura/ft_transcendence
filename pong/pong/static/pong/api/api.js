@@ -35,3 +35,22 @@ export async function getUserFromUuid(uuid) {
     return null;
   }
 }
+
+export async function getUserFromName(name) {
+  try {
+    const response = await fetch(`/pong/api/v1/users/${name}`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    });
+    const data = await response.json();
+    console.log(data);
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to fetch user data");
+    }
+    return data;
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    return null;
+  }
+}
