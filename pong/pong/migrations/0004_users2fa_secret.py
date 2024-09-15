@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
             model_name="users2fa",
             name="secret",
             field=models.CharField(
-                default=pong.utils.random_string.generate_base32_encoded_raondom_string
+                default=pong.utils.random_string.generate_base32_encoded_random_string
             ),
         ),
     ]
