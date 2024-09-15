@@ -12,15 +12,17 @@ export class Header extends Component {
     document.getElementById("user-profile-button").onclick =
       this.onClickUserProfileButton;
     document.getElementById("navigate-home-link").onclick =
-      this.onClickHomeLink;
+      this.onClickHomeButton;
     document.getElementById("navigate-chat-link").onclick =
-      this.onClickChatLink;
+      this.onClickChatButton;
     document.getElementById("navigate-pong-game-link").onclick =
-      this.onClickPongGameLink;
+      this.onClickPongGameButton;
     document.getElementById("navigate-typing-game-link").onclick =
-      this.onClickTypingGameLink;
+      this.onClickTypingGameButton;
+    document.getElementById("navigate-stats-link").onclick =
+      this.onClickStatsButton;
     document.getElementById("navigate-settings-link").onclick =
-      this.onClickSettingsLink;
+      this.onClickSettingsButton;
     document.getElementById("navigate-signout-link").onclick =
       this.onClickSignoutButton;
   }
@@ -36,27 +38,32 @@ export class Header extends Component {
     this.render();
   };
 
-  onClickHomeLink = () => {
+  onClickHomeButton = () => {
     this.router.goNextPage("/");
     this.render();
   };
 
-  onClickChatLink = () => {
+  onClickChatButton = () => {
     this.router.goNextPage("/chat");
     this.render();
   };
 
-  onClickPongGameLink = () => {
+  onClickPongGameButton = () => {
     this.router.goNextPage("/pong-game-home");
     this.render();
   };
 
-  onClickTypingGameLink = () => {
+  onClickTypingGameButton = () => {
     this.router.goNextPage("/typing-game-home");
     this.render();
   };
 
-  onClickSettingsLink = () => {
+  onClickStatsButton = () => {
+    this.router.goNextPage("/stats");
+    this.render();
+  };
+
+  onClickSettingsButton = () => {
     //TODO handle action
     alert("#TODO Settingsに移動する");
   };
@@ -113,52 +120,60 @@ export class Header extends Component {
         <div class="offcanvas-body">
           <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
             <li class="nav-item">
-              <a id="navigate-home-link" class="nav-link active" aria-current="page">
+              <button id="navigate-home-link" class="btn btn-link nav-link active" aria-current="page">
                 <i class="bi bi-house px-2 fa-2x"></i>
                 <span class="fa-2x align-bottom">
                   Home
                 </span>
-              </a>
+              </button>
             </li>
             <li class="nav-item">
-              <a id="navigate-pong-game-link" class="nav-link active" aria-current="page">
-                <i class="bi bi-controller px-2 fa-2x"></i>
-                <span class="fa-2x align-bottom">
-                  PongGame
-                </span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a id="navigate-chat-link" class="nav-link active" aria-current="page">
+              <button id="navigate-chat-link" class="btn btn-link nav-link active" aria-current="page">
                 <i class="bi bi-chat-dots px-2 fa-2x"></i>
                 <span class="fa-2x align-bottom">
                   Chat
                 </span>
-              </a>
+              </button>
             </li>
             <li class="nav-item">
-              <a id="navigate-typing-game-link" class="nav-link active" aria-current="page">
+              <button id="navigate-pong-game-link" class="btn btn-link nav-link active" aria-current="page">
+                <i class="bi bi-controller px-2 fa-2x"></i>
+                <span class="fa-2x align-bottom">
+                  PongGame
+                </span>
+              </button>
+            </li>
+            <li class="nav-item">
+              <button id="navigate-typing-game-link" class="btn btn-link nav-link active" aria-current="page">
                 <i class="bi bi-keyboard px-2 fa-2x"></i>
                 <span class="fa-2x align-bottom">
                   TypingGame
                 </span>
-              </a>
+              </button>
             </li>
             <li class="nav-item">
-              <a id="navigate-settings-link" class="nav-link active" aria-current="page">
+              <button id="navigate-stats-link" class="btn btn-link nav-link active" aria-current="page">
+                <i class="bi bi-graph-up px-2 fa-2x"></i>
+                <span class="fa-2x align-bottom">
+                  Stats 
+                </span>
+              </button>
+            </li>
+            <li class="nav-item">
+              <button id="navigate-settings-link" class="btn btn-link nav-link active" aria-current="page">
                 <i class="bi bi-gear px-2 fa-2x"></i>
                 <span class="fa-2x align-bottom">
                   Settings
                 </span>
-              </a>
+              </button>
             </li>
             <li class="nav-item">
-              <a id="navigate-signout-link" class="nav-link active" aria-current="page">
+              <button id="navigate-signout-link" class="btn btn-link nav-link active" aria-current="page">
                 <i class="bi bi-box-arrow-right px-2 fa-2x"></i>
                 <span class="fa-2x align-bottom">
                   Signout
                 </span>
-              </a>
+              </button>
             </li>
           </ul>
         </div>
