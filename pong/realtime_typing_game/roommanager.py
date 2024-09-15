@@ -44,7 +44,7 @@ class TypingRoomManager:
     def __init__(self, room_name):
         self.instance_lock = Lock()
         self.channel_layer = get_channel_layer()
-        self.typing_game = TypingGame(room_name)  # TypingGameを使用
+        self.typing_game = TypingGame(room_name)
         self.room_name = room_name
         self.room_state = RoomState.Queuing
         self.participants = []

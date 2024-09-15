@@ -18,8 +18,8 @@ class Timer:
         self.timer = self.time_limit
         self.thread_running = False
         self.game_finished = False
-        self.send_message_to_group = send_message_to_group  # メッセージ送信関数
-        self.handle_game_finished = handle_game_finished  # ゲーム終了時の処理
+        self.send_message_to_group = send_message_to_group
+        self.handle_game_finished = handle_game_finished
 
     def start_countdown(self):
         def countdown():
@@ -95,7 +95,6 @@ class TypingGame:
     
     def create_typing_game_record(self):
         try:
-            # プレイヤーオブジェクトを直接取得
             player1 = self.players.get(self.PLAYER1)
             player2 = self.players.get(self.PLAYER2)
 
