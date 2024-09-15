@@ -56,17 +56,6 @@ export class Home extends Component {
     this.router.goNextPage("/profile");
   };
 
-  revokeToken = async () => {
-    const response = await fetch("/pong/api/v1/auth/token/revoke", {
-      method: "POST",
-    });
-    console.log(response);
-    const data = await response.json();
-    if (!response.ok) {
-      throw Error(data.status);
-    }
-  };
-
   get html() {
     return `
     <main class="home">
