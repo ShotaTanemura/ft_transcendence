@@ -2,7 +2,7 @@ import { Component } from "../core/component.js";
 import { Header } from "./Header.js";
 import { getUuid, getUserFromUuid } from "../api/api.js";
 
-export class PongGameResult extends Component {
+export class GameStats extends Component {
   constructor(router, parameters, state) {
     super(router, parameters, state);
     this.findElement("button.go-back-to-pong-game-home-button").onclick =
@@ -117,4 +117,4 @@ export class PongGameResult extends Component {
   }
 }
 
-export default PongGameResult;
+export default GameStats;
