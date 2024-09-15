@@ -170,3 +170,31 @@ class OtherUserTest(TestCase):
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 400)
+
+
+class SearchedUserTest(TestCase):
+    def setUp(self):
+        self.user, self.token, self.refresh_token = create_user_with_tokens()
+        self.client.cookies["token"] = self.token
+        self.client.cookies["refresh_token"] = self.refresh_token
+
+    def test_get_searched_user_normal(self):
+        response = self.client.get(
+            reverse("pong:searched_users", kwargs={"name": self.user.name}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_other_user_not_found(self):
+        response = self.client.get(
+            reverse("pong:searched_users", kwargs={"name": "notfound"}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_get_other_user_not_allowed_method(self):
+        response = self.client.post(
+            reverse("pong:searched_users", kwargs={"name": self.user.name}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
