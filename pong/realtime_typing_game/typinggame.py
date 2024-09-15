@@ -22,7 +22,6 @@ class Timer:
         self.handle_game_finished = handle_game_finished  # ゲーム終了時の処理
 
     def start_countdown(self):
-        """カウントダウンを開始する"""
         def countdown():
             self.thread_running = True
             while self.timer > 0 and not self.game_finished:
@@ -57,7 +56,7 @@ class TypingGame:
     def __init__(self, room_name):
         self.room_name = room_name
         self.channel_layer = get_channel_layer()
-        self.typingGameInfo = None
+        self.typing_game_info = None
         self.player_to_input = self.PLAYER2
         self.selected_word = ""
         self.input_length = 0
@@ -104,20 +103,20 @@ class TypingGame:
                 print(f"{RED}Error: Player not found{RESET}")
                 return
 
-            self.typingGameInfo = TypingGameInfo.objects.create(
+            self.typing_game_info = TypingGameInfo.objects.create(
                 player1=player1,
                 player2=player2,
             )
-            self.typingGameInfo.save()
-            print(f"{GREEN}TypingGameInfo created: {self.typingGameInfo}{RESET}")
+            self.typing_game_info.save()
+            print(f"{GREEN}TypingGameInfo created: {self.typing_game_info}{RESET}")
         
         except Exception as e:
             print(f"{RED}Error during creating TypingGameInfo: {str(e)}{RESET}")
 
     def update_winner_in_db(self):
-        if self.typingGameInfo:
-            self.typingGameInfo.winner = self.get_winner_player_user_object()
-            self.typingGameInfo.save()
+        if self.typing_game_info:
+            self.typing_game_info.winner = self.get_winner_player_user_object()
+            self.typing_game_info.save()
         else:
             print(f"{RED}Error: typingGameInfo is not set{RESET}")
 
@@ -192,6 +191,7 @@ class TypingGame:
         print(f"{GREEN}words.csvファイルが読み込まれました{RESET}")
         print(f"{GREEN}Loaded {len(words)} words{RESET}")
         return words
+
     async def handle_typing_input(self, input_key):
         if (
             self.input_length < len(self.selected_word)
