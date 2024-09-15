@@ -19,6 +19,7 @@ import { PongGameFinished } from "./components/PongGameFinished.js";
 import { GameStats } from "./components/GameStats.js";
 import { TypingGameFinished } from "./components/TypingGameFinished.js";
 import { PongGameResult } from "./components/PongGameResult.js";
+import { SearchUsers } from "./components/SearchUsers.js";
 
 let router = new Router(
   document.getElementById("app"),
@@ -41,6 +42,11 @@ let router = new Router(
     {
       path: "/chat",
       component: Chat,
+      state: {},
+    },
+    {
+      path: "/search-users",
+      component: SearchUsers,
       state: {},
     },
     {
