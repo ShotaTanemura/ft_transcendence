@@ -12,6 +12,7 @@ RED = "\033[91m"
 GREEN = "\033[92m"
 RESET = "\033[0m"
 
+
 class Timer:
     def __init__(self, send_message_to_group, handle_game_finished):
         self.time_limit = 10
@@ -47,6 +48,7 @@ class Timer:
     def reset(self):
         self.timer = self.time_limit
         self.start_countdown()
+
 
 class TypingGame:
     PLAYER1 = "player1"
@@ -92,7 +94,7 @@ class TypingGame:
 
     def get_winner_player_name(self):
         return self.get_player_name(self.get_winner_player())
-    
+
     def create_typing_game_record(self):
         try:
             player1 = self.players.get(self.PLAYER1)
@@ -108,7 +110,7 @@ class TypingGame:
             )
             self.typing_game_info.save()
             print(f"{GREEN}TypingGameInfo created: {self.typing_game_info}{RESET}")
-        
+
         except Exception as e:
             print(f"{RED}Error during creating TypingGameInfo: {str(e)}{RESET}")
 
