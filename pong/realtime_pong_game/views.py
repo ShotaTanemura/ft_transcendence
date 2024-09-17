@@ -1,7 +1,7 @@
 from django.http.response import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from pong.middleware.auth import jwt_exempt
-from pong.models import User
+from pong.models.user import User
 from django.db.models import Q
 from .models import TournamentInfo, MatchInfo
 

@@ -1,6 +1,6 @@
 from django.db import models
 import uuid
-from pong.models import User
+from pong.models.user import User
 from django.db.utils import IntegrityError
 from logging import getLogger
 from django.db.models import Q
