@@ -12,10 +12,14 @@ export class EditProfile extends Component {
   }
 
   afterPageLoaded = () => {
-    this.loadUserProfile();
     this.headerComponent = new Header(this.router, this.params, this.state);
     this.element.parentElement.prepend(this.headerComponent.element);
     this.headerComponent.afterPageLoaded();
+    this.loadUserProfile();
+  };
+
+  beforePageUnload = () => {
+    this.element.parentElement.removeChild(this.headerComponent.element);
   };
 
   async loadUserProfile() {
