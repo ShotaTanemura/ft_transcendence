@@ -22,6 +22,8 @@ export class Header extends Component {
       this.onClickTypingGameLink;
     document.getElementById("navigate-settings-link").onclick =
       this.onClickSettingsLink;
+    document.getElementById("navigate-signout-link").onclick =
+      this.onClickSignoutButton;
   }
 
   onSubmitSearchUserForm = async (event) => {
@@ -64,6 +66,27 @@ export class Header extends Component {
     alert("#TODO Settingsに移動する");
   };
 
+  onClickSignoutButton = async (event) => {
+    event.preventDefault();
+    try {
+      await this.revokeToken();
+      this.router.goNextPage("/signin");
+    } catch (error) {
+      alert(error);
+    }
+  };
+
+  revokeToken = async () => {
+    const response = await fetch("/pong/api/v1/auth/token/revoke", {
+      method: "POST",
+    });
+    console.log(response);
+    const data = await response.json();
+    if (!response.ok) {
+      throw Error(data.status);
+    }
+  };
+
   get html() {
     return `
       <nav class="navbar navbar-expand-lg bg-body-secondary navbar-light bg-light sticky-stop">
@@ -103,18 +126,18 @@ export class Header extends Component {
               </a>
             </li>
             <li class="nav-item">
-              <a id="navigate-chat-link" class="nav-link active" aria-current="page">
-                <i class="bi bi-chat-dots px-2 fa-2x"></i>
-                <span class="fa-2x align-bottom">
-                  Chat
-                </span>
-              </a>
-            </li>
-            <li class="nav-item">
               <a id="navigate-pong-game-link" class="nav-link active" aria-current="page">
                 <i class="bi bi-controller px-2 fa-2x"></i>
                 <span class="fa-2x align-bottom">
                   PongGame
+                </span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a id="navigate-chat-link" class="nav-link active" aria-current="page">
+                <i class="bi bi-chat-dots px-2 fa-2x"></i>
+                <span class="fa-2x align-bottom">
+                  Chat
                 </span>
               </a>
             </li>
@@ -131,6 +154,14 @@ export class Header extends Component {
                 <i class="bi bi-gear px-2 fa-2x"></i>
                 <span class="fa-2x align-bottom">
                   Settings
+                </span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a id="navigate-signout-link" class="nav-link active" aria-current="page">
+                <i class="bi bi-box-arrow-right px-2 fa-2x"></i>
+                <span class="fa-2x align-bottom">
+                  Signout
                 </span>
               </a>
             </li>
