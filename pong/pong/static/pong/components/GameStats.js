@@ -2,11 +2,10 @@ import { Component } from "../core/component.js";
 import { Header } from "./Header.js";
 import { getUuid, getUserFromUuid } from "../api/api.js";
 
-export class PongGameResult extends Component {
+export class GameStats extends Component {
   constructor(router, parameters, state) {
     super(router, parameters, state);
-    this.findElement("button.go-back-to-pong-game-home-button").onclick =
-      this.backToGameHome;
+    this.findElement("button.go-back-to-home-button").onclick = this.backToHome;
   }
 
   afterPageLoaded = async () => {
@@ -18,10 +17,14 @@ export class PongGameResult extends Component {
 
   beforePageUnload = () => {
     this.element.parentElement.removeChild(this.headerComponent.element);
+    const tableElement = this.findElements("div.mathch-result-table");
+    if (tableElement.firstChild) {
+      tableElement.removeChild(tableElement.firstChild);
+    }
   };
 
-  backToGameHome = () => {
-    this.goNextPage("/pong-game-home");
+  backToHome = () => {
+    this.goNextPage("/");
   };
 
   //TODO this fucntion is duplicate
@@ -111,10 +114,10 @@ export class PongGameResult extends Component {
         <br>
         <div class="match-result-table">
         </div>
-        <button class="go-back-to-pong-game-home-button btn btn-primary">Back</button>
+        <button class="go-back-to-home-button btn btn-primary">Back</button>
       </main>
 		`;
   }
 }
 
-export default PongGameResult;
+export default GameStats;

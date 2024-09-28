@@ -16,7 +16,8 @@ import { TypingGameWaiting } from "./components/TypingGameWaiting.js";
 import { TypingGame } from "./components/TypingGame.js";
 import { PongGameTournament } from "./components/PongGameTournament.js";
 import { PongGameFinished } from "./components/PongGameFinished.js";
-import { PongGameResult } from "./components/PongGameResult.js";
+import { GameStats } from "./components/GameStats.js";
+import { SearchUsers } from "./components/SearchUsers.js";
 
 let router = new Router(
   document.getElementById("app"),
@@ -39,6 +40,11 @@ let router = new Router(
     {
       path: "/chat",
       component: Chat,
+      state: {},
+    },
+    {
+      path: "/search-users",
+      component: SearchUsers,
       state: {},
     },
     {
@@ -72,8 +78,8 @@ let router = new Router(
       state: {},
     },
     {
-      path: "/pong-game-match-result",
-      component: PongGameResult,
+      path: "/stats",
+      component: GameStats,
       state: {},
     },
     {
