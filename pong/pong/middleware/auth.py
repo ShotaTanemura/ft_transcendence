@@ -72,6 +72,7 @@ class JWTAuthenticationMiddleware:
             return JsonResponse(
                 {"message": "unauthorized", "status": "unauthorized"}, status=401
             )
+        request.user = getUserByJwt(token)
         return None
 
 
