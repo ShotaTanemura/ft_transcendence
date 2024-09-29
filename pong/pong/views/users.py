@@ -13,13 +13,16 @@ logger = logging.getLogger(__name__)
 @csrf_exempt
 def user(request, uuid):
     try:
+        user = User.objects.filter(uuid=uuid).first()
+        if not user:
+            return JsonResponse(
+                {"message": "User not found", "status": "userNotFound"}, status=404
+            )
+        if request.user != user:
+            return JsonResponse(
+                {"message": "unauthorized", "status": "unauthorized"}, status=401
+            )
         if request.method == "GET":
-            user = User.objects.filter(uuid=uuid).first()
-            if not user:
-                return JsonResponse(
-                    {"message": "User not found", "status": "userNotFound"}, status=404
-                )
-
             return JsonResponse(
                 {
                     "uuid": user.uuid,
@@ -30,12 +33,6 @@ def user(request, uuid):
                 status=200,
             )
         elif request.method == "PATCH":
-            user = User.objects.filter(uuid=uuid).first()
-            if not user:
-                return JsonResponse(
-                    {"message": "User not found", "status": "userNotFound"}, status=404
-                )
-
             try:
                 data = json.loads(request.body)
             except json.JSONDecodeError as e:
@@ -85,8 +82,18 @@ def user(request, uuid):
 
 
 @csrf_exempt
-@jwt_exempt
 def user_icon(request, uuid):
+    user = User.objects.filter(uuid=uuid).first()
+    if not user:
+        return JsonResponse(
+            {"message": "User not found", "status": "userNotFound"}, status=404
+        )
+
+    if request.user != user:
+        return JsonResponse(
+            {"message": "unauthorized", "status": "unauthorized"}, status=401
+        )
+
     if request.method != "POST":
         return JsonResponse(
             {"message": "Method is not allowed", "status": "invalidParams"}, status=400
@@ -96,12 +103,6 @@ def user_icon(request, uuid):
     if not icon:
         return JsonResponse(
             {"message": "Invalid parameters", "status": "invalidParams"}, status=400
-        )
-
-    user = User.objects.filter(uuid=uuid).first()
-    if not user:
-        return JsonResponse(
-            {"message": "User not found", "status": "userNotFound"}, status=404
         )
 
     form = UserIconUpdateForm(request.POST, request.FILES, instance=user)
