@@ -50,10 +50,10 @@ export class Header extends Component {
     this.router.goNextPage("/pong-game-home");
     this.render();
   };
-
+  
   onClickTypingGameLink = () => {
-    //TODO handle action
-    alert("/typing-game-home");
+    this.router.goNextPage("/typing-game-home");
+    this.render();
   };
 
   onClickSettingsLink = () => {
