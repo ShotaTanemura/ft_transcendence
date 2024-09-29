@@ -10,10 +10,10 @@ export class Edit2FA extends Component {
     const response = await fetch(`/pong/api/v1/auth/two-factor/provisioning`, {
       method: "POST",
     });
+    const data = await response.json();
     if (!response.ok) {
       throw new Error(data.message || "Failed to fetch provisioning TOTP URI");
     }
-    const data = await response.json();
     if (!data.uri) {
       throw new Error(data.message || "Failed to fetch provisioning TOTP URI");
     }
