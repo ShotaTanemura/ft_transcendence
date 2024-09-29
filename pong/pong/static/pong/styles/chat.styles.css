@@ -75,7 +75,7 @@
   padding: 15px;
   border: 1px solid #e0e0e0;
   height: 100%;
-  max-height: 72vh;
+  max-height: 75vh;
 }
 
 .direct-message-messages::-webkit-scrollbar {
