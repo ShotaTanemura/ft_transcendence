@@ -26,14 +26,16 @@ export class ChatContainer extends Component {
       messageElement.classList.add("message");
       if (message.user_uuid === myId) {
         messageContent.classList.add("my-message");
+        messageContent.innerHTML = `<div class="my-user-message">${message.message}</div>`;
       } else {
         messageContent.classList.add("other-message");
+        messageContent.innerHTML = `<div class="other-user-name">${message.user}</div><div class="other-user-message">${message.message}</div>`;
       }
   
-      messageContent.innerText = `${message.user}: ${message.message}`;
       messageElement.appendChild(messageContent);
   
       messagesContainer.appendChild(messageElement);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
     } else {
       console.error("Messages container not found");
     }

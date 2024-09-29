@@ -32,6 +32,7 @@
 .direct-message-header h3 {
   font-size: 1.5rem;
   color: #4a90e2;
+  padding: 0 0 0 1rem;
 }
 
 .leave-button {
@@ -91,29 +92,46 @@
 }
 
 .message {
-  width: 100%;
-}
-
-.my-message {
-  padding: 10px;
+  display: flex;
   margin-bottom: 10px;
-  border-radius: 8px;
-  background-color: #d1e7dd;
-  max-width: 70%;
-  margin-left: auto;
-  text-align: right;
-  border: 1px solid #b6d4c1;
 }
 
 .other-message {
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 8px;
-  background-color: #f8d7da;
-  max-width: 70%;
-  margin-right: auto;
+  padding: 12px;
+  border-radius: 10px;
+  background-color: #f0f0f0;
+  color: #4a4a4a;
+  max-width: 70%; 
+  display: inline-block; 
   text-align: left;
-  border: 1px solid #f5c2c7;
+  border: 1px solid #cccccc;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  word-wrap: break-word;
+  margin-right: auto;
+}
+
+.other-user-name {
+  font-size: 0.9rem;
+  color: #4a90e2;
+}
+
+.other-user-message .my-user-message {
+  font-size: 1rem;
+  color: #4a90e2;
+}
+
+.my-message {
+  padding: 12px;
+  border-radius: 10px;
+  background-color: #e0f2ff;
+  color: #1e3a8a;
+  max-width: 70%; 
+  display: inline-block; 
+  text-align: right;
+  border: 1px solid #a7c7e7;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  word-wrap: break-word;
+  margin-left: auto;
 }
 
 .form {
