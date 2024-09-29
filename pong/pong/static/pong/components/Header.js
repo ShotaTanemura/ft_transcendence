@@ -53,7 +53,7 @@ export class Header extends Component {
 
   onClickTypingGameLink = () => {
     //TODO handle action
-    alert("#TODO TypingGameに移動する");
+    alert("/typing-game-home");
   };
 
   onClickSettingsLink = () => {
