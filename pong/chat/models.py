@@ -46,7 +46,10 @@ class RoomsManager(models.Manager):
         if status != []:
             user_rooms_status = status
         else:
-            user_rooms_status = [UserRooms.UserRoomStatus.ACTIVE, UserRooms.UserRoomStatus.READY]
+            user_rooms_status = [
+                UserRooms.UserRoomStatus.ACTIVE,
+                UserRooms.UserRoomStatus.READY,
+            ]
         rooms = self.model.objects.filter(
             userrooms__user_id=user, userrooms__user_room_status__in=user_rooms_status
         )

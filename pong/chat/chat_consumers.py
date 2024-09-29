@@ -99,7 +99,7 @@ class ChatConsumer(WebsocketConsumer):
     def send_initial_messages(self):
         try:
             room = Rooms.objects.get(uuid=self.room_name)
-            
+
             room_id = room.uuid
             logger.info(f"Room ID: {room_id}")
 
