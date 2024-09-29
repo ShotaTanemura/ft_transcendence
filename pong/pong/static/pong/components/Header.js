@@ -50,7 +50,7 @@ export class Header extends Component {
     this.router.goNextPage("/pong-game-home");
     this.render();
   };
-  
+
   onClickTypingGameLink = () => {
     this.router.goNextPage("/typing-game-home");
     this.render();
