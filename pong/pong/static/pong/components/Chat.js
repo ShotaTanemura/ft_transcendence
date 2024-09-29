@@ -182,7 +182,7 @@ export class Chat extends Component {
       method: "POST",
     });
     if (!response.ok) {
-      this.router.goNextPage("/");
+      this.router.goNextPage("/signin");
     }
     const data = await response.json();
 
