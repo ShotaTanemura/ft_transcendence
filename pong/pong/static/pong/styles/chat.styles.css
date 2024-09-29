@@ -154,6 +154,7 @@
   cursor: pointer;
   font-size: 1rem;
   transition: background-color 0.3s ease;
+  width: 100%;
 }
 
 .create-chatroom-button:hover {
@@ -172,6 +173,7 @@
   outline: none;
   font-size: 1rem;
   transition: border-color 0.3s ease;
+  text-align: center;
 }
 
 .search-bar input[type="text"]:focus {
@@ -188,6 +190,10 @@
   overflow-y: auto;
 }
 
+.room {
+  text-align: center;
+}
+
 .invited-rooms-container {
   margin-top: 20px;
 }
@@ -196,6 +202,7 @@
   font-size: 1.2rem;
   color: #4a90e2;
   margin-bottom: 10px;
+  text-align: center;
 }
 
 .invited-rooms {
@@ -205,6 +212,10 @@
   border: 1px solid #e2e8f0;
   max-height: 150px;
   overflow-y: auto;
+}
+
+.invited-room {
+  text-align: center;
 }
 
 .modal {
@@ -226,6 +237,12 @@
   width: 400px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   position: relative;
+}
+
+.modal-content h2 {
+  font-size: 1.5rem;
+  color: #4a90e2;
+  margin-bottom: 20px;
 }
 
 .close-modal {
