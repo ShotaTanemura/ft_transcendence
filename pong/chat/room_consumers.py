@@ -60,7 +60,7 @@ class RoomConsumer(WebsocketConsumer):
             self.send_initial_messages()
         elif job_type == "join_chatroom":
             room_id = text_data_json.get("room_uuid")
-            Rooms.objects.join_room(self.user, room_id)
+            Rooms.objects.join_room(self.user, room_id, UserRooms.UserRoomStatus.READY)
             self.send_initial_messages()
         elif job_type == "refresh_rooms":
             self.send_initial_messages()
@@ -110,7 +110,7 @@ class RoomConsumer(WebsocketConsumer):
     def refresh_rooms(self):
         rooms = Rooms.objects.get_rooms_by_user_status(self.user)
         invited_rooms = Rooms.objects.get_rooms_by_user_status(
-            self.user, UserRooms.UserRoomStatus.INVITED
+            self.user, [UserRooms.UserRoomStatus.INVITED]
         )
         non_participation = Rooms.objects.get_rooms_non_participation(self.user)
 
@@ -136,7 +136,7 @@ class RoomConsumer(WebsocketConsumer):
         try:
             rooms = Rooms.objects.get_rooms_by_user_status(self.user)
             invited_rooms = Rooms.objects.get_rooms_by_user_status(
-                self.user, UserRooms.UserRoomStatus.INVITED
+                self.user, [UserRooms.UserRoomStatus.INVITED]
             )
             non_participation = Rooms.objects.get_rooms_non_participation(self.user)
 
@@ -162,7 +162,7 @@ class RoomConsumer(WebsocketConsumer):
         logger.info(f"Event: {event}")
         rooms = Rooms.objects.get_rooms_by_user_status(self.user)
         invited_rooms = Rooms.objects.get_rooms_by_user_status(
-            self.user, UserRooms.UserRoomStatus.INVITED
+            self.user, [UserRooms.UserRoomStatus.INVITED]
         )
         non_participation = Rooms.objects.get_rooms_non_participation(self.user)
 
