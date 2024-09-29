@@ -52,11 +52,11 @@ export class ChatContainer extends Component {
       const messageInput = document.createElement("input");
       messageInput.type = "text";
       messageInput.name = "message";
-      messageInput.placeholder = "Enter your message";
+      messageInput.placeholder = "メッセージ";
 
       const sendButton = document.createElement("button");
       sendButton.type = "submit";
-      sendButton.innerText = "Send";
+      sendButton.innerText = "送信";
 
       messageForm.appendChild(messageInput);
       messageForm.appendChild(sendButton);
@@ -125,8 +125,8 @@ export class ChatContainer extends Component {
             <div class="direct-message-messages"></div>
             <div class="form">
               <form class="direct-message-form">
-                <input type="text" name="message" placeholder="Enter your message" />
-                <button type="submit">Send</button>
+                <input type="text" name="message" placeholder="メッセージ" />
+                <button type="submit">送信</button>
               </form>
             </div>
             `
