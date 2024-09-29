@@ -46,7 +46,7 @@ export class Router {
     }
 
     if (path !== "/signin" && path !== "/signup") {
-      await this.verifyAndRefreshToken().catch((error) => {
+      this.verifyAndRefreshToken().catch((error) => {
         console.log(error);
         path = "/signin";
         route = this.searchRouteFromPath("/signin");
