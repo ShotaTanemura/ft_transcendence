@@ -223,6 +223,7 @@ class ChatConsumer(WebsocketConsumer):
                     "user_uuid": str(saved_message.user_id.uuid),
                     "message": saved_message.message,
                     "created_at": saved_message.created_at.isoformat(),
+                    "exclude_user": "",
                 },
             )
         elif job_type == "block_user":
