@@ -74,6 +74,7 @@
   padding: 15px;
   border: 1px solid #e0e0e0;
   height: 100%;
+  max-height: 72vh;
 }
 
 .direct-message-messages::-webkit-scrollbar {
@@ -98,13 +99,21 @@
 }
 
 .form {
-  display: flex;
-  align-items: center;
   border-top: 1px solid #e2e8f0;
   padding: 10px;
   gap: 10px;
   box-sizing: border-box;
-  justify-content: space-between;
+  width: 100%;
+}
+
+.direct-message-form {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.direct-message-form input {
+  width: 80%;
 }
 
 .direct-message-form input[type="text"] {
@@ -114,9 +123,9 @@
   border-radius: 8px;
   outline: none;
   font-size: 1rem;
-  width: calc(100% - 90px);
   box-sizing: border-box;
   transition: border-color 0.3s ease;
+  min-width: 0;
 }
 
 .direct-message-form input[type="text"]:focus {
@@ -125,6 +134,7 @@
 
 .direct-message-form button {
   padding: 12px 20px;
+  margin: 0 0 0 1rem;
   background-color: #778bf0;
   color: #ffffff;
   border: none;
@@ -133,6 +143,7 @@
   font-size: 1rem;
   transition: background-color 0.3s ease;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .direct-message-form button:hover {
