@@ -126,6 +126,7 @@ class ChatConsumer(WebsocketConsumer):
                     text_data=json.dumps(
                         {
                             "user": message.user_id.name,
+                            "user_uuid": str(message.user_id.uuid),
                             "message": message.message,
                             "users": users,
                             "created_at": message.created_at.isoformat(),
@@ -183,6 +184,7 @@ class ChatConsumer(WebsocketConsumer):
                         {
                             "type": "chat_message",
                             "user": saved_message.user_id.name,
+                            "user_uuid": str(saved_message.user_id.uuid),
                             "message": saved_message.message,
                             "created_at": saved_message.created_at.isoformat(),
                         },
@@ -191,11 +193,13 @@ class ChatConsumer(WebsocketConsumer):
 
             saved_message = Messages.manager.create_message(self.user, room, message)
 
+            logger.info(f"Saved message: {str(saved_message)}")
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name,
                 {
                     "type": "chat_message",
                     "user": saved_message.user_id.name,
+                    "user_uuid": str(saved_message.user_id.uuid),
                     "message": saved_message.message,
                     "created_at": saved_message.created_at.isoformat(),
                 },
@@ -226,6 +230,7 @@ class ChatConsumer(WebsocketConsumer):
             text_data=json.dumps(
                 {
                     "user": event["user"],
+                    "user_uuid": event["user_uuid"],
                     "message": event["message"],
                     "created_at": event["created_at"],
                 }
