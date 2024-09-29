@@ -12,6 +12,7 @@ export class Chat extends Component {
       socketRooms: null,
       socketRoomSpecific: null,
     };
+    this.uuid = null;
 
     this.initializeContainers();
     this.connectToRoomsWebSocket();
@@ -95,7 +96,7 @@ export class Chat extends Component {
       const message = JSON.parse(event.data);
 
       if (message.user && message.message) {
-        this.chatContainer.appendMessage(message);
+        this.chatContainer.appendMessage(message, this.uuid);
       }
       if (message.users) {
         this.directoryContainer.refreshRoomMembers(message.users);
@@ -147,6 +148,8 @@ export class Chat extends Component {
           }),
         );
 
+        this.state.socketRoomSpecific.close();
+
         this.chatContainer.clear();
         this.requestRoomRefresh();
       } else {
@@ -179,8 +182,12 @@ export class Chat extends Component {
       method: "POST",
     });
     if (!response.ok) {
-      this.router.goNextPage("/");
+      this.router.goNextPage("/signin");
     }
+    const data = await response.json();
+
+    const uuid = data.uuid;
+    this.uuid = uuid;
   };
 
   afterPageLoaded() {
