@@ -4,7 +4,7 @@ import json
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 from django.contrib.auth.models import AnonymousUser
-from .models import Rooms, Messages, UserBlock, User
+from .models import Rooms, Messages, UserBlock, User, UserRooms
 from logging import getLogger
 
 logger = getLogger(__name__)
@@ -99,15 +99,36 @@ class ChatConsumer(WebsocketConsumer):
     def send_initial_messages(self):
         try:
             room = Rooms.objects.get(uuid=self.room_name)
+            
             room_id = room.uuid
             logger.info(f"Room ID: {room_id}")
 
-            messages = Messages.manager.get_messages(room_id)
-            logger.info(f"Retrieved messages: {len(messages)}")
             users = Rooms.objects.get_users_in_room(room_id)
 
             users = [serialize_user(user) for user in users]
 
+            user_room = UserRooms.objects.get_user_room(user=self.user, room=room)
+            if user_room.user_room_status == UserRooms.UserRoomStatus.READY:
+                saved_message = Messages.manager.create_message(
+                    self.user, room, "入室しました。"
+                )
+                UserRooms.objects.update_status(
+                    user=self.user, room=room, status=UserRooms.UserRoomStatus.ACTIVE
+                )
+                async_to_sync(self.channel_layer.group_send)(
+                    self.room_group_name,
+                    {
+                        "type": "chat_message",
+                        "user": saved_message.user_id.name,
+                        "user_uuid": str(saved_message.user_id.uuid),
+                        "message": saved_message.message,
+                        "created_at": saved_message.created_at.isoformat(),
+                        "exclude_user": str(self.user.uuid),
+                    },
+                )
+
+            messages = Messages.manager.get_messages(room_id)
+            logger.info(f"Retrieved messages: {len(messages)}")
             logger.info(f"Users in room: {users}")
             if not messages:
                 logger.info(f"No messages found")
@@ -212,6 +233,10 @@ class ChatConsumer(WebsocketConsumer):
             logger.info(f"Blocked user: {block_user}")
         elif job_type == "leave_room":
             room_id = text_data_json.get("room_uuid")
+            room = Rooms.objects.get(uuid=room_id)
+            saved_message = Messages.manager.create_message(
+                self.user, room, "退出しました。"
+            )
             Rooms.objects.leave_room(self.user, room_id)
             users = Rooms.objects.get_users_in_room(room_id)
 
@@ -221,28 +246,36 @@ class ChatConsumer(WebsocketConsumer):
                 self.room_group_name,
                 {
                     "type": "leave_room",
+                    "user": saved_message.user_id.name,
+                    "user_uuid": str(saved_message.user_id.uuid),
+                    "message": saved_message.message,
                     "users": users,
+                    "exclude_user": str(self.user.uuid),
                 },
             )
 
     def chat_message(self, event):
+        if event["exclude_user"] != str(self.user.uuid):
+            self.send(
+                text_data=json.dumps(
+                    {
+                        "user": event["user"],
+                        "user_uuid": event["user_uuid"],
+                        "message": event["message"],
+                        "created_at": event["created_at"],
+                    }
+                )
+            )
+
+    def leave_room(self, event):
         self.send(
             text_data=json.dumps(
                 {
                     "user": event["user"],
                     "user_uuid": event["user_uuid"],
                     "message": event["message"],
-                    "created_at": event["created_at"],
-                }
-            )
-        )
-
-    def leave_room(self, event):
-        logger.info(f"Event: {event}")
-        self.send(
-            text_data=json.dumps(
-                {
                     "users": event["users"],
+                    "exclude_user": str(self.user.uuid),
                 }
             )
         )
