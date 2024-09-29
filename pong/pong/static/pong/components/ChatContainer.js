@@ -35,7 +35,7 @@ export class ChatContainer extends Component {
     chatContainer.innerHTML = "";
 
     const roomHeader = document.querySelector(".direct-message-header");
-    roomHeader.innerText = select.name;
+    roomHeader.innerHTML = `<h3>${select.name}</h3>`;
 
     const messages = document.createElement("div");
     messages.classList.add("direct-message-messages");
@@ -71,7 +71,7 @@ export class ChatContainer extends Component {
       });
 
       const header = document.querySelector(".direct-message-header");
-      header.innerHTML = `${select.name} <button class="leave-button">Leave</button>`;
+      header.innerHTML = `<h3>${select.name}</h3> <button class="leave-button">ルームから退出</button>`;
 
       const leaveButton = document.querySelector(".leave-button");
       leaveButton.addEventListener("click", () => this.confirmLeaveRoom());
@@ -108,7 +108,7 @@ export class ChatContainer extends Component {
       messagesContainer.innerHTML = "";
     }
     const header = document.querySelector(".direct-message-header");
-    header.innerHTML = "Select a room";
+    header.innerHTML = "ルームを選択してください";
     this.render();
   }
 
@@ -116,21 +116,21 @@ export class ChatContainer extends Component {
     return `
       <div class="direct-message-container">
         <div class="direct-message-header">
-          ${this.selectedRoom ? this.selectedRoom.name : "Select a room"}
+          <h3>${this.selectedRoom ? this.selectedRoom.name : "ルームを選択してください"}</h3>
         </div>
         <div class="direct-message-content">
-          <div class="direct-message-messages"></div>
-          ${
-            this.selectedRoom
-              ? `
-          <div class="form">
-            <form class="direct-message-form">
-              <input type="text" name="message" placeholder="Enter your message" />
-              <button type="submit">Send</button>
-            </form>
-          </div>
-          `
-              : ""
+        ${
+          this.selectedRoom
+            ? `
+            <div class="direct-message-messages"></div>
+            <div class="form">
+              <form class="direct-message-form">
+                <input type="text" name="message" placeholder="Enter your message" />
+                <button type="submit">Send</button>
+              </form>
+            </div>
+            `
+            : ""
           }
         </div>
       </div>
