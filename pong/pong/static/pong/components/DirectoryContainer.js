@@ -242,7 +242,7 @@ export class DirectoryContainer extends Component {
                 <div class="unjoined-rooms"></div>
 
                 <div class="members-container">
-                    <h3>Members</h3>
+                    <h3>メンバー</h3>
                     <div class="members-list"></div> 
                 </div>
 
