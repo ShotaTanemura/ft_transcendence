@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
-from pong.models import User
+from pong.models.user import User
 import jwt
 from django.conf import settings
 from datetime import datetime

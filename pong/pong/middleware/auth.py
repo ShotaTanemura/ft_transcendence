@@ -3,7 +3,7 @@ from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 import jwt
 import re
-from pong.models import User
+from pong.models.user import User
 from pong.utils.redis_client import redis_client
 from functools import wraps
 from channels.db import database_sync_to_async
