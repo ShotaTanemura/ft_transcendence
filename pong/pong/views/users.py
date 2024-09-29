@@ -1,6 +1,7 @@
 from django.http.response import JsonResponse
 from django.db.utils import IntegrityError
 from pong.models.user import User, UserIconUpdateForm
+from pong.models.friend import Friend, FriendRequest
 from django.views.decorators.csrf import csrf_exempt
 from pong.middleware.auth import jwt_exempt
 import json
