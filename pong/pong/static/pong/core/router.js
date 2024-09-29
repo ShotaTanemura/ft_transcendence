@@ -38,7 +38,7 @@ export class Router {
   }
 
   // 実際にpathに遷移させる。
-  async changePage(path) {
+  changePage(path) {
     let route = this.searchRouteFromPath(path);
     //TODO Return 404 Error Page
     if (route === null) {

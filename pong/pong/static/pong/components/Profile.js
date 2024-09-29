@@ -1,4 +1,5 @@
 import { Component } from "../core/component.js";
+import { Header } from "./Header.js";
 import { getUuid, getUserFromUuid } from "../api/api.js";
 
 export class Profile extends Component {
@@ -7,6 +8,16 @@ export class Profile extends Component {
     this.loadUserProfile();
     this.findElement("button.edit-profile-button").onclick = this.goEditProfile;
     this.findElement("button.edit-2fa-button").onclick = this.goEdit2FA;
+  }
+
+  afterPageLoaded() {
+    this.headerComponent = new Header(this.router, this.params, this.state);
+    this.element.parentElement.prepend(this.headerComponent.element);
+    this.headerComponent.afterPageLoaded();
+  }
+
+  beforePageUnload() {
+    this.element.parentElement.removeChild(this.headerComponent.element);
   }
 
   async loadUserProfile() {
@@ -38,12 +49,9 @@ export class Profile extends Component {
     this.router.goNextPage("/edit-profile");
   };
 
-  goEdit2FA = () => {
-    this.router.goNextPage("/edit-2fa");
-  };
-
   get html() {
     return `
+        <div class="profile-card">
             <h1>プロフィールページ</h1>
             <img id="user-icon">
             <p><strong>Username:</strong> <span id="username"></span></p>
@@ -51,6 +59,7 @@ export class Profile extends Component {
             <br>
             <button class="edit-profile-button">プロフィールを変更する</button>
             <button class="edit-2fa-button">二要素認証の設定を変更する</button>
+        </div>
         `;
   }
 }

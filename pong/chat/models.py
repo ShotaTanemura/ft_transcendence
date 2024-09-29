@@ -1,8 +1,9 @@
 from django.db import models
 import uuid
-from pong.models import User
+from pong.models.user import User
 from django.db.utils import IntegrityError
 from logging import getLogger
+from django.db.models import Q
 
 logger = getLogger(__name__)
 
@@ -27,12 +28,12 @@ class RoomsManager(models.Manager):
             else:
                 raise e
 
-    def join_room(self, user, room):
+    def join_room(self, user, room, status):
         room = self.model.objects.get(uuid=room)
         if not room:
             raise ValueError("部屋が見つかりません")
 
-        user_room = UserRooms(user_id=user, room_id=room)
+        user_room = UserRooms.objects.create_user_room(user, room, status)
         user_room.save(using=self._db)
 
         return room
@@ -41,13 +42,16 @@ class RoomsManager(models.Manager):
         rooms = self.model.objects.all().filter(user_room_status="active")
         return rooms
 
-    def get_rooms_by_user_status(self, user, status=None):
-        if status:
+    def get_rooms_by_user_status(self, user, status=[]):
+        if status != []:
             user_rooms_status = status
         else:
-            user_rooms_status = UserRooms.UserRoomStatus.ACTIVE
+            user_rooms_status = [
+                UserRooms.UserRoomStatus.ACTIVE,
+                UserRooms.UserRoomStatus.READY,
+            ]
         rooms = self.model.objects.filter(
-            userrooms__user_id=user, userrooms__user_room_status=user_rooms_status
+            userrooms__user_id=user, userrooms__user_room_status__in=user_rooms_status
         )
         return rooms
 
@@ -137,12 +141,17 @@ class UserRoomsManager(models.Manager):
         users = self.model.objects.filter(room_id=room_id)
         return users
 
+    def get_user_room(self, user, room):
+        user_room = self.model.objects.get(user_id=user, room_id=room)
+        return user_room
+
 
 class UserRooms(models.Model):
     class UserRoomStatus(models.TextChoices):
         ACTIVE = "active", "Active"
         INACTIVE = "inactive", "Inactive"
         INVITED = "invited", "Invited"
+        READY = "ready", "Ready"
 
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     room_id = models.ForeignKey(Rooms, on_delete=models.CASCADE)

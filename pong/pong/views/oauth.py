@@ -3,7 +3,7 @@ from django.http.response import JsonResponse, HttpResponseRedirect
 from django.core.files import File
 from django.conf import settings
 from pong.middleware.auth import jwt_exempt
-from pong.models import User
+from pong.models.user import User
 from pong.utils.create_response import create_token_response
 from urllib.parse import urlencode, quote, unquote
 from io import BytesIO
@@ -132,4 +132,4 @@ def callback_42(request):
         if not user:
             return HttpResponseRedirect(redirect_to="/#userDoesNotExist")
 
-    return create_token_response(user.uuid, HttpResponseRedirect(redirect_to="/"))
+    return create_token_response(user.uuid, HttpResponseRedirect(redirect_to="/home"))

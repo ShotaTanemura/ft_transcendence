@@ -66,7 +66,9 @@ export class Signin extends Component {
     });
     console.log(response);
     const data = await response.json();
-    return data;
+    if (!response.ok) {
+      throw Error(data.status);
+    }
   };
 
   goSignup = () => {
