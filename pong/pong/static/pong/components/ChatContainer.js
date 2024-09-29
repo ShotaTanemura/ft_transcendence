@@ -17,17 +17,22 @@ export class ChatContainer extends Component {
   }
 
   appendMessage(message, myId) {
-    const messagesContainer = document.querySelector(
-      ".direct-message-messages",
-    );
+    const messagesContainer = document.querySelector(".direct-message-messages");
+  
     if (messagesContainer) {
       const messageElement = document.createElement("div");
+      const messageContent = document.createElement("div");
+  
+      messageElement.classList.add("message");
       if (message.user_uuid === myId) {
-        messageElement.classList.add("my-message");
+        messageContent.classList.add("my-message");
       } else {
-        messageElement.classList.add("other-message");
+        messageContent.classList.add("other-message");
       }
-      messageElement.innerText = `${message.user}: ${message.message}`;
+  
+      messageContent.innerText = `${message.user}: ${message.message}`;
+      messageElement.appendChild(messageContent);
+  
       messagesContainer.appendChild(messageElement);
     } else {
       console.error("Messages container not found");
