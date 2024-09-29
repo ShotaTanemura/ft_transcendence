@@ -17,12 +17,14 @@ export class ChatContainer extends Component {
   }
 
   appendMessage(message, myId) {
-    const messagesContainer = document.querySelector(".direct-message-messages");
-  
+    const messagesContainer = document.querySelector(
+      ".direct-message-messages",
+    );
+
     if (messagesContainer) {
       const messageElement = document.createElement("div");
       const messageContent = document.createElement("div");
-  
+
       messageElement.classList.add("message");
       if (message.user_uuid === myId) {
         messageContent.classList.add("my-message");
@@ -31,9 +33,9 @@ export class ChatContainer extends Component {
         messageContent.classList.add("other-message");
         messageContent.innerHTML = `<div class="other-user-name">${message.user}</div><div class="other-user-message">${message.message}</div>`;
       }
-  
+
       messageElement.appendChild(messageContent);
-  
+
       messagesContainer.appendChild(messageElement);
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
     } else {
@@ -142,7 +144,7 @@ export class ChatContainer extends Component {
             </div>
             `
             : ""
-          }
+        }
         </div>
       </div>
     `;
