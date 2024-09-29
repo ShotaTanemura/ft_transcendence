@@ -90,6 +90,10 @@
   background-color: #a0a0a0;
 }
 
+.message {
+  width: 100%;
+}
+
 .my-message {
   padding: 10px;
   margin-bottom: 10px;
