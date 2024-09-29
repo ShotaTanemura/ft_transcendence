@@ -16,15 +16,28 @@ export class ChatContainer extends Component {
     this.displayRoom(room);
   }
 
-  appendMessage(message) {
+  appendMessage(message, myId) {
     const messagesContainer = document.querySelector(
       ".direct-message-messages",
     );
+
     if (messagesContainer) {
       const messageElement = document.createElement("div");
+      const messageContent = document.createElement("div");
+
       messageElement.classList.add("message");
-      messageElement.innerText = `${message.user}: ${message.message}`;
+      if (message.user_uuid === myId) {
+        messageContent.classList.add("my-message");
+        messageContent.innerHTML = `<div class="my-user-message">${message.message}</div>`;
+      } else {
+        messageContent.classList.add("other-message");
+        messageContent.innerHTML = `<div class="other-user-name">${message.user}</div><div class="other-user-message">${message.message}</div>`;
+      }
+
+      messageElement.appendChild(messageContent);
+
       messagesContainer.appendChild(messageElement);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
     } else {
       console.error("Messages container not found");
     }
@@ -35,7 +48,7 @@ export class ChatContainer extends Component {
     chatContainer.innerHTML = "";
 
     const roomHeader = document.querySelector(".direct-message-header");
-    roomHeader.innerText = select.name;
+    roomHeader.innerHTML = `<h3>${select.name}</h3>`;
 
     const messages = document.createElement("div");
     messages.classList.add("direct-message-messages");
@@ -52,11 +65,11 @@ export class ChatContainer extends Component {
       const messageInput = document.createElement("input");
       messageInput.type = "text";
       messageInput.name = "message";
-      messageInput.placeholder = "Enter your message";
+      messageInput.placeholder = "メッセージ";
 
       const sendButton = document.createElement("button");
       sendButton.type = "submit";
-      sendButton.innerText = "Send";
+      sendButton.innerText = "送信";
 
       messageForm.appendChild(messageInput);
       messageForm.appendChild(sendButton);
@@ -71,7 +84,7 @@ export class ChatContainer extends Component {
       });
 
       const header = document.querySelector(".direct-message-header");
-      header.innerHTML = `${select.name} <button class="leave-button">Leave</button>`;
+      header.innerHTML = `<h3>${select.name}</h3> <button class="leave-button">ルームから退出</button>`;
 
       const leaveButton = document.querySelector(".leave-button");
       leaveButton.addEventListener("click", () => this.confirmLeaveRoom());
@@ -108,7 +121,7 @@ export class ChatContainer extends Component {
       messagesContainer.innerHTML = "";
     }
     const header = document.querySelector(".direct-message-header");
-    header.innerHTML = "Select a room";
+    header.innerHTML = "ルームを選択してください";
     this.render();
   }
 
@@ -116,22 +129,22 @@ export class ChatContainer extends Component {
     return `
       <div class="direct-message-container">
         <div class="direct-message-header">
-          ${this.selectedRoom ? this.selectedRoom.name : "Select a room"}
+          <h3>${this.selectedRoom ? this.selectedRoom.name : "ルームを選択してください"}</h3>
         </div>
         <div class="direct-message-content">
-          <div class="direct-message-messages"></div>
-          ${
-            this.selectedRoom
-              ? `
-          <div class="form">
-            <form class="direct-message-form">
-              <input type="text" name="message" placeholder="Enter your message" />
-              <button type="submit">Send</button>
-            </form>
-          </div>
-          `
-              : ""
-          }
+        ${
+          this.selectedRoom
+            ? `
+            <div class="direct-message-messages"></div>
+            <div class="form">
+              <form class="direct-message-form">
+                <input type="text" name="message" placeholder="メッセージ" />
+                <button type="submit">送信</button>
+              </form>
+            </div>
+            `
+            : ""
+        }
         </div>
       </div>
     `;

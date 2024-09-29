@@ -234,15 +234,15 @@ export class DirectoryContainer extends Component {
   get html() {
     return `<div class="dir-container">
                 <div class="header">
-                    <h2>未参加</h2>
+                    <h3>未参加</h3>
                 </div>
                 <div class="unjoined-search-bar">
-                    <input type="text" placeholder="Search Chatroom">
+                    <input type="text" placeholder="未参加ルームの検索">
                 </div>
                 <div class="unjoined-rooms"></div>
 
                 <div class="members-container">
-                    <h3>Members</h3>
+                    <h3>メンバー</h3>
                     <div class="members-list"></div> 
                 </div>
 
