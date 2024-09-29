@@ -4,15 +4,23 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('chat', '0009_userblock'),
+        ("chat", "0009_userblock"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='userrooms',
-            name='user_room_status',
-            field=models.CharField(choices=[('active', 'Active'), ('inactive', 'Inactive'), ('invited', 'Invited'), ('ready', 'Ready')], default='active', max_length=8),
+            model_name="userrooms",
+            name="user_room_status",
+            field=models.CharField(
+                choices=[
+                    ("active", "Active"),
+                    ("inactive", "Inactive"),
+                    ("invited", "Invited"),
+                    ("ready", "Ready"),
+                ],
+                default="active",
+                max_length=8,
+            ),
         ),
     ]

@@ -147,9 +147,9 @@ export class Chat extends Component {
             room_uuid: roomUuid,
           }),
         );
-    
+
         this.state.socketRoomSpecific.close();
-    
+
         this.chatContainer.clear();
         this.requestRoomRefresh();
       } else {
