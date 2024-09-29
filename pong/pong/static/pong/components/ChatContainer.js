@@ -16,13 +16,17 @@ export class ChatContainer extends Component {
     this.displayRoom(room);
   }
 
-  appendMessage(message) {
+  appendMessage(message, myId) {
     const messagesContainer = document.querySelector(
       ".direct-message-messages",
     );
     if (messagesContainer) {
       const messageElement = document.createElement("div");
-      messageElement.classList.add("message");
+      if (message.user_uuid === myId) {
+        messageElement.classList.add("my-message");
+      } else {
+        messageElement.classList.add("other-message");
+      }
       messageElement.innerText = `${message.user}: ${message.message}`;
       messagesContainer.appendChild(messageElement);
     } else {

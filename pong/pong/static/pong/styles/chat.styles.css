@@ -90,12 +90,26 @@
   background-color: #a0a0a0;
 }
 
-.message {
+.my-message {
   padding: 10px;
   margin-bottom: 10px;
   border-radius: 8px;
-  background-color: #f0f0f0;
+  background-color: #d1e7dd;
   max-width: 70%;
+  margin-left: auto;
+  text-align: right;
+  border: 1px solid #b6d4c1;
+}
+
+.other-message {
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  background-color: #f8d7da;
+  max-width: 70%;
+  margin-right: auto;
+  text-align: left;
+  border: 1px solid #f5c2c7;
 }
 
 .form {
