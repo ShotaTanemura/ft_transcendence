@@ -38,7 +38,7 @@ export class Router {
   }
 
   // 実際にpathに遷移させる。
-  async changePage(path) {
+  changePage(path) {
     let route = this.searchRouteFromPath(path);
     //TODO Return 404 Error Page
     if (route === null) {
@@ -50,6 +50,33 @@ export class Router {
         console.log(error);
         path = "/signin";
         route = this.searchRouteFromPath("/signin");
+        let component = new route.component(
+          this,
+          route.parameters,
+          route.state,
+        );
+
+        if (0 < this.pageStack.length) {
+          this.getForegroundPage.beforePageUnload();
+          this.getForegroundPage.element.parentNode.removeChild(
+            this.getForegroundPage.element,
+          );
+        }
+
+        const data = {
+          depth: this.pageStack.length + 1,
+          path: path,
+        };
+
+        if (this.pageStack.length === 0) {
+          history.replaceState(data, null, path);
+        } else {
+          history.pushState(data, null, path);
+        }
+        this.pageStack.push(component);
+        this.rootElement.appendChild(component.element);
+        component.afterPageLoaded();
+        return component;
       });
     }
 
