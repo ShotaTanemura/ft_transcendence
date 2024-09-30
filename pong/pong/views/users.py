@@ -1,8 +1,9 @@
 from django.http.response import JsonResponse
 from django.db.utils import IntegrityError
-from pong.models.user import User, UserIconUpdateForm
-from pong.models.friend import Friend, FriendRequest
+from django.contrib.auth.models import AnonymousUser
 from django.views.decorators.csrf import csrf_exempt
+from pong.models.user import User, UserIconUpdateForm
+from pong.models.friend import Friend, FriendRequest, FriendStatus
 from pong.middleware.auth import jwt_exempt
 import json
 import logging
@@ -140,27 +141,51 @@ def other_user(request, name):
 @csrf_exempt
 def searched_users(request, name):
     try:
-        if request.method == "GET":
-            users = User.objects.filter(name__icontains=name)
-            if not users:
-                return JsonResponse(
-                    {"message": "Users not found", "status": "userNotFound"}, status=404
-                )
-            hitted_user_list = []
-            for user in users:
-                hitted_user_list.append(
-                    {"name": user.name, "icon": user.icon.url if user.icon else None}
-                )
-
-            return JsonResponse(
-                {"users": hitted_user_list},
-                status=200,
-            )
-        else:
+        if request.method != "GET":
             return JsonResponse(
                 {"message": "Method is not allowed", "status": "invalidParams"},
                 status=400,
             )
+        if request.user == AnonymousUser:
+            return JsonResponse(
+                {"message": "unauthorized", "status": "unauthorized"}, status=401
+            )
+
+        users = User.objects.filter(name__icontains=name)
+        if not users:
+            return JsonResponse(
+                {"message": "Users not found", "status": "userNotFound"}, status=404
+            )
+        hitted_user_list = []
+        for user in users:
+            friend_status = 0
+            friend = Friend.objects.filter(user=request.user, friend=user).exists()
+            send_friend_request = FriendRequest.objects.filter(
+                sender=request.user, reciever=user
+            ).exists()
+            approve_friend_request = FriendRequest.objects.filter(
+                sender=user, reciever=request.user
+            ).exists()
+            if friend:
+                friend_status = int(FriendStatus.FRIEND)
+            elif send_friend_request:
+                friend_status = int(FriendStatus.PENDING)
+            elif approve_friend_request:
+                friend_status = int(FriendStatus.REQUESTED)
+            elif user == request.user:
+                friend_status = int(FriendStatus.YOURSELF)
+            hitted_user_list.append(
+                {
+                    "name": user.name,
+                    "icon": user.icon.url if user.icon else None,
+                    "friend_status": friend_status,
+                }
+            )
+
+        return JsonResponse(
+            {"users": hitted_user_list},
+            status=200,
+        )
     except Exception as e:
         logger.error(f"Server error: {e}")
         return JsonResponse(
