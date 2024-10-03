@@ -15,6 +15,13 @@ export class UserProfile extends Component {
     this.headerComponent = new Header(this.router, this.params, this.state);
     this.element.parentElement.prepend(this.headerComponent.element);
     this.headerComponent.afterPageLoaded();
+
+    const backButton = this.findElement("#back-button");
+    if (backButton) {
+      backButton.addEventListener("click", () => {
+        this.router.goBackPage();
+      });
+    }
   }
 
   beforePageUnload() {
@@ -49,6 +56,7 @@ export class UserProfile extends Component {
             <img id="user-icon">
             <p><strong>Username:</strong> <span id="username"></span></p>
             <br>
+            <button id="back-button">元のページに戻る</button>
         </div>
         `;
   }
