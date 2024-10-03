@@ -102,7 +102,7 @@ export class DirectoryContainer extends Component {
   }
 
   showUserProfile(user, modalContainer) {
-    alert(`ユーザー ${user.name} のプロフィールを表示aaします。`);
+    this.router.goNextPage(`/profile/${user.name}`);
     this.closeModal(modalContainer);
   }
 
