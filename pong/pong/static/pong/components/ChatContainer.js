@@ -1,4 +1,5 @@
 import { Component } from "../core/component.js";
+import { PongGameHome } from "./PongGameHome.js";
 
 export class ChatContainer extends Component {
   constructor(router, params, state) {
@@ -99,11 +100,34 @@ export class ChatContainer extends Component {
   }
 
   inviteToGame(roomUuid) {
-    if (this.onSendMessage) {
-      this.onSendMessage(roomUuid, "ゲームに招待します");
-    }
-  }
+    const gameState = {
+      roomUuid: roomUuid,
+      nickname: this.state.userNickname || "Guest",
+    };
 
+    const pongGame = new PongGameHome(this.router, this.params, {
+      ...this.state,
+      gameState: gameState,
+    });
+
+    pongGame.submitForm({
+      preventDefault: () => {},
+      target: {
+        elements: {
+          "room-id": { value: "1324" },
+          "user-nickname": { value: gameState.nickname },
+        },
+      },
+      submitter: { name: "host" },
+    });
+
+    pongGame.connection.onopen = () => {
+      console.log("WebSocket connection opened for Pong Game");
+      pongGame.connection.send(
+        JSON.stringify({ sender: "user", type: "get-room-state" }),
+      );
+    };
+  }
   confirmLeaveRoom() {
     const confirmation = window.confirm("本当に退出しますか？");
     if (confirmation) {
