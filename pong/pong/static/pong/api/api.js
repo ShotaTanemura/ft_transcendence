@@ -151,3 +151,21 @@ export async function approveFriendRequest(name) {
     return false;
   }
 }
+
+export async function getUserStatus(name) {
+  try {
+    const response = await fetch(`/pong/api/v1/users/status/${name}`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    });
+    const data = await response.json();
+    if (!response.ok || !data || !data["status"]) {
+      throw new Error(data.message || "Failed to fetch user data");
+    }
+    return data["status"];
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    return null;
+  }
+}

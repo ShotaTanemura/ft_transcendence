@@ -5,6 +5,7 @@ import {
   getRequestedFriendsData,
   getPendingFriendsData,
   approveFriendRequest,
+  getUserStatus,
 } from "../api/api.js";
 
 export class Friend extends Component {
@@ -29,6 +30,16 @@ export class Friend extends Component {
 
   goHomePage = () => {
     this.goNextPage("/");
+  };
+
+  getUserStatus = async (name) => {
+    const user_status = await getUserStatus(name);
+    switch (user_status) {
+      case "online":
+        return `<div style="width: 25px; height: 25px; border-radius: 50%; background-color: #7FFF00; border: 2px solid white;"></div>`;
+      default:
+        return ``;
+    }
   };
 
   createFriendList = async () => {
@@ -58,6 +69,7 @@ export class Friend extends Component {
           <div class="card-body text-start d-flex align-items-center gap-5">
             <img size="32" height="128" width="128" data-view-component="true" class="avatar rounded-circle me-5" src=${friendData.icon}>
             <span class="display-4 fw-bold">${friendData.name}</span>
+            ${await this.getUserStatus(friendData.name)}
           </div>
         </div>
       `;
@@ -97,6 +109,7 @@ export class Friend extends Component {
           <div class="card-body text-start d-flex align-items-center gap-5">
             <img size="32" height="128" width="128" data-view-component="true" class="avatar rounded-circle me-5" src=${friendData.icon}>
             <span class="display-4 fw-bold">${friendData.name}</span>
+            ${await this.getUserStatus(friendData.name)}
             <button id="send-friend-request-to-${friendData.name}" class="btn btn-success ms-auto gap-5">accept friend request</button>
           </div>
         </div>
@@ -144,6 +157,7 @@ export class Friend extends Component {
           <div class="card-body text-start d-flex align-items-center gap-5">
             <img size="32" height="128" width="128" data-view-component="true" class="avatar rounded-circle me-5" src=${friendData.icon}>
             <span class="display-4 fw-bold">${friendData.name}</span>
+            ${await this.getUserStatus(friendData.name)}
             <button id="pedding-friend-${friendData.name}" class="btn btn-secondary ms-auto gap-5">pending..</button>
           </div>
         </div>

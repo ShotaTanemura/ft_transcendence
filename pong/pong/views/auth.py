@@ -138,6 +138,7 @@ def verify_token(request):
         return JsonResponse(
             {"message": "unauthorized", "status": "unauthorized"}, status=401
         )
+    redis_client.setex(uuid, 120, "online")
     return JsonResponse({"uuid": str(uuid)}, status=200)
 
 

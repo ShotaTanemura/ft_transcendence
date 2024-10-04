@@ -2,6 +2,7 @@ from django.http.response import JsonResponse
 from django.db.utils import IntegrityError
 from django.contrib.auth.models import AnonymousUser
 from django.views.decorators.csrf import csrf_exempt
+from pong.utils.redis_client import redis_client
 from pong.models.user import User, UserIconUpdateForm
 from pong.models.friend import Friend, FriendRequest, FriendStatus
 from pong.middleware.auth import jwt_exempt
@@ -191,3 +192,23 @@ def searched_users(request, name):
         return JsonResponse(
             {"message": "Internal Server Error", "status": "serverError"}, status=500
         )
+
+
+@csrf_exempt
+def user_status(request, name):
+    if request.method != "GET":
+        return JsonResponse(
+            {"message": "Method is not allowed", "status": "invalidParams"}, status=400
+        )
+    user = User.objects.filter(name=name).first()
+    if not user:
+        return JsonResponse(
+            {"message": "User not found", "status": "userNotFound"}, status=404
+        )
+    user_online_status = redis_client.get(str(user.uuid))
+    if user_online_status:
+        return JsonResponse(
+            {"name": user.name, "status": user_online_status.decode("utf-8")},
+            status=200,
+        )
+    return JsonResponse({"name": user.name, "status": "offline"}, status=200)

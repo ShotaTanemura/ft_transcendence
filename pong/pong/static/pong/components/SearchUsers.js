@@ -1,6 +1,10 @@
 import { Component } from "../core/component.js";
 import { Header } from "./Header.js";
-import { sendFriendRequest, approveFriendRequest } from "../api/api.js";
+import {
+  sendFriendRequest,
+  approveFriendRequest,
+  getUserStatus,
+} from "../api/api.js";
 
 const FriendStatus = {
   STRANGER: 0,
@@ -12,6 +16,7 @@ const FriendStatus = {
 export class SearchUsers extends Component {
   constructor(router, params, state) {
     super(router, params, state);
+    this.intervalElements = [];
   }
 
   afterPageLoaded = () => {
@@ -58,6 +63,7 @@ export class SearchUsers extends Component {
           <div class="card-body text-start d-flex align-items-center gap-5">
             <img size="32" height="128" width="128" data-view-component="true" class="avatar rounded-circle me-5" src=${userData.icon}>
             <span class="display-4 fw-bold">${userData.name}</span>
+            ${await this.getUserStatus(userData.name)}
             ${this.getButton(userData.name, userData.friend_status)}
           </div>
         </div>
@@ -80,6 +86,16 @@ export class SearchUsers extends Component {
       }
     };
     return userElement;
+  };
+
+  getUserStatus = async (name) => {
+    const user_status = await getUserStatus(name);
+    switch (user_status) {
+      case "online":
+        return `<div style="width: 25px; height: 25px; border-radius: 50%; background-color: #7FFF00; border: 2px solid white;"></div>`;
+      default:
+        return ``;
+    }
   };
 
   getButton = (friend_name, friend_status) => {

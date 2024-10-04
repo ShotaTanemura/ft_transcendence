@@ -40,17 +40,26 @@ def send_friend_request(request):
             return JsonResponse(
                 {"message": "Users not found", "status": "userNotFound"}, status=404
             )
+        # if reciever have already sent the request to sender, deny the request.
         reverse_request = FriendRequest.objects.filter(sender=reciever, reciever=sender)
         if reverse_request:
             return JsonResponse(
-                {"message": "Already requested from reciever.", "status": "Conflict"}, status=409
+                {"message": "Already requested from reciever.", "status": "Conflict"},
+                status=409,
+            )
+        # if they are already friend, deny the request.
+        friend = Friend.objects.filter(user=sender, friend=reciever)
+        if friend:
+            return JsonResponse(
+                {"message": "Already friend.", "status": "Conflict"}, status=409
             )
         try:
             FriendRequest.objects.create(sender=sender, reciever=reciever)
         except IntegrityError as e:
             logger.error("IntegrityError: {e}")
             return JsonResponse(
-                {"message": "Already Requested.", "status": "IntegrityError"}, status=409
+                {"message": "Already Requested.", "status": "IntegrityError"},
+                status=409,
             )
         return JsonResponse(
             {"status": "ok"},

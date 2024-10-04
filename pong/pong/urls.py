@@ -13,6 +13,7 @@ urlpatterns = [
     path("api/v1/users/<uuid:uuid>", users.user, name="user"),
     path("api/v1/users/<uuid:uuid>/icon", users.user_icon, name="user_icon"),
     path("api/v1/users/others/<str:name>", users.other_user, name="other_user"),
+    path("api/v1/users/status/<str:name>", users.user_status, name="user_status"),
     path("api/v1/users/search/<str:name>", users.searched_users, name="searched_users"),
     path("api/v1/friends/friends", friends.get_friends, name="get_friends"),
     path(
