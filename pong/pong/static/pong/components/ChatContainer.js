@@ -110,6 +110,13 @@ export class ChatContainer extends Component {
       gameState: gameState,
     });
 
+    if (this.onSendMessage) {
+      this.onSendMessage(
+        roomUuid,
+        "ゲームを開始します!以下のリンクからゲームに参加してください",
+      );
+    }
+
     pongGame.submitForm({
       preventDefault: () => {},
       target: {
