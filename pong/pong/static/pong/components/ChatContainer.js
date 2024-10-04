@@ -84,10 +84,23 @@ export class ChatContainer extends Component {
       });
 
       const header = document.querySelector(".direct-message-header");
-      header.innerHTML = `<h3>${select.name}</h3> <button class="leave-button">ルームから退出</button>`;
+      header.innerHTML = `<h3>${select.name}</h3> 
+                          <button class="invite-button">ゲームに招待する</button> 
+                          <button class="leave-button">ルームから退出</button>`;
 
       const leaveButton = document.querySelector(".leave-button");
       leaveButton.addEventListener("click", () => this.confirmLeaveRoom());
+
+      const inviteButton = document.querySelector(".invite-button");
+      inviteButton.addEventListener("click", () =>
+        this.inviteToGame(select.uuid),
+      );
+    }
+  }
+
+  inviteToGame(roomUuid) {
+    if (this.onSendMessage) {
+      this.onSendMessage(roomUuid, "ゲームに招待します");
     }
   }
 
