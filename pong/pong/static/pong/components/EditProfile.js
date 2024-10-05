@@ -80,6 +80,7 @@ export class EditProfile extends Component {
 
   updatePlaseholders(user) {
     this.findElement("#username").placeholder = user.name;
+    this.findElement("#nickname").placeholder = user.nickname;
     this.findElement("#email").placeholder = user.email;
   }
 
@@ -92,6 +93,7 @@ export class EditProfile extends Component {
         credentials: "include",
         body: JSON.stringify({
           name: event.target.username.value,
+          nickname: event.target.nickname.value,
           email: event.target.email.value,
         }),
       });
@@ -134,6 +136,8 @@ export class EditProfile extends Component {
         <form class="edit-profile-form">
             <label for="username">Username</label>
             <input type="text" placeholder="username" id="username" name="name"><br/>
+            <label for="Nick">Nickname</label>
+            <input type="text" placeholder="nickname" id="nickname" name="nickname"><br/>
             <label for="email">Email</label>
             <input type="email" placeholder="email" id="email" name="email"><br/>
             <label for="icon">Icon</label>
