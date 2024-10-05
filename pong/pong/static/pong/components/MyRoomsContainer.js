@@ -184,26 +184,26 @@ export class MyRoomsContainer extends Component {
     return `
         <div class="myrooms-container">
             <div class="create-chatroom">
-                <button class="create-chatroom-button" type="button">Create Chatroom</button>
+                <button class="create-chatroom-button" type="button">チャットルームの作成</button>
             </div>
             <div class="search-bar">
-                <input type="text" placeholder="Search Chatroom">
+                <input type="text" placeholder="チャットルームの検索">
             </div>
             <div class="myrooms"></div>
             <div class="invited-rooms-container">
-                <h3>Invited Rooms</h3>
+                <h3>招待されているDM</h3>
                 <div class="invited-rooms"></div>
             </div>
         </div>
         <div id="createChatroomModal" class="modal">
             <div class="modal-content">
                 <span class="close-modal">&times;</span>
-                <h2>Create Chatroom</h2>
+                <h2>チャットルームの作成</h2>
                 <form id="createChatroomForm">
-                    <label for="chatroomName">Chatroom Name</label>
+                    <label for="chatroomName">ルームの名前</label>
                     <input type="text" id="chatroomName" name="name" required>
 
-                    <label for="roomType">Room Type</label>
+                    <label for="roomType">ルームタイプ</label>
                     <select id="roomType" name="room_type" required>
                         <option value="group">Group</option>
                         <option value="dm">Direct Message</option>
@@ -214,7 +214,7 @@ export class MyRoomsContainer extends Component {
                         <input type="email" id="email" name="email">
                     </div>
 
-                    <button type="submit">Create</button>
+                    <button type="submit">作成</button>
                 </form>
             </div>
         </div>

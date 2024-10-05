@@ -106,7 +106,7 @@ export class EditProfile extends Component {
 
       const fileField = event.target.icon;
       if (fileField.files.length <= 0) {
-        this.router.goNextPage("/");
+        this.router.goNextPage("/profile");
         return;
       }
       const formData = new FormData();
@@ -120,7 +120,7 @@ export class EditProfile extends Component {
         },
       );
       console.log(icon_response);
-      this.router.goNextPage("/");
+      this.router.goNextPage("/profile");
     } catch (error) {
       console.error("Failed to edit user profile:", error);
       window.alert("Failed to edit user profile");
@@ -129,16 +129,18 @@ export class EditProfile extends Component {
 
   get html() {
     return `
-      <h1>Edit Profile</h1>
-      <form class="edit-profile-form">
-          <label for="username">Username</label>
-          <input type="text" placeholder="username" id="username" name="name"><br/>
-          <label for="email">Email</label>
-          <input type="email" placeholder="email" id="email" name="email"><br/>
-          <label for="icon">Icon</label>
-          <input type="file" id="icon" name="icon" accept="image/*"><br/>
-          <button class="submit-form" type="submit">確定する</button>
-      </form>
+      <div class="profile-card">
+        <h1>プロフィール編集</h1>
+        <form class="edit-profile-form">
+            <label for="username">Username</label>
+            <input type="text" placeholder="username" id="username" name="name"><br/>
+            <label for="email">Email</label>
+            <input type="email" placeholder="email" id="email" name="email"><br/>
+            <label for="icon">Icon</label>
+            <input type="file" id="icon" name="icon" accept="image/*"><br/>
+            <button class="submit-form" type="submit">確定する</button>
+        </form>
+      </div>
     `;
   }
 }
