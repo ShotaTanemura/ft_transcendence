@@ -101,13 +101,13 @@ export class SearchUsers extends Component {
 
   getButton = (friend_name, friend_status) => {
     switch (friend_status) {
-      case (FriendStatus.YOURSELF, FriendStatus.FRIEND):
+      case ("yourself", "friend"):
         return "";
-      case FriendStatus.STRANGER:
+      case "stranger":
         return `<button id="send-friend-request-from-${friend_name}" class="btn btn-primary ms-auto gap-5">send friend request</button>`;
-      case FriendStatus.PENDING:
+      case "pending":
         return `<button id="pending-approval-from-${friend_name}" class="btn btn-secondary ms-auto gap-5">pending...</button>`;
-      case FriendStatus.REQUESTED:
+      case "requested":
         return `<button id="accept-friend-request-from${friend_name}" class="btn btn-success ms-auto gap-5">accept friend request</button>`;
       default:
         return "";

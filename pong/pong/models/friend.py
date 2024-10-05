@@ -3,14 +3,6 @@ from django.conf import settings
 from enum import IntEnum
 
 
-class FriendStatus(IntEnum):
-    STRANGER = 0
-    FRIEND = 1
-    PENDING = 2
-    REQUESTED = 3
-    YOURSELF = -1
-
-
 class FriendRequest(models.Model):
     sender = models.ForeignKey(
         settings.AUTH_USER_MODEL,

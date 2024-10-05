@@ -4,7 +4,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.views.decorators.csrf import csrf_exempt
 from pong.utils.redis_client import redis_client
 from pong.models.user import User, UserIconUpdateForm
-from pong.models.friend import Friend, FriendRequest, FriendStatus
+from pong.models.friend import Friend, FriendRequest
 from pong.middleware.auth import jwt_exempt
 import json
 import logging
@@ -159,7 +159,7 @@ def searched_users(request, name):
             )
         hitted_user_list = []
         for user in users:
-            friend_status = 0
+            friend_status = "stranger"
             friend = Friend.objects.filter(user=request.user, friend=user).exists()
             send_friend_request = FriendRequest.objects.filter(
                 sender=request.user, reciever=user
@@ -168,13 +168,13 @@ def searched_users(request, name):
                 sender=user, reciever=request.user
             ).exists()
             if friend:
-                friend_status = int(FriendStatus.FRIEND)
+                friend_status = "friend"
             elif send_friend_request:
-                friend_status = int(FriendStatus.PENDING)
+                friend_status = "pending"
             elif approve_friend_request:
-                friend_status = int(FriendStatus.REQUESTED)
+                friend_status = "requested"
             elif user == request.user:
-                friend_status = int(FriendStatus.YOURSELF)
+                friend_status = "yourself"
             hitted_user_list.append(
                 {
                     "name": user.name,
