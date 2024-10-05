@@ -4,10 +4,10 @@ import { getUuid, getUserFromUuid, getUsersDataFromName } from "../api/api.js";
 export class Header extends Component {
   constructor(router, params, state) {
     super(router, params, state);
-    this.loadHeader();
   }
 
   afterPageLoaded() {
+    this.loadHeader();
     document.getElementById("search-user-form").onsubmit =
       this.onSubmitSearchUserForm;
     document.getElementById("title-link").onclick = this.onClickHomeLink;
@@ -39,14 +39,15 @@ export class Header extends Component {
       if (!user) {
         throw new Error("User not found");
       }
-      this.findElements("#user-icon").src = user.icon
+      this.findElement("#user-icon").src = user.icon;
+      console.log(user.icon);
     }
     catch (error) {
       console.error("Failed to load user profile:", error);
     }
   }
 
-  onSubmitSearchUserForm = async (event) => {
+  onSubmitSearchUserForm = async (event) =>  {
     event.preventDefault();
     const searchedName = event.target.elements["search-user-input"].value;
     this.setRouteContext(
