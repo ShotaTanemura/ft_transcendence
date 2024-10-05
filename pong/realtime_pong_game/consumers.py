@@ -28,7 +28,7 @@ class PlayerConsumer(AsyncWebsocketConsumer):
         # register group name
         self.room_name = self.scope["url_route"]["kwargs"].get("room_name")
         self.user_role = self.scope["url_route"]["kwargs"].get("user_role")
-        self.user_nickname = self.scope["url_route"]["kwargs"].get("user_nickname")
+        self.user_nickname = self.user.nickname
         # if url path is not valid, close connection
         if self.room_name == None or self.user_role == None:
             await self.send(
