@@ -141,16 +141,52 @@ export class Router {
 
   searchRouteFromPath(path) {
     path = path.replace(/\/$/, "");
-    if (path === "") path = "/";
+
+    let queryParams = {};
+    const [cleanPath, queryString] = path.split("?");
+    if (queryString) {
+      if (queryString.find)
+        queryString.split("&").forEach((param) => {
+          console.log("param", param);
+          const [key, value] = param.split("=");
+          queryParams[decodeURIComponent(key)] = decodeURIComponent(
+            value || "",
+          );
+        });
+    }
+
     for (let i = 0; i < this.routingList.length; i++) {
       let route = this.routingList[i];
-      if (route.path !== path) continue;
-      let parameters = {};
-      return {
-        component: route.component,
-        parameters: parameters,
-        state: route.state,
-      };
+      let routePath = route.path.replace(/\/$/, "");
+
+      let regexPath = routePath.replace(/{\w+}/g, "([^/]+)");
+      let match = cleanPath.match(new RegExp(`^${regexPath}$`));
+      if ((cleanPath === "/" || cleanPath === "") && routePath === "/") {
+        let parameters = {};
+        parameters["query"] = queryParams;
+        return {
+          component: route.component,
+          parameters: parameters,
+          state: route.state,
+        };
+      }
+      if (match) {
+        let paramNames = (routePath.match(/{\w+}/g) || []).map((param) =>
+          param.slice(1, -1),
+        );
+        let parameters = {};
+
+        paramNames.forEach((name, index) => {
+          parameters[name] = match[index + 1];
+        });
+        parameters["query"] = queryParams;
+
+        return {
+          component: route.component,
+          parameters: parameters,
+          state: route.state,
+        };
+      }
     }
     //TODO 組み込みのエラーページコンポーネントを返す。
     return null;
