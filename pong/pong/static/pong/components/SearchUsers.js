@@ -24,6 +24,7 @@ export class SearchUsers extends Component {
     this.element.parentElement.prepend(this.headerComponent.element);
     this.headerComponent.afterPageLoaded();
     const usersData = this.getRouteContext("searchedUsersData");
+    this.setRouteContext("searchedUsersData", []);
     this.createSearchedUsersList(usersData);
     document.getElementById("button-to-move-home-page").onclick =
       this.goHomePage;

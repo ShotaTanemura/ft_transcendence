@@ -11,16 +11,16 @@ import {
 export class Friend extends Component {
   constructor(router, params, state) {
     super(router, params, state);
+    this.createFriendList();
+    this.createRequestedFriendList();
+    this.createPendingFriendList();
   }
 
   afterPageLoaded = async () => {
     this.headerComponent = new Header(this.router, this.params, this.state);
     this.element.parentElement.prepend(this.headerComponent.element);
     this.headerComponent.afterPageLoaded();
-    this.createFriendList();
-    this.createRequestedFriendList();
-    this.createPendingFriendList();
-    document.getElementById("button-to-move-home-page").onclick =
+        document.getElementById("button-to-move-home-page").onclick =
       this.goHomePage;
   };
 
