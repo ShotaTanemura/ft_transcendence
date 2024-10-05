@@ -41,13 +41,12 @@ export class Header extends Component {
       }
       this.findElement("#user-icon").src = user.icon;
       console.log(user.icon);
-    }
-    catch (error) {
+    } catch (error) {
       console.error("Failed to load user profile:", error);
     }
   }
 
-  onSubmitSearchUserForm = async (event) =>  {
+  onSubmitSearchUserForm = async (event) => {
     event.preventDefault();
     const searchedName = event.target.elements["search-user-input"].value;
     this.setRouteContext(
@@ -205,4 +204,3 @@ export class Header extends Component {
     `;
   }
 }
-
