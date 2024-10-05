@@ -34,7 +34,7 @@ export class Router {
 
   //前のページに戻る
   goBackPage() {
-    if (window.history.length <= 1) {
+    if (history.length <= 1) {
       this.goNextPage("/");
     } else {
       history.back();
