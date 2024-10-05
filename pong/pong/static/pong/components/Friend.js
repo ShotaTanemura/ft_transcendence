@@ -20,7 +20,7 @@ export class Friend extends Component {
     this.headerComponent = new Header(this.router, this.params, this.state);
     this.element.parentElement.prepend(this.headerComponent.element);
     this.headerComponent.afterPageLoaded();
-        document.getElementById("button-to-move-home-page").onclick =
+    document.getElementById("button-to-move-home-page").onclick =
       this.goHomePage;
   };
 
