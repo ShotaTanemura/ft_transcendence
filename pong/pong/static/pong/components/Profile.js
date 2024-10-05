@@ -52,7 +52,9 @@ export class Profile extends Component {
     return `
         <div class="profile-card">
             <h1>プロフィールページ</h1>
-            <img id="user-icon">
+            <img id="user-icon" height="256" width="256">
+            <br>
+            <br>
             <p><strong>Username:</strong> <span id="username"></span></p>
             <p><strong>E-mail:</strong> <span id="email"></span></p>
             <br>

@@ -130,7 +130,7 @@ export class Header extends Component {
           </form>
           <button id="user-profile-button" class="btn btn-link"">
             <span class="Button-content">
-              <span class="Button-label"><img id="user-icon" size="32" height="32" width="32" data-view-component="true" class="avatar rounded-circle"></span>
+              <span class="Button-label"><img id="user-icon" height="32" width="32" data-view-component="true" class="avatar rounded-circle"></span>
             </span>
           </button>
         </div>
