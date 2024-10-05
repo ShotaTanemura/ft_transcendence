@@ -160,11 +160,145 @@ paths:
           content:
             "application/json":
               schema:
-                $ref: "#/components/schemas/getOtherUserResponse"
+                $ref: "#/components/schemas/getOtherUser"
         "400":
           $ref: "#/components/responses/badRequest"
         "404":
           $ref: "#/components/responses/notFoundError"
+  /pong/api/v1/users/status/{name}:
+    get:
+      summary: オンラインステータスの取得
+      description: ユーザーのオンラインステータスを名前から取得
+      parameters:
+        - name: name
+          in: path
+          description: ユーザー名
+          required: true
+          schema:
+            type: string
+          example: ユーザー名
+      responses:
+        "200":
+          description: オンラインステータスの取得成功
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/getUserOnlineStatus"
+        "400":
+          $ref: "#/components/responses/badRequest"
+        "404":
+          $ref: "#/components/responses/notFoundError"
+  /pong/api/v1/friends/friends:
+    get:
+      summary: フレンドの取得
+      description: ユーザーのフレンド全員の情報取得
+      responses:
+        "200":
+          description: "フレンド情報の取得成功"
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/getFriends"
+        "400":
+          $ref: "#/components/responses/badRequest"
+        "401":
+          $ref: "#/components/responses/unauthorized"
+        "404":
+          $ref: "#/components/responses/notFoundError"
+  /pong/api/v1/friends/pending:
+    get:
+      summary: 申請済みフレンドの取得
+      description: ユーザーがフレンド申請をして承認されていないユーザーの情報取得
+      responses:
+        "200":
+          description: "申請済みユーザー情報の取得成功"
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/getPendingFriends"
+        "400":
+          $ref: "#/components/responses/badRequest"
+        "401":
+          $ref: "#/components/responses/unauthorized"
+        "404":
+          $ref: "#/components/responses/notFoundError"
+  /pong/api/v1/friends/requested:
+    get:
+      summary: フレンド承認待ちの取得
+      description: ユーザーがフレンド申請をされて承認されていないユーザーの情報取得
+      responses:
+        "200":
+          description: "承認待ちユーザー情報の取得成功"
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/getRequestedFriends"
+        "400":
+          $ref: "#/components/responses/badRequest"
+        "401":
+          $ref: "#/components/responses/unauthorized"
+        "404":
+          $ref: "#/components/responses/notFoundError"
+  /pong/api/v1/friends/request/send:
+    post:
+      summary: フレンド申請の送信
+      description: ユーザーがフレンド申請を送信
+      requestBody:
+        content:
+          "applications/json":
+            schema:
+              type: object
+              properties:
+                requested-user-name:
+                  type: string
+      responses:
+        "200":
+          description: "フレンド申請の成功"
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+        "400":
+          $ref: "#/components/responses/badRequest"
+        "401":
+          $ref: "#/components/responses/unauthorized"
+        "404":
+          $ref: "#/components/responses/notFoundError"
+        "409":
+          $ref: "#/components/responses/integrityError"
+  /pong/api/v1/friends/request/approve:
+    post:
+      summary: フレンド申請の承認
+      description: ユーザーがフレンド申請の承認を送信
+      requestBody:
+        content:
+          "applications/json":
+            schema:
+              type: object
+              properties:
+                request-user-name:
+                  type: string
+      responses:
+        "200":
+          description: "フレンド申請の承認が成功"
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+        "400":
+          $ref: "#/components/responses/badRequest"
+        "401":
+          $ref: "#/components/responses/unauthorized"
+        "404":
+          $ref: "#/components/responses/notFoundError"
+        "409":
+          $ref: "#/components/responses/integrityError"
   /ponggame/api/v1/match-result/{uuid}:
     post:
       summary: ユーザーのPongGameの直近10試合の履歴の取得
@@ -203,6 +337,18 @@ components:
             $ref: "#/components/schemas/errorMessage"
     notFoundError:
       description: データが見つからない
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/errorMessage"
+    unauthorized:
+      description: 権限がない
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/errorMessage"
+    integrityError:
+      description: 整合性が取れない
       content:
         application/json:
           schema:
@@ -342,7 +488,7 @@ components:
                         type: integer
                       player2-score:
                         type: integer
-    getOtherUserResponse:
+    getOtherUser:
       type: object
       description: 他のユーザー情報取得成功
       properties:
@@ -371,3 +517,69 @@ components:
       required:
         - message
         - status
+
+    getUserOnlineStatus:
+      type: object
+      description: ユーザーのオンラインステータスを取得
+      properties:
+        name:
+          type: string
+          description: ユーザー名
+          example: さとし
+        statis:
+          type: string
+          example: online
+          enum:
+            - online #ユーザーがオンラインの場合
+            - offline #ユーザーがオフラインの場合
+    getFriends:
+      type: object
+      description: ユーザーのフレンド取得
+      properties:
+        friends:
+          type: array
+          description: フレンドの情報のリスト
+          items:
+            oneOf:
+              - type: object
+                properties:
+                  name:
+                    type: string
+                    description: フレンドの名前
+                  icon:
+                    type: string
+                    description: フレンドのアイコンのurl
+    getPendingFriends:
+      type: object
+      description: ユーザーのフレンド申請済みユーザー取得
+      properties:
+        friends:
+          type: array
+          description: 申請済みフレンドの情報のリスト
+          items:
+            oneOf:
+              - type: object
+                properties:
+                  name:
+                    type: string
+                    description: 申請済みフレンドの名前
+                  icon:
+                    type: string
+                    description: 申請済みフレンドのアイコンのurl
+    getRequestedFriends:
+      type: object
+      description: ユーザーの承認待ちフレンド取得
+      properties:
+        friends:
+          type: array
+          description: 承認待ちフレンドの情報のリスト
+          items:
+            oneOf:
+              - type: object
+                properties:
+                  name:
+                    type: string
+                    description: 承認待ちフレンドの名前
+                  icon:
+                    type: string
+                    description: 承認待ちフレンドのアイコンのurl 

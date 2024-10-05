@@ -6,13 +6,6 @@ import {
   getUserStatus,
 } from "../api/api.js";
 
-const FriendStatus = {
-  STRANGER: 0,
-  FRIEND: 1,
-  PENDING: 2,
-  REQUESTED: 3,
-  YOURSELF: -1,
-};
 export class SearchUsers extends Component {
   constructor(router, params, state) {
     super(router, params, state);
