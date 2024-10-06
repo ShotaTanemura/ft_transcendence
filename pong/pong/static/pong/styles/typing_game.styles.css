@@ -1,0 +1,54 @@
+/* Typing Game Home */
+.typing-game-home {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  /* background-color: #f0f0f0; */
+  font-family: "Helvetica Neue", Arial, sans-serif;
+}
+
+.typing-game-home h1 {
+  font-size: 2.5em;
+  margin-bottom: 20px;
+  padding-bottom: 100px;
+  color: #333;
+}
+
+.entering-room-form {
+  background-color: #fff;
+  padding: 30px 40px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  min-width: 40vw;
+}
+
+.entering-room-form label {
+  font-size: 1.2em;
+  color: #555;
+}
+
+.entering-room-form input[type="number"] {
+  width: 100%;
+  padding: 12px;
+  margin: 15px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.entering-room-form input[type="submit"] {
+  width: 100%;
+  padding: 12px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.entering-room-form input[type="submit"]:hover {
+  background-color: #0056b3;
+}
+
+/* typing game waiting */
