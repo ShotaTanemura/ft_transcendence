@@ -33,4 +33,3 @@ for i in range(1, 5):
         )
     else:
         print(f"User {user_name} already exists")
-
