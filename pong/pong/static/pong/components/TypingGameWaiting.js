@@ -1,4 +1,5 @@
 import { Component } from "../core/component.js";
+import { Header } from "./Header.js";
 
 export class TypingGameWaiting extends Component {
   constructor(router, parameters, state) {
@@ -12,6 +13,15 @@ export class TypingGameWaiting extends Component {
     this.goNextPage("/typing-game-home");
   }
 
+  afterPageLoaded() {
+    this.headerComponent = new Header(this.router, this.params, this.state);
+    this.element.parentElement.prepend(this.headerComponent.element);
+    this.headerComponent.afterPageLoaded();
+  }
+
+  beforePageUnload() {
+    this.element.parentElement.removeChild(this.headerComponent.element);
+  }
   get html() {
     return `
             <h1>waiting other paricipants...</h1>

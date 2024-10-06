@@ -1,4 +1,6 @@
 import { Component } from "../core/component.js";
+import { Header } from "./Header.js";
+
 
 export class TypingGameHome extends Component {
   constructor(router, parameters, state) {
@@ -48,6 +50,16 @@ export class TypingGameHome extends Component {
     connection.onclose = this.onWebSocketClose;
     connection.onmessage = this.onMessage;
   };
+
+  afterPageLoaded() {
+    this.headerComponent = new Header(this.router, this.params, this.state);
+    this.element.parentElement.prepend(this.headerComponent.element);
+    this.headerComponent.afterPageLoaded();
+  }
+
+  beforePageUnload() {
+    this.element.parentElement.removeChild(this.headerComponent.element);
+  }
 
   get html() {
     return `
