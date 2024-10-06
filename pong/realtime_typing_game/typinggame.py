@@ -16,7 +16,8 @@ DEBUG = False
 
 class Timer:
     def __init__(self, send_message_to_group, handle_game_finished):
-        self.time_limit = 10
+        # TODO: 10秒に戻す
+        self.time_limit = 3
         self.timer = self.time_limit
         self.thread_running = False
         self.game_finished = False
@@ -134,6 +135,14 @@ class TypingGame:
                 "contents": {
                     "winner": str(self.players.get(self.get_winner_player())),
                 },
+            },
+        )
+        async_to_sync(self.send_message_to_group)(
+            "send_disconnect_notification",
+            {
+                "sender": "TypingGame",
+                "type": "game-finished-disconnect",
+                "contents": {},
             },
         )
         self.thread_running = False

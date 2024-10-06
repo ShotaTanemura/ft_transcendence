@@ -12,7 +12,7 @@ export class TypingGameHome extends Component {
   };
 
   onWebSocketClose = () => {
-    this.goNextPage("/typing-game-home");
+    console.log("WebSocket closed");
   };
 
   onMessage = (event) => {

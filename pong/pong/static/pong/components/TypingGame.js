@@ -8,7 +8,7 @@ export class TypingGame extends Component {
     this.connection = this.getRouteContext("WebSocket");
     if (!this.connection) {
       console.error(
-        "WebSocket connection is undefined, creating a new connection.",
+        "WebSocket connection is undefined, creating a new connection."
       );
     }
     this.connection.onmessage = this.onMessage;
@@ -19,15 +19,21 @@ export class TypingGame extends Component {
     this.isMyTurn = false;
 
     document.addEventListener("keydown", (e) => {
-      this.connection.send(
-        JSON.stringify({
-          sender: "player",
-          type: "gameKeyEvent",
-          contents: e.key,
-        }),
-      );
+      if (this.connection.readyState === WebSocket.OPEN) {
+        // WebSocketが開いている状態のときのみ送信
+        this.connection.send(
+          JSON.stringify({
+            sender: "player",
+            type: "gameKeyEvent",
+            contents: e.key,
+          })
+        );
+      } else {
+        console.warn("Cannot send message, WebSocket is not open.");
+      }
     });
   }
+
   onMessage = (event) => {
     const message = JSON.parse(event.data);
     console.log(message.type, message);
@@ -44,6 +50,7 @@ export class TypingGame extends Component {
           message.contents.player;
         document.getElementById("score").innerHTML = this.score;
         break;
+
       case "correct-key":
         document.getElementById("inputCorrect").innerHTML =
           message.contents.word[this.input_length];
@@ -55,12 +62,9 @@ export class TypingGame extends Component {
         break;
 
       case "game-finished":
-        document.getElementById("winner").innerHTML =
-          `winner = ${message.contents.winner}`;
+        document.getElementById("winner").innerHTML = `winner = ${message.contents.winner}`;
         this.setRouteContext("TypingGameWinner", message.contents.winner);
-        setTimeout(() => {
-          this.goNextPage("/typing-game-finished");
-        }, 5000);
+        this.goNextPage("/typing-game-finished");
         break;
 
       case "countdown-timer":
@@ -90,26 +94,26 @@ export class TypingGame extends Component {
 
   get html() {
     return `
-    <main class="game">
-      <span id="timer">10</span><br>
-      <h1>
-        <span id="word">word</span>
-      </h1><br>
-      <div> input correct = 
-        <span id="inputCorrect"></span><br>
-      </div>
-      <div> 入力する人 = 
-        <span id="player_to_input">player1</span><br>
-      </div>
-      <div> ２人が入力した単語数 = 
-       <span id="score">0</span><br>
-      </div>
-      <div>
-      <span id="winner"></span>
-      </div>
-      <canvas id="timerCanvas" width="200" height="200"></canvas>
-      <canvas class="typinggame"></canvas>
-    </main>
+      <main class="game">
+        <span id="timer">10</span><br>
+        <h1>
+          <span id="word">word</span>
+        </h1><br>
+        <div> input correct = 
+          <span id="inputCorrect"></span><br>
+        </div>
+        <div> 入力する人 = 
+          <span id="player_to_input">player1</span><br>
+        </div>
+        <div> ２人が入力した単語数 = 
+          <span id="score">0</span><br>
+        </div>
+        <div>
+          <span id="winner"></span>
+        </div>
+        <canvas id="timerCanvas" width="200" height="200"></canvas>
+        <canvas class="typinggame"></canvas>
+      </main>
     `;
   }
 }
