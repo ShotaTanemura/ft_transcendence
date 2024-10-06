@@ -4,6 +4,10 @@ import { Header } from "./Header.js";
 export class PongGameHome extends Component {
   constructor(router, parameters, state) {
     super(router, parameters, state);
+    if (parameters != undefined && parameters && parameters["query"]) {
+      this.setSubmitForm(parameters["query"]);
+      return;
+    }
     this.findElement("form.entering-room-form").onsubmit = this.submitForm;
   }
 
@@ -51,7 +55,16 @@ export class PongGameHome extends Component {
     event.preventDefault();
     this.setRouteContext("RoomID", event.target.elements["room-id"].value);
     const socketPath = `ws://${window.location.hostname}:${window.location.port}/realtime-pong/${event.target.elements["room-id"].value}/${event.submitter.name}/${event.target.elements["user-nickname"].value}/`;
+    this.connection = new WebSocket(socketPath);
+    this.setRouteContext("WebSocket", this.connection);
+    this.connection.onopen = this.onWebSocketOpen;
+    this.connection.onclose = this.onWebSocketClose;
+    this.connection.onmessage = this.onMessage;
+  };
 
+  setSubmitForm = (query) => {
+    this.setRouteContext("RoomID", query["room-id"]);
+    const socketPath = `ws://${window.location.hostname}:${window.location.port}/realtime-pong/${query["room-id"]}/guest/${query["user-nickname"]}/`;
     this.connection = new WebSocket(socketPath);
     this.setRouteContext("WebSocket", this.connection);
     this.connection.onopen = this.onWebSocketOpen;
