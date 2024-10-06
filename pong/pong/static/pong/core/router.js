@@ -34,9 +34,12 @@ export class Router {
 
   //前のページに戻る
   goBackPage() {
-    return history.back();
+    if (history.length <= 1) {
+      this.goNextPage("/");
+    } else {
+      history.back();
+    }
   }
-
   // 実際にpathに遷移させる。
   changePage(path, search = undefined) {
     let route = this.searchRouteFromPath(path, search);
