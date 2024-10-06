@@ -8,10 +8,10 @@ export class TypingGameWaiting extends Component {
     this.findElement("button.go-back-to-game-home").onclick = this.onClick;
   }
 
-  onClick = (event) => {
+  onClick = () => {
     this.connection.close();
     this.goNextPage("/typing-game-home");
-  }
+  };
 
   afterPageLoaded() {
     this.headerComponent = new Header(this.router, this.params, this.state);

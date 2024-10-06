@@ -13,7 +13,6 @@ export class TypingGameFinished extends Component {
     this.goNextPage("/typing-game-home");
   };
 
-
   afterPageLoaded() {
     this.headerComponent = new Header(this.router, this.params, this.state);
     this.element.parentElement.prepend(this.headerComponent.element);

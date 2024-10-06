@@ -1,7 +1,6 @@
 import { Component } from "../core/component.js";
 import { Header } from "./Header.js";
 
-
 export class TypingGameHome extends Component {
   constructor(router, parameters, state) {
     super(router, parameters, state);
