@@ -36,29 +36,14 @@ export class Signup extends Component {
       password: event.target.password.value,
       email: event.target.email.value,
     });
-    let response;
     try {
-      response = await this.registerUser(signupJson);
+      await this.registerUser(signupJson);
     } catch (error) {
       alert(error);
       return;
     }
 
-    const fileField = event.target.icon;
-    if (0 >= fileField.files.length) {
-      this.router.goNextPage("/");
-      return;
-    }
-    let formData = new FormData();
-
-    formData.append("icon", fileField.files[0]);
-
-    try {
-      await this.uploadIcon(response.uuid, formData);
-      this.router.goNextPage("/");
-    } catch (error) {
-      alert(error);
-    }
+    this.router.goNextPage("/");
   };
 
   registerUser = async (jsonData) => {
@@ -81,19 +66,6 @@ export class Signup extends Component {
         default:
           throw Error(data.status);
       }
-    }
-    return data;
-  };
-
-  uploadIcon = async (uuid, formData) => {
-    const response = await fetch(`/pong/api/v1/users/${uuid}/icon`, {
-      method: "POST",
-      body: formData,
-    });
-    console.log(response);
-    const data = await response.json();
-    if (!response.ok) {
-      throw Error(data.status);
     }
     return data;
   };
@@ -121,8 +93,6 @@ export class Signup extends Component {
             <input type="password" placeholder="enter password" id="password" name="password" required><br/>
             <label for="repeat-password">Repeat Password</label>
             <input type="password" placeholder="repeat password" id="repeat-password" name="repeat-password" required><br/>
-            <label for="icon">Icon</label>
-            <input type="file" id="icon" name="icon" accept="image/*"><br/>
             <button class="form-submit" type="submit">sign up</button>
           </form>
           </div>
