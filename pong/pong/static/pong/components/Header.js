@@ -1,5 +1,5 @@
 import { Component } from "../core/component.js";
-import { getUsersDataFromName } from "../api/api.js";
+import { getUuid, getUserFromUuid, getUsersDataFromName } from "../api/api.js";
 
 export class Header extends Component {
   constructor(router, params, state) {
@@ -7,6 +7,7 @@ export class Header extends Component {
   }
 
   afterPageLoaded() {
+    this.loadHeader();
     document.getElementById("search-user-form").onsubmit =
       this.onSubmitSearchUserForm;
     document.getElementById("title-link").onclick = this.onClickHomeLink;
@@ -26,6 +27,23 @@ export class Header extends Component {
       this.onClickSettingsButton;
     document.getElementById("navigate-signout-link").onclick =
       this.onClickSignoutButton;
+  }
+
+  async loadHeader() {
+    try {
+      const uuid = await getUuid();
+      if (!uuid) {
+        throw new Error("UUID not found");
+      }
+      const user = await getUserFromUuid(uuid);
+      if (!user) {
+        throw new Error("User not found");
+      }
+      this.findElement("#user-icon").src = user.icon;
+      console.log(user.icon);
+    } catch (error) {
+      console.error("Failed to load user profile:", error);
+    }
   }
 
   onSubmitSearchUserForm = async (event) => {
@@ -112,7 +130,7 @@ export class Header extends Component {
           </form>
           <button id="user-profile-button" class="btn btn-link"">
             <span class="Button-content">
-              <span class="Button-label"><img src="https://avatars.githubusercontent.com/u/110250805?v=4" alt="" size="32" height="32" width="32" data-view-component="true" class="avatar rounded-circle"></span>
+              <span class="Button-label"><img id="user-icon" height="32" width="32" data-view-component="true" class="avatar rounded-circle"></span>
             </span>
           </button>
         </div>
@@ -160,7 +178,7 @@ export class Header extends Component {
               <button id="navigate-stats-link" class="btn btn-link nav-link active" aria-current="page">
                 <i class="bi bi-graph-up px-2 fa-2x"></i>
                 <span class="fa-2x align-bottom">
-                  Stats 
+                  Stats
                 </span>
               </button>
             </li>
