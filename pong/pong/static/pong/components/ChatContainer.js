@@ -138,13 +138,6 @@ export class ChatContainer extends Component {
       },
       submitter: { name: "host" },
     });
-
-    pongGame.connection.onopen = () => {
-      console.log("WebSocket connection opened for Pong Game");
-      pongGame.connection.send(
-        JSON.stringify({ sender: "user", type: "get-room-state" }),
-      );
-    };
   }
   confirmLeaveRoom() {
     const confirmation = window.confirm("本当に退出しますか？");
