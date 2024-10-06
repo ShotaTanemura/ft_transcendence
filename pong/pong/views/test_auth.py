@@ -10,6 +10,7 @@ class UserRegisterTest(TestCase):
     def test_register_normal(self):
         data = {
             "name": "ユーザー名",
+            "nickname": "sample",
             "email": "example@email.com",
             "password": "p4s$W0rd",
         }
@@ -59,10 +60,14 @@ class UserRegisterTest(TestCase):
 
     def test_register_user_already_exists(self):
         User.objects.create_user(
-            name="ユーザー名", email="example@email1.com", password="p4s$W0rd"
+            name="ユーザー名",
+            nickname="sample",
+            email="example@email1.com",
+            password="p4s$W0rd",
         )
         data = {
             "name": "ユーザー名",
+            "nickname": "sample",
             "email": "example2@email.com",
             "password": "p4s$W0rd",
         }
@@ -75,10 +80,14 @@ class UserRegisterTest(TestCase):
 
     def test_register_email_already_exists(self):
         User.objects.create_user(
-            name="ユーザー名1", email="example@email.com", password="p4s$W0rd"
+            name="ユーザー名1",
+            nickname="sample",
+            email="example@email.com",
+            password="p4s$W0rd",
         )
         data = {
             "name": "ユーザー名2",
+            "nickname": "sample",
             "email": "example@email.com",
             "password": "p4s$W0rd",
         }
@@ -93,7 +102,10 @@ class UserRegisterTest(TestCase):
 class UserTokenTest(TestCase):
     def test_token_normal(self):
         user = User.objects.create_user(
-            name="ユーザー名", email="example@email.com", password="p4s$W0rd"
+            name="ユーザー名",
+            nickname="sample",
+            email="example@email.com",
+            password="p4s$W0rd",
         )
         data = {"email": "example@email.com", "password": "p4s$W0rd"}
         response = self.client.post(
@@ -163,7 +175,10 @@ class UserTokenTest(TestCase):
 class UserRefreshTokenTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
-            name="ユーザー名", email="example@email.com", password="p4s$W0rd"
+            name="ユーザー名",
+            nickname="sample",
+            email="example@email.com",
+            password="p4s$W0rd",
         )
         self.refresh_token_payload = {
             "uuid": str(self.user.uuid),
@@ -247,7 +262,10 @@ class UserRefreshTokenTest(TestCase):
 class UserVerifyTokenTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
-            name="ユーザー名", email="example@email.com", password="p4s$W0rd"
+            name="ユーザー名",
+            nickname="sample",
+            email="example@email.com",
+            password="p4s$W0rd",
         )
         self.token_payload = {
             "uuid": str(self.user.uuid),

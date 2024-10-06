@@ -5,7 +5,6 @@ export class MyRoomsContainer extends Component {
     super(router, params, state);
     this.onRoomSelected = onRoomSelected;
     this.socket = socket;
-    this.initializeEventListeners();
     this.rooms = [];
 
     if (this.socket) {
@@ -41,14 +40,7 @@ export class MyRoomsContainer extends Component {
   }
 
   initializeEventListeners() {
-    document.removeEventListener(
-      "DOMContentLoaded",
-      this.handleDOMContentLoaded,
-    );
-    document.addEventListener(
-      "DOMContentLoaded",
-      this.handleDOMContentLoaded.bind(this),
-    );
+    this.handleDOMContentLoaded();
   }
 
   handleDOMContentLoaded() {
