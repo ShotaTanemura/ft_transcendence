@@ -34,9 +34,12 @@ export class Router {
 
   //前のページに戻る
   goBackPage() {
-    return history.back();
+    if (history.length <= 1) {
+      this.goNextPage("/");
+    } else {
+      history.back();
+    }
   }
-
   // 実際にpathに遷移させる。
   changePage(path) {
     let route = this.searchRouteFromPath(path);
@@ -141,16 +144,36 @@ export class Router {
 
   searchRouteFromPath(path) {
     path = path.replace(/\/$/, "");
-    if (path === "") path = "/";
+
     for (let i = 0; i < this.routingList.length; i++) {
       let route = this.routingList[i];
-      if (route.path !== path) continue;
-      let parameters = {};
-      return {
-        component: route.component,
-        parameters: parameters,
-        state: route.state,
-      };
+      let routePath = route.path.replace(/\/$/, "");
+
+      let regexPath = routePath.replace(/{\w+}/g, "([^/]+)");
+      let match = path.match(new RegExp(`^${regexPath}$`));
+      if ((path === "/" || path === "") && routePath === "/") {
+        return {
+          component: route.component,
+          parameters: {},
+          state: route.state,
+        };
+      }
+      if (match) {
+        let paramNames = (routePath.match(/{\w+}/g) || []).map((param) =>
+          param.slice(1, -1),
+        );
+        let parameters = {};
+
+        paramNames.forEach((name, index) => {
+          parameters[name] = match[index + 1];
+        });
+
+        return {
+          component: route.component,
+          parameters: parameters,
+          state: route.state,
+        };
+      }
     }
     //TODO 組み込みのエラーページコンポーネントを返す。
     return null;

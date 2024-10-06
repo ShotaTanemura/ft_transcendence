@@ -1,35 +1,42 @@
 import { Component } from "../core/component.js";
 import { Header } from "./Header.js";
-import { getUuid, getUserFromUuid } from "../api/api.js";
+import { getUsersDataFromName } from "../api/api.js";
 
-export class Profile extends Component {
+export class UserProfile extends Component {
   constructor(router, params, state) {
     super(router, params, state);
-    this.loadUserProfile();
-    this.findElement("button.edit-profile-button").onclick = this.goEditProfile;
+    this.parameters = params;
+    if (this.parameters.user_name) {
+      this.loadUserProfile(this.parameters.user_name);
+    }
   }
 
   afterPageLoaded() {
     this.headerComponent = new Header(this.router, this.params, this.state);
     this.element.parentElement.prepend(this.headerComponent.element);
     this.headerComponent.afterPageLoaded();
+
+    const backButton = this.findElement("#back-button");
+    if (backButton) {
+      backButton.addEventListener("click", () => {
+        this.router.goBackPage();
+      });
+    }
   }
 
   beforePageUnload() {
     this.element.parentElement.removeChild(this.headerComponent.element);
   }
 
-  async loadUserProfile() {
+  async loadUserProfile(user_name) {
     try {
-      const uuid = await getUuid();
-      if (!uuid) {
-        throw new Error("UUID not found");
-      }
-      const user = await getUserFromUuid(uuid);
-      if (!user) {
+      const users = await getUsersDataFromName(user_name);
+      if (!users) {
         throw new Error("User not found");
       }
-      this.updateProfileUI(user);
+      if (users[0]) {
+        this.updateProfileUI(users[0]);
+      }
     } catch (error) {
       console.error("Failed to load user profile:", error);
       window.alert("Failed to load user profile");
@@ -39,26 +46,17 @@ export class Profile extends Component {
 
   updateProfileUI(user) {
     this.findElement("#username").textContent = user.name;
-    this.findElement("#email").textContent = user.email;
     this.findElement("#user-icon").src = user.icon;
-    console.log(user.icon);
   }
-
-  goEditProfile = () => {
-    this.router.goNextPage("/edit-profile");
-  };
 
   get html() {
     return `
         <div class="profile-card">
             <h1>プロフィールページ</h1>
-            <img id="user-icon" height="256" width="256">
-            <br>
-            <br>
+            <img id="user-icon">
             <p><strong>Username:</strong> <span id="username"></span></p>
-            <p><strong>E-mail:</strong> <span id="email"></span></p>
             <br>
-            <button class="edit-profile-button">プロフィールを変更する</button>
+            <button id="back-button">元のページに戻る</button>
         </div>
         `;
   }

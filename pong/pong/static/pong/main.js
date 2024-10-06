@@ -9,6 +9,7 @@ import { PongGameWaiting } from "./components/PongGameWaiting.js";
 import { PongGame } from "./components/PongGame.js";
 import { Error } from "./components/Error.js";
 import { Profile } from "./components/Profile.js";
+import { UserProfile } from "./components/UserProfile.js";
 import { EditProfile } from "./components/EditProfile.js";
 import { TypingGameHome } from "./components/TypingGameHome.js";
 import { TypingGameRoom } from "./components/TypingGameRoom.js";
@@ -116,6 +117,11 @@ let router = new Router(
     {
       path: "/typing-game",
       component: TypingGame,
+      state: {},
+    },
+    {
+      path: "/profile/{user_name}",
+      component: UserProfile,
       state: {},
     },
   ],
