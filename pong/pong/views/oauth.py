@@ -3,7 +3,7 @@ from django.http.response import JsonResponse, HttpResponseRedirect
 from django.core.files import File
 from django.conf import settings
 from pong.middleware.auth import jwt_exempt
-from pong.models import User
+from pong.models.user import User
 from pong.utils.create_response import create_token_response
 from urllib.parse import urlencode, quote, unquote
 from io import BytesIO
@@ -124,7 +124,7 @@ def callback_42(request):
         ):
             return HttpResponseRedirect(redirect_to=f"/{path}#userAlreadyExists")
         user = User.objects.create_user(
-            name=login, email=email, password=random_password
+            name=login, nickname=login, email=email, password=random_password
         )
         save_user_icon(user, data_user_info)
     else:  # action == 'signin'

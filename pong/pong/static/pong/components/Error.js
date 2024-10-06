@@ -6,13 +6,15 @@ export class Error extends Component {
     this.findElement("button.go-home").onclick = this.onClick;
   }
   onClick = () => {
-    this.router.goNextPage("/home");
+    this.router.goNextPage("/");
   };
 
   get html() {
     return `
-          <h1> Oops  Error occured!</h1>
-          <button class="go-home">go Home</button>
+      <main class="text-center p-5">
+        <h1> Oops! Page Not Found </h1>
+        <button class="btn btn-primary go-home">Home</button>
+      </main>
         `;
   }
 }

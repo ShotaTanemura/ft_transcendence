@@ -1,4 +1,5 @@
 import { Component } from "../core/component.js";
+import { getUuid, getUserFromUuid, getUsersDataFromName } from "../api/api.js";
 
 export class Header extends Component {
   constructor(router, params, state) {
@@ -6,57 +7,109 @@ export class Header extends Component {
   }
 
   afterPageLoaded() {
+    this.loadHeader();
     document.getElementById("search-user-form").onsubmit =
       this.onSubmitSearchUserForm;
     document.getElementById("title-link").onclick = this.onClickHomeLink;
     document.getElementById("user-profile-button").onclick =
       this.onClickUserProfileButton;
     document.getElementById("navigate-home-link").onclick =
-      this.onClickHomeLink;
+      this.onClickHomeButton;
     document.getElementById("navigate-chat-link").onclick =
-      this.onClickChatLink;
+      this.onClickChatButton;
     document.getElementById("navigate-pong-game-link").onclick =
-      this.onClickPongGameLink;
+      this.onClickPongGameButton;
     document.getElementById("navigate-typing-game-link").onclick =
-      this.onClickTypingGameLink;
+      this.onClickTypingGameButton;
+    document.getElementById("navigate-stats-link").onclick =
+      this.onClickStatsButton;
     document.getElementById("navigate-settings-link").onclick =
-      this.onClickSettingsLink;
+      this.onClickSettingsButton;
+    document.getElementById("navigate-signout-link").onclick =
+      this.onClickSignoutButton;
   }
 
-  onSubmitSearchUserForm = (event) => {
-    //TODO handle action
+  async loadHeader() {
+    try {
+      const uuid = await getUuid();
+      if (!uuid) {
+        throw new Error("UUID not found");
+      }
+      const user = await getUserFromUuid(uuid);
+      if (!user) {
+        throw new Error("User not found");
+      }
+      this.findElement("#user-icon").src = user.icon;
+      console.log(user.icon);
+    } catch (error) {
+      console.error("Failed to load user profile:", error);
+    }
+  }
+
+  onSubmitSearchUserForm = async (event) => {
     event.preventDefault();
-    alert("#TODO ユーザーを検索する");
+    const searchedName = event.target.elements["search-user-input"].value;
+    this.setRouteContext(
+      "searchedUsersData",
+      await getUsersDataFromName(searchedName),
+    );
+    this.goNextPage("/search-users");
   };
 
   onClickUserProfileButton = () => {
-    //TODO handle action
-    alert("#TODO ユーザープロフィールに移動する");
+    this.router.goNextPage("/profile");
+    this.render();
   };
 
-  onClickHomeLink = () => {
-    //TODO handle action
-    alert("#TODO ホームに移動する");
+  onClickHomeButton = () => {
+    this.router.goNextPage("/");
+    this.render();
   };
 
-  onClickChatLink = () => {
-    //TODO handle action
-    alert("#TODO チャットに移動する");
+  onClickChatButton = () => {
+    this.router.goNextPage("/chat");
+    this.render();
   };
 
-  onClickPongGameLink = () => {
-    //TODO handle action
-    alert("#TODO PongGameに移動する");
+  onClickPongGameButton = () => {
+    this.router.goNextPage("/pong-game-home");
+    this.render();
   };
 
-  onClickTypingGameLink = () => {
-    //TODO handle action
-    alert("#TODO TypingGameに移動する");
+  onClickTypingGameButton = () => {
+    this.router.goNextPage("/typing-game-home");
+    this.render();
   };
 
-  onClickSettingsLink = () => {
+  onClickStatsButton = () => {
+    this.router.goNextPage("/stats");
+    this.render();
+  };
+
+  onClickSettingsButton = () => {
     //TODO handle action
     alert("#TODO Settingsに移動する");
+  };
+
+  onClickSignoutButton = async (event) => {
+    event.preventDefault();
+    try {
+      await this.revokeToken();
+      this.router.goNextPage("/signin");
+    } catch (error) {
+      alert(error);
+    }
+  };
+
+  revokeToken = async () => {
+    const response = await fetch("/pong/api/v1/auth/token/revoke", {
+      method: "POST",
+    });
+    console.log(response);
+    const data = await response.json();
+    if (!response.ok) {
+      throw Error(data.status);
+    }
   };
 
   get html() {
@@ -65,19 +118,19 @@ export class Header extends Component {
         <a class="btn border border-secondary border-2" data-bs-toggle="offcanvas" href="#header-offcanvas" role="button" aria-controls="header-offcanvas">
           <span class="navbar-toggler-icon"></span>
         </a>
-        <a id="title-link" class="navbar-brand ps-4 display-4" href="#">Transcendence</a>
+        <a id="title-link" class="navbar-brand ps-4 display-4">Transcendence</a>
         <div class="ms-auto px-5 d-flex">
           <form id="search-user-form" class="form-inline px-4 d-none d-md-block">
             <div class="input-group">
               <div class="input-group-prepend">
                 <span class="input-group-text" id="basic-addon1">@</span>
               </div>
-              <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+              <input id="search-user-input" type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
             </div>
           </form>
           <button id="user-profile-button" class="btn btn-link"">
             <span class="Button-content">
-              <span class="Button-label"><img src="https://avatars.githubusercontent.com/u/110250805?v=4" alt="" size="32" height="32" width="32" data-view-component="true" class="avatar rounded-circle"></span>
+              <span class="Button-label"><img id="user-icon" height="32" width="32" data-view-component="true" class="avatar rounded-circle"></span>
             </span>
           </button>
         </div>
@@ -90,44 +143,60 @@ export class Header extends Component {
         <div class="offcanvas-body">
           <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
             <li class="nav-item">
-              <a id="navigate-home-link" class="nav-link active" aria-current="page" href="#">
+              <button id="navigate-home-link" class="btn btn-link nav-link active" aria-current="page">
                 <i class="bi bi-house px-2 fa-2x"></i>
                 <span class="fa-2x align-bottom">
                   Home
                 </span>
-              </a>
+              </button>
             </li>
             <li class="nav-item">
-              <a id="navigate-chat-link" class="nav-link active" aria-current="page" href="#">
+              <button id="navigate-chat-link" class="btn btn-link nav-link active" aria-current="page">
                 <i class="bi bi-chat-dots px-2 fa-2x"></i>
                 <span class="fa-2x align-bottom">
                   Chat
                 </span>
-              </a>
+              </button>
             </li>
             <li class="nav-item">
-              <a id="navigate-pong-game-link" class="nav-link active" aria-current="page" href="#">
+              <button id="navigate-pong-game-link" class="btn btn-link nav-link active" aria-current="page">
                 <i class="bi bi-controller px-2 fa-2x"></i>
                 <span class="fa-2x align-bottom">
                   PongGame
                 </span>
-              </a>
+              </button>
             </li>
             <li class="nav-item">
-              <a id="navigate-typing-game-link" class="nav-link active" aria-current="page" href="#">
+              <button id="navigate-typing-game-link" class="btn btn-link nav-link active" aria-current="page">
                 <i class="bi bi-keyboard px-2 fa-2x"></i>
                 <span class="fa-2x align-bottom">
                   TypingGame
                 </span>
-              </a>
+              </button>
             </li>
             <li class="nav-item">
-              <a id="navigate-settings-link" class="nav-link active" aria-current="page" href="#">
+              <button id="navigate-stats-link" class="btn btn-link nav-link active" aria-current="page">
+                <i class="bi bi-graph-up px-2 fa-2x"></i>
+                <span class="fa-2x align-bottom">
+                  Stats
+                </span>
+              </button>
+            </li>
+            <li class="nav-item">
+              <button id="navigate-settings-link" class="btn btn-link nav-link active" aria-current="page">
                 <i class="bi bi-gear px-2 fa-2x"></i>
                 <span class="fa-2x align-bottom">
                   Settings
                 </span>
-              </a>
+              </button>
+            </li>
+            <li class="nav-item">
+              <button id="navigate-signout-link" class="btn btn-link nav-link active" aria-current="page">
+                <i class="bi bi-box-arrow-right px-2 fa-2x"></i>
+                <span class="fa-2x align-bottom">
+                  Signout
+                </span>
+              </button>
             </li>
           </ul>
         </div>

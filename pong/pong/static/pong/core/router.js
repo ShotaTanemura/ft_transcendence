@@ -28,23 +28,61 @@ export class Router {
   }
 
   // 指定したpathに遷移する。
-  goNextPage(path) {
-    return this.changePage(path);
+  goNextPage(path, search = undefined) {
+    return this.changePage(path, search);
   }
 
   //前のページに戻る
   goBackPage() {
-    return history.back();
-  }
-
-  // 実際にpathに遷移させる。
-  changePage(path) {
-    let route = this.searchRouteFromPath(path);
-    //TODO 組み込みのエラーページができるまで何もしない。
-    if (route === null) {
-      console.log("Error: changePage: No such path entry.");
-      return null;
+    if (history.length <= 1) {
+      this.goNextPage("/");
+    } else {
+      history.back();
     }
+  }
+  // 実際にpathに遷移させる。
+  changePage(path, search = undefined) {
+    let route = this.searchRouteFromPath(path, search);
+    //TODO Return 404 Error Page
+    if (route === null) {
+      route = this.searchRouteFromPath("/error");
+    }
+
+    if (path !== "/signin" && path !== "/signup") {
+      this.verifyAndRefreshToken().catch((error) => {
+        console.log(error);
+        path = "/signin";
+        route = this.searchRouteFromPath("/signin");
+        let component = new route.component(
+          this,
+          route.parameters,
+          route.state,
+        );
+
+        if (0 < this.pageStack.length) {
+          this.getForegroundPage.beforePageUnload();
+          this.getForegroundPage.element.parentNode.removeChild(
+            this.getForegroundPage.element,
+          );
+        }
+
+        const data = {
+          depth: this.pageStack.length + 1,
+          path: path,
+        };
+
+        if (this.pageStack.length === 0) {
+          history.replaceState(data, null, path);
+        } else {
+          history.pushState(data, null, path);
+        }
+        this.pageStack.push(component);
+        this.rootElement.appendChild(component.element);
+        component.afterPageLoaded();
+        return component;
+      });
+    }
+
     let component = new route.component(this, route.parameters, route.state);
 
     if (0 < this.pageStack.length) {
@@ -54,7 +92,7 @@ export class Router {
       );
     }
 
-    let data = {
+    const data = {
       depth: this.pageStack.length + 1,
       path: path,
     };
@@ -76,12 +114,12 @@ export class Router {
       return;
     }
 
-    let currentPage = this.pageStack.pop();
+    const currentPage = this.pageStack.pop();
     currentPage.beforePageUnload();
     currentPage.router = null;
     currentPage.element.parentNode.removeChild(currentPage.element);
 
-    let page = this.getForegroundPage;
+    const page = this.getForegroundPage;
     this.rootElement.appendChild(page.element);
     page.afterPageLoaded();
   }
@@ -92,30 +130,65 @@ export class Router {
       this.getForegroundPage.element,
     );
 
-    let route = this.searchRouteFromPath(data.path);
+    const route = this.searchRouteFromPath(data.path);
     //TODO 組み込みエラーページができるまで何もしない。
     if (route === null) {
       console.log("Error: onHistoryForward: No such path entry.");
     }
-    let component = new route.component(this, route.parameters, route.state);
+    const component = new route.component(this, route.parameters, route.state);
     this.pageStack.push(component);
 
     this.rootElement.appendChild(component.element);
     component.afterPageLoaded();
   }
 
-  searchRouteFromPath(path) {
-    if (path === "") path = "/";
+  searchRouteFromPath(path, search = undefined) {
+    path = path.replace(/\/$/, "");
+    let queryString = search;
+    let queryParams = {};
+    if (queryString) {
+      if (queryString.startsWith("?")) {
+        queryString = queryString.substring(1);
+      }
+
+      queryString.split("&").forEach((param) => {
+        const [key, value] = param.split("=");
+        queryParams[decodeURIComponent(key)] = decodeURIComponent(value || "");
+      });
+    }
+
     for (let i = 0; i < this.routingList.length; i++) {
       let route = this.routingList[i];
-      //TODO idなど個人によってpathを変えるなら、完全一致だけでなく、正規表現を用いた一致も必要。
-      if (route.path !== path) continue;
-      let parameters = {};
-      return {
-        component: route.component,
-        parameters: parameters,
-        state: route.state,
-      };
+      let routePath = route.path.replace(/\/$/, "");
+
+      let regexPath = routePath.replace(/{\w+}/g, "([^/]+)");
+      let match = path.match(new RegExp(`^${regexPath}$`));
+      if ((path === "/" || path === "") && routePath === "/") {
+        let parameters = {};
+        parameters["query"] = queryParams;
+        return {
+          component: route.component,
+          parameters: parameters,
+          state: route.state,
+        };
+      }
+      if (match) {
+        let paramNames = (routePath.match(/{\w+}/g) || []).map((param) =>
+          param.slice(1, -1),
+        );
+        let parameters = {};
+
+        paramNames.forEach((name, index) => {
+          parameters[name] = match[index + 1];
+        });
+        parameters["query"] = queryParams;
+
+        return {
+          component: route.component,
+          parameters: parameters,
+          state: route.state,
+        };
+      }
     }
     //TODO 組み込みのエラーページコンポーネントを返す。
     return null;
@@ -124,4 +197,21 @@ export class Router {
   get getForegroundPage() {
     return this.pageStack[this.pageStack.length - 1];
   }
+
+  verifyAndRefreshToken = async () => {
+    const verifyResponse = await fetch("/pong/api/v1/auth/token/verify", {
+      method: "POST",
+    });
+    if (verifyResponse.ok) {
+      return true;
+    }
+
+    const refreshResponse = await fetch("/pong/api/v1/auth/token/refresh", {
+      method: "POST",
+    });
+    if (refreshResponse.ok) {
+      return true;
+    }
+    throw Error(verifyResponse.statusText);
+  };
 }

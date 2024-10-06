@@ -1,15 +1,26 @@
 import { Component } from "../core/component.js";
+import { Header } from "./Header.js";
 
 export class EditProfile extends Component {
   #uuid = null;
 
   constructor(router, params, state) {
     super(router, params, state);
-    this.loadUserProfile();
 
     this.findElement("form.edit-profile-form").onsubmit =
       this.handleEditProfile;
   }
+
+  afterPageLoaded = () => {
+    this.headerComponent = new Header(this.router, this.params, this.state);
+    this.element.parentElement.prepend(this.headerComponent.element);
+    this.headerComponent.afterPageLoaded();
+    this.loadUserProfile();
+  };
+
+  beforePageUnload = () => {
+    this.element.parentElement.removeChild(this.headerComponent.element);
+  };
 
   async loadUserProfile() {
     try {
@@ -69,6 +80,7 @@ export class EditProfile extends Component {
 
   updatePlaseholders(user) {
     this.findElement("#username").placeholder = user.name;
+    this.findElement("#nickname").placeholder = user.nickname;
     this.findElement("#email").placeholder = user.email;
   }
 
@@ -81,6 +93,7 @@ export class EditProfile extends Component {
         credentials: "include",
         body: JSON.stringify({
           name: event.target.username.value,
+          nickname: event.target.nickname.value,
           email: event.target.email.value,
         }),
       });
@@ -95,7 +108,7 @@ export class EditProfile extends Component {
 
       const fileField = event.target.icon;
       if (fileField.files.length <= 0) {
-        this.router.goNextPage("/home");
+        this.router.goNextPage("/profile");
         return;
       }
       const formData = new FormData();
@@ -109,7 +122,7 @@ export class EditProfile extends Component {
         },
       );
       console.log(icon_response);
-      this.router.goNextPage("/home");
+      this.router.goNextPage("/profile");
     } catch (error) {
       console.error("Failed to edit user profile:", error);
       window.alert("Failed to edit user profile");
@@ -118,16 +131,20 @@ export class EditProfile extends Component {
 
   get html() {
     return `
-      <h1>Edit Profile</h1>
-      <form class="edit-profile-form">
-          <label for="username">Username</label>
-          <input type="text" placeholder="username" id="username" name="name"><br/>
-          <label for="email">Email</label>
-          <input type="email" placeholder="email" id="email" name="email"><br/>
-          <label for="icon">Icon</label>
-          <input type="file" id="icon" name="icon" accept="image/*"><br/>
-          <button class="submit-form" type="submit">確定する</button>
-      </form>
+      <div class="profile-card">
+        <h1>プロフィール編集</h1>
+        <form class="edit-profile-form">
+            <label for="username">Username</label>
+            <input type="text" placeholder="username" id="username" name="name"><br/>
+            <label for="Nick">Nickname</label>
+            <input type="text" placeholder="nickname" id="nickname" name="nickname"><br/>
+            <label for="email">Email</label>
+            <input type="email" placeholder="email" id="email" name="email"><br/>
+            <label for="icon">Icon</label>
+            <input type="file" id="icon" name="icon" accept="image/*"><br/>
+            <button class="submit-form" type="submit">確定する</button>
+        </form>
+      </div>
     `;
   }
 }
