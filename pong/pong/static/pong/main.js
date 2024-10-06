@@ -18,7 +18,6 @@ import { PongGameTournament } from "./components/PongGameTournament.js";
 import { PongGameFinished } from "./components/PongGameFinished.js";
 import { GameStats } from "./components/GameStats.js";
 import { TypingGameFinished } from "./components/TypingGameFinished.js";
-import { PongGameResult } from "./components/PongGameResult.js";
 import { SearchUsers } from "./components/SearchUsers.js";
 
 let router = new Router(
