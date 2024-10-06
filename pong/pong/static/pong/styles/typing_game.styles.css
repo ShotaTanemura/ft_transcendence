@@ -5,7 +5,6 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  /* background-color: #f0f0f0; */
   font-family: "Helvetica Neue", Arial, sans-serif;
 }
 
@@ -135,4 +134,62 @@ canvas {
   margin-top: 30px;
   border: 1px solid #ddd;
   border-radius: 10px;
+}
+
+/* typing game */
+.game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #f9f9f9;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  text-align: center;
+}
+
+#timerCanvas {
+  margin-top: 20px;
+}
+
+#timer {
+  font-size: 2em;
+  font-weight: bold;
+  color: #ff4d4f;
+  margin-bottom: 20px;
+}
+
+h1 #word {
+  font-size: 3em;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+#inputCorrect {
+  font-size: 1.5em;
+  color: #28a745;
+}
+
+#player_to_input {
+  font-size: 1.2em;
+  color: #007bff;
+}
+
+#score {
+  font-size: 1.8em;
+  color: #555;
+  margin-top: 15px;
+}
+
+#winner {
+  font-size: 1.8em;
+  color: #ff4d4f;
+  margin-top: 30px;
+  font-weight: bold;
+}
+
+canvas {
+  margin-top: 30px;
+  border: 1px solid #ddd;
+  border-radius: 100%;
 }

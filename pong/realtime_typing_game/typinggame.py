@@ -17,7 +17,7 @@ DEBUG = False
 class Timer:
     def __init__(self, send_message_to_group, handle_game_finished):
         # TODO: 10秒に戻す
-        self.time_limit = 3
+        self.time_limit = 10
         self.timer = self.time_limit
         self.thread_running = False
         self.game_finished = False
