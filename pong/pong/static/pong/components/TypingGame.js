@@ -72,6 +72,7 @@ export class TypingGame extends Component {
 
       default:
         console.warn(`Unknown message type: ${message.type}`);
+        print(message);
         break;
     }
   };

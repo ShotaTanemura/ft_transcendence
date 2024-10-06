@@ -22,11 +22,11 @@ export class TypingGameHome extends Component {
         break;
       case "all-participants-connected":
         this.setRouteContext("participants", message.contents);
-        this.goNextPage("/typing-game-room");
-        break;
-      case "all-participants-ready":
         this.goNextPage("/typing-game");
         break;
+      // case "all-participants-ready":
+      //   this.goNextPage("/typing-game");
+      //   break;
     }
   };
 

@@ -65,7 +65,8 @@ class TypingRoomManager:
             self.participants.append(user)
             self.participants_state[user] = ParticipantState.Not_In_Place
             if len(self.participants) == self.max_of_participants:
-                self.room_state = RoomState.Ready
+                # 全員が接続されたのでゲームを開始する
+                self.room_state = RoomState.In_Game
                 await self.send_messege_to_group(
                     "send_room_information",
                     {
@@ -75,6 +76,10 @@ class TypingRoomManager:
                             participant.name for participant in self.participants
                         ],
                     },
+                )
+                asyncio.new_event_loop().run_in_executor(
+                    None,
+                    self.game_dispatcher,
                 )
         return (True, "")
 
@@ -105,27 +110,22 @@ class TypingRoomManager:
 
     async def on_receive_user_message(self, participant, message):
         message_json = json.loads(message)
-        if self.room_state == RoomState.Ready:
-            await self.user_became_ready_for_game(participant, message_json)
-        elif self.room_state == RoomState.In_Game:
+        # if self.room_state == RoomState.Ready:
+        #     # 全員の準備を確認せずにゲームを開始する
+        #     await self.user_became_ready_for_game(participant, message_json)
+        if self.room_state == RoomState.In_Game:
             await self.handle_game_action(participant, message_json)
 
-    async def user_became_ready_for_game(self, participant, message_json):
-        with self.instance_lock:
-            self.participants_state[participant] = ParticipantState.Ready
-            if all(
-                ParticipantState.Ready == self.participants_state[key]
-                for key in self.participants
-            ):
-                self.room_state = RoomState.In_Game
-                await self.send_messege_to_group(
-                    "send_room_information",
-                    {"sender": "room-manager", "type": "all-participants-ready"},
-                )
-                asyncio.new_event_loop().run_in_executor(
-                    None,
-                    self.game_dispatcher,
-                )
+    # async def user_became_ready_for_game(self, participant, message_json):
+    #     self.room_state = RoomState.In_Game
+    #     await self.send_messege_to_group(
+    #         "send_room_information",
+    #         {"sender": "room-manager", "type": "all-participants-ready"},
+    #     )
+    #     asyncio.new_event_loop().run_in_executor(
+    #         None,
+    #         self.game_dispatcher,
+    #     )
 
     def game_dispatcher(self):
         print(f"{GREEN}Game started!{RESET}")

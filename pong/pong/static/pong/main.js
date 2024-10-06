@@ -12,7 +12,6 @@ import { Profile } from "./components/Profile.js";
 import { UserProfile } from "./components/UserProfile.js";
 import { EditProfile } from "./components/EditProfile.js";
 import { TypingGameHome } from "./components/TypingGameHome.js";
-import { TypingGameRoom } from "./components/TypingGameRoom.js";
 import { TypingGameWaiting } from "./components/TypingGameWaiting.js";
 import { TypingGame } from "./components/TypingGame.js";
 import { PongGameTournament } from "./components/PongGameTournament.js";
@@ -98,11 +97,6 @@ let router = new Router(
     {
       path: "/typing-game-home",
       component: TypingGameHome,
-      state: {},
-    },
-    {
-      path: "/typing-game-room",
-      component: TypingGameRoom,
       state: {},
     },
     {
