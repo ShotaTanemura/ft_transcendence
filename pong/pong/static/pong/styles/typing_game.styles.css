@@ -82,3 +82,57 @@
 .go-back-to-game-home:hover {
   background-color: #0056b3;
 }
+
+/* typing game */
+.game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #f9f9f9;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  text-align: center;
+}
+
+#timer {
+  font-size: 2.5em;
+  font-weight: bold;
+  color: #ff4d4f;
+  margin-bottom: 20px;
+}
+
+h1 #word {
+  font-size: 3em;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+#inputCorrect {
+  font-size: 1.5em;
+  color: #28a745;
+}
+
+#player_to_input {
+  font-size: 1.2em;
+  color: #007bff;
+}
+
+#score {
+  font-size: 1.8em;
+  color: #555;
+  margin-top: 15px;
+}
+
+#winner {
+  font-size: 1.8em;
+  color: #ff4d4f;
+  margin-top: 30px;
+  font-weight: bold;
+}
+
+canvas {
+  margin-top: 30px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+}

@@ -95,26 +95,30 @@ export class TypingGame extends Component {
 
   get html() {
     return `
-      <main class="game">
-        <span id="timer">10</span><br>
-        <h1>
-          <span id="word">word</span>
-        </h1><br>
-        <div> input correct = 
-          <span id="inputCorrect"></span><br>
-        </div>
-        <div> 入力する人 = 
-          <span id="player_to_input">player1</span><br>
-        </div>
-        <div> ２人が入力した単語数 = 
-          <span id="score">0</span><br>
-        </div>
-        <div>
-          <span id="winner"></span>
-        </div>
-        <canvas id="timerCanvas" width="200" height="200"></canvas>
-        <canvas class="typinggame"></canvas>
-      </main>
-    `;
+<main class="game">
+  <span id="timer">10</span><br>
+  <h1>
+    <span id="word">word</span>
+  </h1><br>
+  <div>
+    input correct = 
+    <span id="inputCorrect"></span><br>
+  </div>
+  <div>
+    入力する人 = 
+    <span id="player_to_input">player1</span><br>
+  </div>
+  <div>
+    ２人が入力した単語数 = 
+    <span id="score">0</span><br>
+  </div>
+  <div>
+    <span id="winner"></span>
+  </div>
+  </main>
+  `;
   }
 }
+
+// <canvas id="timerCanvas" width="200" height="200"></canvas>
+// <canvas class="typinggame"></canvas>
