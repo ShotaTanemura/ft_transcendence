@@ -21,3 +21,4 @@ ruff==0.5.2
 pillow==10.4.0
 PyYAML==6.0.2
 daphne==4.1.2
+shortuuid==1.0.13

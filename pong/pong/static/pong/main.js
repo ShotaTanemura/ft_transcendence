@@ -131,4 +131,4 @@ let router = new Router(
   },
 );
 
-router.goNextPage(location.pathname);
+router.goNextPage(location.pathname, location.search);

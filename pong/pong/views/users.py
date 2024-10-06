@@ -28,6 +28,7 @@ def user(request, uuid):
             return JsonResponse(
                 {
                     "uuid": user.uuid,
+                    "nickname": user.nickname,
                     "name": user.name,
                     "email": user.email,
                     "icon": user.icon.url if user.icon else None,
@@ -45,6 +46,8 @@ def user(request, uuid):
 
             if data["name"]:
                 user.name = data["name"]
+            if data["nickname"]:
+                user.nickname = data["nickname"]
             if data["email"]:
                 user.email = data["email"]
             try:
@@ -66,6 +69,7 @@ def user(request, uuid):
                 {
                     "uuid": user.uuid,
                     "name": user.name,
+                    "nickname": user.nickname,
                     "email": user.email,
                     "icon": user.icon.url if user.icon else None,
                 },

@@ -194,6 +194,7 @@ export class Chat extends Component {
     this.headerComponent = new Header(this.router, this.params, this.state);
     this.element.parentElement.prepend(this.headerComponent.element);
     this.headerComponent.afterPageLoaded();
+    this.myRoomsContainer.initializeEventListeners();
   }
 
   beforePageUnload() {

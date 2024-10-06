@@ -169,3 +169,26 @@ export async function getUserStatus(name) {
     return null;
   }
 }
+
+
+export async function getAvailablePongGameRoomId() {
+  try {
+    const response = await fetch(`/ponggame/api/v1/available-roomid`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    });
+    const roomIdData = await response.json();
+    if (!response.ok) {
+      throw new Error(roomIdData.message || "Failed to fetch user data");
+    }
+    if (!roomIdData["roomid"]) {
+      throw new Error("Failed to fetch match results");
+    }
+    console.log(roomIdData["roomid"]);
+    return roomIdData["roomid"];
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    return null;
+  }
+}

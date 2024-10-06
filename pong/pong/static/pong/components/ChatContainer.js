@@ -1,3 +1,4 @@
+import { getAvailablePongGameRoomId } from "../api/api.js";
 import { Component } from "../core/component.js";
 
 export class ChatContainer extends Component {
@@ -84,13 +85,43 @@ export class ChatContainer extends Component {
       });
 
       const header = document.querySelector(".direct-message-header");
-      header.innerHTML = `<h3>${select.name}</h3> <button class="leave-button">ルームから退出</button>`;
+      header.innerHTML = `<h3>${select.name}</h3> 
+                          <button class="invite-button">ゲームに招待する</button> 
+                          <button class="leave-button">ルームから退出</button>`;
 
       const leaveButton = document.querySelector(".leave-button");
       leaveButton.addEventListener("click", () => this.confirmLeaveRoom());
+
+      const inviteButton = document.querySelector(".invite-button");
+      inviteButton.addEventListener("click", () =>
+        this.inviteToGame(select.uuid),
+      );
     }
   }
 
+  inviteToGame = async (roomUuid) => {
+    const roomId = await getAvailablePongGameRoomId();
+    if (this.onSendMessage) {
+      this.onSendMessage(
+        roomUuid,
+        "ゲームを開始します!以下のリンクからゲームに参加してください" +
+          "<br>" +
+          "<a href=" +
+          window.location.origin +
+          "/pong-game-home?room-id=" +
+          roomId +
+          "&name=guest" +
+          " " +
+          "target='_blank' rel='noopener noreferrer'>ゲームに参加する" +
+          "</a>",
+      );
+    }
+    window.open(
+      "/pong-game-home?room-id=" + roomId + "&name=host",
+      "_blank",
+      "noopener,noreferrer",
+    );
+  };
   confirmLeaveRoom() {
     const confirmation = window.confirm("本当に退出しますか？");
     if (confirmation) {
