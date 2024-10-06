@@ -100,14 +100,9 @@ export class ChatContainer extends Component {
   }
 
   inviteToGame(roomUuid) {
-    const gameState = {
-      roomUuid: roomUuid,
-      nickname: this.state.userNickname || "host",
-    };
 
     const pongGame = new PongGameHome(this.router, this.params, {
       ...this.state,
-      gameState: gameState,
     });
 
     const roomId = "1739";
@@ -120,8 +115,6 @@ export class ChatContainer extends Component {
           window.location.origin +
           "/pong-game-home?room-id=" +
           roomId +
-          "&user-nickname=" +
-          "guest" +
           " " +
           "target='_blank' rel='noopener noreferrer'>ゲームに参加する" +
           "</a>",
@@ -133,7 +126,6 @@ export class ChatContainer extends Component {
       target: {
         elements: {
           "room-id": { value: roomId },
-          "user-nickname": { value: gameState.nickname },
         },
       },
       submitter: { name: "host" },

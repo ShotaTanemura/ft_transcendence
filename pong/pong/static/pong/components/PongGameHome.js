@@ -4,7 +4,7 @@ import { Header } from "./Header.js";
 export class PongGameHome extends Component {
   constructor(router, parameters, state) {
     super(router, parameters, state);
-    if (parameters != undefined && parameters && parameters["query"]) {
+    if (parameters && parameters["query"] && parameters["query"]["room-id"]) {
       this.setSubmitForm(parameters["query"]);
       return;
     }
@@ -54,7 +54,7 @@ export class PongGameHome extends Component {
   submitForm = (event) => {
     event.preventDefault();
     this.setRouteContext("RoomID", event.target.elements["room-id"].value);
-    const socketPath = `ws://${window.location.hostname}:${window.location.port}/realtime-pong/${event.target.elements["room-id"].value}/${event.submitter.name}/${event.target.elements["user-nickname"].value}/`;
+    const socketPath = `ws://${window.location.hostname}:${window.location.port}/realtime-pong/${event.target.elements["room-id"].value}/${event.submitter.name}/`;
     this.connection = new WebSocket(socketPath);
     this.setRouteContext("WebSocket", this.connection);
     this.connection.onopen = this.onWebSocketOpen;
@@ -64,7 +64,7 @@ export class PongGameHome extends Component {
 
   setSubmitForm = (query) => {
     this.setRouteContext("RoomID", query["room-id"]);
-    const socketPath = `ws://${window.location.hostname}:${window.location.port}/realtime-pong/${query["room-id"]}/guest/${query["user-nickname"]}/`;
+    const socketPath = `ws://${window.location.hostname}:${window.location.port}/realtime-pong/${query["room-id"]}/guest/`;
     this.connection = new WebSocket(socketPath);
     this.setRouteContext("WebSocket", this.connection);
     this.connection.onopen = this.onWebSocketOpen;
@@ -102,8 +102,6 @@ export class PongGameHome extends Component {
 			  	  <label for="room-id">Room ID</label>
 			  	  <input id="room-id" type="number" min="1000" max="9999" required><br>
             <small id="room-id-help">Room ID must be between 1000 and 9999</small><br><br>
-				    <label for="user-nickname">Nickname</label>
-            <input id="user-nickname" type="text" placeholder="nickname" maxlength=20 required><br>
           </div>
 			  	<input id="enter-room-as-host-submit" name="host" class="btn btn-primary" type="submit" value="enter room as host">
 			  	<input id="enter-room-as-guest-submit" name="guest" class="btn btn-primary" type="submit" value="enter room as guest">

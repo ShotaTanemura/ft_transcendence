@@ -32,6 +32,7 @@ export class Signup extends Component {
     event.preventDefault();
     const signupJson = JSON.stringify({
       name: event.target.username.value,
+      nickname: event.target.nickname.value,
       password: event.target.password.value,
       email: event.target.email.value,
     });
@@ -112,6 +113,8 @@ export class Signup extends Component {
           <form class="signup-form">
             <label for="username">Username</label>
             <input type="text" placeholder="username" id="username" name="name" required><br/>
+            <label for="nickname">NickName</label>
+            <input type="text" placeholder="nickname" id="nickname" name="nickname" required><br/>
             <label for="email">Email</label>
             <input type="email" placeholder="email" id="email" name="email" required><br/>
             <label for="password">Password</label>

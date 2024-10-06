@@ -12,7 +12,10 @@ import uuid
 
 def create_user_with_tokens():
     user = User.objects.create_user(
-        name="ユーザー名", email="example@email.com", password="p4s$W0rd"
+        name="ユーザー名",
+        nickname="sample",
+        email="example@email.com",
+        password="p4s$W0rd",
     )
     token_payload = {
         "uuid": str(user.uuid),

@@ -149,7 +149,6 @@ export class Router {
       }
 
       queryString.split("&").forEach((param) => {
-        console.log("param", param);
         const [key, value] = param.split("=");
         queryParams[decodeURIComponent(key)] = decodeURIComponent(value || "");
       });
