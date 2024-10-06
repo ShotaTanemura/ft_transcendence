@@ -21,3 +21,16 @@ if superuser_name and superuser_password:
         print(f"Superuser {superuser_name} already exists")
 else:
     print("Superuser credentials not provided")
+
+for i in range(1, 5):
+    user_name = f"user{i}"
+    user_email = f"{i}@{i}.com"
+    user_password = "pass"
+    if not User.objects.filter(name=user_name).exists():
+        print(f"Creating user {user_name}")
+        User.objects.create_user(
+            name=user_name, email=user_email, password=user_password
+        )
+    else:
+        print(f"User {user_name} already exists")
+
