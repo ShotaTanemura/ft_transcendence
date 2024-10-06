@@ -180,7 +180,7 @@ export class PongGame extends Component {
             <h1 class="score">Score: <span id="player2-score">0</span></h1>
           </div>
         </div>
-        <canvas width="1500" height="585" class="ponggame"></canvas>
+        <canvas width="1500" height="800" class="ponggame"></canvas>
       </main>
     `;
   }
