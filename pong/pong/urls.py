@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import users
+from .views import users, friends
 from django.conf import settings
 from django.conf.urls.static import static
 from .views import auth, oauth
@@ -13,7 +13,29 @@ urlpatterns = [
     path("api/v1/users/<uuid:uuid>", users.user, name="user"),
     path("api/v1/users/<uuid:uuid>/icon", users.user_icon, name="user_icon"),
     path("api/v1/users/others/<str:name>", users.other_user, name="other_user"),
+    path("api/v1/users/status/<str:name>", users.user_status, name="user_status"),
     path("api/v1/users/search/<str:name>", users.searched_users, name="searched_users"),
+    path("api/v1/friends/friends", friends.get_friends, name="get_friends"),
+    path(
+        "api/v1/friends/friends/pending",
+        friends.get_pending_friends,
+        name="get_pending_friends",
+    ),
+    path(
+        "api/v1/friends/friends/requested",
+        friends.get_requested_friends,
+        name="get_requested_friends",
+    ),
+    path(
+        "api/v1/friends/request/send",
+        friends.send_friend_request,
+        name="send_friend_request",
+    ),
+    path(
+        "api/v1/friends/request/approve",
+        friends.approve_friend_request,
+        name="approve_friend_request",
+    ),
     path("api/v1/auth/token/revoke", auth.revoke_token, name="revoke"),
     path("oauth/42/signup", oauth.oauth_42_signup, name="oauth42_signup"),
     path("oauth/42/signin", oauth.oauth_42_signin, name="oauth42_signin"),

@@ -21,6 +21,8 @@ export class Header extends Component {
       this.onClickPongGameButton;
     document.getElementById("navigate-typing-game-link").onclick =
       this.onClickTypingGameButton;
+    document.getElementById("navigate-friend-link").onclick =
+      this.onClickFriendButton;
     document.getElementById("navigate-stats-link").onclick =
       this.onClickStatsButton;
     document.getElementById("navigate-settings-link").onclick =
@@ -78,6 +80,11 @@ export class Header extends Component {
 
   onClickTypingGameButton = () => {
     this.router.goNextPage("/typing-game-home");
+    this.render();
+  };
+
+  onClickFriendButton = () => {
+    this.router.goNextPage("/friend");
     this.render();
   };
 
@@ -171,6 +178,14 @@ export class Header extends Component {
                 <i class="bi bi-keyboard px-2 fa-2x"></i>
                 <span class="fa-2x align-bottom">
                   TypingGame
+                </span>
+              </button>
+            </li>
+            <li class="nav-item">
+              <button id="navigate-friend-link" class="btn btn-link nav-link active" aria-current="page">
+                <i class="bi bi-people px-2 fa-2x"></i>
+                <span class="fa-2x align-bottom">
+                  Friend
                 </span>
               </button>
             </li>

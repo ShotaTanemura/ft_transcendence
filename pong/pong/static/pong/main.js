@@ -19,6 +19,7 @@ import { PongGameTournament } from "./components/PongGameTournament.js";
 import { PongGameFinished } from "./components/PongGameFinished.js";
 import { GameStats } from "./components/GameStats.js";
 import { SearchUsers } from "./components/SearchUsers.js";
+import { Friend } from "./components/Friend.js";
 
 let router = new Router(
   document.getElementById("app"),
@@ -41,6 +42,11 @@ let router = new Router(
     {
       path: "/chat",
       component: Chat,
+      state: {},
+    },
+    {
+      path: "/friend",
+      component: Friend,
       state: {},
     },
     {
