@@ -1,9 +1,28 @@
 from django.http.response import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.models import AnonymousUser
 from pong.middleware.auth import jwt_exempt
 from pong.models.user import User
 from django.db.models import Q
 from .models import TournamentInfo, MatchInfo
+import shortuuid
+
+
+@csrf_exempt
+def get_available_roomid(request):
+    if request.method != "GET":
+        return JsonResponse(
+            {"message": "Method is not allowed", "status": "invalidParams"}, status=400
+        )
+
+    if request.user == AnonymousUser():
+        return JsonResponse(
+            {"message": "User not found", "status": "userNotFound"}, status=404
+        )
+    return JsonResponse(
+        {"roomid": str(shortuuid.uuid())},
+        status=200,
+    )
 
 
 @csrf_exempt

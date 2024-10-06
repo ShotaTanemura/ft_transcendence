@@ -1,3 +1,4 @@
+import { getAvailablePongGameRoomId } from "../api/api.js";
 import { Component } from "../core/component.js";
 
 export class ChatContainer extends Component {
@@ -98,8 +99,8 @@ export class ChatContainer extends Component {
     }
   }
 
-  inviteToGame(roomUuid) {
-    const roomId = "1739";
+  inviteToGame = async (roomUuid) => {
+    const roomId = await getAvailablePongGameRoomId();
     if (this.onSendMessage) {
       this.onSendMessage(
         roomUuid,
@@ -120,7 +121,7 @@ export class ChatContainer extends Component {
       "_blank",
       "noopener,noreferrer",
     );
-  }
+  };
   confirmLeaveRoom() {
     const confirmation = window.confirm("本当に退出しますか？");
     if (confirmation) {
