@@ -5,11 +5,15 @@ services:
       context: ./requirements/Nginx/
       dockerfile: ./Containerfile
     ports:
+      - "4443:443"
       - "8000:80"
     volumes:
       - type: bind
-        source: ./requirements/Nginx/conf.d/default.conf
-        target: /etc/nginx/conf.d/default.conf
+        source: ./requirements/Nginx/conf.d/
+        target: /etc/nginx/conf.d/
+      - type: bind
+        source: ./requirements/Nginx/certificate/
+        target: /etc/nginx/ssl/
       - type: bind
         source: ../pong/static
         target: /usr/share/nginx/html/static

@@ -50,7 +50,7 @@ export class PongGameHome extends Component {
   submitForm = (event) => {
     event.preventDefault();
     this.setRouteContext("RoomID", event.target.elements["room-id"].value);
-    const socketPath = `ws://${window.location.hostname}:${window.location.port}/realtime-pong/${event.target.elements["room-id"].value}/${event.submitter.name}/${event.target.elements["user-nickname"].value}/`;
+    const socketPath = `wss://${window.location.hostname}:${window.location.port}/realtime-pong/${event.target.elements["room-id"].value}/${event.submitter.name}/${event.target.elements["user-nickname"].value}/`;
 
     this.connection = new WebSocket(socketPath);
     this.setRouteContext("WebSocket", this.connection);
