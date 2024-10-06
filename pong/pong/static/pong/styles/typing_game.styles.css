@@ -1,4 +1,5 @@
 /* Typing Game Home */
+/* Typing Game Home */
 .typing-game-home {
   display: flex;
   flex-direction: column;
@@ -15,7 +16,7 @@
   color: #333;
 }
 
-.entering-room-form {
+.typing-game-home .entering-room-form {
   background-color: #fff;
   padding: 30px 40px;
   border-radius: 10px;
@@ -23,12 +24,12 @@
   min-width: 40vw;
 }
 
-.entering-room-form label {
+.typing-game-home .entering-room-form label {
   font-size: 1.2em;
   color: #555;
 }
 
-.entering-room-form input[type="number"] {
+.typing-game-home .entering-room-form input[type="number"] {
   width: 100%;
   padding: 12px;
   margin: 15px 0;
@@ -36,7 +37,7 @@
   border-radius: 5px;
 }
 
-.entering-room-form input[type="submit"] {
+.typing-game-home .entering-room-form input[type="submit"] {
   width: 100%;
   padding: 12px;
   background-color: #007bff;
@@ -46,7 +47,7 @@
   cursor: pointer;
 }
 
-.entering-room-form input[type="submit"]:hover {
+.typing-game-home .entering-room-form input[type="submit"]:hover {
   background-color: #0056b3;
 }
 
@@ -68,7 +69,7 @@
   margin-bottom: 15px;
 }
 
-.go-back-to-game-home {
+.typing-game-waiting .go-back-to-game-home {
   margin-top: 30px;
   padding: 12px 25px;
   background-color: #007bff;
@@ -78,12 +79,12 @@
   cursor: pointer;
 }
 
-.go-back-to-game-home:hover {
+.typing-game-waiting .go-back-to-game-home:hover {
   background-color: #0056b3;
 }
 
 /* typing game */
-.game {
+.typing-game {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -94,101 +95,47 @@
   text-align: center;
 }
 
-#timer {
-  font-size: 2.5em;
-  font-weight: bold;
-  color: #ff4d4f;
-  margin-bottom: 20px;
-}
-
-h1 #word {
-  font-size: 3em;
-  color: #333;
-  margin-bottom: 30px;
-}
-
-#inputCorrect {
-  font-size: 1.5em;
-  color: #28a745;
-}
-
-#player_to_input {
-  font-size: 1.2em;
-  color: #007bff;
-}
-
-#score {
-  font-size: 1.8em;
-  color: #555;
-  margin-top: 15px;
-}
-
-#winner {
-  font-size: 1.8em;
-  color: #ff4d4f;
-  margin-top: 30px;
-  font-weight: bold;
-}
-
-canvas {
-  margin-top: 30px;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-}
-
-/* typing game */
-.game {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  background-color: #f9f9f9;
-  font-family: "Helvetica Neue", Arial, sans-serif;
-  text-align: center;
-}
-
-#timerCanvas {
+.typing-game #timerCanvas {
   margin-top: 20px;
 }
 
-#timer {
+.typing-game #timer {
   font-size: 2em;
   font-weight: bold;
   color: #ff4d4f;
   margin-bottom: 20px;
 }
 
-h1 #word {
+.typing-game h1 #word {
   font-size: 3em;
   color: #333;
   margin-bottom: 30px;
 }
 
-#inputCorrect {
+.typing-game #inputCorrect {
   font-size: 1.5em;
   color: #28a745;
 }
 
-#player_to_input {
+.typing-game #player_to_input {
   font-size: 1.2em;
   color: #007bff;
 }
 
-#score {
+.typing-game #score {
   font-size: 1.8em;
   color: #555;
   margin-top: 15px;
 }
 
-#winner {
+.typing-game #winner {
   font-size: 1.8em;
   color: #ff4d4f;
   margin-top: 30px;
   font-weight: bold;
 }
 
-canvas {
+.typing-game canvas {
   margin-top: 30px;
   border: 1px solid #ddd;
   border-radius: 100%;
