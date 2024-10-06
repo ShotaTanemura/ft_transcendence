@@ -1,5 +1,4 @@
 import { Component } from "../core/component.js";
-import { PongGameHome } from "./PongGameHome.js";
 
 export class ChatContainer extends Component {
   constructor(router, params, state) {
@@ -100,11 +99,6 @@ export class ChatContainer extends Component {
   }
 
   inviteToGame(roomUuid) {
-
-    const pongGame = new PongGameHome(this.router, this.params, {
-      ...this.state,
-    });
-
     const roomId = "1739";
     if (this.onSendMessage) {
       this.onSendMessage(
@@ -115,21 +109,17 @@ export class ChatContainer extends Component {
           window.location.origin +
           "/pong-game-home?room-id=" +
           roomId +
+          "&name=guest" +
           " " +
           "target='_blank' rel='noopener noreferrer'>ゲームに参加する" +
           "</a>",
       );
     }
-
-    pongGame.submitForm({
-      preventDefault: () => {},
-      target: {
-        elements: {
-          "room-id": { value: roomId },
-        },
-      },
-      submitter: { name: "host" },
-    });
+    window.open(
+      "/pong-game-home?room-id=" + roomId + "&name=host",
+      "_blank",
+      "noopener,noreferrer",
+    );
   }
   confirmLeaveRoom() {
     const confirmation = window.confirm("本当に退出しますか？");
