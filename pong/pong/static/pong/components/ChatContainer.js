@@ -102,7 +102,7 @@ export class ChatContainer extends Component {
   inviteToGame(roomUuid) {
     const gameState = {
       roomUuid: roomUuid,
-      nickname: this.state.userNickname || "Guest",
+      nickname: this.state.userNickname || "host",
     };
 
     const pongGame = new PongGameHome(this.router, this.params, {
@@ -110,10 +110,21 @@ export class ChatContainer extends Component {
       gameState: gameState,
     });
 
+    const roomId = "1739";
     if (this.onSendMessage) {
       this.onSendMessage(
         roomUuid,
-        "ゲームを開始します!以下のリンクからゲームに参加してください",
+        "ゲームを開始します!以下のリンクからゲームに参加してください" +
+          "<br>" +
+          "<a href=" +
+          window.location.origin +
+          "/pong-game-home?room-id=" +
+          roomId +
+          "&user-nickname=" +
+          "guest" +
+          " " +
+          "target='_blank' rel='noopener noreferrer'>ゲームに参加する" +
+          "</a>",
       );
     }
 
@@ -121,7 +132,7 @@ export class ChatContainer extends Component {
       preventDefault: () => {},
       target: {
         elements: {
-          "room-id": { value: "1324" },
+          "room-id": { value: roomId },
           "user-nickname": { value: gameState.nickname },
         },
       },
