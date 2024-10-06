@@ -8,7 +8,7 @@ export class TypingGame extends Component {
     this.connection = this.getRouteContext("WebSocket");
     if (!this.connection) {
       console.error(
-        "WebSocket connection is undefined, creating a new connection."
+        "WebSocket connection is undefined, creating a new connection.",
       );
     }
     this.connection.onmessage = this.onMessage;
@@ -26,7 +26,7 @@ export class TypingGame extends Component {
             sender: "player",
             type: "gameKeyEvent",
             contents: e.key,
-          })
+          }),
         );
       } else {
         console.warn("Cannot send message, WebSocket is not open.");
@@ -62,7 +62,8 @@ export class TypingGame extends Component {
         break;
 
       case "game-finished":
-        document.getElementById("winner").innerHTML = `winner = ${message.contents.winner}`;
+        document.getElementById("winner").innerHTML =
+          `winner = ${message.contents.winner}`;
         this.setRouteContext("TypingGameWinner", message.contents.winner);
         this.goNextPage("/typing-game-finished");
         break;
