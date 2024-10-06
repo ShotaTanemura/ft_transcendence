@@ -116,13 +116,13 @@ let router = new Router(
       state: {},
     },
     {
-      path: "/profile/{user_name}",
-      component: UserProfile,
-      state: {},
-    },
-	{
       path: "/typing-game-finished",
       component: TypingGameFinished,
+      state: {},
+    },
+    {
+      path: "/profile/{user_name}",
+      component: UserProfile,
       state: {},
     },
   ],

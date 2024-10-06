@@ -11,6 +11,7 @@ from realtime_typing_game.models import TypingGameInfo
 RED = "\033[91m"
 GREEN = "\033[92m"
 RESET = "\033[0m"
+DEBUG = True
 
 
 class Timer:
@@ -199,9 +200,10 @@ class TypingGame:
             and input_key == self.selected_word[self.input_length]
         ):
             self.input_length += 1
-            print(
-                f"{GREEN}Correct! {self.input_length}/{len(self.selected_word)}{RESET}"
-            )
+            if DEBUG:
+                print(
+                    f"{GREEN}Correct! {self.input_length}/{len(self.selected_word)}{RESET}"
+                )
             if self.input_length == len(self.selected_word):
                 await self.next_word()
             else:
