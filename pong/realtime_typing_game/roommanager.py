@@ -13,14 +13,12 @@ RESET = "\033[0m"
 
 class RoomState(Enum):
     Queuing = "queuing"
-    Ready = "ready"
     In_Game = "in-game"
     Finished = "finished"
 
 
 class ParticipantState(Enum):
     Not_In_Place = "not-in-place"
-    Ready = "ready"
     Player1 = "player1"
     Player2 = "player2"
 
@@ -110,22 +108,8 @@ class TypingRoomManager:
 
     async def on_receive_user_message(self, participant, message):
         message_json = json.loads(message)
-        # if self.room_state == RoomState.Ready:
-        #     # 全員の準備を確認せずにゲームを開始する
-        #     await self.user_became_ready_for_game(participant, message_json)
         if self.room_state == RoomState.In_Game:
             await self.handle_game_action(participant, message_json)
-
-    # async def user_became_ready_for_game(self, participant, message_json):
-    #     self.room_state = RoomState.In_Game
-    #     await self.send_messege_to_group(
-    #         "send_room_information",
-    #         {"sender": "room-manager", "type": "all-participants-ready"},
-    #     )
-    #     asyncio.new_event_loop().run_in_executor(
-    #         None,
-    #         self.game_dispatcher,
-    #     )
 
     def game_dispatcher(self):
         print(f"{GREEN}Game started!{RESET}")
