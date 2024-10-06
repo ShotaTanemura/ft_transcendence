@@ -49,7 +49,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(unique=True, blank=False, max_length=20)
     email = models.EmailField(unique=True, blank=False)
     nickname = models.CharField(
-        unique=True, blank=False, default="sample", max_length=20
+        unique=False, blank=False, default="sample", max_length=20
     )
     is_staff = models.BooleanField(default=False)
     icon = models.ImageField(
