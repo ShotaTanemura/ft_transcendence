@@ -1,0 +1,58 @@
+[
+	{
+	  "model": "pong.User", 
+	  "pk": 1,  
+	  "fields": {
+		"password": "password",
+		"last_login": null,
+		"is_superuser": false,
+		"uuid": "72d37ebb-c403-43b9-9622-3d3758541072",
+		"name": "1",
+		"email": "1@1.com",
+		"is_staff": true,
+		"icon": "defaults/default.jpeg"
+	  }
+	},
+	{
+	  "model": "pong.User", 
+	  "pk": 2,  
+	  "fields": {
+		"password": "password",
+		"last_login": null,
+		"is_superuser": false,
+		"uuid": "72d37ebb-c403-43b9-9622-3d3758541073",
+		"name": "2",
+		"email": "2@2.com",
+		"is_staff": true,
+		"icon": "defaults/default.jpeg"
+	  }
+	},
+	{
+	  "model": "pong.User", 
+	  "pk": 3,  
+	  "fields": {
+		"password": "password",
+		"last_login": null,
+		"is_superuser": false,
+		"uuid": "72d37ebb-c403-43b9-9622-3d3758541074",
+		"name": "3",
+		"email": "3@3.com",
+		"is_staff": true,
+		"icon": "defaults/default.jpeg"
+	  }
+	},
+	{
+	  "model": "pong.User", 
+	  "pk": 4,  
+	  "fields": {
+		"password": "password",
+		"last_login": null,
+		"is_superuser": false,
+		"uuid": "72d37ebb-c403-43b9-9622-3d3758541075",
+		"name": "4",
+		"email": "4@4.com",
+		"is_staff": true,
+		"icon": "defaults/default.jpeg"
+	  }
+	}
+  ]
