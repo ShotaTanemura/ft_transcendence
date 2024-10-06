@@ -68,7 +68,6 @@ export class DirectoryContainer extends Component {
     select.innerHTML = `
       <option value="">選択してください</option>
       <option value="profile">プロフィール表示</option>
-      <option value="invite">招待</option>
       <option value="block">ブロック</option>
       <option value="close">閉じる</option>
     `;
@@ -77,8 +76,6 @@ export class DirectoryContainer extends Component {
       const selectedOption = event.target.value;
       if (selectedOption === "profile") {
         this.showUserProfile(user, modalContainer);
-      } else if (selectedOption === "invite") {
-        this.inviteUser(user, modalContainer);
       } else if (selectedOption === "block") {
         this.blockUser(user, modalContainer);
       } else if (selectedOption === "close") {
@@ -103,23 +100,6 @@ export class DirectoryContainer extends Component {
 
   showUserProfile(user, modalContainer) {
     alert(`ユーザー ${user.name} のプロフィールを表示aaします。`);
-    this.closeModal(modalContainer);
-  }
-
-  inviteUser(user, modalContainer) {
-    alert(`ユーザー ${user.name} をチャットルームに招待します。`);
-
-    if (this.chatSocket && this.chatSocket.readyState === WebSocket.OPEN) {
-      const inviteRequest = {
-        job_type: "invite_user",
-        user_uuid: user.uuid,
-        status: "invited",
-      };
-
-      console.log("Invite Request:", inviteRequest);
-      this.chatSocket.send(JSON.stringify(inviteRequest));
-    }
-
     this.closeModal(modalContainer);
   }
 
