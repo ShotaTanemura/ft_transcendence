@@ -170,7 +170,6 @@ export async function getUserStatus(name) {
   }
 }
 
-
 export async function getAvailablePongGameRoomId() {
   try {
     const response = await fetch(`/ponggame/api/v1/available-roomid`, {

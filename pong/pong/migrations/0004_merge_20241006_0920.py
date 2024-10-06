@@ -4,11 +4,9 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('pong', '0003_friend_friendrequest_friend_user_friend_unique_and_more'),
-        ('pong', '0003_user_nickname'),
+        ("pong", "0003_friend_friendrequest_friend_user_friend_unique_and_more"),
+        ("pong", "0003_user_nickname"),
     ]
 
-    operations = [
-    ]
+    operations = []
