@@ -124,7 +124,7 @@ def callback_42(request):
         ):
             return HttpResponseRedirect(redirect_to=f"/{path}#userAlreadyExists")
         user = User.objects.create_user(
-            name=login, email=email, password=random_password
+            name=login, nickname=login, email=email, password=random_password
         )
         save_user_icon(user, data_user_info)
     else:  # action == 'signin'
