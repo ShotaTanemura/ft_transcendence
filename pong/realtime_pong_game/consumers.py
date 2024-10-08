@@ -141,7 +141,8 @@ class PlayerConsumer(AsyncWebsocketConsumer):
     async def disconnect(self, close_code):
         if hasattr(self, "room_manager"):
             await self.room_manager.on_user_disconnected(self.user)
-        await self.channel_layer.group_discard(self.room_name, self.channel_name)
+        if hasattr(self, "room_name"):
+            await self.channel_layer.group_discard(self.room_name, self.channel_name)
 
     async def send_room_information(self, event):
         await self.send(text_data=json.dumps(event["contents"]))
