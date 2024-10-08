@@ -18,6 +18,7 @@ export class PongGameFinished extends Component {
   };
 
   onClick = () => {
+    this.unsetRouteContext("TournamentWinner");
     this.goNextPage("/pong-game-home");
   };
 

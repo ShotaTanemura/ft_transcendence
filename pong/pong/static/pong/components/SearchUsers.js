@@ -21,6 +21,7 @@ export class SearchUsers extends Component {
     this.createSearchedUsersList(usersData);
     document.getElementById("button-to-move-home-page").onclick =
       this.goHomePage;
+    this.unsetRouteContext("searchedUsersData");
   };
 
   beforePageUnload = () => {

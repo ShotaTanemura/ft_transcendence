@@ -36,6 +36,10 @@ export class Component {
     this.router.setContext(name, value);
   }
 
+  unsetRouteContext(name) {
+    this.router.unsetContext(name);
+  }
+
   findElement(query) {
     return this.element.querySelector(query);
   }
