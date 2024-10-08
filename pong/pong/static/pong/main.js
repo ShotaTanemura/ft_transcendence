@@ -3,12 +3,13 @@ import { Router } from "./core/router.js";
 import { Signup } from "./components/Signup.js";
 import { Signin } from "./components/Signin.js";
 import { Home } from "./components/Home.js";
+import { Chat } from "./components/Chat.js";
 import { PongGameHome } from "./components/PongGameHome.js";
-import { PongGameRoom } from "./components/PongGameRoom.js";
 import { PongGameWaiting } from "./components/PongGameWaiting.js";
 import { PongGame } from "./components/PongGame.js";
 import { Error } from "./components/Error.js";
 import { Profile } from "./components/Profile.js";
+import { UserProfile } from "./components/UserProfile.js";
 import { EditProfile } from "./components/EditProfile.js";
 import { TypingGameHome } from "./components/TypingGameHome.js";
 import { TypingGameRoom } from "./components/TypingGameRoom.js";
@@ -16,13 +17,16 @@ import { TypingGameWaiting } from "./components/TypingGameWaiting.js";
 import { TypingGame } from "./components/TypingGame.js";
 import { PongGameTournament } from "./components/PongGameTournament.js";
 import { PongGameFinished } from "./components/PongGameFinished.js";
+import { GameStats } from "./components/GameStats.js";
+import { SearchUsers } from "./components/SearchUsers.js";
+import { Friend } from "./components/Friend.js";
 
 let router = new Router(
   document.getElementById("app"),
   [
     {
       path: "/",
-      component: Signin,
+      component: Home,
       state: {},
     },
     {
@@ -31,8 +35,23 @@ let router = new Router(
       state: {},
     },
     {
-      path: "/home",
-      component: Home,
+      path: "/signin",
+      component: Signin,
+      state: {},
+    },
+    {
+      path: "/chat",
+      component: Chat,
+      state: {},
+    },
+    {
+      path: "/friend",
+      component: Friend,
+      state: {},
+    },
+    {
+      path: "/search-users",
+      component: SearchUsers,
       state: {},
     },
     {
@@ -43,11 +62,6 @@ let router = new Router(
     {
       path: "/pong-game-home",
       component: PongGameHome,
-      state: {},
-    },
-    {
-      path: "/pong-game-room",
-      component: PongGameRoom,
       state: {},
     },
     {
@@ -68,6 +82,11 @@ let router = new Router(
     {
       path: "/pong-game-finished",
       component: PongGameFinished,
+      state: {},
+    },
+    {
+      path: "/stats",
+      component: GameStats,
       state: {},
     },
     {
@@ -100,6 +119,11 @@ let router = new Router(
       component: TypingGame,
       state: {},
     },
+    {
+      path: "/profile/{user_name}",
+      component: UserProfile,
+      state: {},
+    },
   ],
   {
     playersInfo: {},
@@ -107,4 +131,4 @@ let router = new Router(
   },
 );
 
-router.goNextPage(location.pathname);
+router.goNextPage(location.pathname, location.search);

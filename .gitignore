@@ -161,9 +161,12 @@ cython_debug/
 
 
 ## avoid static
-pong/static/
+!pong/static/
+pong/static/*
+!pong/static/.gitkeep
 #ignore extra files
 node_modules/
 
 # ignore Authorization keys
 *.pem
+*.png

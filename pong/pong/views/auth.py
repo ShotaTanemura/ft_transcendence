@@ -1,6 +1,6 @@
 import json
 from django.http.response import JsonResponse
-from pong.models import User
+from pong.models.user import User
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
 from django.conf import settings
@@ -26,7 +26,12 @@ def register(request):
 
     data = json.loads(request.body)
 
-    if "name" not in data or "email" not in data or "password" not in data:
+    if (
+        "name" not in data
+        or "nickname" not in data
+        or "email" not in data
+        or "password" not in data
+    ):
         return JsonResponse(
             {"message": "Invalid parameters", "status": "invalidParams"}, status=400
         )
@@ -40,7 +45,10 @@ def register(request):
         )
 
     user = User.objects.create_user(
-        name=data["name"], email=data["email"], password=data["password"]
+        name=data["name"],
+        nickname=data["nickname"],
+        email=data["email"],
+        password=data["password"],
     )
 
     return JsonResponse({"uuid": user.uuid}, status=201)
@@ -138,6 +146,7 @@ def verify_token(request):
         return JsonResponse(
             {"message": "unauthorized", "status": "unauthorized"}, status=401
         )
+    redis_client.setex(uuid, 120, "online")
     return JsonResponse({"uuid": str(uuid)}, status=200)
 
 

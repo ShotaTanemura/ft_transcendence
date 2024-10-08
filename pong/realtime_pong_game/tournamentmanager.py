@@ -2,9 +2,11 @@ import random
 
 
 class Match:
-    def __init__(self, player1, player2):
+    def __init__(self, player1, player2, player1_nickname, player2_nickname):
         self.player1 = player1
         self.player2 = player2
+        self.player1_nickname = player1_nickname
+        self.player2_nickname = player2_nickname
         self.player1_score = 0
         self.player2_score = 0
         self.winner = None
@@ -30,7 +32,7 @@ class Match:
         if self.player2 == None:
             return {
                 "top": {
-                    "name": self.player1.name,
+                    "name": self.player1_nickname,
                     "score": self.player1_score,
                     "winner": is_player1_winner,
                 },
@@ -38,12 +40,12 @@ class Match:
             }
         return {
             "top": {
-                "name": self.player1.name,
+                "name": self.player1_nickname,
                 "score": self.player1_score,
                 "winner": is_player1_winner,
             },
             "bottom": {
-                "name": self.player2.name,
+                "name": self.player2_nickname,
                 "score": self.player2_score,
                 "winner": is_player2_winner,
             },
@@ -54,9 +56,10 @@ class Match:
 
 
 class TournamentManager:
-    def __init__(self, participants_list):
+    def __init__(self, participants_list, participants_nickname_dict):
         self.round = 0
         self.tournament_list = []
+        self.participants_nickname_dict = participants_nickname_dict
         random.shuffle(participants_list)
         self.create_tournament(participants_list)
         return
@@ -70,6 +73,10 @@ class TournamentManager:
                     participants_list[index + 1]
                     if index + 1 < len(participants_list)
                     else None,
+                    self.participants_nickname_dict[participants_list[index]],
+                    self.participants_nickname_dict[participants_list[index + 1]]
+                    if index + 1 < len(participants_list)
+                    else "",
                 )
             )
         return round
