@@ -18,23 +18,22 @@ export class TypingGame extends Component {
     // ゲーム開始前にnext-wordが来るので、-1からスタート
     this.score = -1;
     this.isMyTurn = false;
-
-    document.addEventListener("keydown", (e) => {
-      if (this.connection.readyState === WebSocket.OPEN) {
-        // WebSocketが開いている状態のときのみ送信
-        this.connection.send(
-          JSON.stringify({
-            sender: "player",
-            type: "gameKeyEvent",
-            contents: e.key,
-          }),
-        );
-      } else {
-        console.warn("Cannot send message, WebSocket is not open.");
-      }
-    });
   }
 
+  sendMessage = (e) => {
+    if (this.connection.readyState === WebSocket.OPEN) {
+      // WebSocketが開いている状態のときのみ送信
+      this.connection.send(
+        JSON.stringify({
+          sender: "player",
+          type: "gameKeyEvent",
+          contents: e.key,
+        }),
+      );
+    } else {
+      console.warn("Cannot send message, WebSocket is not open.");
+    }
+  }
   onMessage = (event) => {
     const message = JSON.parse(event.data);
     console.log(message.type, message);
@@ -122,9 +121,11 @@ export class TypingGame extends Component {
     this.headerComponent = new Header(this.router, this.params, this.state);
     this.element.parentElement.prepend(this.headerComponent.element);
     this.headerComponent.afterPageLoaded();
+    document.addEventListener("keydown", this.sendMessage);
   }
 
   beforePageUnload() {
+    document.removeEventListener("keydown", this.sendMessage);
     this.element.parentElement.removeChild(this.headerComponent.element);
   }
 
