@@ -13,7 +13,7 @@ export class PongGameFinished extends Component {
     this.headerComponent.afterPageLoaded();
     const tournamentWinner = this.getRouteContext("TournamentWinner");
     if (!tournamentWinner) {
-      alert("connection failed.");
+      alert("result not found.");
       this.goNextPage("/");
     } else {
       document.getElementById("tournamentWinnerName").innerHTML =
