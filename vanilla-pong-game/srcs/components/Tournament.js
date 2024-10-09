@@ -67,7 +67,7 @@ export class Tournament extends Component {
     }
     if (update && 0 < nextRoundGames.length) {
       this.gameResults = [...(this.gameResults), nextRoundGames];
-      this.setRouteContext("gameResults", this.gameResults);
+      this.setRouteContext("GameResults", this.gameResults);
       newRounds.push(nextRoundGames);
     }
     //GameResultではまだ描かれていない、未来の試合を追加

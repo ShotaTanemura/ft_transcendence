@@ -4,7 +4,7 @@ from django.contrib.auth.models import AnonymousUser
 import jwt
 import re
 import base64
-from pong.models import User
+from pong.models.user import User
 from pong.utils.redis_client import redis_client
 from functools import wraps
 from channels.db import database_sync_to_async
@@ -98,6 +98,7 @@ class LoginRequiredMiddleware:
             return JsonResponse(
                 {"message": "unauthorized", "status": "unauthorized"}, status=401
             )
+        request.user = getUserByJwt(token)
         return None
 
 

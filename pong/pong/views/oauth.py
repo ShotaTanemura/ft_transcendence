@@ -1,10 +1,12 @@
 from django.views.decorators.csrf import csrf_exempt
 from django.http.response import JsonResponse, HttpResponseRedirect
+from django.core.files import File
 from django.conf import settings
 from pong.middleware.auth import jwt_exempt
-from pong.models import User
+from pong.models.user import User
 from pong.utils.create_response import create_token_response
 from urllib.parse import urlencode, quote, unquote
+from io import BytesIO
 import requests
 import base64
 import json
@@ -49,6 +51,25 @@ def oauth_42_signin(request):
 @jwt_exempt
 @csrf_exempt
 def callback_42(request):
+    def save_user_icon(user, data_user_info):
+        image = data_user_info.get("image")
+        image_link = image.get("link") if image else None
+
+        if not image_link:
+            return
+
+        try:
+            response = requests.get(image_link)
+            response.raise_for_status()
+        except requests.RequestException as e:
+            print(f"Failed to fetch image: {e}")
+            return
+
+        user_icon_file = BytesIO(response.content)
+        django_user_icon_file = File(user_icon_file, str(user.uuid))
+        user.icon.save(django_user_icon_file.name, django_user_icon_file)
+        user.save()
+
     state = request.GET.get("state")
     if not state:
         return HttpResponseRedirect(redirect_to="/#invalidParameters")
@@ -103,8 +124,9 @@ def callback_42(request):
         ):
             return HttpResponseRedirect(redirect_to=f"/{path}#userAlreadyExists")
         user = User.objects.create_user(
-            name=login, email=email, password=random_password
+            name=login, nickname=login, email=email, password=random_password
         )
+        save_user_icon(user, data_user_info)
     else:  # action == 'signin'
         user = User.objects.filter(name=login, email=email).first()
         if not user:
