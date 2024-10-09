@@ -31,7 +31,7 @@ application = ProtocolTypeRouter(
                 URLRouter(
                     [
                         re_path(
-                            r"realtime-pong/(?P<room_name>\w+)/(?P<user_role>\w+)/$",
+                            r"realtime-pong/(?P<room_name>\w+)/(?P<user_role>\w+)/(?P<number_of_players>2|4)/$",
                             PlayerConsumer.as_asgi(),
                         ),
                         re_path(
