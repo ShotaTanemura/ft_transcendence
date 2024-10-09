@@ -1,5 +1,4 @@
 import { Component } from "../core/component.js";
-import { Header } from "./Header.js";
 
 export class TypingGameWaiting extends Component {
   constructor(router, parameters, state) {
