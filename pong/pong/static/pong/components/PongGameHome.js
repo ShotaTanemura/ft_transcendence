@@ -22,6 +22,7 @@ export class PongGameHome extends Component {
   };
 
   onWebSocketOpen = () => {
+    this.setRouteContext("PongGameWebSocket", this.connection);
     this.goNextPage("/pong-game-waiting");
     this.connection.send(
       JSON.stringify({ sender: "user", type: "get-room-state" }),
@@ -29,6 +30,7 @@ export class PongGameHome extends Component {
   };
 
   onWebSocketClose = () => {
+    this.unsetRouteContext("PongGameWebSocket");
     console.log("closed");
   };
 
@@ -36,6 +38,7 @@ export class PongGameHome extends Component {
     const message = JSON.parse(event.data);
     switch (message.type) {
       case "room-state":
+        this.setRouteContext("PongGameWebSocket", this.connection);
         this.changePageByRoomStatus(message);
         break;
       case "tournament":
@@ -56,7 +59,6 @@ export class PongGameHome extends Component {
     this.setRouteContext("RoomID", event.target.elements["room-id"].value);
     const socketPath = `ws://${window.location.hostname}:${window.location.port}/realtime-pong/${event.target.elements["room-id"].value}/${event.submitter.name}/${event.target.elements["number-of-players-selector"].value}/`;
     this.connection = new WebSocket(socketPath);
-    this.setRouteContext("WebSocket", this.connection);
     this.connection.onopen = this.onWebSocketOpen;
     this.connection.onclose = this.onWebSocketClose;
     this.connection.onmessage = this.onMessage;
@@ -66,7 +68,6 @@ export class PongGameHome extends Component {
     this.setRouteContext("RoomID", query["room-id"]);
     const socketPath = `ws://${window.location.hostname}:${window.location.port}/realtime-pong/${query["room-id"]}/${query["name"]}/2/`;
     this.connection = new WebSocket(socketPath);
-    this.setRouteContext("WebSocket", this.connection);
     this.connection.onopen = this.onWebSocketOpen;
     this.connection.onclose = this.onWebSocketClose;
     this.connection.onmessage = this.onMessage;
