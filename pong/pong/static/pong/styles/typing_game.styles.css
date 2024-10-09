@@ -1,0 +1,141 @@
+/* Typing Game Home */
+.typing-game-home {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+}
+
+.typing-game-home h1 {
+  font-size: 2.5em;
+  margin-bottom: 20px;
+  padding-bottom: 100px;
+  color: #333;
+}
+
+.typing-game-home .entering-room-form {
+  background-color: #fff;
+  padding: 30px 40px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  min-width: 40vw;
+}
+
+.typing-game-home .entering-room-form label {
+  font-size: 1.2em;
+  color: #555;
+}
+
+.typing-game-home .entering-room-form input[type="number"] {
+  width: 100%;
+  padding: 12px;
+  margin: 15px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.typing-game-home .entering-room-form input[type="submit"] {
+  width: 100%;
+  padding: 12px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.typing-game-home .entering-room-form input[type="submit"]:hover {
+  background-color: #0056b3;
+}
+
+/* typing game waiting */
+.typing-game-waiting {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #f0f0f0;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  text-align: center;
+}
+
+.typing-game-waiting h1 {
+  font-size: 2em;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.typing-game-waiting .go-back-to-game-home {
+  margin-top: 30px;
+  padding: 12px 25px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.typing-game-waiting .go-back-to-game-home:hover {
+  background-color: #0056b3;
+}
+
+/* typing game */
+.typing-game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #f9f9f9;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  text-align: center;
+}
+
+.typing-game #timerCanvas {
+  margin-top: 20px;
+}
+
+.typing-game #timer {
+  font-size: 2em;
+  font-weight: bold;
+  color: #ff4d4f;
+  margin-bottom: 20px;
+}
+
+.typing-game h1 #word {
+  font-size: 3em;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.typing-game #inputCorrect {
+  font-size: 1.5em;
+  color: #28a745;
+}
+
+.typing-game #player_to_input {
+  font-size: 1.2em;
+  color: #007bff;
+}
+
+.typing-game #score {
+  font-size: 1.8em;
+  color: #555;
+  margin-top: 15px;
+}
+
+.typing-game #winner {
+  font-size: 1.8em;
+  color: #ff4d4f;
+  margin-top: 30px;
+  font-weight: bold;
+}
+
+.typing-game canvas {
+  margin-top: 30px;
+  border: 1px solid #ddd;
+  border-radius: 100%;
+}

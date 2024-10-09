@@ -24,9 +24,11 @@ export class TypingGameWaiting extends Component {
   }
   get html() {
     return `
+    		<main class="typing-game-waiting">
             <h1>waiting other paricipants...</h1>
             <h1>Don't reload this page.</h1>
             <button class="go-back-to-game-home">go back to game home</button>
+        </main>
         `;
   }
 }

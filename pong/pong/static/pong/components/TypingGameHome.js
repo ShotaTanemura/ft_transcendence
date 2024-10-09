@@ -62,13 +62,14 @@ export class TypingGameHome extends Component {
 
   get html() {
     return `
+    <main class="typing-game-home">
 				<h1>Welcome To Realtime Typing Game !</h1>
 				<form class="entering-room-form">
 					<label for="room-id">Room ID</label>
 					<input id="room-id" type="number" min="1000" max="9999" required><br>
 					<input id="enter-room-submit" name="enter-room" type="submit" value="enter room">
 				</form>
-	
+    </main>
 			`;
   }
 }
