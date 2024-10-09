@@ -11,6 +11,15 @@ export class PongGameFinished extends Component {
     this.headerComponent = new Header(this.router, this.params, this.state);
     this.element.parentElement.prepend(this.headerComponent.element);
     this.headerComponent.afterPageLoaded();
+    const tournamentWinner = this.getRouteContext("TournamentWinner");
+    if (!tournamentWinner) {
+      alert("connection failed.");
+      this.goNextPage("/");
+    } else {
+      document.getElementById("tournamentWinnerName").innerHTML =
+        tournamentWinner;
+      this.unsetRouteContext("TournamentWinner");
+    }
   };
 
   beforePageUnload = () => {
@@ -25,7 +34,7 @@ export class PongGameFinished extends Component {
   get html() {
     return `
       <main class="text-center p-5">
-			  <h1>Congratulation <span class="text-primary">${this.getRouteContext("TournamentWinner")}</span>!!</h1>
+			  <h1>Congratulation <span id="tournamentWinnerName" class="text-primary"></span>!!</h1>
         <button class="go-back-to-game-home btn bg-success">Game Home</button>
       </main>
 		`;
