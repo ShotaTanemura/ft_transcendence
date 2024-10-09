@@ -33,7 +33,7 @@ export class TypingGame extends Component {
     } else {
       console.warn("Cannot send message, WebSocket is not open.");
     }
-  }
+  };
   onMessage = (event) => {
     const message = JSON.parse(event.data);
     console.log(message.type, message);
