@@ -5,11 +5,10 @@ export class TypingGame extends Component {
   constructor(router, parameters, state) {
     super(router, parameters, state);
 
-    this.connection = this.getRouteContext("WebSocket");
+    this.connection = this.getRouteContext("TypingGameWebSocket");
     if (!this.connection) {
-      console.error(
-        "WebSocket connection is undefined, creating a new connection.",
-      );
+      alert("connection failed");
+      this.goNextPage("/");
     }
     this.connection.onmessage = this.onMessage;
     this.input_length = 0;
@@ -73,6 +72,7 @@ export class TypingGame extends Component {
         break;
 
       case "room-state":
+        this.setRouteContext("TypingGameWebSocket", this.connection);
         this.changePageByRoomStatus(message);
         break;
 

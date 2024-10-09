@@ -8,10 +8,12 @@ export class TypingGameHome extends Component {
   }
 
   onWebSocketOpen = () => {
+    // this.setRouteContext("TypingGameWebSocket", this.connection);
     this.goNextPage("/typing-game-waiting");
   };
 
   onWebSocketClose = () => {
+    // this.unsetRouteContext("TypingGameWebSocket");
     console.log("WebSocket closed");
   };
 
@@ -44,7 +46,7 @@ export class TypingGameHome extends Component {
       event.target.elements["room-id"].value +
       "/";
     const connection = new WebSocket(socketPath);
-    this.setRouteContext("WebSocket", connection);
+    this.setRouteContext("TypingGameWebSocket", connection);
     connection.onopen = this.onWebSocketOpen;
     connection.onclose = this.onWebSocketClose;
     connection.onmessage = this.onMessage;
