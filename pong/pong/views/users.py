@@ -3,7 +3,7 @@ from django.db.utils import IntegrityError
 from django.contrib.auth.models import AnonymousUser
 from django.views.decorators.csrf import csrf_exempt
 from pong.utils.redis_client import redis_client
-from pong.models.user import User, UserIconUpdateForm
+from pong.models.user import User, UserIconUpdateForm, Users2FA
 from pong.models.friend import Friend, FriendRequest
 from pong.middleware.auth import jwt_exempt
 import json
@@ -25,6 +25,14 @@ def user(request, uuid):
                 {"message": "unauthorized", "status": "unauthorized"}, status=401
             )
         if request.method == "GET":
+
+            tfa = Users2FA.objects.filter(user=user).first()
+
+            if not tfa:
+                return JsonResponse(
+                    {"message": "User 2FA status is not found", "status": "userNotFound"}, status=404
+                )
+
             return JsonResponse(
                 {
                     "uuid": user.uuid,
@@ -32,6 +40,7 @@ def user(request, uuid):
                     "name": user.name,
                     "email": user.email,
                     "icon": user.icon.url if user.icon else None,
+                    "is_2fa_active": tfa.is_active,
                 },
                 status=200,
             )

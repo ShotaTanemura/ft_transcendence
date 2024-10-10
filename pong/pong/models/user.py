@@ -27,6 +27,9 @@ class UserManager(BaseUserManager):
 
         user.set_password(password)
         user.save(using=self._db)
+
+        Users2FA.objects.create(user=user)
+
         return user
 
     def create_superuser(self, name, nickname, email, password, **extra_fields):
