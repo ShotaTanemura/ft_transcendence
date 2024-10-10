@@ -51,7 +51,7 @@ export class Signin extends Component {
       alert(error);
     }
   };
-  
+
   generateToken = async (jsonData) => {
     const response = await fetch("/pong/api/v1/auth/token", {
       method: "POST",
@@ -69,7 +69,7 @@ export class Signin extends Component {
       throw Error(data.status);
     }
     return "Success";
-  };  
+  };
 
   goSignup = () => {
     this.router.goNextPage("/signup");
