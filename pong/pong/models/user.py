@@ -7,6 +7,7 @@ from django.contrib.auth.models import (
 )
 from django import forms
 from django.contrib.auth import get_user_model
+from pong.utils.random_string import generate_base32_encoded_raondom_string 
 
 
 class UserManager(BaseUserManager):
