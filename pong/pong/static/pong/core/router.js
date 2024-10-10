@@ -23,6 +23,12 @@ export class Router {
     this.context[name] = value;
   }
 
+  unsetContext(name) {
+    if (name in this.context) {
+      delete this.context[name];
+    }
+  }
+
   getContext(name) {
     return this.context[name];
   }

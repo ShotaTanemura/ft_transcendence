@@ -1,10 +1,8 @@
 import { Component } from "../core/component.js";
-import { Header } from "./Header.js";
 
 export class TypingGameWaiting extends Component {
   constructor(router, parameters, state) {
     super(router, parameters, state);
-    this.connection = this.getRouteContext("WebSocket");
     this.findElement("button.go-back-to-game-home").onclick = this.onClick;
   }
 
@@ -14,14 +12,14 @@ export class TypingGameWaiting extends Component {
   };
 
   afterPageLoaded() {
-    this.headerComponent = new Header(this.router, this.params, this.state);
-    this.element.parentElement.prepend(this.headerComponent.element);
-    this.headerComponent.afterPageLoaded();
+    this.connection = this.getRouteContext("TypingGameWebSocket");
+    if (!this.connection) {
+      alert("connection failed");
+      this.goNextPage("/");
+    }
+    this.findElement("button.go-back-to-game-home").onclick = this.onClick;
   }
 
-  beforePageUnload() {
-    this.element.parentElement.removeChild(this.headerComponent.element);
-  }
   get html() {
     return `
     		<main class="typing-game-waiting">
