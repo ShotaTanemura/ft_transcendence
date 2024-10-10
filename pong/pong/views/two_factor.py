@@ -1,4 +1,9 @@
 from pong.utils.random_string import generate_base32_encoded_random_string
+from pong.middleware.auth import getJwtPayloadCookie
+from pong.models.user import User, Users2FA
+from django.http.response import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
 import urllib
 import hmac
 import hashlib
@@ -40,3 +45,16 @@ def provisioning(request):
     )
 
     return JsonResponse({"uri": uri}, status=200)
+
+def generateOtpUri(secret, account_name, issuer, digits=6, period=30, algorithm="SHA1"):
+    query_params = {
+        "secret": secret,
+        "issuer": issuer,
+        "digits": digits,
+        "period": period,
+        "algorithm": algorithm,
+    }
+
+    uri = f"otpauth://totp/{urllib.parse.quote(issuer)}:{urllib.parse.quote(account_name)}?{urllib.parse.urlencode(query_params)}"
+
+    return uri
