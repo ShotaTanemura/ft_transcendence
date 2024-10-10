@@ -80,7 +80,6 @@ def create_token(request):
             {"message": "User not found", "status": "userNotFound"}, status=404
         )
 
-
     tfa = Users2FA.objects.filter(user=user.uuid).first()
 
     if tfa.is_active:
@@ -101,6 +100,7 @@ def create_token(request):
     return create_token_response(
         user.uuid, JsonResponse({"uuid": user.uuid}, content_type="application/json")
     )
+
 
 @jwt_exempt
 @csrf_exempt
@@ -168,6 +168,7 @@ def create_token_totp(request):
     return create_token_response(
         uuid, JsonResponse({"uuid": uuid}, content_type="application/json")
     )
+
 
 @jwt_exempt
 @csrf_exempt

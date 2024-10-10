@@ -7,7 +7,7 @@ from django.contrib.auth.models import (
 )
 from django import forms
 from django.contrib.auth import get_user_model
-from pong.utils.random_string import generate_base32_encoded_random_string 
+from pong.utils.random_string import generate_base32_encoded_random_string
 
 
 class UserManager(BaseUserManager):
@@ -75,6 +75,7 @@ class UserIconUpdateForm(forms.ModelForm):
     class Meta:
         model = get_user_model()
         fields = ["icon"]
+
 
 class Users2FA(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

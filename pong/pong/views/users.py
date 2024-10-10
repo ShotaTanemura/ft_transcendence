@@ -25,12 +25,15 @@ def user(request, uuid):
                 {"message": "unauthorized", "status": "unauthorized"}, status=401
             )
         if request.method == "GET":
-
             tfa = Users2FA.objects.filter(user=user).first()
 
             if not tfa:
                 return JsonResponse(
-                    {"message": "User 2FA status is not found", "status": "userNotFound"}, status=404
+                    {
+                        "message": "User 2FA status is not found",
+                        "status": "userNotFound",
+                    },
+                    status=404,
                 )
 
             return JsonResponse(

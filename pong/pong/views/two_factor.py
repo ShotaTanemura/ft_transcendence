@@ -46,6 +46,7 @@ def provisioning(request):
 
     return JsonResponse({"uri": uri}, status=200)
 
+
 def generateOtpUri(secret, account_name, issuer, digits=6, period=30, algorithm="SHA1"):
     query_params = {
         "secret": secret,
@@ -58,6 +59,7 @@ def generateOtpUri(secret, account_name, issuer, digits=6, period=30, algorithm=
     uri = f"otpauth://totp/{urllib.parse.quote(issuer)}:{urllib.parse.quote(account_name)}?{urllib.parse.urlencode(query_params)}"
 
     return uri
+
 
 @csrf_exempt
 def register(request):

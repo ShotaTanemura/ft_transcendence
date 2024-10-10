@@ -34,6 +34,7 @@ def create_token_response(uuid, response):
 
     return response
 
+
 def create_session_token_response(uuid, response, exp_delta, status, auth_level):
     new_payload = {
         "uuid": str(uuid),
