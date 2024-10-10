@@ -2,6 +2,7 @@ import "./core/component.js";
 import { Router } from "./core/router.js";
 import { Signup } from "./components/Signup.js";
 import { Signin } from "./components/Signin.js";
+import { Totp } from "./components/Totp.js";
 import { Home } from "./components/Home.js";
 import { Chat } from "./components/Chat.js";
 import { PongGameHome } from "./components/PongGameHome.js";
@@ -33,6 +34,11 @@ let router = new Router(
     {
       path: "/signup",
       component: Signup,
+      state: {},
+    },
+    {
+      path: "/totp",
+      component: Totp,
       state: {},
     },
     {
