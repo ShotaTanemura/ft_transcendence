@@ -54,6 +54,31 @@ paths:
           $ref: "#/components/responses/badRequest"
         "404":
           $ref: "#/components/responses/notFoundError"
+  /pong/api/v1/auth/token/totp:
+  post:
+    summary: 二要素認証コードの確認とトークン, リフレッシュトークンの発行
+    description: 二要素認証コードの確認とトークン, リフレッシュトークンの発行
+    requestBody:
+      content:
+        "application/json":
+          schema:
+            $ref: "#/components/schemas/postTokenTotpRequest"
+      required: true
+    responses:
+      "200":
+        description: 二要素認証コードの確認とトークン, リフレッシュトークンの発行の成功
+        headers:
+          Set-Cookie:
+            schema:
+              type: string
+              description: 認証トークンとリフレッシュトークン
+              example: JWTTOKEN=jwttoken; JWTREFRESH=refresh-jwttoken Secure; HttpOnly
+        content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/postTokenTotpResponse"
+      "400":
+        $ref: "#/components/responses/badRequest"
   /pong/api/v1/auth/token/refresh:
     post:
       summary: トークンのリフレッシュ
@@ -436,6 +461,23 @@ components:
         - email
         - password
     postTokenResponse:
+      type: object
+      description: 認証トークンとリフレッシュトークン発行成功
+      properties:
+          uuid:
+            type: string
+            description: トークンが発行されたユーザーのUUID
+            example: b4cf1ef4-1cab-490b-a32c-f6528f95c796
+    postTokenTotpRequest:
+      type: object
+      properties:
+        code:
+          type: string
+          description: 認証コード
+          example: 000000
+      required:
+        - code
+    postTokenTotpResponse:
       type: object
       description: 認証トークンとリフレッシュトークン発行成功
       properties:
