@@ -10,6 +10,12 @@ users {
     string password
 }
 
+users-2fa {
+    string uuid PK
+    string user FK
+    bool isActive
+}
+
 rooms {
     string uuid PK
     string name
@@ -42,6 +48,7 @@ messages {
 }
 
 users ||--o{ user_room : ""
+users-2fa ||--|| users : two-factor-authentication
 rooms ||--|{ user_room : ""
 rooms ||--o{ messages : ""
 users ||--o{ messages : ""
