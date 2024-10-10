@@ -42,3 +42,6 @@ class TypingPlayerConsumer(AsyncWebsocketConsumer):
 
     async def send_game_information(self, event):
         await self.send(text_data=json.dumps(event["contents"]))
+
+    async def send_disconnect_notification(self, event):
+        await self.close()
