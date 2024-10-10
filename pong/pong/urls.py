@@ -2,7 +2,7 @@ from django.urls import path
 from .views import users, friends
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import auth, oauth
+from .views import auth, oauth, two_factor
 
 app_name = "pong"
 urlpatterns = [
@@ -10,6 +10,7 @@ urlpatterns = [
     path("api/v1/auth/token", auth.create_token, name="token"),
     path("api/v1/auth/token/refresh", auth.refresh_token, name="refresh"),
     path("api/v1/auth/token/verify", auth.verify_token, name="verify"),
+    path("api/v1/auth/two-factor/provisioning", two_factor.provisioning, name="tfa_provisioning"),
     path("api/v1/users/<uuid:uuid>", users.user, name="user"),
     path("api/v1/users/<uuid:uuid>/icon", users.user_icon, name="user_icon"),
     path("api/v1/users/others/<str:name>", users.other_user, name="other_user"),
