@@ -33,3 +33,22 @@ def create_token_response(uuid, response):
     response.set_cookie("refresh_token", new_refresh_token, httponly=True)
 
     return response
+
+def create_session_token_response(uuid, response, exp_delta, status, auth_level):
+    new_payload = {
+        "uuid": str(uuid),
+        "exp": datetime.utcnow() + exp_delta,
+        "iat": datetime.utcnow(),
+        "status": status,
+        "auth_level": auth_level,
+    }
+
+    new_token = jwt.encode(
+        new_payload,
+        settings.JWT_AUTH["JWT_PRIVATE_KEY"],
+        algorithm=settings.JWT_AUTH["JWT_ALGORITHM"],
+    )
+
+    response.set_cookie("session_token", new_token, httponly=True)
+
+    return response

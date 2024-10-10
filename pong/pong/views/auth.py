@@ -1,11 +1,14 @@
 import json
 from django.http.response import JsonResponse
-from pong.models.user import User
+from pong.models.user import User, Users2FA
 from django.views.decorators.csrf import csrf_exempt
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.conf import settings
 from pong.middleware.auth import jwt_exempt, getJwtPayloadCookie, getJwtPayload
-from pong.utils.create_response import create_token_response
+from pong.utils.create_response import (
+    create_token_response,
+    create_session_token_response,
+)
 from pong.utils.redis_client import redis_client
 import jwt
 
@@ -74,6 +77,24 @@ def create_token(request):
     if not user or not user.check_password(data["password"]):
         return JsonResponse(
             {"message": "User not found", "status": "userNotFound"}, status=404
+        )
+
+
+    tfa = Users2FA.objects.filter(user=user.uuid).first()
+
+    if tfa.is_active:
+        return create_session_token_response(
+            user.uuid,
+            JsonResponse(
+                {
+                    "message": "Password correct, but TOTP is required.",
+                    "status": "2FAIsRequired",
+                },
+                status=401,
+            ),
+            exp_delta=timedelta(minutes=3),
+            status="2FAPending",
+            auth_level="partial",
         )
 
     return create_token_response(
