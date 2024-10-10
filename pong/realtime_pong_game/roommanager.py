@@ -32,10 +32,10 @@ class RoomManager:
     lock = Lock()
 
     @classmethod
-    def host_room(cls, room_name):
+    def host_room(cls, room_name, number_of_players):
         with cls.lock:
             if room_name not in cls.room_instances:
-                cls.room_instances[room_name] = Room(room_name)
+                cls.room_instances[room_name] = Room(room_name, number_of_players)
                 return cls.room_instances[room_name]
             return None
 
@@ -47,14 +47,6 @@ class RoomManager:
                 return cls.room_instances[room_name]
             return None
 
-    # get or create RoomManager instance
-    @classmethod
-    def get_instance(cls, room_name):
-        with cls.lock:
-            if room_name not in cls.room_instances:
-                cls.room_instances[room_name] = Room(room_name)
-            return cls.room_instances[room_name]
-
     # remove RoomManager instance
     @classmethod
     def remove_instance(cls, room_name):
@@ -63,8 +55,7 @@ class RoomManager:
 
 
 class Room:
-    # TODO allow to set max_of_participants
-    def __init__(self, room_name):
+    def __init__(self, room_name, number_of_players):
         self.instance_lock = Lock()
         self.channel_layer = get_channel_layer()
         self.pong_game = PongGame(room_name)
@@ -73,7 +64,7 @@ class Room:
         self.participants = []
         self.participant_nickname_dict = dict()
         self.participants_state = dict()
-        self.max_of_participants = 2
+        self.max_of_participants = int(number_of_players)
         self.game_results = []
 
     def set_room_state(self, new_room_state):
@@ -100,6 +91,11 @@ class Room:
         return True
 
     def remove_participant(self, participant):
+        if (
+            self.room_state != RoomState.Not_All_Participants_Connected
+            and self.room_state != RoomState.Finished
+        ):
+            return False
         with self.instance_lock:
             if participant in self.participants:
                 self.participants.remove(participant)
@@ -236,6 +232,7 @@ class Room:
         self.set_room_state(RoomState.Finished)
         async_to_sync(self.send_room_state_to_group)()
         async_to_sync(self.send_messege_to_group)("notify_client_proccessing_complete")
+        RoomManager.remove_instance(self.room_name)
 
     async def handle_game_action(self, participant, message_json):
         if self.participants_state[participant] == ParticipantState.Player1:
