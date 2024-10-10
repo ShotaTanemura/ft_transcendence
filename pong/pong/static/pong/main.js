@@ -11,6 +11,7 @@ import { Error } from "./components/Error.js";
 import { Profile } from "./components/Profile.js";
 import { UserProfile } from "./components/UserProfile.js";
 import { EditProfile } from "./components/EditProfile.js";
+import { Edit2FA } from "./components/Edit2FA.js";
 import { TypingGameHome } from "./components/TypingGameHome.js";
 import { TypingGameRoom } from "./components/TypingGameRoom.js";
 import { TypingGameWaiting } from "./components/TypingGameWaiting.js";
@@ -37,6 +38,11 @@ let router = new Router(
     {
       path: "/signin",
       component: Signin,
+      state: {},
+    },
+    {
+      path: "/edit-2fa",
+      component: Edit2FA,
       state: {},
     },
     {
