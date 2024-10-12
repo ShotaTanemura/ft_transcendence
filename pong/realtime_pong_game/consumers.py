@@ -28,7 +28,10 @@ class PlayerConsumer(AsyncWebsocketConsumer):
         # register group name
         self.room_name = self.scope["url_route"]["kwargs"].get("room_name")
         self.user_role = self.scope["url_route"]["kwargs"].get("user_role")
-        self.user_nickname = self.scope["url_route"]["kwargs"].get("user_nickname")
+        self.number_of_players = int(
+            self.scope["url_route"]["kwargs"].get("number_of_players")
+        )
+        self.user_nickname = self.user.nickname
         # if url path is not valid, close connection
         if self.room_name == None or self.user_role == None:
             await self.send(
@@ -45,7 +48,9 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 
         # if user want to host, confirm that room is empty. if not, connection closed.
         if self.user_role == "host":
-            self.room_manager = RoomManager.host_room(self.room_name)
+            self.room_manager = RoomManager.host_room(
+                self.room_name, self.number_of_players
+            )
             if self.room_manager == None:
                 await self.send(
                     text_data=json.dumps(
@@ -136,7 +141,8 @@ class PlayerConsumer(AsyncWebsocketConsumer):
     async def disconnect(self, close_code):
         if hasattr(self, "room_manager"):
             await self.room_manager.on_user_disconnected(self.user)
-        await self.channel_layer.group_discard(self.room_name, self.channel_name)
+        if hasattr(self, "room_name"):
+            await self.channel_layer.group_discard(self.room_name, self.channel_name)
 
     async def send_room_information(self, event):
         await self.send(text_data=json.dumps(event["contents"]))

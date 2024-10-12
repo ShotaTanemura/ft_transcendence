@@ -23,13 +23,19 @@ export class Router {
     this.context[name] = value;
   }
 
+  unsetContext(name) {
+    if (name in this.context) {
+      delete this.context[name];
+    }
+  }
+
   getContext(name) {
     return this.context[name];
   }
 
   // 指定したpathに遷移する。
-  goNextPage(path) {
-    return this.changePage(path);
+  goNextPage(path, search = undefined) {
+    return this.changePage(path, search);
   }
 
   //前のページに戻る
@@ -41,8 +47,9 @@ export class Router {
     }
   }
   // 実際にpathに遷移させる。
-  changePage(path) {
-    let route = this.searchRouteFromPath(path);
+  changePage(path, search = undefined) {
+    path = path.replace(/\/+/g, "/").replace(/\/$/, "");
+    let route = this.searchRouteFromPath(path, search);
     //TODO Return 404 Error Page
     if (route === null) {
       route = this.searchRouteFromPath("/error");
@@ -142,8 +149,20 @@ export class Router {
     component.afterPageLoaded();
   }
 
-  searchRouteFromPath(path) {
+  searchRouteFromPath(path, search = undefined) {
     path = path.replace(/\/$/, "");
+    let queryString = search;
+    let queryParams = {};
+    if (queryString) {
+      if (queryString.startsWith("?")) {
+        queryString = queryString.substring(1);
+      }
+
+      queryString.split("&").forEach((param) => {
+        const [key, value] = param.split("=");
+        queryParams[decodeURIComponent(key)] = decodeURIComponent(value || "");
+      });
+    }
 
     for (let i = 0; i < this.routingList.length; i++) {
       let route = this.routingList[i];
@@ -152,9 +171,11 @@ export class Router {
       let regexPath = routePath.replace(/{\w+}/g, "([^/]+)");
       let match = path.match(new RegExp(`^${regexPath}$`));
       if ((path === "/" || path === "") && routePath === "/") {
+        let parameters = {};
+        parameters["query"] = queryParams;
         return {
           component: route.component,
-          parameters: {},
+          parameters: parameters,
           state: route.state,
         };
       }
@@ -167,6 +188,7 @@ export class Router {
         paramNames.forEach((name, index) => {
           parameters[name] = match[index + 1];
         });
+        parameters["query"] = queryParams;
 
         return {
           component: route.component,

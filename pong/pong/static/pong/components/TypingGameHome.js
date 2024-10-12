@@ -1,4 +1,5 @@
 import { Component } from "../core/component.js";
+import { Header } from "./Header.js";
 
 export class TypingGameHome extends Component {
   constructor(router, parameters, state) {
@@ -7,11 +8,13 @@ export class TypingGameHome extends Component {
   }
 
   onWebSocketOpen = () => {
+    // this.setRouteContext("TypingGameWebSocket", this.connection);
     this.goNextPage("/typing-game-waiting");
   };
 
   onWebSocketClose = () => {
-    this.goNextPage("/typing-game-home");
+    // this.unsetRouteContext("TypingGameWebSocket");
+    console.log("WebSocket closed");
   };
 
   onMessage = (event) => {
@@ -22,11 +25,11 @@ export class TypingGameHome extends Component {
         break;
       case "all-participants-connected":
         this.setRouteContext("participants", message.contents);
-        this.goNextPage("/typing-game-room");
-        break;
-      case "all-participants-ready":
         this.goNextPage("/typing-game");
         break;
+      // case "all-participants-ready":
+      //   this.goNextPage("/typing-game");
+      //   break;
     }
   };
 
@@ -43,21 +46,32 @@ export class TypingGameHome extends Component {
       event.target.elements["room-id"].value +
       "/";
     const connection = new WebSocket(socketPath);
-    this.setRouteContext("WebSocket", connection);
+    this.setRouteContext("TypingGameWebSocket", connection);
     connection.onopen = this.onWebSocketOpen;
     connection.onclose = this.onWebSocketClose;
     connection.onmessage = this.onMessage;
   };
 
+  afterPageLoaded() {
+    this.headerComponent = new Header(this.router, this.params, this.state);
+    this.element.parentElement.prepend(this.headerComponent.element);
+    this.headerComponent.afterPageLoaded();
+  }
+
+  beforePageUnload() {
+    this.element.parentElement.removeChild(this.headerComponent.element);
+  }
+
   get html() {
     return `
-				<h1>Welcome To Realtime Pong !</h1>
+    <main class="typing-game-home">
+				<h1>Welcome To Realtime Typing Game !</h1>
 				<form class="entering-room-form">
 					<label for="room-id">Room ID</label>
 					<input id="room-id" type="number" min="1000" max="9999" required><br>
 					<input id="enter-room-submit" name="enter-room" type="submit" value="enter room">
 				</form>
-	
+    </main>
 			`;
   }
 }

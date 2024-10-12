@@ -3,11 +3,17 @@ import { Component } from "../core/component.js";
 export class PongGame extends Component {
   constructor(router, parameters, state) {
     super(router, parameters, state);
+  }
 
+  afterPageLoaded() {
     //setting websocket
-    this.connection = this.getRouteContext("WebSocket");
-    this.connection.onmessage = this.onMessage;
+    this.connection = this.getRouteContext("PongGameWebSocket");
+    if (!this.connection) {
+      alert("connection failed");
+      this.goNextPage("/");
+    }
 
+    this.connection.onmessage = this.onMessage;
     this.canvas = this.findElement("canvas.ponggame");
     this.context = this.canvas.getContext("2d");
     this.grid = 15;
@@ -78,6 +84,7 @@ export class PongGame extends Component {
           message.contents.player2.score;
         break;
       case "room-state":
+        this.setRouteContext("PongGameWebSocket", this.connection);
         this.changePageByRoomStatus(message);
         break;
       case "tournament":
@@ -180,7 +187,7 @@ export class PongGame extends Component {
             <h1 class="score">Score: <span id="player2-score">0</span></h1>
           </div>
         </div>
-        <canvas width="1500" height="585" class="ponggame"></canvas>
+        <canvas width="1500" height="800" class="ponggame"></canvas>
       </main>
     `;
   }
