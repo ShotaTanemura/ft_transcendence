@@ -1,5 +1,3 @@
 *.swp
 .venv
 projects
-/requirements/Nginx/certificate/*
-!/requirements/Nginx/certificate/.gitkeep
