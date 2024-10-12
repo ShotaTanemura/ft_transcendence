@@ -3,6 +3,7 @@ from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 import jwt
 import re
+import base64
 from pong.models.user import User
 from pong.utils.redis_client import redis_client
 from functools import wraps
@@ -52,7 +53,7 @@ def getJwtPayloadCookie(request):
     return payload
 
 
-class JWTAuthenticationMiddleware:
+class LoginRequiredMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
 
@@ -60,6 +61,31 @@ class JWTAuthenticationMiddleware:
         return self.get_response(request)
 
     def process_view(self, request, view_func, view_args, view_kwargs):
+        basic_auth_paths = ["/metrics/metrics"]
+        if any(request.path == path for path in basic_auth_paths):
+            return self.process_view_for_basic_auth(
+                request, view_func, view_args, view_kwargs
+            )
+        return self.process_view_for_JWT(request, view_func, view_args, view_kwargs)
+
+    def process_view_for_basic_auth(self, request, view_func, view_args, view_kwargs):
+        if "Authorization" in request.headers:
+            auth = request.headers["Authorization"]
+            if auth.startswith("Basic "):
+                auth = auth.split("Basic ")[1]
+                auth = base64.b64decode(auth).decode("utf-8")
+                username, password = auth.split(":")
+                if (
+                    username == settings.BASIC_AUTH_USERNAME
+                    and password == settings.BASIC_AUTH_PASSWORD
+                ):
+                    return None
+        # TODO consider what server should return.
+        return JsonResponse(
+            {"message": "unauthorized", "status": "unauthorized"}, status=401
+        )
+
+    def process_view_for_JWT(self, request, view_func, view_args, view_kwargs):
         if getattr(view_func, "jwt_exempt", False):
             return None
 
