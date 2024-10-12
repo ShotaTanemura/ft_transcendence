@@ -155,15 +155,15 @@ class PongGame:
 
     # recieve player message
     async def recieve_player1_input(self, message_json):
-        if message_json["contents"] == "keyup-go-up":
+        if message_json["contents"] == "keydown-go-up":
             self.player1_paddle.velocity -= PADDLE_ACCELERATION
-        elif message_json["contents"] == "keyup-go-down":
+        elif message_json["contents"] == "keydown-go-down":
             self.player1_paddle.velocity += PADDLE_ACCELERATION
 
     async def recieve_player2_input(self, message_json):
-        if message_json["contents"] == "keyup-go-up":
+        if message_json["contents"] == "keydown-go-up":
             self.player2_paddle.velocity -= PADDLE_ACCELERATION
-        elif message_json["contents"] == "keyup-go-down":
+        elif message_json["contents"] == "keydown-go-down":
             self.player2_paddle.velocity += PADDLE_ACCELERATION
 
     # send message to Group that belogs to this room
