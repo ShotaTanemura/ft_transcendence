@@ -32,7 +32,10 @@ for i in range(1, 5):
     if not User.objects.filter(name=user_name).exists():
         print(f"Creating user {user_name}")
         User.objects.create_user(
-            name=user_name, nickname="sample", email=user_email, password=user_password
+            name=user_name,
+            nickname=f"sample{i}",
+            email=user_email,
+            password=user_password,
         )
     else:
         print(f"User {user_name} already exists")
