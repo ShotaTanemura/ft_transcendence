@@ -139,6 +139,11 @@ def verify_token(request):
     uuid = payload.get("uuid", None)
     if not payload or not uuid:
         return JsonResponse(
+            {"message": "User not found", "status": "userNotFound"}, status=404
+        )
+    user = User.objects.filter(uuid=uuid)
+    if not user.exists():
+        return JsonResponse(
             {"message": "unauthorized", "status": "unauthorized"}, status=401
         )
     token = request.COOKIES.get("token")
