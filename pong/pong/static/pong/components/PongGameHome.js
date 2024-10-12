@@ -57,7 +57,7 @@ export class PongGameHome extends Component {
   submitForm = (event) => {
     event.preventDefault();
     this.setRouteContext("RoomID", event.target.elements["room-id"].value);
-    const socketPath = `ws://${window.location.hostname}:${window.location.port}/realtime-pong/${event.target.elements["room-id"].value}/${event.submitter.name}/${event.target.elements["number-of-players-selector"].value}/`;
+    const socketPath = `wss://${window.location.hostname}:${window.location.port}/realtime-pong/${event.target.elements["room-id"].value}/${event.submitter.name}/${event.target.elements["number-of-players-selector"].value}/`;
     this.connection = new WebSocket(socketPath);
     this.connection.onopen = this.onWebSocketOpen;
     this.connection.onclose = this.onWebSocketClose;
@@ -66,7 +66,7 @@ export class PongGameHome extends Component {
 
   setSubmitForm = (query) => {
     this.setRouteContext("RoomID", query["room-id"]);
-    const socketPath = `ws://${window.location.hostname}:${window.location.port}/realtime-pong/${query["room-id"]}/${query["name"]}/2/`;
+    const socketPath = `wss://${window.location.hostname}:${window.location.port}/realtime-pong/${query["room-id"]}/${query["name"]}/2/`;
     this.connection = new WebSocket(socketPath);
     this.connection.onopen = this.onWebSocketOpen;
     this.connection.onclose = this.onWebSocketClose;

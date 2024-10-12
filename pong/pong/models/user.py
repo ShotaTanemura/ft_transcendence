@@ -7,6 +7,7 @@ from django.contrib.auth.models import (
 )
 from django import forms
 from django.contrib.auth import get_user_model
+from pong.utils.random_string import generate_base32_encoded_random_string
 
 
 class UserManager(BaseUserManager):
@@ -27,6 +28,9 @@ class UserManager(BaseUserManager):
 
         user.set_password(password)
         user.save(using=self._db)
+
+        Users2FA.objects.create(user=user)
+
         return user
 
     def create_superuser(self, name, nickname, email, password, **extra_fields):
@@ -49,7 +53,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(unique=True, blank=False, max_length=20)
     email = models.EmailField(unique=True, blank=False)
     nickname = models.CharField(
-        unique=False, blank=False, default="sample", max_length=20
+        unique=True, blank=False, default="sample", max_length=20
     )
     is_staff = models.BooleanField(default=False)
     icon = models.ImageField(
@@ -71,3 +75,14 @@ class UserIconUpdateForm(forms.ModelForm):
     class Meta:
         model = get_user_model()
         fields = ["icon"]
+
+
+class Users2FA(models.Model):
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(
+        User, blank=False, null=False, editable=False, on_delete=models.CASCADE
+    )
+    is_active = models.BooleanField(default=False)
+    secret = models.CharField(
+        blank=False, null=False, default=generate_base32_encoded_random_string
+    )

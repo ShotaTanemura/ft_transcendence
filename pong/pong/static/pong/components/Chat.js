@@ -26,7 +26,7 @@ export class Chat extends Component {
       return;
     }
 
-    const wsUrl = `ws://${window.location.host}/ws/chat/rooms/`;
+    const wsUrl = `wss://${window.location.host}/ws/chat/rooms/`;
     const socket = new WebSocket(wsUrl);
 
     socket.addEventListener("open", () => {
@@ -83,7 +83,7 @@ export class Chat extends Component {
       this.state.socketRoomSpecific.close();
     }
 
-    const wsUrl = `ws://${window.location.host}/ws/chat/${roomUuid}/`;
+    const wsUrl = `wss://${window.location.host}/ws/chat/${roomUuid}/`;
     const socket = new WebSocket(wsUrl);
 
     socket.addEventListener("open", () => {
