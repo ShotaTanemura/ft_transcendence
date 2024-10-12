@@ -39,8 +39,14 @@ export class Signin extends Component {
       password: event.target.password.value,
     });
     try {
-      await this.generateToken(signinJson);
-      this.router.goNextPage("/");
+      const status = await this.generateToken(signinJson);
+      if (status === "2FAIsRequired") {
+        // 2FAが必要な場合、/totpに遷移する
+        this.router.goNextPage("/totp");
+      } else {
+        // 2FAが必要でなければホームページに遷移する
+        this.router.goNextPage("/");
+      }
     } catch (error) {
       alert(error);
     }
@@ -54,11 +60,15 @@ export class Signin extends Component {
       },
       body: jsonData,
     });
-    console.log(response);
     const data = await response.json();
     if (!response.ok) {
+      if (data.status === "2FAIsRequired") {
+        // 2FAが必要な場合はそのステータスを返す
+        return "2FAIsRequired";
+      }
       throw Error(data.status);
     }
+    return "Success";
   };
 
   goSignup = () => {
