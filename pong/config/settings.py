@@ -201,3 +201,5 @@ CSRF_TRUSTED_ORIGINS = [
 ADMIN_PANEL_URL = os.getenv("ADMIN_PANEL_URL")
 
 ASGI_APPLICATION = "config.asgi.application"
+
+DJANGO_2FA_ISSUER = os.getenv("DJANGO_2FA_ISSUER")

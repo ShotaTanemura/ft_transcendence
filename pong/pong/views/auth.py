@@ -1,12 +1,16 @@
 import json
 from django.http.response import JsonResponse
-from pong.models.user import User
+from pong.models.user import User, Users2FA
 from django.views.decorators.csrf import csrf_exempt
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.conf import settings
 from pong.middleware.auth import jwt_exempt, getJwtPayloadCookie, getJwtPayload
-from pong.utils.create_response import create_token_response
+from pong.utils.create_response import (
+    create_token_response,
+    create_session_token_response,
+)
 from pong.utils.redis_client import redis_client
+from pong.views.two_factor import is_valid_totp_code
 import jwt
 
 
@@ -76,8 +80,93 @@ def create_token(request):
             {"message": "User not found", "status": "userNotFound"}, status=404
         )
 
+    tfa = Users2FA.objects.filter(user=user.uuid).first()
+
+    if tfa.is_active:
+        return create_session_token_response(
+            user.uuid,
+            JsonResponse(
+                {
+                    "message": "Password correct, but TOTP is required.",
+                    "status": "2FAIsRequired",
+                },
+                status=401,
+            ),
+            exp_delta=timedelta(minutes=3),
+            status="2FAPending",
+            auth_level="partial",
+        )
+
     return create_token_response(
         user.uuid, JsonResponse({"uuid": user.uuid}, content_type="application/json")
+    )
+
+
+@jwt_exempt
+@csrf_exempt
+def create_token_totp(request):
+    if request.method != "POST":
+        return JsonResponse(
+            {"message": "Method is not allowed", "status": "invalidParams"}, status=400
+        )
+
+    session_token = request.COOKIES.get("session_token")
+    if not session_token:
+        return JsonResponse(
+            {"message": "Session token not provided", "status": "invalidParams"},
+            status=400,
+        )
+    try:
+        session_payload = jwt.decode(
+            session_token,
+            settings.JWT_AUTH["JWT_PUBLIC_KEY"],
+            algorithms=[settings.JWT_AUTH["JWT_ALGORITHM"]],
+        )
+    except jwt.ExpiredSignatureError:
+        return JsonResponse(
+            {"message": "Session token has expired", "status": "invalidParams"},
+            status=400,
+        )
+    except jwt.InvalidTokenError:
+        return JsonResponse(
+            {"message": "Invalid Session token", "status": "invalidParams"}, status=400
+        )
+
+    status = session_payload.get("status")
+    uuid = session_payload.get("uuid")
+    if not status or not uuid or status != "2FAPending":
+        print(session_payload)
+        return JsonResponse(
+            {"message": "Invalid Session token", "status": "invalidParams"}, status=400
+        )
+
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError as e:
+        logger.error("Invalid JSON: {e}")
+        return JsonResponse(
+            {"message": "Invalid JSON", "status": "invalidJson"}, status=400
+        )
+
+    code = data.get("code")
+    if not code:
+        return JsonResponse(
+            {"message": "Invalid parameters", "status": "invalidParams"}, status=400
+        )
+
+    tfa = Users2FA.objects.filter(user=uuid).first()
+    if not tfa or not tfa.is_active:
+        return JsonResponse(
+            {"message": "2FA is not activated", "status": "invalidParams"}, status=400
+        )
+
+    if not is_valid_totp_code(secret=tfa.secret, code=code):
+        return JsonResponse(
+            {"message": "OTP is invalid", "status": "invalidParams"}, status=400
+        )
+
+    return create_token_response(
+        uuid, JsonResponse({"uuid": uuid}, content_type="application/json")
     )
 
 
