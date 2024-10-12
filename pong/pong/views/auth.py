@@ -43,6 +43,7 @@ def register(request):
     if (
         User.objects.filter(name=data["name"]).exists()
         or User.objects.filter(email=data["email"]).exists()
+        or User.objects.filter(nickname=data["nickname"]).exists()
     ):
         return JsonResponse(
             {"message": "User already exists", "status": "registerConflict"}, status=409

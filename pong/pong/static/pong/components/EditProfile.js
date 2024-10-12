@@ -102,7 +102,7 @@ export class EditProfile extends Component {
         const errorData = await user_response.json();
         const errorMessage = errorData.message;
         console.log(errorMessage);
-        alert(`既に存在するメールアドレスまたはユーザー名です`);
+        alert(`既に存在するメールアドレス、ユーザー名またはニックネームです`);
         return;
       }
 
