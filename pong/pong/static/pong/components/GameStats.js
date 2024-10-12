@@ -85,6 +85,7 @@ export class GameStats extends Component {
     const tbodyElement = document.createElement("tbody");
     theadElement.innerHTML = `<tr>
         <th scope="col">#</th>
+        <th scope="col">date</th>
         <th scope="col">Player</th>
         <th scope="col">Score</th>
         <th scope="col">Score</th>
@@ -96,6 +97,7 @@ export class GameStats extends Component {
       const trElement = document.createElement("tr");
       trElement.innerHTML = `<tr>
             <th scope="row">${Number(matchResult.id)}</th>
+            <td>${matchResult.contents.date}</td>
             <td>${matchResult.contents.player1}</td>
             <td>${matchResult.contents.player1_score}</td>
             <td>${matchResult.contents.player2_score}</td>

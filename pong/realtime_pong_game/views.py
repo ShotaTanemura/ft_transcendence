@@ -49,6 +49,7 @@ def get_user_match_result(request, name):
         user_match_result_json = {
             "id": index + 1,
             "contents": {
+                "date": user_match_result.created_at.strftime("%m/%d/%Y"),
                 "player1": user_match_result.player1.name,
                 "player2": user_match_result.player2.name,
                 "player1_score": user_match_result.player1_score,
