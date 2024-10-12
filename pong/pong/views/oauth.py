@@ -132,4 +132,4 @@ def callback_42(request):
         if not user:
             return HttpResponseRedirect(redirect_to="/#userDoesNotExist")
 
-    return create_token_response(user.uuid, HttpResponseRedirect(redirect_to="/home"))
+    return create_token_response(user.uuid, HttpResponseRedirect(redirect_to="/"))
