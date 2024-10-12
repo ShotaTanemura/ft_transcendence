@@ -18,8 +18,8 @@ scrape_configs:
     static_configs:
       - targets: ['app:8000']
     basic_auth:
-      username: 'admin'
-      password: 'password123'
+      username: '#TODO enter the same value as DJANGO_SUPERUSER_USERNAME in .env'
+      password: '#TODO enter the same value as DJANGO_SUPERUSER_PASSWORD in .env'
   - job_name: 'nginx'
     static_configs:
       - targets: ['nginx-exporter:9113']

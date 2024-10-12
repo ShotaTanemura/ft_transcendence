@@ -167,8 +167,8 @@ REDIS_DB = 0
 REDIS_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}"
 
 # user and password for basic auth
-BASIC_AUTH_USERNAME = "admin"
-BASIC_AUTH_PASSWORD = "password123"
+BASIC_AUTH_USERNAME = os.getenv("DJANGO_SUPERUSER_USERNAME")
+BASIC_AUTH_PASSWORD = os.getenv("DJANGO_SUPERUSER_PASSWORD")
 
 # channelsのためのlayerの追加
 CHANNEL_LAYERS = {

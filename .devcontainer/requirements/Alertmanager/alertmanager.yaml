@@ -9,4 +9,4 @@ route:
 receivers:
   - name: 'discord'
     discord_configs:
-      - webhook_url: 'replace here to discord web hook'
+      - webhook_url: '#TODO replace here to discord web hook'
