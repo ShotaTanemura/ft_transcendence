@@ -110,6 +110,9 @@ export class MyRoomsContainer extends Component {
 
   displayRooms(rooms, query = "") {
     const myRoomsContainer = document.querySelector(".myrooms");
+    if (!myRoomsContainer) {
+      return;
+    }
     myRoomsContainer.innerHTML = "";
 
     const filteredRooms = rooms.filter(
@@ -134,6 +137,9 @@ export class MyRoomsContainer extends Component {
 
   displayInvitedRooms(invitedRooms) {
     const invitedRoomsContainer = document.querySelector(".invited-rooms");
+    if (!invitedRoomsContainer) {
+      return;
+    }
     invitedRoomsContainer.innerHTML = "";
 
     invitedRooms.forEach((room) => {

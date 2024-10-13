@@ -141,7 +141,13 @@ export class DirectoryContainer extends Component {
   }
 
   displayRooms(rooms, query = "") {
+    if (!rooms) {
+      return;
+    }
     const unjoinedRoomsContainer = document.querySelector(".unjoined-rooms");
+    if (!unjoinedRoomsContainer) {
+      return;
+    }
     unjoinedRoomsContainer.innerHTML = "";
 
     const filteredRooms = rooms.filter((room) =>

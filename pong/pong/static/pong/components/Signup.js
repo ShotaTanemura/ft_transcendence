@@ -62,7 +62,9 @@ export class Signup extends Component {
         case 400:
           throw Error("不正なリクエストです");
         case 409:
-          throw Error("既に存在するユーザー名またはメールアドレスです");
+          throw Error(
+            "既に存在するユーザー名, メールアドレスまたはニックネームです",
+          );
         default:
           throw Error(data.status);
       }

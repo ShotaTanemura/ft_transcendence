@@ -21,6 +21,9 @@ export class ChatContainer extends Component {
     const messagesContainer = document.querySelector(
       ".direct-message-messages",
     );
+    if (!message || !messagesContainer) {
+      return;
+    }
 
     if (messagesContainer) {
       const messageElement = document.createElement("div");
