@@ -7,6 +7,8 @@ export class MyRoomsContainer extends Component {
     this.socket = socket;
     this.rooms = [];
 
+    this.eventListeners = {};
+
     if (this.socket) {
       this.setupWebSocketListeners();
     }
@@ -18,17 +20,19 @@ export class MyRoomsContainer extends Component {
   }
 
   setupWebSocketListeners() {
-    this.socket.addEventListener("message", (event) => {
-      const message = JSON.parse(event.data);
-      if (message.rooms) {
-        this.displayRooms(message.rooms);
-        this.rooms = message.rooms;
-      }
-      if (message.invited_rooms) {
-        this.displayInvitedRooms(message.invited_rooms);
-      }
-    });
+    this.socket.addEventListener("message", this.handleWebSocketMessage);
   }
+
+  handleWebSocketMessage = (event) => {
+    const message = JSON.parse(event.data);
+    if (message.rooms) {
+      this.displayRooms(message.rooms);
+      this.rooms = message.rooms;
+    }
+    if (message.invited_rooms) {
+      this.displayInvitedRooms(message.invited_rooms);
+    }
+  };
 
   updateRoomsUI(rooms) {
     this.displayRooms(rooms);
@@ -41,26 +45,68 @@ export class MyRoomsContainer extends Component {
 
   initializeEventListeners() {
     this.handleDOMContentLoaded();
+    window.addEventListener("beforeunload", this.beforePageUnload);
   }
 
+  beforePageUnload = () => {
+    const {
+      searchBarListener,
+      roomTypeListener,
+      createChatroomListener,
+      closeModalListener,
+      formSubmitListener,
+      modalClickListener,
+    } = this.eventListeners;
+
+    if (searchBarListener) {
+      document
+        .querySelector(".search-bar input")
+        .removeEventListener("input", searchBarListener);
+    }
+    if (roomTypeListener) {
+      document
+        .getElementById("roomType")
+        .removeEventListener("change", roomTypeListener);
+    }
+    if (createChatroomListener) {
+      document
+        .querySelector(".create-chatroom-button")
+        .removeEventListener("click", createChatroomListener);
+    }
+    if (closeModalListener) {
+      document
+        .querySelector(".close-modal")
+        .removeEventListener("click", closeModalListener);
+    }
+    if (formSubmitListener) {
+      document
+        .getElementById("createChatroomForm")
+        .removeEventListener("submit", formSubmitListener);
+    }
+    if (modalClickListener) {
+      window.removeEventListener("click", modalClickListener);
+    }
+  };
+
   handleDOMContentLoaded() {
+    const searchBar = document.querySelector(".search-bar input");
+    const roomTypeSelect = document.getElementById("roomType");
     const createChatroomButton = document.querySelector(
       ".create-chatroom-button",
     );
-    const modal = document.getElementById("createChatroomModal");
     const closeModal = document.querySelector(".close-modal");
     const createChatroomForm = document.getElementById("createChatroomForm");
-    const roomTypeSelect = document.getElementById("roomType");
-    const emailField = document.getElementById("emailField");
-    const emailInput = document.getElementById("email");
-    const searchBar = document.querySelector(".search-bar input");
+    const modal = document.getElementById("createChatroomModal");
 
-    searchBar.addEventListener("input", (event) => {
+    this.eventListeners.searchBarListener = (event) => {
       const query = event.target.value.toLowerCase();
       this.displayRooms(this.rooms, query);
-    });
+    };
+    searchBar.addEventListener("input", this.eventListeners.searchBarListener);
 
-    roomTypeSelect.addEventListener("change", (event) => {
+    this.eventListeners.roomTypeListener = (event) => {
+      const emailField = document.getElementById("emailField");
+      const emailInput = document.getElementById("email");
       if (event.target.value === "dm") {
         emailField.style.display = "block";
         emailInput.setAttribute("required", "true");
@@ -68,17 +114,29 @@ export class MyRoomsContainer extends Component {
         emailField.style.display = "none";
         emailInput.removeAttribute("required");
       }
-    });
+    };
+    roomTypeSelect.addEventListener(
+      "change",
+      this.eventListeners.roomTypeListener,
+    );
 
-    createChatroomButton.addEventListener("click", () => {
+    this.eventListeners.createChatroomListener = () => {
       modal.style.display = "block";
-    });
+    };
+    createChatroomButton.addEventListener(
+      "click",
+      this.eventListeners.createChatroomListener,
+    );
 
-    closeModal.addEventListener("click", () => {
+    this.eventListeners.closeModalListener = () => {
       modal.style.display = "none";
-    });
+    };
+    closeModal.addEventListener(
+      "click",
+      this.eventListeners.closeModalListener,
+    );
 
-    createChatroomForm.addEventListener("submit", (event) => {
+    this.eventListeners.formSubmitListener = (event) => {
       event.preventDefault();
       const chatroomName = document.getElementById("chatroomName").value;
       const roomType = document.getElementById("roomType").value;
@@ -99,13 +157,18 @@ export class MyRoomsContainer extends Component {
       }
 
       modal.style.display = "none";
-    });
+    };
+    createChatroomForm.addEventListener(
+      "submit",
+      this.eventListeners.formSubmitListener,
+    );
 
-    window.addEventListener("click", (event) => {
+    this.eventListeners.modalClickListener = (event) => {
       if (event.target === modal) {
         modal.style.display = "none";
       }
-    });
+    };
+    window.addEventListener("click", this.eventListeners.modalClickListener);
   }
 
   displayRooms(rooms, query = "") {

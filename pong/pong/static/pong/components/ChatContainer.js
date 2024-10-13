@@ -6,6 +6,9 @@ export class ChatContainer extends Component {
     super(router, params, state, ".chat-container");
     this.selectedRoom = undefined;
     this.socket = state.socket;
+
+    this.eventListeners = {};
+
     this.render();
   }
 
@@ -25,26 +28,21 @@ export class ChatContainer extends Component {
       return;
     }
 
-    if (messagesContainer) {
-      const messageElement = document.createElement("div");
-      const messageContent = document.createElement("div");
+    const messageElement = document.createElement("div");
+    const messageContent = document.createElement("div");
 
-      messageElement.classList.add("message");
-      if (message.user_uuid === myId) {
-        messageContent.classList.add("my-message");
-        messageContent.innerHTML = `<div class="my-user-message">${message.message}</div>`;
-      } else {
-        messageContent.classList.add("other-message");
-        messageContent.innerHTML = `<div class="other-user-name">${message.user}</div><div class="other-user-message">${message.message}</div>`;
-      }
-
-      messageElement.appendChild(messageContent);
-
-      messagesContainer.appendChild(messageElement);
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    messageElement.classList.add("message");
+    if (message.user_uuid === myId) {
+      messageContent.classList.add("my-message");
+      messageContent.innerHTML = `<div class="my-user-message">${message.message}</div>`;
     } else {
-      console.error("Messages container not found");
+      messageContent.classList.add("other-message");
+      messageContent.innerHTML = `<div class="other-user-name">${message.user}</div><div class="other-user-message">${message.message}</div>`;
     }
+
+    messageElement.appendChild(messageContent);
+    messagesContainer.appendChild(messageElement);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
   }
 
   displayRoom(select) {
@@ -81,11 +79,15 @@ export class ChatContainer extends Component {
 
       chatContainer.appendChild(form);
 
-      messageForm.addEventListener("submit", (event) => {
+      this.eventListeners.messageFormSubmitListener = (event) => {
         event.preventDefault();
         this.emitMessage(select.uuid, messageInput.value);
         messageInput.value = "";
-      });
+      };
+      messageForm.addEventListener(
+        "submit",
+        this.eventListeners.messageFormSubmitListener,
+      );
 
       const header = document.querySelector(".direct-message-header");
       header.innerHTML = `<h3>${select.name}</h3> 
@@ -93,11 +95,19 @@ export class ChatContainer extends Component {
                           <button class="leave-button">ルームから退出</button>`;
 
       const leaveButton = document.querySelector(".leave-button");
-      leaveButton.addEventListener("click", () => this.confirmLeaveRoom());
+      this.eventListeners.leaveButtonClickListener = () =>
+        this.confirmLeaveRoom();
+      leaveButton.addEventListener(
+        "click",
+        this.eventListeners.leaveButtonClickListener,
+      );
 
       const inviteButton = document.querySelector(".invite-button");
-      inviteButton.addEventListener("click", () =>
-        this.inviteToGame(select.uuid),
+      this.eventListeners.inviteButtonClickListener = () =>
+        this.inviteToGame(select.uuid);
+      inviteButton.addEventListener(
+        "click",
+        this.eventListeners.inviteButtonClickListener,
       );
     }
   }
@@ -125,6 +135,7 @@ export class ChatContainer extends Component {
       "noopener,noreferrer",
     );
   };
+
   confirmLeaveRoom() {
     const confirmation = window.confirm("本当に退出しますか？");
     if (confirmation) {
@@ -148,15 +159,42 @@ export class ChatContainer extends Component {
   clear() {
     console.log("Clearing chat container");
     this.selectedRoom = undefined;
+
     const messagesContainer = document.querySelector(
       ".direct-message-messages",
     );
     if (messagesContainer) {
       messagesContainer.innerHTML = "";
     }
+
     const header = document.querySelector(".direct-message-header");
     header.innerHTML = "ルームを選択してください";
+
+    this.removeEventListeners();
     this.render();
+  }
+
+  removeEventListeners() {
+    const {
+      messageFormSubmitListener,
+      leaveButtonClickListener,
+      inviteButtonClickListener,
+    } = this.eventListeners;
+
+    const messageForm = document.querySelector(".direct-message-form");
+    if (messageForm && messageFormSubmitListener) {
+      messageForm.removeEventListener("submit", messageFormSubmitListener);
+    }
+
+    const leaveButton = document.querySelector(".leave-button");
+    if (leaveButton && leaveButtonClickListener) {
+      leaveButton.removeEventListener("click", leaveButtonClickListener);
+    }
+
+    const inviteButton = document.querySelector(".invite-button");
+    if (inviteButton && inviteButtonClickListener) {
+      inviteButton.removeEventListener("click", inviteButtonClickListener);
+    }
   }
 
   get html() {

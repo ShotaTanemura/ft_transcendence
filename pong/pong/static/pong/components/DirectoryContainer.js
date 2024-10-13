@@ -5,20 +5,53 @@ export class DirectoryContainer extends Component {
     super(router, params, state, ".directory-container");
     this.onRoomJoined = onRoomJoined;
     this.socket = socket;
-    this.initializeEventListeners();
     this.chatSocket = null;
     this.modalVisible = false;
     this.non_participation = [];
+
+    this.eventListeners = {};
+
     if (this.socket) {
       this.setupWebSocketListeners();
     }
+
+    this.initializeEventListeners();
   }
 
   initializeEventListeners() {
     window.addEventListener("load", () => {
       this.handleDOMContentLoaded();
     });
+
+    window.addEventListener("beforeunload", this.beforePageUnload);
   }
+
+  beforePageUnload = () => {
+    const {
+      searchBarListener,
+      confirmJoinButtonListener,
+      cancelJoinButtonListener,
+      modalClickListener,
+    } = this.eventListeners;
+
+    if (searchBarListener) {
+      const searchBar = document.querySelector(".unjoined-search-bar input");
+      if (searchBar) searchBar.removeEventListener("input", searchBarListener);
+    }
+    if (confirmJoinButtonListener) {
+      document
+        .getElementById("confirmJoinButton")
+        .removeEventListener("click", confirmJoinButtonListener);
+    }
+    if (cancelJoinButtonListener) {
+      document
+        .getElementById("cancelJoinButton")
+        .removeEventListener("click", cancelJoinButtonListener);
+    }
+    if (modalClickListener) {
+      window.removeEventListener("click", modalClickListener);
+    }
+  };
 
   setWebSocket(socket) {
     this.socket = socket;
@@ -176,7 +209,7 @@ export class DirectoryContainer extends Component {
     modalRoomName.textContent = room.name;
     modal.style.display = "block";
 
-    confirmJoinButton.onclick = () => {
+    this.eventListeners.confirmJoinButtonListener = () => {
       if (this.socket && this.socket.readyState === WebSocket.OPEN) {
         const joinRequest = {
           job_type: "join_chatroom",
@@ -193,25 +226,40 @@ export class DirectoryContainer extends Component {
         alert("WebSocketが接続されていません。");
       }
     };
+    confirmJoinButton.addEventListener(
+      "click",
+      this.eventListeners.confirmJoinButtonListener,
+    );
 
-    cancelJoinButton.onclick = () => {
+    this.eventListeners.cancelJoinButtonListener = () => {
       modal.style.display = "none";
     };
+    cancelJoinButton.addEventListener(
+      "click",
+      this.eventListeners.cancelJoinButtonListener,
+    );
 
-    window.onclick = (event) => {
+    this.eventListeners.modalClickListener = (event) => {
       if (event.target === modal) {
         modal.style.display = "none";
       }
     };
+    window.addEventListener("click", this.eventListeners.modalClickListener);
   }
 
   handleDOMContentLoaded() {
     const searchBar = document.querySelector(".unjoined-search-bar input");
+
+    this.eventListeners.searchBarListener = (event) => {
+      const query = event.target.value;
+      this.displayRooms(this.non_participation, query);
+    };
+
     if (searchBar) {
-      searchBar.addEventListener("input", (event) => {
-        const query = event.target.value;
-        this.displayRooms(this.non_participation, query);
-      });
+      searchBar.addEventListener(
+        "input",
+        this.eventListeners.searchBarListener,
+      );
     } else {
       console.error("Search bar element not found.");
     }
