@@ -72,16 +72,12 @@ export class Signup extends Component {
 
   get html() {
     return `
-    	<main class="signup">
+      <main class="signup">
         <div class="signup-container">
           <h1>Signup</h1>
-				  <form
-				  	action="/pong/oauth/42/signup"
-				  	method="GET"
-            class="form-42oauth"
-          >
-				  	<button class="form-42oauth" type=submit>42 Signup</button>
-				  </form>
+          <form action="/pong/oauth/42/signup" method="GET" class="form-42oauth">
+            <button class="form-42oauth" type="submit">42 Signup</button>
+          </form>
           <form class="signup-form">
             <label for="username">Username</label>
             <input type="text" placeholder="username" id="username" name="name" required><br/>
@@ -93,10 +89,11 @@ export class Signup extends Component {
             <input type="password" placeholder="enter password" id="password" name="password" required><br/>
             <label for="repeat-password">Repeat Password</label>
             <input type="password" placeholder="repeat password" id="repeat-password" name="repeat-password" required><br/>
-            <button class="form-submit" type="submit">sign up</button>
+            <button class="form-submit" type="submit">Sign up</button>
           </form>
-          </div>
-        </main>
-        `;
+          <button class="back-to-signin" onclick="window.location.href='/signin'">Back to Sign In</button>
+        </div>
+      </main>
+    `;
   }
 }
