@@ -12,11 +12,7 @@ export class GameStats extends Component {
     this.headerComponent = new Header(this.router, this.params, this.state);
     this.element.parentElement.prepend(this.headerComponent.element);
     this.headerComponent.afterPageLoaded();
-
-    // PongGameの履歴を取得して表示
     this.createTableFromMatchResult(await this.getMatchResultsData("/ponggame/api/v1/match-result/"));
-
-    // TypingGameの履歴を取得して表示
     this.createTableFromMatchResult(await this.getMatchResultsData("/typinggame/api/v1/match-result/"), true);
   };
 
@@ -51,13 +47,12 @@ export class GameStats extends Component {
   };
 
   getMatchResultsData = async (apiEndpoint) => {
-    const userName = await this.getUserName(); // ユーザー名からUUIDを取得
+    const userName = await this.getUserName();
     if (!userName) {
       return;
     }
 
     try {
-      console.log("エンドポイントのパス:", `${apiEndpoint}${userName}`);
       const response = await fetch(`${apiEndpoint}${userName}`,
         {
         method: "GET",
@@ -65,8 +60,7 @@ export class GameStats extends Component {
         credentials: "include",
         },
       );
-    // JSONレスポンスであるかを確認
-    const contentType = response.headers.get("content-type");
+      const contentType = response.headers.get("content-type");
     if (contentType && contentType.includes("application/json")) {
       const matchResultsData = await response.json();
       if (!response.ok) {
@@ -79,13 +73,12 @@ export class GameStats extends Component {
       }
       return matchResultsData["match-results"];
     } else {
-      // レスポンスがJSONではない場合
-      const responseText = await response.text();  // テキストレスポンスを取得
+      const responseText = await response.text();
       console.error("Received non-JSON response:", responseText);
       throw new Error("Failed to fetch match results: Non-JSON response");
     }
   } catch (error) {
-    console.error("Error fetching user data:", error);
+    console.error("Error :", error);
     return null;
   }
   };
@@ -144,7 +137,6 @@ export class GameStats extends Component {
     tableElement.appendChild(theadElement);
     tableElement.appendChild(tbodyElement);
   
-    // PongGameとTypingGameのテーブルを区別して追加
     const tableContainer = isTypingGame
       ? this.findElement("div.typinggame-result-table")
       : this.findElement("div.ponggame-result-table");
