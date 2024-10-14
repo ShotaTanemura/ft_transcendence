@@ -12,12 +12,17 @@ export class GameStats extends Component {
     this.headerComponent = new Header(this.router, this.params, this.state);
     this.element.parentElement.prepend(this.headerComponent.element);
     this.headerComponent.afterPageLoaded();
-    this.craeteTableFromMatchResult(await this.getMatchResultsData());
+
+    // PongGameの履歴を取得して表示
+    this.createTableFromMatchResult(await this.getMatchResultsData("/ponggame/api/v1/match-result/"));
+
+    // TypingGameの履歴を取得して表示
+    this.createTableFromMatchResult(await this.getMatchResultsData("/typinggame/api/v1/match-result/"), true);
   };
 
   beforePageUnload = () => {
     this.element.parentElement.removeChild(this.headerComponent.element);
-    const tableElement = this.findElements("div.mathch-result-table");
+    const tableElement = this.findElements("div.match-result-table");
     if (tableElement.firstChild) {
       tableElement.removeChild(tableElement.firstChild);
     }
@@ -27,7 +32,6 @@ export class GameStats extends Component {
     this.goNextPage("/");
   };
 
-  //TODO this fucntion is duplicate
   getUserName = async () => {
     try {
       const userUuid = await getUuid();
@@ -46,73 +50,118 @@ export class GameStats extends Component {
     }
   };
 
-  getMatchResultsData = async () => {
-    const userName = await this.getUserName();
+  getMatchResultsData = async (apiEndpoint) => {
+    const userName = await this.getUserName(); // ユーザー名からUUIDを取得
     if (!userName) {
       return;
     }
 
     try {
-      const response = await fetch(
-        `/ponggame/api/v1/match-result/${userName}`,
+      console.log("エンドポイントのパス:", `${apiEndpoint}${userName}`);
+      const response = await fetch(`${apiEndpoint}${userName}`,
         {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
         },
       );
+    // JSONレスポンスであるかを確認
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
       const matchResultsData = await response.json();
       if (!response.ok) {
         throw new Error(
-          matchResultsData.message || "Failed to fetch user data",
+          matchResultsData.message || "Failed to fetch user data:"
         );
       }
       if (!matchResultsData["match-results"]) {
         throw new Error("Failed to fetch match results");
       }
       return matchResultsData["match-results"];
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-      return null;
+    } else {
+      // レスポンスがJSONではない場合
+      const responseText = await response.text();  // テキストレスポンスを取得
+      console.error("Received non-JSON response:", responseText);
+      throw new Error("Failed to fetch match results: Non-JSON response");
     }
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    return null;
+  }
   };
 
-  craeteTableFromMatchResult = (matchResultsData) => {
+  createTableFromMatchResult = (matchResultsData, isTypingGame = false) => {
+    if (!matchResultsData) {
+      return;
+    }
+  
     const tableElement = Object.assign(document.createElement("table"), {
       className: "table",
     });
     const theadElement = document.createElement("thead");
     const tbodyElement = document.createElement("tbody");
-    theadElement.innerHTML = `<tr>
-        <th scope="col">#</th>
-        <th scope="col">Player</th>
-        <th scope="col">Score</th>
-        <th scope="col">Score</th>
-        <th scope="col">Player</th>
-        </tr>`;
-
+  
+    if (isTypingGame) {
+      // TypingGameの場合
+      theadElement.innerHTML = `<tr>
+          <th scope="col">#</th>
+          <th scope="col">TypingGame Player 1</th>
+          <th scope="col">TypingGame Player 2</th>
+          <th scope="col">TypingGame Winner</th>
+          </tr>`;
+  
+      matchResultsData.forEach((matchResult) => {
+        const trElement = document.createElement("tr");
+        trElement.innerHTML = `
+              <th scope="row">${Number(matchResult.id)}</th>
+              <td>${matchResult.contents.player1}</td>
+              <td>${matchResult.contents.player2}</td>
+              <td>${matchResult.contents.winner}</td>`;
+        tbodyElement.appendChild(trElement);
+      });
+    } else {
+      // PongGameの場合
+      theadElement.innerHTML = `<tr>
+          <th scope="col">#</th>
+          <th scope="col">Player</th>
+          <th scope="col">Score</th>
+          <th scope="col">Score</th>
+          <th scope="col">Player</th>
+          </tr>`;
+  
+      matchResultsData.forEach((matchResult) => {
+        const trElement = document.createElement("tr");
+        trElement.innerHTML = `
+              <th scope="row">${Number(matchResult.id)}</th>
+              <td>${matchResult.contents.player1}</td>
+              <td>${matchResult.contents.player1_score}</td>
+              <td>${matchResult.contents.player2_score}</td>
+              <td>${matchResult.contents.player2}</td>`;
+        tbodyElement.appendChild(trElement);
+      });
+    }
+  
     tableElement.appendChild(theadElement);
-    matchResultsData.forEach((matchResult) => {
-      const trElement = document.createElement("tr");
-      trElement.innerHTML = `<tr>
-            <th scope="row">${Number(matchResult.id)}</th>
-            <td>${matchResult.contents.player1}</td>
-            <td>${matchResult.contents.player1_score}</td>
-            <td>${matchResult.contents.player2_score}</td>
-            <td>${matchResult.contents.player2}</td>
-            </tr>`;
-      tbodyElement.appendChild(trElement);
-    });
     tableElement.appendChild(tbodyElement);
-    this.findElement("div.match-result-table").appendChild(tableElement);
+  
+    // PongGameとTypingGameのテーブルを区別して追加
+    const tableContainer = isTypingGame
+      ? this.findElement("div.typinggame-result-table")
+      : this.findElement("div.ponggame-result-table");
+    
+    tableContainer.appendChild(tableElement);
   };
-
+  
   get html() {
     return `
       <main class="p-5 text-center">
-        <h1 class="match-result-title">Pong Game Last 10 Match Results</h1>
+        <h1 class="match-result-title">Last 10 Match Results</h1>
         <br>
-        <div class="match-result-table">
+        <div class="ponggame-result-table">
+          <h2>PongGame Results</h2>
+        </div>
+        <div class="typinggame-result-table">
+          <h2>TypingGame Results</h2>
         </div>
         <button class="go-back-to-home-button btn btn-primary">Back</button>
       </main>
