@@ -105,9 +105,9 @@ export class GameStats extends Component {
       // TypingGameの場合
       theadElement.innerHTML = `<tr>
           <th scope="col">#</th>
-          <th scope="col">TypingGame Player 1</th>
-          <th scope="col">TypingGame Player 2</th>
-          <th scope="col">TypingGame Winner</th>
+          <th scope="col">Winner</th>
+          <th scope="col">Player</th>
+          <th scope="col">Player</th>
           </tr>`;
   
       matchResultsData.forEach((matchResult) => {
