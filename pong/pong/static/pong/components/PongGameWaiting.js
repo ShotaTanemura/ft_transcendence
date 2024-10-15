@@ -3,7 +3,14 @@ import { Component } from "../core/component.js";
 export class PongGameWaiting extends Component {
   constructor(router, parameters, state) {
     super(router, parameters, state);
-    this.connection = this.getRouteContext("WebSocket");
+  }
+
+  afterPageLoaded() {
+    this.connection = this.getRouteContext("PongGameWebSocket");
+    if (!this.connection) {
+      alert("connection failed");
+      this.goNextPage("/");
+    }
     this.findElement("button.go-back-to-game-home").onclick = this.onClick;
   }
 

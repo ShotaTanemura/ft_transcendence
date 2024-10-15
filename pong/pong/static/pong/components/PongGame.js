@@ -3,11 +3,16 @@ import { Component } from "../core/component.js";
 export class PongGame extends Component {
   constructor(router, parameters, state) {
     super(router, parameters, state);
+  }
 
+  afterPageLoaded() {
     //setting websocket
-    this.connection = this.getRouteContext("WebSocket");
+    this.connection = this.getRouteContext("PongGameWebSocket");
+    if (!this.connection) {
+      alert("connection failed");
+      this.goNextPage("/");
+    }
     this.connection.onmessage = this.onMessage;
-
     this.canvas = this.findElement("canvas.ponggame");
     this.context = this.canvas.getContext("2d");
     this.grid = 15;
@@ -25,38 +30,34 @@ export class PongGame extends Component {
       y: this.canvas.height / 2,
       size: 80,
     };
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "w") {
-        this.connection.send(
-          JSON.stringify({
-            sender: "player",
-            type: "gameKeyEvent",
-            contents: "keyup-go-up",
-          }),
-        );
-      } else if (e.key === "s") {
-        this.connection.send(
-          JSON.stringify({
-            sender: "player",
-            type: "gameKeyEvent",
-            contents: "keyup-go-down",
-          }),
-        );
-      }
-    });
-    document.addEventListener("keyup", (e) => {
-      if (e.key === "w" || e.key === "s") {
-        this.connection.send(
-          JSON.stringify({
-            sender: "player",
-            type: "gameKeyEvent",
-            contents: "keydown",
-          }),
-        );
-      }
-    });
+    document.addEventListener("keydown", this.onKeyDown);
     requestAnimationFrame(this.loop);
   }
+
+  beforePageUnload() {
+    document.removeEventListener("keydown", this.onKeyDown);
+  }
+
+  onKeyDown = (event) => {
+    console.log(event.key);
+    if (event.key === "w") {
+      this.connection.send(
+        JSON.stringify({
+          sender: "player",
+          type: "gameKeyEvent",
+          contents: "keydown-go-up",
+        }),
+      );
+    } else if (event.key === "s") {
+      this.connection.send(
+        JSON.stringify({
+          sender: "player",
+          type: "gameKeyEvent",
+          contents: "keydown-go-down",
+        }),
+      );
+    }
+  };
 
   onMessage = (event) => {
     const message = JSON.parse(event.data);
@@ -78,6 +79,7 @@ export class PongGame extends Component {
           message.contents.player2.score;
         break;
       case "room-state":
+        this.setRouteContext("PongGameWebSocket", this.connection);
         this.changePageByRoomStatus(message);
         break;
       case "tournament":

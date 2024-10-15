@@ -62,6 +62,11 @@ class PongGame:
 
     # execture pong game and return the scores
     def execute(self, player1_name, player2_name):
+        self.ball = Ball(FIELD_WIDTH / 2, FIELD_HEIGHT / 2)
+        self.player1_paddle = Paddle()
+        self.player2_paddle = Paddle()
+        self.player1_score = 0
+        self.player2_score = 0
         while self.player1_score < 5 and self.player2_score < 5:
             async_to_sync(self.send_message_to_group)(
                 "send_game_information",
@@ -150,15 +155,15 @@ class PongGame:
 
     # recieve player message
     async def recieve_player1_input(self, message_json):
-        if message_json["contents"] == "keyup-go-up":
+        if message_json["contents"] == "keydown-go-up":
             self.player1_paddle.velocity -= PADDLE_ACCELERATION
-        elif message_json["contents"] == "keyup-go-down":
+        elif message_json["contents"] == "keydown-go-down":
             self.player1_paddle.velocity += PADDLE_ACCELERATION
 
     async def recieve_player2_input(self, message_json):
-        if message_json["contents"] == "keyup-go-up":
+        if message_json["contents"] == "keydown-go-up":
             self.player2_paddle.velocity -= PADDLE_ACCELERATION
-        elif message_json["contents"] == "keyup-go-down":
+        elif message_json["contents"] == "keydown-go-down":
             self.player2_paddle.velocity += PADDLE_ACCELERATION
 
     # send message to Group that belogs to this room

@@ -54,6 +54,31 @@ paths:
           $ref: "#/components/responses/badRequest"
         "404":
           $ref: "#/components/responses/notFoundError"
+  /pong/api/v1/auth/token/totp:
+  post:
+    summary: 二要素認証コードの確認とトークン, リフレッシュトークンの発行
+    description: 二要素認証コードの確認とトークン, リフレッシュトークンの発行
+    requestBody:
+      content:
+        "application/json":
+          schema:
+            $ref: "#/components/schemas/postTokenTotpRequest"
+      required: true
+    responses:
+      "200":
+        description: 二要素認証コードの確認とトークン, リフレッシュトークンの発行の成功
+        headers:
+          Set-Cookie:
+            schema:
+              type: string
+              description: 認証トークンとリフレッシュトークン
+              example: JWTTOKEN=jwttoken; JWTREFRESH=refresh-jwttoken Secure; HttpOnly
+        content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/postTokenTotpResponse"
+      "400":
+        $ref: "#/components/responses/badRequest"
   /pong/api/v1/auth/token/refresh:
     post:
       summary: トークンのリフレッシュ
@@ -85,6 +110,38 @@ paths:
                 schema:
                   $ref: "#/components/schemas/postTokenVerifyResponse"
         "401":
+          $ref: "#/components/responses/badRequest"
+  /pong/api/v1/auth/two-factor/provisioning:
+    post:
+      summary: TOTPの登録とURIの生成
+      description: TOTPの登録とURIの生成
+      responses:
+        "200":
+          description: TOTPの登録とURIの生成が成功
+          content:
+              "application/json":
+                schema:
+                  $ref: "#/components/schemas/post2FAProvisioningResponse"
+        "400":
+          $ref: "#/components/responses/badRequest"
+  /pong/api/v1/auth/two-factor/register:
+    post:
+      summary: TOTPの確認と登録
+      description: TOTPの確認と登録
+      requestBody:
+        content:
+          "application/json":
+            schema:
+                $ref: "#/components/schemas/post2FARegisterRequest"
+        required: true
+      responses:
+        "200":
+          description: TOTPの確認と登録が成功
+          content:
+              "application/json":
+                schema:
+                  $ref: "#/components/schemas/post2FARegisterResponse"
+        "400":
           $ref: "#/components/responses/badRequest"
   /pong/api/v1/users/{uuid}:
     get:
@@ -433,6 +490,23 @@ components:
             type: string
             description: トークンが発行されたユーザーのUUID
             example: b4cf1ef4-1cab-490b-a32c-f6528f95c796
+    postTokenTotpRequest:
+      type: object
+      properties:
+        code:
+          type: string
+          description: 認証コード
+          example: 000000
+      required:
+        - code
+    postTokenTotpResponse:
+      type: object
+      description: 認証トークンとリフレッシュトークン発行成功
+      properties:
+          uuid:
+            type: string
+            description: トークンが発行されたユーザーのUUID
+            example: b4cf1ef4-1cab-490b-a32c-f6528f95c796
     postRefreshTokenResponse:
       type: object
       description: トークンのリフレッシュの成功
@@ -449,6 +523,33 @@ components:
             type: string
             description: ユーザーのUUID
             example: b4cf1ef4-1cab-490b-a32c-f6528f95c796
+    post2FAProvisioningResponse:
+      type: object
+      description: TOTPの登録とURIの生成
+      properties:
+          uri:
+            type: string
+            description: TOTPのURI
+            example: uri
+    post2FARegisterRequest:
+      type: object
+      properties:
+        code:
+          type: string
+          description: 6桁2FAコード
+          example: 000000
+    post2FARegisterResponse:
+      type: object
+      description:  TOTPの確認と登録
+      properties:
+        status:
+          type: string
+          description: 成功時ステータス
+          example: status
+        message:
+          type: string
+          description: 成功時メッセージ
+          example: message
     getUserResponse:
       type: object
       description: ユーザー情報取得成功
@@ -465,6 +566,10 @@ components:
           type: string
           description: メールアドレス
           example: example@email.com
+        is_2fa_active:
+          type: boolean
+          description: 2FAの状態
+          example: true
     postUserIconResponse:
       properties:
         uuid:

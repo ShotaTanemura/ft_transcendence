@@ -4,13 +4,22 @@ import { PongGameTournamentBracket } from "./PongGameTournamentBracket.js";
 export class PongGameTournament extends Component {
   constructor(route, parameters, state) {
     super(route, parameters, state);
+  }
+
+  afterPageLoaded() {
+    if (!this.getRouteContext("PongGameWebSocket")) {
+      alert("connection failed.");
+      this.goNextPage("/");
+    }
+    const tournamentContext = this.getRouteContext("Tournament");
     this.bracket = new PongGameTournamentBracket(
-      route,
-      parameters,
-      state,
-      this.getRouteContext("Tournament"),
+      this.route,
+      this.parameters,
+      this.state,
+      tournamentContext,
     );
     this.element.appendChild(this.bracket.element);
+    this.unsetRouteContext("Tournament");
   }
 
   get html() {

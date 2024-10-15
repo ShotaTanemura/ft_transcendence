@@ -38,7 +38,7 @@ export class TypingGameHome extends Component {
     this.setRouteContext("roomID", event.target.elements["room-id"].value);
     // config/asgiで設定しているpathを指定
     const socketPath =
-      "ws://" +
+      "wss://" +
       window.location.hostname +
       ":" +
       window.location.port +

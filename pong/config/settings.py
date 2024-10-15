@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_prometheus",
     "pong",
     "chat.apps.ChatConfig",
     "realtime_pong_game",
@@ -46,6 +47,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "django_prometheus.middleware.PrometheusBeforeMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -53,7 +55,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "pong.middleware.auth.JWTAuthenticationMiddleware",
+    "pong.middleware.auth.LoginRequiredMiddleware",
+    "django_prometheus.middleware.PrometheusAfterMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -163,12 +166,18 @@ REDIS_PORT = 6379
 REDIS_DB = 0
 REDIS_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}"
 
+# user and password for basic auth
+BASIC_AUTH_USERNAME = os.getenv("DJANGO_SUPERUSER_USERNAME")
+BASIC_AUTH_PASSWORD = os.getenv("DJANGO_SUPERUSER_PASSWORD")
+
 # channelsのためのlayerの追加
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
             "hosts": [("redis", REDIS_PORT)],
+            "capacity": 1500,  # default 100
+            "expiry": 10,  # default 60
         },
     },
 }
@@ -192,3 +201,5 @@ CSRF_TRUSTED_ORIGINS = [
 ADMIN_PANEL_URL = os.getenv("ADMIN_PANEL_URL")
 
 ASGI_APPLICATION = "config.asgi.application"
+
+DJANGO_2FA_ISSUER = os.getenv("DJANGO_2FA_ISSUER")

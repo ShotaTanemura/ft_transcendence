@@ -23,6 +23,12 @@ export class Router {
     this.context[name] = value;
   }
 
+  unsetContext(name) {
+    if (name in this.context) {
+      delete this.context[name];
+    }
+  }
+
   getContext(name) {
     return this.context[name];
   }
@@ -42,13 +48,14 @@ export class Router {
   }
   // 実際にpathに遷移させる。
   changePage(path, search = undefined) {
+    path = path.replace(/\/+/g, "/").replace(/\/$/, "");
     let route = this.searchRouteFromPath(path, search);
     //TODO Return 404 Error Page
     if (route === null) {
       route = this.searchRouteFromPath("/error");
     }
 
-    if (path !== "/signin" && path !== "/signup") {
+    if (path !== "/signin" && path !== "/signup" && path !== "/totp") {
       this.verifyAndRefreshToken().catch((error) => {
         console.log(error);
         path = "/signin";

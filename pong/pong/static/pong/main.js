@@ -2,6 +2,7 @@ import "./core/component.js";
 import { Router } from "./core/router.js";
 import { Signup } from "./components/Signup.js";
 import { Signin } from "./components/Signin.js";
+import { Totp } from "./components/Totp.js";
 import { Home } from "./components/Home.js";
 import { Chat } from "./components/Chat.js";
 import { PongGameHome } from "./components/PongGameHome.js";
@@ -11,6 +12,7 @@ import { Error } from "./components/Error.js";
 import { Profile } from "./components/Profile.js";
 import { UserProfile } from "./components/UserProfile.js";
 import { EditProfile } from "./components/EditProfile.js";
+import { Edit2FA } from "./components/Edit2FA.js";
 import { TypingGameHome } from "./components/TypingGameHome.js";
 import { TypingGameWaiting } from "./components/TypingGameWaiting.js";
 import { TypingGame } from "./components/TypingGame.js";
@@ -35,8 +37,18 @@ let router = new Router(
       state: {},
     },
     {
+      path: "/totp",
+      component: Totp,
+      state: {},
+    },
+    {
       path: "/signin",
       component: Signin,
+      state: {},
+    },
+    {
+      path: "/edit-2fa",
+      component: Edit2FA,
       state: {},
     },
     {
