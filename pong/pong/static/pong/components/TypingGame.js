@@ -4,23 +4,40 @@ import { Header } from "./Header.js";
 export class TypingGame extends Component {
   constructor(router, parameters, state) {
     super(router, parameters, state);
-
-    this.connection = this.getRouteContext("TypingGameWebSocket");
-    if (!this.connection) {
-      alert("connection failed");
-      this.goNextPage("/");
-    }
-    this.connection.onmessage = this.onMessage;
     this.input_length = 0;
     this.timer = 10;
     this.maxTime = 10;
-    // ゲーム開始前にnext-wordが来るので、-1からスタート
     this.score = -1;
     this.isMyTurn = false;
   }
 
-  sendMessage = (e) => {
-    if (this.connection.readyState === WebSocket.OPEN) {
+  afterPageLoaded() {
+    this.headerComponent = new Header(this.router, this.params, this.state);
+    this.element.parentElement.prepend(this.headerComponent.element);
+    this.headerComponent.afterPageLoaded();
+
+    // WebSocketの設定
+    this.connection = this.getRouteContext("TypingGameWebSocket");
+  
+    if (!this.connection) {
+      alert("connection failed");
+      this.goNextPage("/");
+      return;
+    }
+    this.connection.onmessage = this.onMessage;
+
+    // キーボードイベントのリスナーを追加
+    document.addEventListener("keydown", this.onKeyDown);
+  }
+
+  beforePageUnload() {
+    // ページ遷移時にリスナーを解除
+    document.removeEventListener("keydown", this.onKeyDown);
+    this.element.parentElement.removeChild(this.headerComponent.element);
+  }
+
+  onKeyDown = (e) => {
+    if (this.connection && this.connection.readyState === WebSocket.OPEN) {
       // WebSocketが開いている状態のときのみ送信
       this.connection.send(
         JSON.stringify({
@@ -33,9 +50,11 @@ export class TypingGame extends Component {
       console.warn("Cannot send message, WebSocket is not open.");
     }
   };
+
   onMessage = (event) => {
     const message = JSON.parse(event.data);
-    console.log(message.type, message);
+    console.log("Received message:", message);
+
     switch (message.type) {
       case "start-game":
         break;
@@ -45,24 +64,20 @@ export class TypingGame extends Component {
         this.input_length = 0;
         document.getElementById("word").innerHTML = message.contents.word;
         this.score++;
-        document.getElementById("player_to_input").innerHTML =
-          message.contents.player;
+        document.getElementById("player_to_input").innerHTML = message.contents.player;
         document.getElementById("score").innerHTML = this.score;
         break;
 
       case "correct-key":
-        document.getElementById("inputCorrect").innerHTML +=
-          message.contents.word[this.input_length];
+        document.getElementById("inputCorrect").innerHTML += message.contents.word[this.input_length];
         this.input_length++;
-        // TODO: 文字が合っていたら、文字色を変える`
         break;
 
       case "incorrect-key":
         break;
 
       case "game-finished":
-        document.getElementById("winner").innerHTML =
-          `winner = ${message.contents.winner}`;
+        document.getElementById("winner").innerHTML = `winner = ${message.contents.winner}`;
         this.setRouteContext("TypingGameWinner", message.contents.winner);
         this.goNextPage("/typing-game-finished");
         break;
@@ -78,7 +93,6 @@ export class TypingGame extends Component {
 
       default:
         console.warn(`Unknown message type: ${message.type}`);
-        print(message);
         break;
     }
   };
@@ -115,18 +129,6 @@ export class TypingGame extends Component {
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillText(remainingTime + "s", centerX, centerY);
-  }
-
-  afterPageLoaded() {
-    this.headerComponent = new Header(this.router, this.params, this.state);
-    this.element.parentElement.prepend(this.headerComponent.element);
-    this.headerComponent.afterPageLoaded();
-    document.addEventListener("keydown", this.sendMessage);
-  }
-
-  beforePageUnload() {
-    document.removeEventListener("keydown", this.sendMessage);
-    this.element.parentElement.removeChild(this.headerComponent.element);
   }
 
   get html() {
