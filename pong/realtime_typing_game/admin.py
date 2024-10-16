@@ -1,4 +1,4 @@
 from django.contrib import admin
-from realtime_typing_game.models import TypingGameInfo
+from realtime_typing_game.models import MatchInfo
 
-admin.site.register(TypingGameInfo)
+admin.site.register(MatchInfo)

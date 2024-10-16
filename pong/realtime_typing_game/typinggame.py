@@ -6,7 +6,7 @@ import threading
 from channels.layers import get_channel_layer
 from asgiref.sync import sync_to_async
 from asgiref.sync import async_to_sync
-from realtime_typing_game.models import TypingGameInfo
+from realtime_typing_game.models import MatchInfo
 
 RED = "\033[91m"
 GREEN = "\033[92m"
@@ -106,7 +106,7 @@ class TypingGame:
                 print(f"{RED}Error: Player not found{RESET}")
                 return
 
-            self.typing_game_info = TypingGameInfo.objects.create(
+            self.typing_game_info = MatchInfo.objects.create(
                 player1=player1,
                 player2=player2,
             )
