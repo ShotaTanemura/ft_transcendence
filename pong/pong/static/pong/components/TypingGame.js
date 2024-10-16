@@ -7,18 +7,13 @@ export class TypingGame extends Component {
     this.input_length = 0;
     this.timer = 10;
     this.maxTime = 10;
+    // ゲーム開始前にnextwordが来て+1されるので-1からスタート
     this.score = -1;
     this.isMyTurn = false;
   }
 
   afterPageLoaded() {
-    this.headerComponent = new Header(this.router, this.params, this.state);
-    this.element.parentElement.prepend(this.headerComponent.element);
-    this.headerComponent.afterPageLoaded();
-
-    // WebSocketの設定
-    this.connection = this.getRouteContext("TypingGameWebSocket");
-  
+    this.connection = this.getRouteContext("TypingGameWebSocket");  
     if (!this.connection) {
       alert("connection failed");
       this.goNextPage("/");
@@ -33,7 +28,6 @@ export class TypingGame extends Component {
   beforePageUnload() {
     // ページ遷移時にリスナーを解除
     document.removeEventListener("keydown", this.onKeyDown);
-    this.element.parentElement.removeChild(this.headerComponent.element);
   }
 
   onKeyDown = (e) => {
