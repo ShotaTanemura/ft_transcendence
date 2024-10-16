@@ -23,6 +23,7 @@ def get_available_roomid(request):
         status=200,
     )
 
+
 @csrf_exempt
 def get_user_match_result(request, name):
     if request.method != "GET":
@@ -49,7 +50,9 @@ def get_user_match_result(request, name):
             "contents": {
                 "player1": user_match_result.player1.name,
                 "player2": user_match_result.player2.name,
-                "winner": user_match_result.winner.name if user_match_result.winner else "No winner",
+                "winner": user_match_result.winner.name
+                if user_match_result.winner
+                else "No winner",
             },
         }
         user_match_results.append(user_match_result_json)

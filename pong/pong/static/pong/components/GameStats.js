@@ -12,8 +12,13 @@ export class GameStats extends Component {
     this.headerComponent = new Header(this.router, this.params, this.state);
     this.element.parentElement.prepend(this.headerComponent.element);
     this.headerComponent.afterPageLoaded();
-    this.createTableFromMatchResult(await this.getMatchResultsData("/ponggame/api/v1/match-result/"));
-    this.createTableFromMatchResult(await this.getMatchResultsData("/typinggame/api/v1/match-result/"), true);
+    this.createTableFromMatchResult(
+      await this.getMatchResultsData("/ponggame/api/v1/match-result/"),
+    );
+    this.createTableFromMatchResult(
+      await this.getMatchResultsData("/typinggame/api/v1/match-result/"),
+      true,
+    );
   };
 
   beforePageUnload = () => {
@@ -53,47 +58,45 @@ export class GameStats extends Component {
     }
 
     try {
-      const response = await fetch(`${apiEndpoint}${userName}`,
-        {
+      const response = await fetch(`${apiEndpoint}${userName}`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        },
-      );
+      });
       const contentType = response.headers.get("content-type");
-    if (contentType && contentType.includes("application/json")) {
-      const matchResultsData = await response.json();
-      if (!response.ok) {
-        throw new Error(
-          matchResultsData.message || "Failed to fetch user data:"
-        );
+      if (contentType && contentType.includes("application/json")) {
+        const matchResultsData = await response.json();
+        if (!response.ok) {
+          throw new Error(
+            matchResultsData.message || "Failed to fetch user data:",
+          );
+        }
+        if (!matchResultsData["match-results"]) {
+          throw new Error("Failed to fetch match results");
+        }
+        return matchResultsData["match-results"];
+      } else {
+        const responseText = await response.text();
+        console.error("Received non-JSON response:", responseText);
+        throw new Error("Failed to fetch match results: Non-JSON response");
       }
-      if (!matchResultsData["match-results"]) {
-        throw new Error("Failed to fetch match results");
-      }
-      return matchResultsData["match-results"];
-    } else {
-      const responseText = await response.text();
-      console.error("Received non-JSON response:", responseText);
-      throw new Error("Failed to fetch match results: Non-JSON response");
+    } catch (error) {
+      console.error("Error :", error);
+      return null;
     }
-  } catch (error) {
-    console.error("Error :", error);
-    return null;
-  }
   };
 
   createTableFromMatchResult = (matchResultsData, isTypingGame = false) => {
     if (!matchResultsData) {
       return;
     }
-  
+
     const tableElement = Object.assign(document.createElement("table"), {
       className: "table",
     });
     const theadElement = document.createElement("thead");
     const tbodyElement = document.createElement("tbody");
-  
+
     if (isTypingGame) {
       // TypingGameの場合
       theadElement.innerHTML = `<tr>
@@ -102,7 +105,7 @@ export class GameStats extends Component {
           <th scope="col">Player</th>
           <th scope="col">Player</th>
           </tr>`;
-  
+
       matchResultsData.forEach((matchResult) => {
         const trElement = document.createElement("tr");
         trElement.innerHTML = `
@@ -122,7 +125,7 @@ export class GameStats extends Component {
           <th scope="col">Score</th>
           <th scope="col">Player</th>
           </tr>`;
-  
+
       matchResultsData.forEach((matchResult) => {
         const trElement = document.createElement("tr");
         trElement.innerHTML = `
@@ -135,17 +138,17 @@ export class GameStats extends Component {
         tbodyElement.appendChild(trElement);
       });
     }
-  
+
     tableElement.appendChild(theadElement);
     tableElement.appendChild(tbodyElement);
-  
+
     const tableContainer = isTypingGame
       ? this.findElement("div.typinggame-result-table")
       : this.findElement("div.ponggame-result-table");
-    
+
     tableContainer.appendChild(tableElement);
   };
-  
+
   get html() {
     return `
       <main class="p-5 text-center">
