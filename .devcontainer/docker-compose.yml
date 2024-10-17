@@ -123,7 +123,7 @@ services:
     image: "nginx/nginx-prometheus-exporter"
     ports:
       - "9113:9113"
-    entrypoint: nginx-prometheus-exporter -nginx.scrape-uri=http://web/nginx_status
+    entrypoint: nginx-prometheus-exporter -nginx.scrape-uri=https://web/nginx_status
     restart: always
 
 
