@@ -66,7 +66,8 @@ export class PongGameHome extends Component {
 
   setSubmitForm = (query) => {
     this.setRouteContext("RoomID", query["room-id"]);
-    const socketPath = `wss://${window.location.hostname}:${window.location.port}/realtime-pong/${query["room-id"]}/${query["name"]}/2/`;
+    console.log("query: ", query);
+    const socketPath = `wss://${window.location.hostname}:${window.location.port}/realtime-pong/${query["room-id"]}/${query["name"]}/${query["number-of-players"]}/`;
     this.connection = new WebSocket(socketPath);
     this.connection.onopen = this.onWebSocketOpen;
     this.connection.onclose = this.onWebSocketClose;
