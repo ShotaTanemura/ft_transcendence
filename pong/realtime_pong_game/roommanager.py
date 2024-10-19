@@ -186,9 +186,8 @@ class Room:
                 "room_notifications",
                 {
                     "type": "game_notification",
-                    "room_id": "1000",
+                    "room_id": self.room_name,
                     "users": users_list,
-                    "message": self.room_name,
                 },
             )
             # if player2 is None, player1 is the tournament winner
