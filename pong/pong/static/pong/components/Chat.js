@@ -211,7 +211,7 @@ export class Chat extends Component {
 
     gameLink.href = window.location.origin + url;
     gameLink.textContent = window.location.origin + url;
-    gameLink.innerHTML = "こちらのリンクをクリック!!"
+    gameLink.innerHTML = "こちらのリンクをクリック!!";
 
     modal.style.display = "block";
 
