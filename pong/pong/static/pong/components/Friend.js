@@ -44,7 +44,7 @@ export class Friend extends Component {
 
   createFriendList = async () => {
     const friendsData = await getFriendsData();
-    if (!friendsData) {
+    if (!friendsData.length) {
       const friendNotFoundElement = Object.assign(document.createElement("p"), {
         className: "p-3 text-secondary",
       });
@@ -78,7 +78,7 @@ export class Friend extends Component {
 
   createRequestedFriendList = async () => {
     const friendsData = await getRequestedFriendsData();
-    if (!friendsData) {
+    if (!friendsData.length) {
       const friendNotFoundElement = Object.assign(document.createElement("p"), {
         className: "p-3 text-secondary",
       });
@@ -131,7 +131,7 @@ export class Friend extends Component {
 
   createPendingFriendList = async () => {
     const friendsData = await getPendingFriendsData();
-    if (!friendsData) {
+    if (!friendsData.length) {
       const friendNotFoundElement = Object.assign(document.createElement("p"), {
         className: "p-3 text-secondary",
       });
