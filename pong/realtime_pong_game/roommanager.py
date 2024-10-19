@@ -92,6 +92,7 @@ class Room:
             if new_participant in self.participants:
                 return False
             self.participants.append(new_participant)
+            self.participants_connection[new_participant] = True
             self.participant_nickname_dict[new_participant] = (
                 f"{new_participant_nickname} #{len(self.participants)}"
             )
