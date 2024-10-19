@@ -12,12 +12,11 @@ export class GameStats extends Component {
     this.headerComponent = new Header(this.router, this.params, this.state);
     this.element.parentElement.prepend(this.headerComponent.element);
     this.headerComponent.afterPageLoaded();
-    this.createTableFromMatchResult(
-      await this.getMatchResultsData("/ponggame/api/v1/match-result/"),
+    this.createPongGameMatchResultTable(
+      await this.getMatchResultsData("/ponggame/api/v1/match-result/")
     );
-    this.createTableFromMatchResult(
-      await this.getMatchResultsData("/typinggame/api/v1/match-result/"),
-      true,
+      this.createTypingGameMatchResultTable(
+      await this.getMatchResultsData("/typinggame/api/v1/match-result/")
     );
   };
 
@@ -86,7 +85,7 @@ export class GameStats extends Component {
     }
   };
 
-  createTableFromMatchResult = (matchResultsData, isTypingGame = false) => {
+  createPongGameMatchResultTable = (matchResultsData) => {
     if (!matchResultsData) {
       return;
     }
@@ -97,55 +96,66 @@ export class GameStats extends Component {
     const theadElement = document.createElement("thead");
     const tbodyElement = document.createElement("tbody");
 
-    if (isTypingGame) {
-      // TypingGameの場合
-      theadElement.innerHTML = `<tr>
-          <th scope="col">#</th>
-          <th scope="col">Winner</th>
-          <th scope="col">Player</th>
-          <th scope="col">Player</th>
-          </tr>`;
+    theadElement.innerHTML = `<tr>
+        <th scope="col">#</th>
+        <th scope="col">Date</th>
+        <th scope="col">Player</th>
+        <th scope="col">Score</th>
+        <th scope="col">Score</th>
+        <th scope="col">Player</th>
+      </tr>`;
 
-      matchResultsData.forEach((matchResult) => {
-        const trElement = document.createElement("tr");
-        trElement.innerHTML = `
-              <th scope="row">${Number(matchResult.id)}</th>
-              <td>${matchResult.contents.player1}</td>
-              <td>${matchResult.contents.player2}</td>
-              <td>${matchResult.contents.winner}</td>`;
-        tbodyElement.appendChild(trElement);
-      });
-    } else {
-      // PongGameの場合
-      theadElement.innerHTML = `<tr>
-          <th scope="col">#</th>
-          <th scope="col">date</th>
-          <th scope="col">Player</th>
-          <th scope="col">Score</th>
-          <th scope="col">Score</th>
-          <th scope="col">Player</th>
-          </tr>`;
-
-      matchResultsData.forEach((matchResult) => {
-        const trElement = document.createElement("tr");
-        trElement.innerHTML = `
-              <th scope="row">${Number(matchResult.id)}</th>
-              <td>${matchResult.contents.date}</td>
-              <td>${matchResult.contents.player1}</td>
-              <td>${matchResult.contents.player1_score}</td>
-              <td>${matchResult.contents.player2_score}</td>
-              <td>${matchResult.contents.player2}</td>`;
-        tbodyElement.appendChild(trElement);
-      });
-    }
+    matchResultsData.forEach((matchResult) => {
+      const trElement = document.createElement("tr");
+      trElement.innerHTML = `
+            <th scope="row">${Number(matchResult.id)}</th>
+            <td>${matchResult.contents.date}</td>
+            <td>${matchResult.contents.player1}</td>
+            <td>${matchResult.contents.player1_score}</td>
+            <td>${matchResult.contents.player2_score}</td>
+            <td>${matchResult.contents.player2}</td>`;
+      tbodyElement.appendChild(trElement);
+    });
 
     tableElement.appendChild(theadElement);
     tableElement.appendChild(tbodyElement);
 
-    const tableContainer = isTypingGame
-      ? this.findElement("div.typinggame-result-table")
-      : this.findElement("div.ponggame-result-table");
+    const tableContainer = this.findElement("div.ponggame-result-table");
+    tableContainer.appendChild(tableElement);
+  };
 
+  createTypingGameMatchResultTable = (matchResultsData) => {
+    if (!matchResultsData) {
+      return;
+    }
+
+    const tableElement = Object.assign(document.createElement("table"), {
+      className: "table",
+    });
+    const theadElement = document.createElement("thead");
+    const tbodyElement = document.createElement("tbody");
+
+    theadElement.innerHTML = `<tr>
+        <th scope="col">#</th>
+        <th scope="col">Winner</th>
+        <th scope="col">Player</th>
+        <th scope="col">Player</th>
+      </tr>`;
+
+    matchResultsData.forEach((matchResult) => {
+      const trElement = document.createElement("tr");
+      trElement.innerHTML = `
+            <th scope="row">${Number(matchResult.id)}</th>
+            <td>${matchResult.contents.winner}</td>
+            <td>${matchResult.contents.player1}</td>
+            <td>${matchResult.contents.player2}</td>`;
+      tbodyElement.appendChild(trElement);
+    });
+
+    tableElement.appendChild(theadElement);
+    tableElement.appendChild(tbodyElement);
+
+    const tableContainer = this.findElement("div.typinggame-result-table");
     tableContainer.appendChild(tableElement);
   };
 

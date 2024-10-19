@@ -10,5 +10,4 @@ urlpatterns = [
         get_user_match_result,
         name="get-user-match-result",
     ),
-    path("api/v1/available-roomid", get_available_roomid, name="get-available-roomid"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
