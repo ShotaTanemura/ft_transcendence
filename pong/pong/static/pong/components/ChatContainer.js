@@ -115,22 +115,19 @@ export class ChatContainer extends Component {
   inviteToGame = async (roomUuid) => {
     const roomId = await getAvailablePongGameRoomId();
     if (this.onSendMessage) {
+      const href = `${window.location.origin}/pong-game-home?room-id=${roomId}&name=guest&number-of-players=4`;
+
       this.onSendMessage(
         roomUuid,
-        "ゲームを開始します!以下のリンクからゲームに参加してください" +
-          "<br>" +
-          "<a href=" +
-          window.location.origin +
-          "/pong-game-home?room-id=" +
-          roomId +
-          "&name=guest" +
-          " " +
-          "target='_blank' rel='noopener noreferrer'>ゲームに参加する" +
-          "</a>",
+        `ゲームを開始します!以下のリンクからゲームに参加してください<br>
+         <a href="${href}" target="_blank" rel="noopener noreferrer">ゲームに参加する</a>`,
       );
     }
     window.open(
-      "/pong-game-home?room-id=" + roomId + "&name=host",
+      "/pong-game-home?room-id=" +
+        roomId +
+        "&name=host" +
+        "&number-of-players=4",
       "_blank",
       "noopener,noreferrer",
     );
