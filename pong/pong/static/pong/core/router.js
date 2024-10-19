@@ -49,6 +49,9 @@ export class Router {
   // 実際にpathに遷移させる。
   changePage(path, search = undefined) {
     path = path.replace(/\/+/g, "/").replace(/\/$/, "");
+    if (path === "") {
+      path = "/";
+    }
     let route = this.searchRouteFromPath(path, search);
     //TODO Return 404 Error Page
     if (route === null) {
