@@ -6,6 +6,9 @@ export class ChatContainer extends Component {
     super(router, params, state, ".chat-container");
     this.selectedRoom = undefined;
     this.socket = state.socket;
+
+    this.eventListeners = {};
+
     this.render();
   }
 
@@ -25,26 +28,21 @@ export class ChatContainer extends Component {
       return;
     }
 
-    if (messagesContainer) {
-      const messageElement = document.createElement("div");
-      const messageContent = document.createElement("div");
+    const messageElement = document.createElement("div");
+    const messageContent = document.createElement("div");
 
-      messageElement.classList.add("message");
-      if (message.user_uuid === myId) {
-        messageContent.classList.add("my-message");
-        messageContent.innerHTML = `<div class="my-user-message">${message.message}</div>`;
-      } else {
-        messageContent.classList.add("other-message");
-        messageContent.innerHTML = `<div class="other-user-name">${message.user}</div><div class="other-user-message">${message.message}</div>`;
-      }
-
-      messageElement.appendChild(messageContent);
-
-      messagesContainer.appendChild(messageElement);
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    messageElement.classList.add("message");
+    if (message.user_uuid === myId) {
+      messageContent.classList.add("my-message");
+      messageContent.innerHTML = `<div class="my-user-message">${message.message}</div>`;
     } else {
-      console.error("Messages container not found");
+      messageContent.classList.add("other-message");
+      messageContent.innerHTML = `<div class="other-user-name">${message.user}</div><div class="other-user-message">${message.message}</div>`;
     }
+
+    messageElement.appendChild(messageContent);
+    messagesContainer.appendChild(messageElement);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
   }
 
   displayRoom(select) {
@@ -81,11 +79,15 @@ export class ChatContainer extends Component {
 
       chatContainer.appendChild(form);
 
-      messageForm.addEventListener("submit", (event) => {
+      this.eventListeners.messageFormSubmitListener = (event) => {
         event.preventDefault();
         this.emitMessage(select.uuid, messageInput.value);
         messageInput.value = "";
-      });
+      };
+      messageForm.addEventListener(
+        "submit",
+        this.eventListeners.messageFormSubmitListener,
+      );
 
       const header = document.querySelector(".direct-message-header");
       header.innerHTML = `<h3>${select.name}</h3> 
@@ -93,38 +95,103 @@ export class ChatContainer extends Component {
                           <button class="leave-button">ルームから退出</button>`;
 
       const leaveButton = document.querySelector(".leave-button");
-      leaveButton.addEventListener("click", () => this.confirmLeaveRoom());
+      this.eventListeners.leaveButtonClickListener = () =>
+        this.confirmLeaveRoom();
+      leaveButton.addEventListener(
+        "click",
+        this.eventListeners.leaveButtonClickListener,
+      );
 
       const inviteButton = document.querySelector(".invite-button");
-      inviteButton.addEventListener("click", () =>
-        this.inviteToGame(select.uuid),
+      this.eventListeners.inviteButtonClickListener = () =>
+        this.inviteToGame(select.uuid);
+      inviteButton.addEventListener(
+        "click",
+        this.eventListeners.inviteButtonClickListener,
       );
     }
   }
 
   inviteToGame = async (roomUuid) => {
-    const roomId = await getAvailablePongGameRoomId();
-    if (this.onSendMessage) {
-      this.onSendMessage(
-        roomUuid,
-        "ゲームを開始します!以下のリンクからゲームに参加してください" +
-          "<br>" +
-          "<a href=" +
-          window.location.origin +
-          "/pong-game-home?room-id=" +
-          roomId +
-          "&name=guest" +
-          " " +
-          "target='_blank' rel='noopener noreferrer'>ゲームに参加する" +
-          "</a>",
-      );
-    }
-    window.open(
-      "/pong-game-home?room-id=" + roomId + "&name=host",
-      "_blank",
-      "noopener,noreferrer",
-    );
+    this.showNumberOfPlayersModal(roomUuid);
   };
+
+  showNumberOfPlayersModal = (roomUuid) => {
+    const modal = document.createElement("div");
+    modal.classList.add("direct-message-modal");
+
+    const modalContent = document.createElement("div");
+    modalContent.classList.add("modal-content");
+
+    const modalHeader = document.createElement("div");
+    modalHeader.classList.add("modal-header");
+    const closeModalButton = document.createElement("span");
+    closeModalButton.classList.add("close");
+    closeModalButton.innerHTML = "&times;";
+    modalHeader.appendChild(closeModalButton);
+    const modalTitle = document.createElement("h2");
+    modalTitle.textContent = "プレイヤー数を選択";
+    modalHeader.appendChild(modalTitle);
+
+    const modalBody = document.createElement("div");
+    modalBody.classList.add("modal-body");
+
+    const numberOfPlayersForm = document.createElement("form");
+
+    const twoPlayersOption = document.createElement("label");
+    twoPlayersOption.innerHTML =
+      '<input type="radio" name="number-of-players" value="2"> 2人プレイ';
+
+    const fourPlayersOption = document.createElement("label");
+    fourPlayersOption.innerHTML =
+      '<input type="radio" name="number-of-players" value="4" checked> 4人プレイ';
+
+    numberOfPlayersForm.appendChild(twoPlayersOption);
+    numberOfPlayersForm.appendChild(fourPlayersOption);
+
+    modalBody.appendChild(numberOfPlayersForm);
+
+    const modalFooter = document.createElement("div");
+    modalFooter.classList.add("modal-footer");
+    const startGameButton = document.createElement("button");
+    startGameButton.textContent = "ゲームを開始する";
+
+    modalFooter.appendChild(startGameButton);
+
+    modalContent.appendChild(modalHeader);
+    modalContent.appendChild(modalBody);
+    modalContent.appendChild(modalFooter);
+
+    modal.appendChild(modalContent);
+    document.body.appendChild(modal);
+
+    closeModalButton.onclick = () => {
+      document.body.removeChild(modal);
+    };
+
+    startGameButton.onclick = async () => {
+      const selectedOption =
+        numberOfPlayersForm.elements["number-of-players"].value;
+      const numberOfPlayers = selectedOption;
+      const roomId = await getAvailablePongGameRoomId();
+      if (this.onSendMessage) {
+        const href = `${window.location.origin}/pong-game-home?room-id=${roomId}&name=guest&number-of-players=${numberOfPlayers}`;
+
+        this.onSendMessage(
+          roomUuid,
+          `${numberOfPlayers}人用ゲームを開始します!以下のリンクからゲームに参加してください<br>
+           <a href="${href}" target="_blank" rel="noopener noreferrer">ゲームに参加する</a>`,
+        );
+      }
+      window.open(
+        `/pong-game-home?room-id=${roomId}&name=host&number-of-players=${numberOfPlayers}`,
+        "_blank",
+        "noopener,noreferrer",
+      );
+      document.body.removeChild(modal);
+    };
+  };
+
   confirmLeaveRoom() {
     const confirmation = window.confirm("本当に退出しますか？");
     if (confirmation) {
@@ -148,15 +215,42 @@ export class ChatContainer extends Component {
   clear() {
     console.log("Clearing chat container");
     this.selectedRoom = undefined;
+
     const messagesContainer = document.querySelector(
       ".direct-message-messages",
     );
     if (messagesContainer) {
       messagesContainer.innerHTML = "";
     }
+
     const header = document.querySelector(".direct-message-header");
     header.innerHTML = "ルームを選択してください";
+
+    this.removeEventListeners();
     this.render();
+  }
+
+  removeEventListeners() {
+    const {
+      messageFormSubmitListener,
+      leaveButtonClickListener,
+      inviteButtonClickListener,
+    } = this.eventListeners;
+
+    const messageForm = document.querySelector(".direct-message-form");
+    if (messageForm && messageFormSubmitListener) {
+      messageForm.removeEventListener("submit", messageFormSubmitListener);
+    }
+
+    const leaveButton = document.querySelector(".leave-button");
+    if (leaveButton && leaveButtonClickListener) {
+      leaveButton.removeEventListener("click", leaveButtonClickListener);
+    }
+
+    const inviteButton = document.querySelector(".invite-button");
+    if (inviteButton && inviteButtonClickListener) {
+      inviteButton.removeEventListener("click", inviteButtonClickListener);
+    }
   }
 
   get html() {

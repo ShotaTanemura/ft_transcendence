@@ -25,8 +25,6 @@ export class Header extends Component {
       this.onClickFriendButton;
     document.getElementById("navigate-stats-link").onclick =
       this.onClickStatsButton;
-    document.getElementById("navigate-settings-link").onclick =
-      this.onClickSettingsButton;
     document.getElementById("navigate-signout-link").onclick =
       this.onClickSignoutButton;
   }
@@ -91,11 +89,6 @@ export class Header extends Component {
   onClickStatsButton = () => {
     this.router.goNextPage("/stats");
     this.render();
-  };
-
-  onClickSettingsButton = () => {
-    //TODO handle action
-    alert("#TODO Settingsに移動する");
   };
 
   onClickSignoutButton = async (event) => {
@@ -194,14 +187,6 @@ export class Header extends Component {
                 <i class="bi bi-graph-up px-2 fa-2x"></i>
                 <span class="fa-2x align-bottom">
                   Stats
-                </span>
-              </button>
-            </li>
-            <li class="nav-item">
-              <button id="navigate-settings-link" class="btn btn-link nav-link active" aria-current="page">
-                <i class="bi bi-gear px-2 fa-2x"></i>
-                <span class="fa-2x align-bottom">
-                  Settings
                 </span>
               </button>
             </li>
