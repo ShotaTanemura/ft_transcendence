@@ -85,7 +85,7 @@ class Room:
                 return False
             self.participants.append(new_participant)
             self.participant_nickname_dict[new_participant] = (
-                f"{new_participant_nickname} #{len(self.participants)}"
+                f"{new_participant_nickname}"
             )
         self.set_participant_state(new_participant, ParticipantState.Not_In_Place)
         return True
@@ -176,6 +176,21 @@ class Room:
 
         while is_tournament_ongoing:
             (player1, player2) = self.tournament_manager.get_next_match_players()
+            channel_layer = get_channel_layer()
+            users_list = [
+                self.participant_nickname_dict[player1],
+                self.participant_nickname_dict[player2],
+            ]
+
+            async_to_sync(channel_layer.group_send)(
+                "room_notifications",
+                {
+                    "type": "game_notification",
+                    "room_id": "1000",
+                    "users": users_list,
+                    "message": self.room_name,
+                },
+            )
             # if player2 is None, player1 is the tournament winner
             if player2 == None:
                 tournament_winner = player1
