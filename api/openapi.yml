@@ -378,6 +378,28 @@ paths:
           $ref: "#/components/responses/badRequest"
         "404":
           $ref: "#/components/responses/notFoundError"
+  /typinggame/api/v1/match-result/{uuid}:
+      post:
+        summary: ユーザーのTypingGameの直近10試合の履歴の取得
+        parameters:
+        - name: uuid
+          in: path
+          description: ユーザーのUUID
+          required: true
+          schema:
+            type: string
+          example: b4cf1ef4-1cab-490b-a32c-f6528f95c796
+        responses:
+          "200":
+            description: 試合結果の取得成功
+            content:
+              "application/json":
+                schema:
+                  $ref: "#/components/schemas/getTypingGameLast10MatchesResult"
+          "400":
+            $ref: "#/components/responses/badRequest"
+          "404":
+            $ref: "#/components/responses/notFoundError"
 components:
   responses:
     badRequest:
@@ -593,6 +615,32 @@ components:
                         type: integer
                       player2-score:
                         type: integer
+    getTypingGameLast10MatchesResult:
+      type: object
+      description: ユーザーのTypingGame試合結果情報取得成功
+      properties:
+        match-results:
+          type: array
+          description: 直近の試合を最大10件までarrayで取得
+          items:
+            oneOf:
+              - type: object
+                properties:
+                  id:
+                    description: 直近の試合が若い番号になる
+                    type: integer
+                  contents:
+                    type: object
+                    properties:
+                      winner:
+                        type: string
+                        description: 試合の勝者の名前
+                      player1:
+                        type: string
+                        description: player1の名前
+                      player2:
+                        type: string
+                        description: player2の名前
     getOtherUser:
       type: object
       description: 他のユーザー情報取得成功

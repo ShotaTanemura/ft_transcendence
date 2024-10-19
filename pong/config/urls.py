@@ -26,5 +26,6 @@ urlpatterns = [
     path("metrics/", include("django_prometheus.urls")),
     path("chat/", include("chat.urls")),
     path("ponggame/", include("realtime_pong_game.urls")),
+    path("typinggame/", include("realtime_typing_game.urls")),
     re_path(r"^.*$", index, name="index"),
 ]
