@@ -179,7 +179,7 @@ export class ChatContainer extends Component {
 
         this.onSendMessage(
           roomUuid,
-          `ゲームを開始します!以下のリンクからゲームに参加してください<br>
+          `${numberOfPlayers}人用ゲームを開始します!以下のリンクからゲームに参加してください<br>
            <a href="${href}" target="_blank" rel="noopener noreferrer">ゲームに参加する</a>`,
         );
       }
