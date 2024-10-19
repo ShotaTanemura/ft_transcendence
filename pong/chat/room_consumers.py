@@ -185,7 +185,6 @@ class RoomConsumer(WebsocketConsumer):
         users = event["users"]
         roomId = event["room_id"]
 
-
         uus = []
         for user in users:
             u = User.objects.get_user_nickname(user)
@@ -201,7 +200,6 @@ class RoomConsumer(WebsocketConsumer):
                         }
                     )
                 )
-
 
     def disconnect(self, close_code):
         if hasattr(self, "room_group_name"):
