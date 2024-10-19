@@ -35,7 +35,6 @@ export class TypingGame extends Component {
   };
   onMessage = (event) => {
     const message = JSON.parse(event.data);
-    console.log(message.type, message);
     switch (message.type) {
       case "start-game":
         break;
