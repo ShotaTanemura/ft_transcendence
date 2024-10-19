@@ -13,10 +13,10 @@ export class GameStats extends Component {
     this.element.parentElement.prepend(this.headerComponent.element);
     this.headerComponent.afterPageLoaded();
     this.createPongGameMatchResultTable(
-      await this.getMatchResultsData("/ponggame/api/v1/match-result/")
+      await this.getMatchResultsData("/ponggame/api/v1/match-result/"),
     );
-      this.createTypingGameMatchResultTable(
-      await this.getMatchResultsData("/typinggame/api/v1/match-result/")
+    this.createTypingGameMatchResultTable(
+      await this.getMatchResultsData("/typinggame/api/v1/match-result/"),
     );
   };
 
