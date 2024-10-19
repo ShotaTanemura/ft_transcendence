@@ -1,5 +1,4 @@
 import { Component } from "../core/component.js";
-import { Header } from "./Header.js";
 
 export class TypingGame extends Component {
   constructor(router, parameters, state) {
@@ -13,7 +12,7 @@ export class TypingGame extends Component {
   }
 
   afterPageLoaded() {
-    this.connection = this.getRouteContext("TypingGameWebSocket");  
+    this.connection = this.getRouteContext("TypingGameWebSocket");
     if (!this.connection) {
       alert("connection failed");
       this.goNextPage("/");
@@ -56,12 +55,14 @@ export class TypingGame extends Component {
         this.input_length = 0;
         document.getElementById("word").innerHTML = message.contents.word;
         this.score++;
-        document.getElementById("player_to_input").innerHTML = message.contents.player;
+        document.getElementById("player_to_input").innerHTML =
+          message.contents.player;
         document.getElementById("score").innerHTML = this.score;
         break;
 
       case "correct-key":
-        document.getElementById("inputCorrect").innerHTML += message.contents.word[this.input_length];
+        document.getElementById("inputCorrect").innerHTML +=
+          message.contents.word[this.input_length];
         this.input_length++;
         break;
 
@@ -69,7 +70,8 @@ export class TypingGame extends Component {
         break;
 
       case "game-finished":
-        document.getElementById("winner").innerHTML = `winner = ${message.contents.winner}`;
+        document.getElementById("winner").innerHTML =
+          `winner = ${message.contents.winner}`;
         this.setRouteContext("TypingGameWinner", message.contents.winner);
         this.goNextPage("/typing-game-finished");
         break;
