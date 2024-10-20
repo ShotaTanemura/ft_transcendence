@@ -56,11 +56,14 @@ export class Signup extends Component {
     });
     console.log(response);
     const data = await response.json();
-
     if (!response.ok) {
       switch (response.status) {
         case 400:
-          throw Error("不正なリクエストです");
+          if (data.status === "invalidPassword") {
+            throw Error(this.getPasswordRequirementsMessage());
+          } else {
+            throw Error("不正なリクエストです");
+          }
         case 409:
           throw Error(
             "既に存在するユーザー名, メールアドレスまたはニックネームです",
@@ -71,6 +74,16 @@ export class Signup extends Component {
     }
     return data;
   };
+
+  getPasswordRequirementsMessage() {
+    return `パスワードは以下の条件を満たす必要があります：
+    • 最低8文字以上の長さが必要です
+    • 一般的すぎるパスワードは使用できません
+    • 数字のみのパスワードは使用できません
+    • ユーザー名、メールアドレス、ニックネームと似すぎているパスワードは使用できません
+    • 大文字、小文字、数字、特殊文字を含めることをお勧めします
+  `;
+  }
 
   get html() {
     return `
