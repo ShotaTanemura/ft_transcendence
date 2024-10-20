@@ -89,6 +89,12 @@ export class PongGame extends Component {
       case "tournament-winner":
         this.setRouteContext("TournamentWinner", message.contents);
         break;
+      case "timeout":
+        if (document.getElementById("timeoutMessage")) {
+          document.getElementById("timeoutMessage").innerHTML =
+            "Timeout requested.";
+        }
+        break;
     }
   };
 

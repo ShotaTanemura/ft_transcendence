@@ -51,6 +51,12 @@ export class PongGameHome extends Component {
         alert(message.contents);
         this.goNextPage("/error");
         break;
+      case "timeout":
+        if (document.getElementById("timeoutMessage")) {
+          document.getElementById("timeoutMessage").innerHTML =
+            "Timeout requested.";
+        }
+        break;
     }
   };
 
