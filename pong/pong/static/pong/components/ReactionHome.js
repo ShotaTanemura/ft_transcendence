@@ -165,6 +165,9 @@ export class Reaction extends Component {
       } else if (messageType === "player_left") {
         alert("相手のプレイヤーがゲームから離れました。");
         this.handleExit();
+      } else if (messageType === "room_full") {
+        alert("ルームが満員です。他のルームに参加してください。");
+        this.handleExit();
       }
     });
 
@@ -229,4 +232,3 @@ export class Reaction extends Component {
 }
 
 export default Reaction;
-

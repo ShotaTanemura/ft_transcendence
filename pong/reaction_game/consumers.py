@@ -27,12 +27,31 @@ class ReactionConsumer(WebsocketConsumer):
             return
         ReactionConsumer.channel_to_user[self.channel_name] = self.user
 
+        room_state = ReactionConsumer.game_state.get(self.room_group_name, {})
+        players = room_state.get("players", [])
+        if len(players) >= 2:
+            self.accept()
+            self.send(
+                text_data=json.dumps(
+                    {
+                        "type": "room_full",
+                        "message": "ルームが満員です。他のルームに参加してください。",
+                    }
+                )
+            )
+            self.close()
+            return
+
         async_to_sync(self.channel_layer.group_add)(
             self.room_group_name, self.channel_name
         )
 
         self.accept()
         logger.info(f"ユーザー {self.user} がルーム {self.room_name} に接続しました")
+
+        players.append(self.channel_name)
+        room_state["players"] = players
+        ReactionConsumer.game_state[self.room_group_name] = room_state
 
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,
@@ -45,10 +64,7 @@ class ReactionConsumer(WebsocketConsumer):
     def player_joined(self, event):
         logger.info(f"プレイヤーが参加しました: {event['channel_name']}")
         room_state = ReactionConsumer.game_state.get(self.room_group_name, {})
-        players = room_state.get("players", set())
-        players.add(event["channel_name"])
-        room_state["players"] = players
-        ReactionConsumer.game_state[self.room_group_name] = room_state
+        players = room_state.get("players", [])
 
         if len(players) == 2:
             async_to_sync(self.channel_layer.group_send)(
@@ -181,7 +197,7 @@ class ReactionConsumer(WebsocketConsumer):
         opponent_user = None
 
         room_state = ReactionConsumer.game_state.get(self.room_group_name, {})
-        players = room_state.get("players", set())
+        players = room_state.get("players", [])
         for channel_name in players:
             if channel_name != self.channel_name:
                 opponent_user = ReactionConsumer.channel_to_user.get(channel_name)
@@ -202,7 +218,9 @@ class ReactionConsumer(WebsocketConsumer):
                 user=user, opponent=opponent_user, winner=winner_user
             )
         else:
-            logger.warning("認証されたユーザーが見つかりません。ゲーム結果は保存されません。")
+            logger.warning(
+                "認証されたユーザーが見つかりません。ゲーム結果は保存されません。"
+            )
 
         result = "win" if self.channel_name == winner_channel else "lose"
 
@@ -233,7 +251,7 @@ class ReactionConsumer(WebsocketConsumer):
         )
 
         room_state = ReactionConsumer.game_state.get(self.room_group_name, {})
-        players = room_state.get("players", set())
+        players = room_state.get("players", [])
         if self.channel_name in players:
             players.remove(self.channel_name)
             room_state["players"] = players
@@ -254,5 +272,3 @@ class ReactionConsumer(WebsocketConsumer):
                     "message": "プレイヤーがゲームから離れました。",
                 },
             )
-            
-    
