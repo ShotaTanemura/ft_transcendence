@@ -47,6 +47,9 @@ class UserManager(BaseUserManager):
     def get_user_email(self, email):
         return self.get(email=email)
 
+    def get_user_nickname(self, nickname):
+        return self.get(nickname=nickname)
+
 
 class User(AbstractBaseUser, PermissionsMixin):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
