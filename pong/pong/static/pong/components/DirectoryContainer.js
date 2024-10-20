@@ -216,6 +216,16 @@ export class DirectoryContainer extends Component {
     modalRoomName.textContent = room.name;
     modal.style.display = "block";
 
+    confirmJoinButton.removeEventListener(
+      "click",
+      this.eventListeners.confirmJoinButtonListener,
+    );
+    cancelJoinButton.removeEventListener(
+      "click",
+      this.eventListeners.cancelJoinButtonListener,
+    );
+    window.removeEventListener("click", this.eventListeners.modalClickListener);
+
     this.eventListeners.confirmJoinButtonListener = () => {
       if (this.socket && this.socket.readyState === WebSocket.OPEN) {
         const joinRequest = {
