@@ -21,6 +21,8 @@ export class Reaction extends Component {
     this.reactionButton = this.element.querySelector("#reaction-button");
     this.resultArea = this.element.querySelector("#result-area");
     this.resultMessage = this.element.querySelector("#result-message");
+    this.connectionArea = this.element.querySelector("#connection-area");
+    this.exitButtons = this.element.querySelectorAll("#exit-button");
 
     this.connectButton.addEventListener("click", () => {
       const roomId = this.roomIdInput.value.trim();
@@ -28,12 +30,14 @@ export class Reaction extends Component {
         this.connectWebSocket(roomId);
         this.roomIdInput.disabled = true;
         this.connectButton.disabled = true;
+        this.connectionArea.style.display = "none";
         this.waitingArea.style.display = "block";
       }
     });
 
     this.reactionButton.addEventListener("click", () => {
       if (this.reactionButton.disabled) return;
+      // サーバーにクリックメッセージを送信
       if (this.state.reactionSocket) {
         this.state.reactionSocket.send(
           JSON.stringify({
@@ -43,6 +47,36 @@ export class Reaction extends Component {
         this.reactionButton.disabled = true;
       }
     });
+
+    // 終了ボタンのイベントリスナーを設定
+    this.exitButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        this.handleExit();
+      });
+    });
+  };
+
+  handleExit = () => {
+    // WebSocket接続を閉じる
+    if (this.state.reactionSocket) {
+      this.state.reactionSocket.close();
+      this.state.reactionSocket = null;
+    }
+
+    // UIを初期状態にリセット
+    this.roomIdInput.disabled = false;
+    this.connectButton.disabled = false;
+    this.roomIdInput.value = "";
+
+    this.waitingArea.style.display = "none";
+    this.gameButtons.style.display = "none";
+    this.resultArea.style.display = "none";
+    this.connectionArea.style.display = "block";
+
+    // その他のUI要素をリセット
+    this.reactionButton.disabled = true;
+    this.reactionButton.style.backgroundColor = "";
+    this.resultMessage.textContent = "";
   };
 
   beforePageUnload = () => {};
@@ -89,11 +123,9 @@ export class Reaction extends Component {
           this.state.reactionSocket.close();
           this.state.reactionSocket = null;
         }
-
-        this.roomIdInput.disabled = false;
-        this.connectButton.disabled = false;
-        this.resultArea.style.display = "none";
-        this.connectionArea.style.display = "block";
+      } else if (messageType === "player_left") {
+        alert("The other player has left the game.");
+        this.handleExit();
       }
     });
 
@@ -115,12 +147,15 @@ export class Reaction extends Component {
             </div>
             <div id="waiting-area" style="display: none;">
               Waiting for another player to join...
+              <button id="exit-button">Exit</button>
             </div>
             <div id="game-buttons" style="display: none;">
               <button id="reaction-button">Wait for color change</button>
+              <button id="exit-button">Exit</button>
             </div>
             <div id="result-area" style="display: none;">
               <p id="result-message"></p>
+              <button id="exit-button">Exit</button>
             </div>
           </div>
         </div>
