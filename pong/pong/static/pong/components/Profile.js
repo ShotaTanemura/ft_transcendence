@@ -12,7 +12,7 @@ export class Profile extends Component {
     this.findElement("button.edit-2fa-button").onclick = this.goEdit2FA;
     this.TYPINGGAME = "TypingGame";
     this.PONGGAME = "PongGame";
-    this.REACTIONGAME = "ReactionGame";  // New constant for ReactionGame
+    this.REACTIONGAME = "ReactionGame"; // New constant for ReactionGame
   }
 
   afterPageLoaded() {
@@ -87,7 +87,10 @@ export class Profile extends Component {
             ? matchResult.contents.player1
             : matchResult.contents.player2;
         winOrLoss = winner === this.user.name ? "Win" : "Loss";
-      } else if (gameType === this.TYPINGGAME || gameType === this.REACTIONGAME) {
+      } else if (
+        gameType === this.TYPINGGAME ||
+        gameType === this.REACTIONGAME
+      ) {
         winOrLoss =
           matchResult.contents.winner === this.user.name ? "Win" : "Loss";
       }
@@ -110,8 +113,8 @@ export class Profile extends Component {
       gameType === "PongGame"
         ? this.findElement("div.ponggame-result-table")
         : gameType === "TypingGame"
-        ? this.findElement("div.typinggame-result-table")
-        : this.findElement("div.reactiongame-result-table");  // Add ReactionGame results
+          ? this.findElement("div.typinggame-result-table")
+          : this.findElement("div.reactiongame-result-table"); // Add ReactionGame results
 
     tableContainer.appendChild(tableElement);
   };

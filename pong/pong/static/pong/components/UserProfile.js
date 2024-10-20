@@ -62,7 +62,11 @@ export class UserProfile extends Component {
 
     this.createGameMatchResultTable(pongGameResults, "PongGame", userName);
     this.createGameMatchResultTable(typingGameResults, "TypingGame", userName);
-    this.createGameMatchResultTable(reactionGameResults, "ReactionGame", userName);
+    this.createGameMatchResultTable(
+      reactionGameResults,
+      "ReactionGame",
+      userName,
+    );
   }
 
   createGameMatchResultTable = (matchResultData, gameType, userName) => {
@@ -115,8 +119,8 @@ export class UserProfile extends Component {
       gameType === "PongGame"
         ? this.findElement("div.ponggame-result-table")
         : gameType === "TypingGame"
-        ? this.findElement("div.typinggame-result-table")
-        : this.findElement("div.reactiongame-result-table");
+          ? this.findElement("div.typinggame-result-table")
+          : this.findElement("div.reactiongame-result-table");
 
     tableContainer.appendChild(tableElement);
   };
