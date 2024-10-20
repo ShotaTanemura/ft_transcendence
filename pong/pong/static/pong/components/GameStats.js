@@ -13,13 +13,13 @@ export class GameStats extends Component {
     this.element.parentElement.prepend(this.headerComponent.element);
     this.headerComponent.afterPageLoaded();
     this.createPongGameMatchResultTable(
-      await this.getMatchResultsData("/ponggame/api/v1/match-result/"),
+      await GameStats.getMatchResultsData("/ponggame/api/v1/match-result/"),
     );
     this.createTypingGameMatchResultTable(
-      await this.getMatchResultsData("/typinggame/api/v1/match-result/"),
+      await GameStats.getMatchResultsData("/typinggame/api/v1/match-result/"),
     );
     this.createReactionGameMatchResultTable(
-      await this.getMatchResultsData("/reactiongame/api/v1/match-result/"),
+      await GameStats.getMatchResultsData("/reactiongame/api/v1/match-result/"),
     );
   };
 
@@ -35,7 +35,7 @@ export class GameStats extends Component {
     this.goNextPage("/");
   };
 
-  getUserName = async () => {
+  static getUserName = async () => {
     try {
       const userUuid = await getUuid();
       if (!userUuid) {
@@ -53,8 +53,8 @@ export class GameStats extends Component {
     }
   };
 
-  getMatchResultsData = async (apiEndpoint) => {
-    const userName = await this.getUserName();
+  static getMatchResultsData = async (apiEndpoint, user_name = null) => {
+    const userName = user_name || (await GameStats.getUserName());
     if (!userName) {
       return;
     }
