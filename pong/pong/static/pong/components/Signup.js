@@ -56,7 +56,6 @@ export class Signup extends Component {
     });
     console.log(response);
     const data = await response.json();
-    console.log(data.errors);
     if (!response.ok) {
       switch (response.status) {
         case 400:
