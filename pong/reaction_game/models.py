@@ -13,4 +13,4 @@ class GameRecord(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.user.username} vs {self.opponent.username} - Winner: {self.winner.username} at {self.timestamp}"
+        return f"{self.user.name} vs {self.opponent.name} - Winner: {self.winner.name} at {self.timestamp}"
