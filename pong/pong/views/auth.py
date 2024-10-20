@@ -12,6 +12,7 @@ from pong.utils.create_response import (
 from pong.utils.redis_client import redis_client
 from pong.views.two_factor import is_valid_totp_code
 import jwt
+from django.contrib.auth import password_validation
 
 
 @jwt_exempt
@@ -38,6 +39,14 @@ def register(request):
     ):
         return JsonResponse(
             {"message": "Invalid parameters", "status": "invalidParams"}, status=400
+        )
+
+    try:
+        password_validation.validate_password(data["password"])
+    except password_validation.ValidationError as e:
+        print(e)
+        return JsonResponse(
+            {"message": "Invalid password", "status": "invalidPassword"}, status=400
         )
 
     if (
