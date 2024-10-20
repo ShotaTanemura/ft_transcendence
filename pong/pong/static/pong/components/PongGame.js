@@ -11,6 +11,7 @@ export class PongGame extends Component {
     if (!this.connection) {
       alert("connection failed");
       this.goNextPage("/");
+      return;
     }
     this.connection.onmessage = this.onMessage;
     this.canvas = this.findElement("canvas.ponggame");
