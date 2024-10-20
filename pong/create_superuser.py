@@ -28,7 +28,7 @@ else:
 for i in range(1, 5):
     user_name = f"user{i}"
     user_email = f"{i}@{i}.com"
-    user_password = "pass"
+    user_password = "7ranCendenCe"
     if not User.objects.filter(name=user_name).exists():
         print(f"Creating user {user_name}")
         User.objects.create_user(

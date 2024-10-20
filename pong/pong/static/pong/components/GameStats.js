@@ -205,13 +205,13 @@ export class GameStats extends Component {
       <main class="p-5 text-center">
         <h1 class="match-result-title">Last 10 Match Results</h1>
         <br>
-        <div class="ponggame-result-table">
+        <div class="ponggame-result-table" style="max-height: 300px; overflow-y: auto;">
           <h2>PongGame Results</h2>
         </div>
-        <div class="typinggame-result-table">
+        <div class="typinggame-result-table" style="max-height: 300px; overflow-y: auto;">
           <h2>TypingGame Results</h2>
         </div>
-        <div class="reaction-result-table">
+        <div class="reaction-result-table" style="max-height: 300px; overflow-y: auto;">
           <h2>ReactionGame Results</h2>
         </div>
         <button class="go-back-to-home-button btn btn-primary">Back</button>
