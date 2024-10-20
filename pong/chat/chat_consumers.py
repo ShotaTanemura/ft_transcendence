@@ -159,10 +159,10 @@ class ChatConsumer(WebsocketConsumer):
             self.close()
 
     def disconnect(self, close_code):
-        logger.info(f"Disconnecting from room: {self.room_name}")
-        async_to_sync(self.channel_layer.group_discard)(
-            self.room_group_name, self.channel_name
-        )
+        if hasattr(self, "room_group_name"):
+            async_to_sync(self.channel_layer.group_discard)(
+                self.room_group_name, self.channel_name
+            )
 
     def receive(self, text_data):
         text_data_json = json.loads(text_data)
@@ -240,6 +240,7 @@ class ChatConsumer(WebsocketConsumer):
                 self.user, room, "退出しました。"
             )
             Rooms.objects.leave_room(self.user, room_id)
+
             users = Rooms.objects.get_users_in_room(room_id)
 
             users = [serialize_user(user) for user in users]
