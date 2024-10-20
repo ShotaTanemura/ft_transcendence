@@ -29,7 +29,6 @@ def get_user_match_result(request, name):
         "-timestamp"
     )[:10]
 
-    logger.info(user_last_10_match_results)
     user_match_results = []
 
     for index, user_match_result in enumerate(user_last_10_match_results):
