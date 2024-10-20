@@ -82,7 +82,7 @@ export class Reaction extends Component {
     socket.addEventListener("open", () => {
       console.log("WebSocket connected to rooms URL:", wsUrl);
       this.state.reactionSocket = socket;
-      const buttonCount = parseInt(this.buttonCountInput.value.trim(), 10) || 1;
+      const buttonCount = parseInt(this.buttonCountInput.value, 10) || 1;
       socket.send(
         JSON.stringify({
           type: "set_button_count",
@@ -178,7 +178,15 @@ export class Reaction extends Component {
           <div id="game-area">
             <div id="settings-area">
               <label for="button-count">Number of buttons:</label>
-              <input type="number" id="button-count" min="1" value="1">
+              <select id="button-count">
+                <option value="1">default</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+              </select>
               <input type="text" id="room-id-input" placeholder="Enter Room ID" />
               <button id="connect-button">Connect</button>
             </div>
@@ -187,7 +195,6 @@ export class Reaction extends Component {
               <button class="exit-button">Exit</button>
             </div>
             <div id="game-buttons" style="display: none;">
-              <!-- Buttons will be generated dynamically -->
               <button class="exit-button">Exit</button>
             </div>
             <div id="result-area" style="display: none;">
