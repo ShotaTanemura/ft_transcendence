@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "chat.apps.ChatConfig",
     "realtime_pong_game",
     "realtime_typing_game",
+    "reaction_game",
 ]
 
 MIDDLEWARE = [
