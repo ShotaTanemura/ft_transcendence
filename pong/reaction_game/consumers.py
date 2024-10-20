@@ -56,31 +56,65 @@ class ReactionConsumer(WebsocketConsumer):
             )
 
     def start_game(self, event):
+        room_state = ReactionConsumer.game_state.get(self.room_group_name, {})
+        button_count = room_state.get("button_count", 1)
+
+        async_to_sync(self.channel_layer.group_send)(
+            self.room_group_name,
+            {
+                "type": "send_start_game",
+                "button_count": button_count,
+            },
+        )
+
+    def send_start_game(self, event):
         self.send(
             text_data=json.dumps(
                 {
                     "type": "start_game",
+                    "button_count": event["button_count"],
                 }
             )
         )
 
-        def change_color():
-            delay = random.uniform(1, 5)
-            time.sleep(delay)
-            async_to_sync(self.channel_layer.group_send)(
-                self.room_group_name,
-                {
-                    "type": "change_color",
-                },
-            )
+        room_state = ReactionConsumer.game_state.get(self.room_group_name, {})
+        if 'timer_started' not in room_state:
+            threading.Thread(target=self.change_color_timer).start()
+            room_state['timer_started'] = True
+            ReactionConsumer.game_state[self.room_group_name] = room_state
 
-        threading.Thread(target=change_color).start()
+    def change_color_timer(self):
+        delay = random.uniform(1, 5)
+        time.sleep(delay)
+        async_to_sync(self.channel_layer.group_send)(
+            self.room_group_name,
+            {
+                "type": "change_color",
+            },
+        )
 
     def change_color(self, event):
+        room_state = ReactionConsumer.game_state.get(self.room_group_name, {})
+        button_count = room_state.get("button_count", 1)
+        random_button_index = random.randint(0, button_count - 1)
+        room_state['correct_button_index'] = random_button_index
+        ReactionConsumer.game_state[self.room_group_name] = room_state
+
+        async_to_sync(self.channel_layer.group_send)(
+            self.room_group_name,
+            {
+                "type": "send_change_color",
+                "button_index": random_button_index,
+            },
+        )
+
+    def send_change_color(self, event):
+        button_index = event["button_index"]
         self.send(
             text_data=json.dumps(
                 {
                     "type": "change_color",
+                    "button_index": button_index,
                 }
             )
         )
@@ -89,14 +123,26 @@ class ReactionConsumer(WebsocketConsumer):
         text_data_json = json.loads(text_data)
         message_type = text_data_json.get("type")
 
-        if message_type == "click":
-            async_to_sync(self.channel_layer.group_send)(
-                self.room_group_name,
-                {
-                    "type": "button_clicked",
-                    "channel_name": self.channel_name,
-                },
-            )
+        if message_type == "set_button_count":
+            button_count = text_data_json.get("button_count", 1)
+            room_state = ReactionConsumer.game_state.get(self.room_group_name, {})
+            room_state["button_count"] = button_count
+            ReactionConsumer.game_state[self.room_group_name] = room_state
+        elif message_type == "click":
+            clicked_button_index = text_data_json.get("button_index")
+            room_state = ReactionConsumer.game_state.get(self.room_group_name, {})
+            correct_button_index = room_state.get("correct_button_index")
+            if clicked_button_index == correct_button_index:
+                async_to_sync(self.channel_layer.group_send)(
+                    self.room_group_name,
+                    {
+                        "type": "button_clicked",
+                        "channel_name": self.channel_name,
+                    },
+                )
+            else:
+                # ボタンを間違えるのは許容する
+                pass
 
     def button_clicked(self, event):
         room_state = ReactionConsumer.game_state.get(self.room_group_name, {})
@@ -193,3 +239,4 @@ class ReactionConsumer(WebsocketConsumer):
                     "message": "A player has left the game.",
                 },
             )
+            
