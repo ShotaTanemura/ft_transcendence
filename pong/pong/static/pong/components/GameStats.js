@@ -18,6 +18,9 @@ export class GameStats extends Component {
     this.createTypingGameMatchResultTable(
       await GameStats.getMatchResultsData("/typinggame/api/v1/match-result/"),
     );
+    this.createReactionGameMatchResultTable(
+      await this.getMatchResultsData("/reactiongame/api/v1/match-result/"),
+    );
   };
 
   beforePageUnload = () => {
@@ -62,6 +65,9 @@ export class GameStats extends Component {
         headers: { "Content-Type": "application/json" },
         credentials: "include",
       });
+      if (apiEndpoint == "/reactiongame/api/v1/match-result/") {
+        console.log("response", response);
+      }
       const contentType = response.headers.get("content-type");
       if (contentType && contentType.includes("application/json")) {
         const matchResultsData = await response.json();
@@ -159,6 +165,41 @@ export class GameStats extends Component {
     tableContainer.appendChild(tableElement);
   };
 
+  createReactionGameMatchResultTable = (matchResultsData) => {
+    if (!matchResultsData) {
+      return;
+    }
+
+    const tableElement = Object.assign(document.createElement("table"), {
+      className: "table",
+    });
+    const theadElement = document.createElement("thead");
+    const tbodyElement = document.createElement("tbody");
+
+    theadElement.innerHTML = `<tr>
+        <th scope="col">#</th>
+        <th scope="col">Winner</th>
+        <th scope="col">Player</th>
+        <th scope="col">Player</th>
+      </tr>`;
+
+    matchResultsData.forEach((matchResult) => {
+      const trElement = document.createElement("tr");
+      trElement.innerHTML = `
+            <th scope="row">${Number(matchResult.id)}</th>
+            <td>${matchResult.contents.winner}</td>
+            <td>${matchResult.contents.player1}</td>
+            <td>${matchResult.contents.player2}</td>`;
+      tbodyElement.appendChild(trElement);
+    });
+
+    tableElement.appendChild(theadElement);
+    tableElement.appendChild(tbodyElement);
+
+    const tableContainer = this.findElement("div.reaction-result-table");
+    tableContainer.appendChild(tableElement);
+  };
+
   get html() {
     return `
       <main class="p-5 text-center">
@@ -169,6 +210,9 @@ export class GameStats extends Component {
         </div>
         <div class="typinggame-result-table">
           <h2>TypingGame Results</h2>
+        </div>
+        <div class="reaction-result-table">
+          <h2>ReactionGame Results</h2>
         </div>
         <button class="go-back-to-home-button btn btn-primary">Back</button>
       </main>

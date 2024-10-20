@@ -47,9 +47,15 @@ export class ChatContainer extends Component {
 
   displayRoom(select) {
     const chatContainer = document.querySelector(".direct-message-content");
+    if (!chatContainer) {
+      return;
+    }
     chatContainer.innerHTML = "";
 
     const roomHeader = document.querySelector(".direct-message-header");
+    if (!roomHeader) {
+      return;
+    }
     roomHeader.innerHTML = `<h3>${select.name}</h3>`;
 
     const messages = document.createElement("div");
@@ -90,11 +96,17 @@ export class ChatContainer extends Component {
       );
 
       const header = document.querySelector(".direct-message-header");
+      if (!header) {
+        return;
+      }
       header.innerHTML = `<h3>${select.name}</h3> 
                           <button class="invite-button">ゲームに招待する</button> 
                           <button class="leave-button">ルームから退出</button>`;
 
       const leaveButton = document.querySelector(".leave-button");
+      if (!leaveButton) {
+        return;
+      }
       this.eventListeners.leaveButtonClickListener = () =>
         this.confirmLeaveRoom();
       leaveButton.addEventListener(
@@ -103,6 +115,9 @@ export class ChatContainer extends Component {
       );
 
       const inviteButton = document.querySelector(".invite-button");
+      if (!inviteButton) {
+        return;
+      }
       this.eventListeners.inviteButtonClickListener = () =>
         this.inviteToGame(select.uuid);
       inviteButton.addEventListener(
@@ -224,7 +239,9 @@ export class ChatContainer extends Component {
     }
 
     const header = document.querySelector(".direct-message-header");
-    header.innerHTML = "ルームを選択してください";
+    if (header) {
+      header.innerHTML = "ルームを選択してください";
+    }
 
     this.removeEventListeners();
     this.render();
