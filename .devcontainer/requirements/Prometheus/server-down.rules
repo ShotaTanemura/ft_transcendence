@@ -5,7 +5,7 @@ groups:
   # Alert for any instance that is unreachable for >30 seconds.
   - alert: InstanceDown
     expr: up == 0
-    for: 30s
+    for: 10s
     labels:
       severity: page
     annotations:

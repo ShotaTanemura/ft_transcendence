@@ -1,0 +1,15 @@
+FROM prom/prometheus:latest
+
+# スクリプトをコンテナにコピー
+COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY ./server-down.rules /etc/prometheus/server-down.rules
+
+# 実行権限を付与
+USER root
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# エントリポイントを指定
+ENTRYPOINT ["entrypoint.sh"]
+
+CMD ["/bin/prometheus", "--config.file=/prometheus/prometheus.yml", "--storage.tsdb.path=/prometheus"]
+
