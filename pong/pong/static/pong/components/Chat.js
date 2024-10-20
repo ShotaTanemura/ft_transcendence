@@ -208,6 +208,9 @@ export class Chat extends Component {
   pongameNotification(url) {
     const modal = document.getElementById("gameModal");
     const gameLink = document.getElementById("gameLink");
+    if (!modal || !gameLink) {
+      return;
+    }
 
     gameLink.href = window.location.origin + url;
     gameLink.textContent = window.location.origin + url;
@@ -216,6 +219,9 @@ export class Chat extends Component {
     modal.style.display = "block";
 
     const closeButton = document.getElementsByClassName("close-button")[0];
+    if (!closeButton) {
+      return;
+    }
     closeButton.onclick = function () {
       modal.style.display = "none";
     };
