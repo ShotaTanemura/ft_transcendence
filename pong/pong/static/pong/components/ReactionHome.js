@@ -67,6 +67,10 @@ export class Reaction extends Component {
   };
 
   beforePageUnload = () => {
+    if (this.state.reactionSocket) {
+      this.state.reactionSocket.close();
+      this.state.reactionSocket = null;
+    }
     this.element.parentElement.removeChild(this.headerComponent.element);
   };
 
@@ -111,7 +115,7 @@ export class Reaction extends Component {
 
         for (let i = 0; i < buttonCount; i++) {
           const button = document.createElement("button");
-          button.textContent = "Wait for color change";
+          button.textContent = "色が変わるのを待ってください";
           button.classList.add("reaction-button");
           button.disabled = true;
           button.addEventListener("click", () => {
@@ -147,9 +151,9 @@ export class Reaction extends Component {
       } else if (messageType === "game_result") {
         const result = message.result;
         if (result === "win") {
-          this.resultMessage.textContent = "You Win!";
+          this.resultMessage.textContent = "あなたの勝ちです！";
         } else {
-          this.resultMessage.textContent = "You Lose!";
+          this.resultMessage.textContent = "あなたの負けです。";
         }
         this.gameButtons.style.display = "none";
         this.resultArea.style.display = "block";
@@ -159,7 +163,7 @@ export class Reaction extends Component {
           this.state.reactionSocket = null;
         }
       } else if (messageType === "player_left") {
-        alert("The other player has left the game.");
+        alert("相手のプレイヤーがゲームから離れました。");
         this.handleExit();
       }
     });
@@ -167,6 +171,22 @@ export class Reaction extends Component {
     socket.addEventListener("close", () => {
       console.log("WebSocket closed");
       this.state.reactionSocket = null;
+
+      this.waitingArea.style.display = "none";
+      this.gameButtons.style.display = "none";
+      this.resultArea.style.display = "none";
+      this.settingsArea.style.display = "block";
+
+      this.roomIdInput.disabled = false;
+      this.buttonCountInput.disabled = false;
+      this.connectButton.disabled = false;
+      this.roomIdInput.value = "";
+
+      if (this.reactionButtons) {
+        this.reactionButtons.forEach((button) => button.remove());
+        this.reactionButtons = [];
+      }
+      this.resultMessage.textContent = "";
     });
   };
 
@@ -174,12 +194,12 @@ export class Reaction extends Component {
     return `
       <main class="text-center p-5">
         <div class="container">
-          <h1>Reaction Game</h1>
+          <h1>リアクションゲーム</h1>
           <div id="game-area">
             <div id="settings-area">
-              <label for="button-count">Number of buttons:</label>
+              <label for="button-count">ボタンの数:</label>
               <select id="button-count">
-                <option value="1">default</option>
+                <option value="1">デフォルト</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
                 <option value="4">4</option>
@@ -187,19 +207,19 @@ export class Reaction extends Component {
                 <option value="6">6</option>
                 <option value="7">7</option>
               </select>
-              <input type="text" id="room-id-input" placeholder="Enter Room ID" />
-              <button id="connect-button">Connect</button>
+              <input type="text" id="room-id-input" placeholder="ルームIDを入力" />
+              <button id="connect-button">接続</button>
             </div>
             <div id="waiting-area" style="display: none;">
-              Waiting for another player to join...
-              <button class="exit-button">Exit</button>
+              他のプレイヤーを待っています...
+              <button class="exit-button">退出</button>
             </div>
             <div id="game-buttons" style="display: none;">
-              <button class="exit-button">Exit</button>
+              <button class="exit-button">退出</button>
             </div>
             <div id="result-area" style="display: none;">
               <p id="result-message"></p>
-              <button class="exit-button">Exit</button>
+              <button class="exit-button">退出</button>
             </div>
           </div>
         </div>
@@ -209,3 +229,4 @@ export class Reaction extends Component {
 }
 
 export default Reaction;
+

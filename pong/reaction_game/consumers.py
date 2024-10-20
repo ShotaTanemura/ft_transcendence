@@ -4,6 +4,7 @@ import random
 import time
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
+from django.contrib.auth.models import AnonymousUser
 from logging import getLogger
 from django.contrib.auth.models import User
 from .models import GameRecord
@@ -20,17 +21,18 @@ class ReactionConsumer(WebsocketConsumer):
         self.room_group_name = f"reaction_{self.room_name}"
 
         self.user = self.scope["user"]
-        if self.user.is_authenticated:
-            ReactionConsumer.channel_to_user[self.channel_name] = self.user
-        else:
+        if self.user == AnonymousUser():
+            logger.info("匿名ユーザーは許可されていません")
             self.close()
             return
+        ReactionConsumer.channel_to_user[self.channel_name] = self.user
 
         async_to_sync(self.channel_layer.group_add)(
             self.room_group_name, self.channel_name
         )
 
         self.accept()
+        logger.info(f"ユーザー {self.user} がルーム {self.room_name} に接続しました")
 
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,
@@ -41,6 +43,7 @@ class ReactionConsumer(WebsocketConsumer):
         )
 
     def player_joined(self, event):
+        logger.info(f"プレイヤーが参加しました: {event['channel_name']}")
         room_state = ReactionConsumer.game_state.get(self.room_group_name, {})
         players = room_state.get("players", set())
         players.add(event["channel_name"])
@@ -56,7 +59,16 @@ class ReactionConsumer(WebsocketConsumer):
             )
 
     def start_game(self, event):
+        logger.info("ゲームを開始します。")
         room_state = ReactionConsumer.game_state.get(self.room_group_name, {})
+
+        room_state["timer_started"] = False
+        if "winner_channel" in room_state:
+            del room_state["winner_channel"]
+        if "correct_button_index" in room_state:
+            del room_state["correct_button_index"]
+        ReactionConsumer.game_state[self.room_group_name] = room_state
+
         button_count = room_state.get("button_count", 1)
 
         async_to_sync(self.channel_layer.group_send)(
@@ -68,6 +80,7 @@ class ReactionConsumer(WebsocketConsumer):
         )
 
     def send_start_game(self, event):
+        logger.info("ゲーム開始を送信します。")
         self.send(
             text_data=json.dumps(
                 {
@@ -78,7 +91,7 @@ class ReactionConsumer(WebsocketConsumer):
         )
 
         room_state = ReactionConsumer.game_state.get(self.room_group_name, {})
-        if "timer_started" not in room_state:
+        if "timer_started" not in room_state or not room_state["timer_started"]:
             threading.Thread(target=self.change_color_timer).start()
             room_state["timer_started"] = True
             ReactionConsumer.game_state[self.room_group_name] = room_state
@@ -86,6 +99,7 @@ class ReactionConsumer(WebsocketConsumer):
     def change_color_timer(self):
         delay = random.uniform(1, 5)
         time.sleep(delay)
+        logger.info(f"{delay} 秒後に色を変更します。")
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,
             {
@@ -94,6 +108,7 @@ class ReactionConsumer(WebsocketConsumer):
         )
 
     def change_color(self, event):
+        logger.info("色を変更します。")
         room_state = ReactionConsumer.game_state.get(self.room_group_name, {})
         button_count = room_state.get("button_count", 1)
         random_button_index = random.randint(0, button_count - 1)
@@ -173,13 +188,13 @@ class ReactionConsumer(WebsocketConsumer):
                 break
 
         if opponent_user is None:
-            logger.warning("Opponent user not found.")
+            logger.warning("対戦相手が見つかりません。")
             return
 
         winner_user = ReactionConsumer.channel_to_user.get(winner_channel)
 
         if winner_user is None:
-            logger.warning("Winner user not found.")
+            logger.warning("勝者のユーザーが見つかりません。")
             return
 
         if user.is_authenticated:
@@ -187,7 +202,7 @@ class ReactionConsumer(WebsocketConsumer):
                 user=user, opponent=opponent_user, winner=winner_user
             )
         else:
-            logger.warning("Authenticated user not found; game result not saved.")
+            logger.warning("認証されたユーザーが見つかりません。ゲーム結果は保存されません。")
 
         result = "win" if self.channel_name == winner_channel else "lose"
 
@@ -236,6 +251,8 @@ class ReactionConsumer(WebsocketConsumer):
                 self.room_group_name,
                 {
                     "type": "player_left",
-                    "message": "A player has left the game.",
+                    "message": "プレイヤーがゲームから離れました。",
                 },
             )
+            
+    
