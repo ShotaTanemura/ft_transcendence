@@ -61,7 +61,7 @@ export class Signup extends Component {
       switch (response.status) {
         case 400:
           if (data.status === "invalidPassword") {
-            throw Error(this.getPasswordRequirementsMessage())
+            throw Error(this.getPasswordRequirementsMessage());
           } else {
             throw Error("不正なリクエストです");
           }
