@@ -176,20 +176,6 @@ class Room:
 
         while is_tournament_ongoing:
             (player1, player2) = self.tournament_manager.get_next_match_players()
-            channel_layer = get_channel_layer()
-            users_list = [
-                self.participant_nickname_dict[player1],
-                self.participant_nickname_dict[player2],
-            ]
-
-            async_to_sync(channel_layer.group_send)(
-                "room_notifications",
-                {
-                    "type": "game_notification",
-                    "room_id": self.room_name,
-                    "users": users_list,
-                },
-            )
             # if player2 is None, player1 is the tournament winner
             if player2 == None:
                 tournament_winner = player1
@@ -202,6 +188,21 @@ class Room:
                     },
                 )
                 break
+
+            channel_layer = get_channel_layer()
+            users_list = [
+                self.participant_nickname_dict[player1],
+                self.participant_nickname_dict[player2],
+            ]
+            async_to_sync(channel_layer.group_send)(
+                "room_notifications",
+                {
+                    "type": "game_notification",
+                    "room_id": self.room_name,
+                    "users": users_list,
+                },
+            )
+
             # get change next game player's state
             self.change_participants_state_for_game(player1, player2)
             # get tournament list
