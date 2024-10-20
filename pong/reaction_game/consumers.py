@@ -10,15 +10,16 @@ from .models import GameRecord
 
 logger = getLogger(__name__)
 
+
 class ReactionConsumer(WebsocketConsumer):
     game_state = {}
     channel_to_user = {}
 
     def connect(self):
-        self.room_name = self.scope['url_route']['kwargs']['room_id']
-        self.room_group_name = f'reaction_{self.room_name}'
+        self.room_name = self.scope["url_route"]["kwargs"]["room_id"]
+        self.room_group_name = f"reaction_{self.room_name}"
 
-        self.user = self.scope['user']
+        self.user = self.scope["user"]
         if self.user.is_authenticated:
             ReactionConsumer.channel_to_user[self.channel_name] = self.user
         else:
@@ -26,8 +27,7 @@ class ReactionConsumer(WebsocketConsumer):
             return
 
         async_to_sync(self.channel_layer.group_add)(
-            self.room_group_name,
-            self.channel_name
+            self.room_group_name, self.channel_name
         )
 
         self.accept()
@@ -35,30 +35,34 @@ class ReactionConsumer(WebsocketConsumer):
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,
             {
-                'type': 'player_joined',
-                'channel_name': self.channel_name,
-            }
+                "type": "player_joined",
+                "channel_name": self.channel_name,
+            },
         )
 
     def player_joined(self, event):
         room_state = ReactionConsumer.game_state.get(self.room_group_name, {})
-        players = room_state.get('players', set())
-        players.add(event['channel_name'])
-        room_state['players'] = players
+        players = room_state.get("players", set())
+        players.add(event["channel_name"])
+        room_state["players"] = players
         ReactionConsumer.game_state[self.room_group_name] = room_state
 
         if len(players) == 2:
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name,
                 {
-                    'type': 'start_game',
-                }
+                    "type": "start_game",
+                },
             )
 
     def start_game(self, event):
-        self.send(text_data=json.dumps({
-            'type': 'start_game',
-        }))
+        self.send(
+            text_data=json.dumps(
+                {
+                    "type": "start_game",
+                }
+            )
+        )
 
         def change_color():
             delay = random.uniform(1, 5)
@@ -66,53 +70,57 @@ class ReactionConsumer(WebsocketConsumer):
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name,
                 {
-                    'type': 'change_color',
-                }
+                    "type": "change_color",
+                },
             )
 
         threading.Thread(target=change_color).start()
 
     def change_color(self, event):
-        self.send(text_data=json.dumps({
-            'type': 'change_color',
-        }))
+        self.send(
+            text_data=json.dumps(
+                {
+                    "type": "change_color",
+                }
+            )
+        )
 
     def receive(self, text_data):
         text_data_json = json.loads(text_data)
-        message_type = text_data_json.get('type')
+        message_type = text_data_json.get("type")
 
-        if message_type == 'click':
+        if message_type == "click":
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name,
                 {
-                    'type': 'button_clicked',
-                    'channel_name': self.channel_name,
-                }
+                    "type": "button_clicked",
+                    "channel_name": self.channel_name,
+                },
             )
 
     def button_clicked(self, event):
         room_state = ReactionConsumer.game_state.get(self.room_group_name, {})
-        if 'winner_channel' not in room_state:
-            room_state['winner_channel'] = event['channel_name']
+        if "winner_channel" not in room_state:
+            room_state["winner_channel"] = event["channel_name"]
             ReactionConsumer.game_state[self.room_group_name] = room_state
 
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name,
                 {
-                    'type': 'announce_winner',
-                    'winner_channel': event['channel_name'],
-                }
+                    "type": "announce_winner",
+                    "winner_channel": event["channel_name"],
+                },
             )
         else:
             pass
 
     def announce_winner(self, event):
-        winner_channel = event['winner_channel']
-        user = self.scope['user']
+        winner_channel = event["winner_channel"]
+        user = self.scope["user"]
         opponent_user = None
 
         room_state = ReactionConsumer.game_state.get(self.room_group_name, {})
-        players = room_state.get('players', set())
+        players = room_state.get("players", set())
         for channel_name in players:
             if channel_name != self.channel_name:
                 opponent_user = ReactionConsumer.channel_to_user.get(channel_name)
@@ -130,54 +138,58 @@ class ReactionConsumer(WebsocketConsumer):
 
         if user.is_authenticated:
             GameRecord.objects.create(
-                user=user,
-                opponent=opponent_user,
-                winner=winner_user
+                user=user, opponent=opponent_user, winner=winner_user
             )
         else:
             logger.warning("Authenticated user not found; game result not saved.")
 
-        result = 'win' if self.channel_name == winner_channel else 'lose'
+        result = "win" if self.channel_name == winner_channel else "lose"
 
-        self.send(text_data=json.dumps({
-            'type': 'game_result',
-            'result': result,
-        }))
+        self.send(
+            text_data=json.dumps(
+                {
+                    "type": "game_result",
+                    "result": result,
+                }
+            )
+        )
 
         self.close()
 
     def player_left(self, event):
-        self.send(text_data=json.dumps({
-            'type': 'player_left',
-            'message': event['message'],
-        }))
+        self.send(
+            text_data=json.dumps(
+                {
+                    "type": "player_left",
+                    "message": event["message"],
+                }
+            )
+        )
 
     def disconnect(self, close_code):
         async_to_sync(self.channel_layer.group_discard)(
-            self.room_group_name,
-            self.channel_name
+            self.room_group_name, self.channel_name
         )
 
         room_state = ReactionConsumer.game_state.get(self.room_group_name, {})
-        players = room_state.get('players', set())
+        players = room_state.get("players", set())
         if self.channel_name in players:
             players.remove(self.channel_name)
-            room_state['players'] = players
+            room_state["players"] = players
             ReactionConsumer.game_state[self.room_group_name] = room_state
 
         if self.channel_name in ReactionConsumer.channel_to_user:
             del ReactionConsumer.channel_to_user[self.channel_name]
 
         if len(players) < 2:
-            if 'winner_channel' in room_state:
-                del room_state['winner_channel']
+            if "winner_channel" in room_state:
+                del room_state["winner_channel"]
             ReactionConsumer.game_state[self.room_group_name] = room_state
 
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name,
                 {
-                    'type': 'player_left',
-                    'message': 'A player has left the game.',
-                }
+                    "type": "player_left",
+                    "message": "A player has left the game.",
+                },
             )
-            

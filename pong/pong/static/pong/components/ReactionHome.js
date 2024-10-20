@@ -37,7 +37,6 @@ export class Reaction extends Component {
 
     this.reactionButton.addEventListener("click", () => {
       if (this.reactionButton.disabled) return;
-      // サーバーにクリックメッセージを送信
       if (this.state.reactionSocket) {
         this.state.reactionSocket.send(
           JSON.stringify({
@@ -48,7 +47,6 @@ export class Reaction extends Component {
       }
     });
 
-    // 終了ボタンのイベントリスナーを設定
     this.exitButtons.forEach((button) => {
       button.addEventListener("click", () => {
         this.handleExit();
@@ -57,13 +55,11 @@ export class Reaction extends Component {
   };
 
   handleExit = () => {
-    // WebSocket接続を閉じる
     if (this.state.reactionSocket) {
       this.state.reactionSocket.close();
       this.state.reactionSocket = null;
     }
 
-    // UIを初期状態にリセット
     this.roomIdInput.disabled = false;
     this.connectButton.disabled = false;
     this.roomIdInput.value = "";
@@ -73,13 +69,14 @@ export class Reaction extends Component {
     this.resultArea.style.display = "none";
     this.connectionArea.style.display = "block";
 
-    // その他のUI要素をリセット
     this.reactionButton.disabled = true;
     this.reactionButton.style.backgroundColor = "";
     this.resultMessage.textContent = "";
   };
 
-  beforePageUnload = () => {};
+  beforePageUnload = () => {
+    this.element.parentElement.removeChild(this.headerComponent.element);
+  };
 
   connectWebSocket = (roomId) => {
     if (this.state.reactionSocket) {
@@ -101,8 +98,10 @@ export class Reaction extends Component {
 
       const messageType = message.type;
 
-      if (messageType === "player_joined") {
-      } else if (messageType === "start_game") {
+      // if (messageType === "player_joined") {
+
+      // } else
+      if (messageType === "start_game") {
         this.waitingArea.style.display = "none";
         this.gameButtons.style.display = "block";
         this.reactionButton.disabled = true;
