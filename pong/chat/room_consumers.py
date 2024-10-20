@@ -181,6 +181,26 @@ class RoomConsumer(WebsocketConsumer):
             )
         )
 
+    def game_notification(self, event):
+        users = event["users"]
+        roomId = event["room_id"]
+
+        uus = []
+        for user in users:
+            u = User.objects.get_user_nickname(user)
+            uus.append(u)
+        for u in uus:
+            if u == self.user:
+                self.send(
+                    text_data=json.dumps(
+                        {
+                            "notification": {
+                                "url": f"/pong-game-home?room-id={roomId}&name=guest&number-of-players=4",
+                            }
+                        }
+                    )
+                )
+
     def disconnect(self, close_code):
         if hasattr(self, "room_group_name"):
             async_to_sync(self.channel_layer.group_discard)(

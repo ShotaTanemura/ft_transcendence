@@ -94,7 +94,7 @@ class Room:
             self.participants.append(new_participant)
             self.participants_connection[new_participant] = True
             self.participant_nickname_dict[new_participant] = (
-                f"{new_participant_nickname} #{len(self.participants)}"
+                f"{new_participant_nickname}"
             )
         self.set_participant_state(new_participant, ParticipantState.Not_In_Place)
         return True
@@ -203,6 +203,21 @@ class Room:
                     },
                 )
                 break
+
+            channel_layer = get_channel_layer()
+            users_list = [
+                self.participant_nickname_dict[player1],
+                self.participant_nickname_dict[player2],
+            ]
+            async_to_sync(channel_layer.group_send)(
+                "room_notifications",
+                {
+                    "type": "game_notification",
+                    "room_id": self.room_name,
+                    "users": users_list,
+                },
+            )
+
             # get change next game player's state
             self.change_participants_state_for_game(player1, player2)
             # get tournament list
