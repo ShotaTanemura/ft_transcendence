@@ -78,9 +78,9 @@ class ReactionConsumer(WebsocketConsumer):
         )
 
         room_state = ReactionConsumer.game_state.get(self.room_group_name, {})
-        if 'timer_started' not in room_state:
+        if "timer_started" not in room_state:
             threading.Thread(target=self.change_color_timer).start()
-            room_state['timer_started'] = True
+            room_state["timer_started"] = True
             ReactionConsumer.game_state[self.room_group_name] = room_state
 
     def change_color_timer(self):
@@ -97,7 +97,7 @@ class ReactionConsumer(WebsocketConsumer):
         room_state = ReactionConsumer.game_state.get(self.room_group_name, {})
         button_count = room_state.get("button_count", 1)
         random_button_index = random.randint(0, button_count - 1)
-        room_state['correct_button_index'] = random_button_index
+        room_state["correct_button_index"] = random_button_index
         ReactionConsumer.game_state[self.room_group_name] = room_state
 
         async_to_sync(self.channel_layer.group_send)(
@@ -239,4 +239,3 @@ class ReactionConsumer(WebsocketConsumer):
                     "message": "A player has left the game.",
                 },
             )
-            

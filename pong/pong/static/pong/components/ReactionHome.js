@@ -87,7 +87,7 @@ export class Reaction extends Component {
         JSON.stringify({
           type: "set_button_count",
           button_count: buttonCount,
-        })
+        }),
       );
     });
 
@@ -121,7 +121,7 @@ export class Reaction extends Component {
                 JSON.stringify({
                   type: "click",
                   button_index: i,
-                })
+                }),
               );
               button.disabled = true;
             }
