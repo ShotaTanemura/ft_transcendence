@@ -71,21 +71,21 @@ services:
       - .env
   
   prometheus:
-    image: "prom/prometheus"
+    build:
+      context: ./requirements/Prometheus/
+      dockerfile: ./Containerfile
     ports:
       - "9090:9090"
     volumes:
-      - type: bind
-        source: ./requirements/Prometheus/
-        target: /etc/prometheus/
       - type: volume
         source: prometheus_data
         target: /prometheus
-    command: "--config.file=/etc/prometheus/prometheus.yaml"
     depends_on:
       app:
         condition: service_healthy
     restart: always
+    env_file:
+      - .env
 
   grafana:
     image: "grafana/grafana-oss"
@@ -104,20 +104,21 @@ services:
       app:
         condition: service_healthy
     restart: always
+    env_file:
+      - .env
   
   alertmanager:
-    image: "prom/alertmanager"
+    build:
+      context: ./requirements/Alertmanager/
+      dockerfile: ./Containerfile
     ports:
       - "9093:9093"
-    volumes:
-      - type: bind
-        source: ./requirements/Alertmanager/
-        target: /etc/alertmanager/
-    command: "--config.file=/etc/alertmanager/alertmanager.yaml"
     depends_on:
       app:
         condition: service_healthy
     restart: always
+    env_file:
+      - .env
 
   nginx-exporter:
     image: "nginx/nginx-prometheus-exporter"

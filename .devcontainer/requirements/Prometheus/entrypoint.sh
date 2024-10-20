@@ -1,6 +1,8 @@
+#!/bin/sh
+cat << EOF > /prometheus/prometheus.yml
 global:
-  scrape_interval:     15s 
-  evaluation_interval: 15s 
+  scrape_interval:     5s 
+  evaluation_interval: 5s 
 
   external_labels:
       monitor: 'codelab-monitor'
@@ -18,8 +20,8 @@ scrape_configs:
     static_configs:
       - targets: ['app:8000']
     basic_auth:
-      username: '#TODO enter the same value as DJANGO_SUPERUSER_USERNAME in .env'
-      password: '#TODO enter the same value as DJANGO_SUPERUSER_PASSWORD in .env'
+      username: '${DJANGO_SUPERUSER_USERNAME}'
+      password: '${DJANGO_SUPERUSER_PASSWORD}'
   - job_name: 'nginx'
     static_configs:
       - targets: ['nginx-exporter:9113']
@@ -29,3 +31,7 @@ alerting:
     - static_configs:
       - targets:
         - 'alertmanager:9093'
+EOF
+
+
+exec "$@"
