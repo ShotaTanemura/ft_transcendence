@@ -25,7 +25,7 @@ def get_user_match_result(request, name):
         )
 
     user_last_10_match_results = GameRecord.objects.filter(
-        Q(user=user) | Q(opponent=user)
+        Q(user=user)
     ).order_by("-timestamp")[:10]
 
     logger.info(user_last_10_match_results)
