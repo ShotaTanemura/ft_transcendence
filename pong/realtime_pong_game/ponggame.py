@@ -60,6 +60,19 @@ class PongGame:
         self.player1_score = 0
         self.player2_score = 0
 
+    async def on_user_connected(self):
+        await self.send_message_to_group(
+            "send_game_information",
+            {
+                "sender": "PongGame",
+                "type": "player-scored",
+                "contents": {
+                    "player1": {"name": self.player1_name, "score": self.player1_score},
+                    "player2": {"name": self.player2_name, "score": self.player2_score},
+                },
+            },
+        )
+
     # execture pong game and return the scores
     def execute(self, player1_name, player2_name):
         self.ball = Ball(FIELD_WIDTH / 2, FIELD_HEIGHT / 2)
@@ -67,6 +80,8 @@ class PongGame:
         self.player2_paddle = Paddle()
         self.player1_score = 0
         self.player2_score = 0
+        self.player1_name = player1_name
+        self.player2_name = player2_name
         while self.player1_score < 5 and self.player2_score < 5:
             async_to_sync(self.send_message_to_group)(
                 "send_game_information",

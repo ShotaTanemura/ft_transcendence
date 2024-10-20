@@ -1,7 +1,7 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.contrib.auth.models import AnonymousUser
-from realtime_pong_game.roommanager import RoomManager
+from realtime_pong_game.roommanager import RoomManager, RoomState
 
 
 class PlayerConsumer(AsyncWebsocketConsumer):
@@ -33,7 +33,7 @@ class PlayerConsumer(AsyncWebsocketConsumer):
         )
         self.user_nickname = self.user.nickname
         # if url path is not valid, close connection
-        if self.room_name == None or self.user_role == None:
+        if self.room_name is None or self.user_role is None:
             await self.send(
                 text_data=json.dumps(
                     {
@@ -51,7 +51,7 @@ class PlayerConsumer(AsyncWebsocketConsumer):
             self.room_manager = RoomManager.host_room(
                 self.room_name, self.number_of_players
             )
-            if self.room_manager == None:
+            if self.room_manager is None:
                 await self.send(
                     text_data=json.dumps(
                         {
@@ -66,7 +66,7 @@ class PlayerConsumer(AsyncWebsocketConsumer):
         # if user want to guest, confirm that room can be entered. if not, connection closed.
         elif self.user_role == "guest":
             self.room_manager = RoomManager.guest_room(self.room_name)
-            if self.room_manager == None:
+            if self.room_manager is None:
                 await self.send(
                     text_data=json.dumps(
                         {
@@ -108,6 +108,7 @@ class PlayerConsumer(AsyncWebsocketConsumer):
                     }
                 )
             )
+            del self.room_manager
             await self.close()
             return
 
@@ -135,6 +136,8 @@ class PlayerConsumer(AsyncWebsocketConsumer):
                     }
                 )
             )
+            if self.room_manager.room_state == RoomState.In_Game:
+                await self.room_manager.pong_game.on_user_connected()
             return
         await self.room_manager.on_receive_user_message(self.user, message_json)
 
