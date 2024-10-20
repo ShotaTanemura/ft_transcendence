@@ -100,7 +100,6 @@ class Room:
         return True
 
     def remove_participant(self, participant):
-        self.participants_connection[participant] = False
         if (
             self.room_state != RoomState.Not_All_Participants_Connected
             and self.room_state != RoomState.Finished
@@ -132,7 +131,10 @@ class Room:
 
     # delete user from Room
     async def on_user_disconnected(self, participant):
-        self.remove_participant(participant)
+        if participant in self.participants_connection:
+            self.participants_connection[participant] = False
+        if self.room_state == RoomState.Not_All_Participants_Connected:
+            self.remove_participant(participant)
         if len(self.participants) == 0:
             RoomManager.remove_instance(self.room_name)
         return True
