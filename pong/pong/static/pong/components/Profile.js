@@ -71,13 +71,13 @@ export class Profile extends Component {
     const tbodyElement = document.createElement("tbody");
 
     theadElement.innerHTML = `<tr>
-      <th scope="col">Win or Loss</th>
+      <th scope="col">Win or Lose</th>
       <th scope="col">Opponent</th>
     </tr>`;
 
     matchResultData.forEach((matchResult) => {
       const trElement = document.createElement("tr");
-      let winOrLoss;
+      let winOrLose;
       let opponent;
 
       if (gameType === this.PONGGAME) {
@@ -86,13 +86,13 @@ export class Profile extends Component {
           matchResult.contents.player2_score
             ? matchResult.contents.player1
             : matchResult.contents.player2;
-        winOrLoss = winner === this.user.name ? "Win" : "Loss";
+        winOrLose = winner === this.user.name ? "Win" : "Lose";
       } else if (
         gameType === this.TYPINGGAME ||
         gameType === this.REACTIONGAME
       ) {
-        winOrLoss =
-          matchResult.contents.winner === this.user.name ? "Win" : "Loss";
+        winOrLose =
+          matchResult.contents.winner === this.user.name ? "Win" : "Lose";
       }
       opponent =
         matchResult.contents.player1 === this.user.name
@@ -100,7 +100,7 @@ export class Profile extends Component {
           : matchResult.contents.player1;
 
       trElement.innerHTML = `
-        <td>${winOrLoss}</td>
+        <td>${winOrLose}</td>
         <td>${opponent}</td>
       `;
       tbodyElement.appendChild(trElement);

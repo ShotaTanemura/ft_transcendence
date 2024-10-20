@@ -81,13 +81,13 @@ export class UserProfile extends Component {
     const tbodyElement = document.createElement("tbody");
 
     theadElement.innerHTML = `<tr>
-      <th scope="col">Win or Loss</th>
+      <th scope="col">Win or Lose</th>
       <th scope="col">Opponent</th>
     </tr>`;
 
     matchResultData.forEach((matchResult) => {
       const trElement = document.createElement("tr");
-      let winOrLoss;
+      let winOrLose;
       let opponent;
 
       if (gameType === "PongGame") {
@@ -96,9 +96,9 @@ export class UserProfile extends Component {
           matchResult.contents.player2_score
             ? matchResult.contents.player1
             : matchResult.contents.player2;
-        winOrLoss = winner === userName ? "Win" : "Loss";
+        winOrLose = winner === userName ? "Win" : "Lose";
       } else if (gameType === "TypingGame" || gameType === "ReactionGame") {
-        winOrLoss = matchResult.contents.winner === userName ? "Win" : "Loss";
+        winOrLose = matchResult.contents.winner === userName ? "Win" : "Lose";
       }
       opponent =
         matchResult.contents.player1 === userName
@@ -106,7 +106,7 @@ export class UserProfile extends Component {
           : matchResult.contents.player1;
 
       trElement.innerHTML = `
-        <td>${winOrLoss}</td>
+        <td>${winOrLose}</td>
         <td>${opponent}</td>
       `;
       tbodyElement.appendChild(trElement);
