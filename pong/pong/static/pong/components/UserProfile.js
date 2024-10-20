@@ -47,11 +47,17 @@ export class UserProfile extends Component {
   }
 
   async loadUserGameResults(userName) {
-    const pongGameResults = await GameStats.getMatchResultsData(`/ponggame/api/v1/match-result/`,userName);
-    const typingGameResults = await GameStats.getMatchResultsData(`/typinggame/api/v1/match-result/`,userName);
+    const pongGameResults = await GameStats.getMatchResultsData(
+      `/ponggame/api/v1/match-result/`,
+      userName,
+    );
+    const typingGameResults = await GameStats.getMatchResultsData(
+      `/typinggame/api/v1/match-result/`,
+      userName,
+    );
 
-    this.createGameMatchResultTable(pongGameResults, "PongGame",userName);
-    this.createGameMatchResultTable(typingGameResults, "TypingGame",userName);
+    this.createGameMatchResultTable(pongGameResults, "PongGame", userName);
+    this.createGameMatchResultTable(typingGameResults, "TypingGame", userName);
   }
 
   createGameMatchResultTable = (matchResultData, gameType, userName) => {
@@ -77,13 +83,13 @@ export class UserProfile extends Component {
 
       if (gameType === "PongGame") {
         const winner =
-          matchResult.contents.player1_score > matchResult.contents.player2_score
+          matchResult.contents.player1_score >
+          matchResult.contents.player2_score
             ? matchResult.contents.player1
             : matchResult.contents.player2;
         winOrLoss = winner === userName ? "Win" : "Loss";
       } else if (gameType === "TypingGame") {
-        winOrLoss =
-          matchResult.contents.winner === userName ? "Win" : "Loss";
+        winOrLoss = matchResult.contents.winner === userName ? "Win" : "Loss";
       }
       opponent =
         matchResult.contents.player1 === userName
