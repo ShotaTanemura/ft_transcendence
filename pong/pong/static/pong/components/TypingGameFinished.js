@@ -19,6 +19,7 @@ export class TypingGameFinished extends Component {
     if (!this.winner) {
       alert("result not found.");
       this.goNextPage("/");
+      return;
     } else {
       document.getElementById("TypingGameWinner").innerHTML = this.winner;
     }

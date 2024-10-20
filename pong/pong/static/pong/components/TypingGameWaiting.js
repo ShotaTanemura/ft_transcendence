@@ -16,6 +16,7 @@ export class TypingGameWaiting extends Component {
     if (!this.connection) {
       alert("connection failed");
       this.goNextPage("/");
+      return;
     }
     this.findElement("button.go-back-to-game-home").onclick = this.onClick;
   }
