@@ -62,6 +62,7 @@ class Room:
         self.room_name = room_name
         self.room_state = RoomState.Not_All_Participants_Connected
         self.participants = []
+        self.participants_connection = dict()
         self.participant_nickname_dict = dict()
         self.participants_state = dict()
         self.max_of_participants = int(number_of_players)
@@ -79,13 +80,21 @@ class Room:
 
     def add_new_participant(self, new_participant, new_participant_nickname):
         with self.instance_lock:
+            if (
+                new_participant in self.participants
+                and new_participant in self.participants_connection
+                and self.participants_connection[new_participant] is False
+            ):
+                self.participants_connection[new_participant] = True
+                return True
             if self.room_state != RoomState.Not_All_Participants_Connected:
                 return False
             if new_participant in self.participants:
                 return False
             self.participants.append(new_participant)
+            self.participants_connection[new_participant] = True
             self.participant_nickname_dict[new_participant] = (
-                f"{new_participant_nickname} #{len(self.participants)}"
+                f"{new_participant_nickname}"
             )
         self.set_participant_state(new_participant, ParticipantState.Not_In_Place)
         return True
@@ -107,7 +116,10 @@ class Room:
     async def on_user_connected(self, user, user_nickname):
         if not self.add_new_participant(user, user_nickname):
             return False
-        if len(self.participants) == self.max_of_participants:
+        if (
+            len(self.participants) == self.max_of_participants
+            and self.room_state == RoomState.Not_All_Participants_Connected
+        ):
             self.set_room_state(RoomState.Display_Tournament)
             await self.send_room_state_to_group()
             asyncio.new_event_loop().run_in_executor(
@@ -119,7 +131,10 @@ class Room:
 
     # delete user from Room
     async def on_user_disconnected(self, participant):
-        self.remove_participant(participant)
+        if participant in self.participants_connection:
+            self.participants_connection[participant] = False
+        if self.room_state == RoomState.Not_All_Participants_Connected:
+            self.remove_participant(participant)
         if len(self.participants) == 0:
             RoomManager.remove_instance(self.room_name)
         return True
@@ -188,6 +203,21 @@ class Room:
                     },
                 )
                 break
+
+            channel_layer = get_channel_layer()
+            users_list = [
+                self.participant_nickname_dict[player1],
+                self.participant_nickname_dict[player2],
+            ]
+            async_to_sync(channel_layer.group_send)(
+                "room_notifications",
+                {
+                    "type": "game_notification",
+                    "room_id": self.room_name,
+                    "users": users_list,
+                },
+            )
+
             # get change next game player's state
             self.change_participants_state_for_game(player1, player2)
             # get tournament list

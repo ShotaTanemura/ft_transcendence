@@ -42,6 +42,10 @@ export class Chat extends Component {
     socket.addEventListener("message", (event) => {
       const message = JSON.parse(event.data);
 
+      if (message.notification) {
+        this.pongameNotification(message.notification.url);
+      }
+
       if (message.rooms) {
         this.myRoomsContainer.updateRoomsUI(message.rooms);
       }
@@ -201,6 +205,28 @@ export class Chat extends Component {
     this.element.parentElement.removeChild(this.headerComponent.element);
   }
 
+  pongameNotification(url) {
+    const modal = document.getElementById("gameModal");
+    const gameLink = document.getElementById("gameLink");
+
+    gameLink.href = window.location.origin + url;
+    gameLink.textContent = window.location.origin + url;
+    gameLink.innerHTML = "こちらのリンクをクリック!!";
+
+    modal.style.display = "block";
+
+    const closeButton = document.getElementsByClassName("close-button")[0];
+    closeButton.onclick = function () {
+      modal.style.display = "none";
+    };
+
+    window.onclick = function (event) {
+      if (event.target === modal) {
+        modal.style.display = "none";
+      }
+    };
+  }
+
   get html() {
     if (
       !this.myRoomsContainer ||
@@ -211,11 +237,17 @@ export class Chat extends Component {
     }
 
     return `
-
       <div class="parent-container">
         ${this.myRoomsContainer.html}
         ${this.chatContainer.html}
         ${this.directoryContainer.html}
+      </div>
+      <div id="gameModal" class="chat-modal">
+        <div class="modal-content">
+          <span class="close-button">&times;</span>
+          <p>ゲームが始まります！次のリンクからゲームに参加してください</p>
+          <a id="gameLink" href="" target="_blank"></a>
+        </div>
       </div>
     `;
   }
