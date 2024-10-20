@@ -39,14 +39,19 @@ export class DirectoryContainer extends Component {
       if (searchBar) searchBar.removeEventListener("input", searchBarListener);
     }
     if (confirmJoinButtonListener) {
-      document
-        .getElementById("confirmJoinButton")
-        .removeEventListener("click", confirmJoinButtonListener);
+      const confirmJoinButton = document.getElementById("confirmJoinButton");
+      if (confirmJoinButton) {
+        confirmJoinButton.removeEventListener(
+          "click",
+          confirmJoinButtonListener,
+        );
+      }
     }
     if (cancelJoinButtonListener) {
-      document
-        .getElementById("cancelJoinButton")
-        .removeEventListener("click", cancelJoinButtonListener);
+      const cancelJoinButton = document.getElementById("cancelJoinButton");
+      if (cancelJoinButton) {
+        cancelJoinButton.removeEventListener("click", cancelJoinButtonListener);
+      }
     }
     if (modalClickListener) {
       window.removeEventListener("click", modalClickListener);
@@ -64,7 +69,9 @@ export class DirectoryContainer extends Component {
 
   refreshRoomMembers(users) {
     const membersContainer = document.querySelector(".members-list");
-    membersContainer.innerHTML = "";
+    if (membersContainer) {
+      membersContainer.innerHTML = "";
+    }
 
     users.forEach((user) => {
       const memberElement = document.createElement("div");
@@ -249,6 +256,9 @@ export class DirectoryContainer extends Component {
 
   handleDOMContentLoaded() {
     const searchBar = document.querySelector(".unjoined-search-bar input");
+    if (!searchBar) {
+      return;
+    }
 
     this.eventListeners.searchBarListener = (event) => {
       const query = event.target.value;
