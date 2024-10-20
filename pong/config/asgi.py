@@ -22,6 +22,7 @@ from pong.middleware.auth import ChannelsJWTAuthenticationMiddleware
 from realtime_pong_game.consumers import PlayerConsumer
 from realtime_typing_game.consumers import TypingPlayerConsumer
 import chat.routing
+import reaction_game.routing
 
 application = ProtocolTypeRouter(
     {
@@ -39,6 +40,7 @@ application = ProtocolTypeRouter(
                             TypingPlayerConsumer.as_asgi(),
                         ),
                         *chat.routing.websocket_urlpatterns,
+                        *reaction_game.routing.websocket_urlpatterns,
                     ]
                 )
             )
