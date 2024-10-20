@@ -1,7 +1,7 @@
 import { Component } from "../core/component.js";
 import { Header } from "./Header.js";
 import { getUuid, getUserFromUuid } from "../api/api.js";
-import { GameStats } from "./GameStats.js"; // GameStatsをインポート
+import { GameStats } from "./GameStats.js";
 
 export class Profile extends Component {
   constructor(router, params, state) {
