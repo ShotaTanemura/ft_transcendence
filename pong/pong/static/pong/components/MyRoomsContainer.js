@@ -59,29 +59,39 @@ export class MyRoomsContainer extends Component {
     } = this.eventListeners;
 
     if (searchBarListener) {
-      document
-        .querySelector(".search-bar input")
-        .removeEventListener("input", searchBarListener);
+      const searchBar = document.querySelector(".search-bar input");
+      if (searchBar) {
+        searchBar.removeEventListener("input", searchBarListener);
+      }
     }
     if (roomTypeListener) {
-      document
-        .getElementById("roomType")
-        .removeEventListener("change", roomTypeListener);
+      const roomTypeSelect = document.getElementById("roomType");
+      if (roomTypeSelect) {
+        roomTypeSelect.removeEventListener("change", roomTypeListener);
+      }
     }
     if (createChatroomListener) {
-      document
-        .querySelector(".create-chatroom-button")
-        .removeEventListener("click", createChatroomListener);
+      const createChatroomButton = document.querySelector(
+        ".create-chatroom-button",
+      );
+      if (createChatroomButton) {
+        createChatroomButton.removeEventListener(
+          "click",
+          createChatroomListener,
+        );
+      }
     }
     if (closeModalListener) {
-      document
-        .querySelector(".close-modal")
-        .removeEventListener("click", closeModalListener);
+      const closeModal = document.querySelector(".close-modal");
+      if (closeModal) {
+        closeModal.removeEventListener("click", closeModalListener);
+      }
     }
     if (formSubmitListener) {
-      document
-        .getElementById("createChatroomForm")
-        .removeEventListener("submit", formSubmitListener);
+      const createChatroomForm = document.getElementById("createChatroomForm");
+      if (createChatroomForm) {
+        createChatroomForm.removeEventListener("submit", formSubmitListener);
+      }
     }
     if (modalClickListener) {
       window.removeEventListener("click", modalClickListener);
@@ -102,7 +112,12 @@ export class MyRoomsContainer extends Component {
       const query = event.target.value.toLowerCase();
       this.displayRooms(this.rooms, query);
     };
-    searchBar.addEventListener("input", this.eventListeners.searchBarListener);
+    if (searchBar) {
+      searchBar.addEventListener(
+        "input",
+        this.eventListeners.searchBarListener,
+      );
+    }
 
     this.eventListeners.roomTypeListener = (event) => {
       const emailField = document.getElementById("emailField");
@@ -115,26 +130,32 @@ export class MyRoomsContainer extends Component {
         emailInput.removeAttribute("required");
       }
     };
-    roomTypeSelect.addEventListener(
-      "change",
-      this.eventListeners.roomTypeListener,
-    );
+    if (roomTypeSelect) {
+      roomTypeSelect.addEventListener(
+        "change",
+        this.eventListeners.roomTypeListener,
+      );
+    }
 
     this.eventListeners.createChatroomListener = () => {
       modal.style.display = "block";
     };
-    createChatroomButton.addEventListener(
-      "click",
-      this.eventListeners.createChatroomListener,
-    );
+    if (createChatroomButton) {
+      createChatroomButton.addEventListener(
+        "click",
+        this.eventListeners.createChatroomListener,
+      );
+    }
 
     this.eventListeners.closeModalListener = () => {
       modal.style.display = "none";
     };
-    closeModal.addEventListener(
-      "click",
-      this.eventListeners.closeModalListener,
-    );
+    if (closeModal) {
+      closeModal.addEventListener(
+        "click",
+        this.eventListeners.closeModalListener,
+      );
+    }
 
     this.eventListeners.formSubmitListener = (event) => {
       event.preventDefault();
@@ -158,10 +179,12 @@ export class MyRoomsContainer extends Component {
 
       modal.style.display = "none";
     };
-    createChatroomForm.addEventListener(
-      "submit",
-      this.eventListeners.formSubmitListener,
-    );
+    if (createChatroomForm) {
+      createChatroomForm.addEventListener(
+        "submit",
+        this.eventListeners.formSubmitListener,
+      );
+    }
 
     this.eventListeners.modalClickListener = (event) => {
       if (event.target === modal) {
