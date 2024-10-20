@@ -22,6 +22,7 @@ import { GameStats } from "./components/GameStats.js";
 import { TypingGameFinished } from "./components/TypingGameFinished.js";
 import { SearchUsers } from "./components/SearchUsers.js";
 import { Friend } from "./components/Friend.js";
+import { Reaction } from "./components/ReactionHome.js";
 
 let router = new Router(
   document.getElementById("app"),
@@ -135,6 +136,10 @@ let router = new Router(
       path: "/profile/{user_name}",
       component: UserProfile,
       state: {},
+    },
+    {
+      path: "/reaction",
+      component: Reaction,
     },
   ],
   {
