@@ -55,9 +55,14 @@ export class UserProfile extends Component {
       `/typinggame/api/v1/match-result/`,
       userName,
     );
+    const reactionGameResults = await GameStats.getMatchResultsData(
+      `/reactiongame/api/v1/match-result/`,
+      userName,
+    );
 
     this.createGameMatchResultTable(pongGameResults, "PongGame", userName);
     this.createGameMatchResultTable(typingGameResults, "TypingGame", userName);
+    this.createGameMatchResultTable(reactionGameResults, "ReactionGame", userName);
   }
 
   createGameMatchResultTable = (matchResultData, gameType, userName) => {
@@ -88,7 +93,7 @@ export class UserProfile extends Component {
             ? matchResult.contents.player1
             : matchResult.contents.player2;
         winOrLoss = winner === userName ? "Win" : "Loss";
-      } else if (gameType === "TypingGame") {
+      } else if (gameType === "TypingGame" || gameType === "ReactionGame") {
         winOrLoss = matchResult.contents.winner === userName ? "Win" : "Loss";
       }
       opponent =
@@ -109,7 +114,9 @@ export class UserProfile extends Component {
     const tableContainer =
       gameType === "PongGame"
         ? this.findElement("div.ponggame-result-table")
-        : this.findElement("div.typinggame-result-table");
+        : gameType === "TypingGame"
+        ? this.findElement("div.typinggame-result-table")
+        : this.findElement("div.reactiongame-result-table");
 
     tableContainer.appendChild(tableElement);
   };
@@ -121,22 +128,24 @@ export class UserProfile extends Component {
 
   get html() {
     return `
-    
-        <div class="profile-card">
-            <h1>プロフィールページ</h1>
-            <img id="user-icon">
-            <p>Username: <span id="username"></span></p>
-            <br>
-            <h3>Last 10 Game Match Results</h3>
-            <div class="ponggame-result-table">
-            <strong>PongGame</strong>
-            </div>
-            <div class="typinggame-result-table">
-              <strong>TypingGame</strong>
-            </div>
-            <br>
-            <button id="back-button">元のページに戻る</button>
+      <div class="profile-card">
+        <h1>プロフィールページ</h1>
+        <img id="user-icon">
+        <p>Username: <span id="username"></span></p>
+        <br>
+        <h3>Last 10 Game Match Results</h3>
+        <div class="ponggame-result-table">
+          <strong>PongGame</strong>
         </div>
-        `;
+        <div class="typinggame-result-table">
+          <strong>TypingGame</strong>
+        </div>
+        <div class="reactiongame-result-table">
+          <strong>ReactionGame</strong>
+        </div>
+        <br>
+        <button id="back-button">元のページに戻る</button>
+      </div>
+    `;
   }
 }

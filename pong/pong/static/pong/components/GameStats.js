@@ -19,7 +19,7 @@ export class GameStats extends Component {
       await GameStats.getMatchResultsData("/typinggame/api/v1/match-result/"),
     );
     this.createReactionGameMatchResultTable(
-      await this.getMatchResultsData("/reactiongame/api/v1/match-result/"),
+      await GameStats.getMatchResultsData("/reactiongame/api/v1/match-result/"),
     );
   };
 

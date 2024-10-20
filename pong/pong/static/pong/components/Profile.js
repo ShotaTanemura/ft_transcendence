@@ -12,6 +12,7 @@ export class Profile extends Component {
     this.findElement("button.edit-2fa-button").onclick = this.goEdit2FA;
     this.TYPINGGAME = "TypingGame";
     this.PONGGAME = "PongGame";
+    this.REACTIONGAME = "ReactionGame";  // New constant for ReactionGame
   }
 
   afterPageLoaded() {
@@ -49,9 +50,13 @@ export class Profile extends Component {
     const typingGameResults = await GameStats.getMatchResultsData(
       "/typinggame/api/v1/match-result/",
     );
+    const reactionGameResults = await GameStats.getMatchResultsData(
+      "/reactiongame/api/v1/match-result/",
+    );
 
     this.createGameMatchResultTable(pongGameResults, this.PONGGAME);
     this.createGameMatchResultTable(typingGameResults, this.TYPINGGAME);
+    this.createGameMatchResultTable(reactionGameResults, this.REACTIONGAME);
   }
 
   createGameMatchResultTable = (matchResultData, gameType) => {
@@ -82,7 +87,7 @@ export class Profile extends Component {
             ? matchResult.contents.player1
             : matchResult.contents.player2;
         winOrLoss = winner === this.user.name ? "Win" : "Loss";
-      } else if (gameType === this.TYPINGGAME) {
+      } else if (gameType === this.TYPINGGAME || gameType === this.REACTIONGAME) {
         winOrLoss =
           matchResult.contents.winner === this.user.name ? "Win" : "Loss";
       }
@@ -104,7 +109,9 @@ export class Profile extends Component {
     const tableContainer =
       gameType === "PongGame"
         ? this.findElement("div.ponggame-result-table")
-        : this.findElement("div.typinggame-result-table");
+        : gameType === "TypingGame"
+        ? this.findElement("div.typinggame-result-table")
+        : this.findElement("div.reactiongame-result-table");  // Add ReactionGame results
 
     tableContainer.appendChild(tableElement);
   };
@@ -136,15 +143,18 @@ export class Profile extends Component {
         <h3>Last 10 Game Match Results</h3>
         <div class="ponggame-result-table">
             <strong>PongGame</strong>
-            </div>
-            <div class="typinggame-result-table">
-              <strong>TypingGame</strong>
-            </div>
+        </div>
+        <div class="typinggame-result-table">
+            <strong>TypingGame</strong>
+        </div>
+        <div class="reactiongame-result-table">
+            <strong>ReactionGame</strong>
+        </div>
         <button class="edit-profile-button">プロフィールを変更する</button>
         <br>
         <br>
         <button class="edit-2fa-button">二要素認証の設定を変更する</button>
       </div>
-      `;
+    `;
   }
 }
