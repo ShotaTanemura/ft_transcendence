@@ -50,8 +50,8 @@ export class GameStats extends Component {
     }
   };
 
-  static getMatchResultsData = async (apiEndpoint) => {
-    const userName = await GameStats.getUserName();
+  static getMatchResultsData = async (apiEndpoint, user_name = null) => {
+    const userName = user_name || (await GameStats.getUserName());
     if (!userName) {
       return;
     }

@@ -133,13 +133,13 @@ export class Profile extends Component {
         <p>Username: <span id="username"></span></p>
         <p>E-mail: <span id="email"></span></p>
         <br>
+        <h3>Last 10 Game Match Results</h3>
         <div class="ponggame-result-table">
-        <h2>Game Stats</h2>
-        <p>PongGame</p>
-        </div>
-        <div class="typinggame-result-table">
-        <p>TypingGame</p>
-        </div>
+            <strong>PongGame</strong>
+            </div>
+            <div class="typinggame-result-table">
+              <strong>TypingGame</strong>
+            </div>
         <button class="edit-profile-button">プロフィールを変更する</button>
         <br>
         <br>
