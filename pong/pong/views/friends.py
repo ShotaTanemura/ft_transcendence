@@ -143,9 +143,7 @@ def get_friends(request):
             )
         friends = Friend.objects.filter(user=user)
         if not friends:
-            return JsonResponse(
-                {"message": "RequestNotFound", "status": "NotFound"}, status=404
-            )
+            friends = []
         hitted_friend_list = []
         for friend in friends:
             hitted_friend_list.append(
@@ -182,9 +180,7 @@ def get_requested_friends(request):
             )
         friends = FriendRequest.objects.filter(reciever=user)
         if not friends:
-            return JsonResponse(
-                {"message": "RequestNotFound", "status": "NotFound"}, status=404
-            )
+            friends = []
         hitted_friend_list = []
         for friend in friends:
             hitted_friend_list.append(
@@ -221,9 +217,7 @@ def get_pending_friends(request):
             )
         friends = FriendRequest.objects.filter(sender=user)
         if not friends:
-            return JsonResponse(
-                {"message": "RequestNotFound", "status": "NotFound"}, status=404
-            )
+            friends = []
         hitted_friend_list = []
         for friend in friends:
             hitted_friend_list.append(
