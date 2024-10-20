@@ -1,26 +1,36 @@
 import { Component } from "../core/component.js";
-import { Header } from "./Header.js";
 
 export class TypingGame extends Component {
   constructor(router, parameters, state) {
     super(router, parameters, state);
-
-    this.connection = this.getRouteContext("TypingGameWebSocket");
-    if (!this.connection) {
-      alert("connection failed");
-      this.goNextPage("/");
-    }
-    this.connection.onmessage = this.onMessage;
     this.input_length = 0;
     this.timer = 10;
     this.maxTime = 10;
-    // ゲーム開始前にnext-wordが来るので、-1からスタート
+    // ゲーム開始前にnextwordが来て+1されるので-1からスタート
     this.score = -1;
     this.isMyTurn = false;
   }
 
-  sendMessage = (e) => {
-    if (this.connection.readyState === WebSocket.OPEN) {
+  afterPageLoaded() {
+    this.connection = this.getRouteContext("TypingGameWebSocket");
+    if (!this.connection) {
+      alert("connection failed");
+      this.goNextPage("/");
+      return;
+    }
+    this.connection.onmessage = this.onMessage;
+
+    // キーボードイベントのリスナーを追加
+    document.addEventListener("keydown", this.onKeyDown);
+  }
+
+  beforePageUnload() {
+    // ページ遷移時にリスナーを解除
+    document.removeEventListener("keydown", this.onKeyDown);
+  }
+
+  onKeyDown = (e) => {
+    if (this.connection && this.connection.readyState === WebSocket.OPEN) {
       // WebSocketが開いている状態のときのみ送信
       this.connection.send(
         JSON.stringify({
@@ -33,6 +43,7 @@ export class TypingGame extends Component {
       console.warn("Cannot send message, WebSocket is not open.");
     }
   };
+
   onMessage = (event) => {
     const message = JSON.parse(event.data);
     switch (message.type) {
@@ -53,7 +64,6 @@ export class TypingGame extends Component {
         document.getElementById("inputCorrect").innerHTML +=
           message.contents.word[this.input_length];
         this.input_length++;
-        // TODO: 文字が合っていたら、文字色を変える`
         break;
 
       case "incorrect-key":
@@ -77,7 +87,6 @@ export class TypingGame extends Component {
 
       default:
         console.warn(`Unknown message type: ${message.type}`);
-        print(message);
         break;
     }
   };
@@ -114,18 +123,6 @@ export class TypingGame extends Component {
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillText(remainingTime + "s", centerX, centerY);
-  }
-
-  afterPageLoaded() {
-    this.headerComponent = new Header(this.router, this.params, this.state);
-    this.element.parentElement.prepend(this.headerComponent.element);
-    this.headerComponent.afterPageLoaded();
-    document.addEventListener("keydown", this.sendMessage);
-  }
-
-  beforePageUnload() {
-    document.removeEventListener("keydown", this.sendMessage);
-    this.element.parentElement.removeChild(this.headerComponent.element);
   }
 
   get html() {
