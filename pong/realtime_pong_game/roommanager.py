@@ -67,6 +67,7 @@ class Room:
         self.participants_state = dict()
         self.max_of_participants = int(number_of_players)
         self.game_results = []
+        self.is_timeout = False
 
     def set_room_state(self, new_room_state):
         with self.instance_lock:
@@ -167,6 +168,19 @@ class Room:
     async def on_receive_user_message(self, participant, message_json):
         if self.room_state == RoomState.In_Game:
             await self.handle_game_action(participant, message_json)
+        elif self.room_state == RoomState.Display_Tournament:
+            self.is_timeout = True
+            await self.channel_layer.group_send(
+                self.room_name,
+                {
+                    "type": "send_room_information",
+                    "contents": {
+                        "sender": "room-manager",
+                        "type": "timeout",
+                        "contents": "timeout",
+                    },
+                },
+            )
 
     def change_participants_state_for_game(self, player1, player2):
         for participant in self.participants_state.keys():
@@ -236,7 +250,9 @@ class Room:
             # change room state to Display_Tournament
             self.set_room_state(RoomState.Display_Tournament)
             async_to_sync(self.send_room_state_to_group)()
-            time.sleep(3)
+            time.sleep(5)
+            if self.is_timeout is True:
+                time.sleep(30)
             # change room state to In_Game
             self.set_room_state(RoomState.In_Game)
             async_to_sync(self.send_room_state_to_group)()
