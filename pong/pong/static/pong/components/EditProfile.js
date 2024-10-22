@@ -136,7 +136,7 @@ export class EditProfile extends Component {
         <form class="edit-profile-form">
             <label for="username">Username</label>
             <input type="text" placeholder="username" id="username" name="name"><br/>
-            <label for="Nick">Nickname</label>
+            <label for="nickname">Nickname</label>
             <input type="text" placeholder="nickname" id="nickname" name="nickname"><br/>
             <label for="email">Email</label>
             <input type="email" placeholder="email" id="email" name="email"><br/>
