@@ -106,6 +106,7 @@ export class Edit2FA extends Component {
           <button class="generate-qrcode" type="submit">二要素認証アプリケーション用QRコードを取得する</button>
           <div class="qrcode-container"></div>
           <div class="totp-fom-container"></div>
+          <button class="back-button" type="button" onclick="history.back()">戻る</button>
         `;
   }
 }
