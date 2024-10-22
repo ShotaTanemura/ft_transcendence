@@ -6,7 +6,7 @@ info:
 servers:
   - url: http://localhost:8080
 paths:
-   /pong/api/v1/auth/register:
+  /pong/api/v1/auth/register:
     post:
       summary: ユーザー登録
       description: ユーザー登録
@@ -27,7 +27,7 @@ paths:
           $ref: "#/components/responses/badRequest"
         "409":
           $ref: "#/components/responses/conflictError"
-   /pong/api/v1/auth/token:
+  /pong/api/v1/auth/token:
     post:
       summary: 認証トークンとリフレッシュトークンの発行
       description: 認証トークンとリフレッシュトークンの発行
@@ -45,7 +45,7 @@ paths:
               schema:
                 type: string
                 description: 認証トークンとリフレッシュトークン
-                example: JWTTOKEN=jwttoken; JWTREFRESH=refresh-jwttoken Secure; HttpOnly 
+                example: JWTTOKEN=jwttoken; JWTREFRESH=refresh-jwttoken Secure; HttpOnly
           content:
               "application/json":
                 schema:
@@ -54,7 +54,32 @@ paths:
           $ref: "#/components/responses/badRequest"
         "404":
           $ref: "#/components/responses/notFoundError"
-   /pong/api/v1/auth/token/refresh:
+  /pong/api/v1/auth/token/totp:
+  post:
+    summary: 二要素認証コードの確認とトークン, リフレッシュトークンの発行
+    description: 二要素認証コードの確認とトークン, リフレッシュトークンの発行
+    requestBody:
+      content:
+        "application/json":
+          schema:
+            $ref: "#/components/schemas/postTokenTotpRequest"
+      required: true
+    responses:
+      "200":
+        description: 二要素認証コードの確認とトークン, リフレッシュトークンの発行の成功
+        headers:
+          Set-Cookie:
+            schema:
+              type: string
+              description: 認証トークンとリフレッシュトークン
+              example: JWTTOKEN=jwttoken; JWTREFRESH=refresh-jwttoken Secure; HttpOnly
+        content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/postTokenTotpResponse"
+      "400":
+        $ref: "#/components/responses/badRequest"
+  /pong/api/v1/auth/token/refresh:
     post:
       summary: トークンのリフレッシュ
       description: トークンのリフレッシュ
@@ -66,14 +91,14 @@ paths:
               schema:
                 type: string
                 description: 認証トークンとリフレッシュトークン
-                example: JWTTOKEN=jwttoken; JWTREFRESH=refresh-jwttoken Secure; HttpOnly 
+                example: JWTTOKEN=jwttoken; JWTREFRESH=refresh-jwttoken Secure; HttpOnly
           content:
               "application/json":
                 schema:
                   $ref: "#/components/schemas/postRefreshTokenResponse"
         "400":
           $ref: "#/components/responses/badRequest"
-   /pong/api/v1/auth/token/verify:
+  /pong/api/v1/auth/token/verify:
     post:
       summary: トークンの検証
       description: トークンの検証
@@ -86,6 +111,295 @@ paths:
                   $ref: "#/components/schemas/postTokenVerifyResponse"
         "401":
           $ref: "#/components/responses/badRequest"
+  /pong/api/v1/auth/two-factor/provisioning:
+    post:
+      summary: TOTPの登録とURIの生成
+      description: TOTPの登録とURIの生成
+      responses:
+        "200":
+          description: TOTPの登録とURIの生成が成功
+          content:
+              "application/json":
+                schema:
+                  $ref: "#/components/schemas/post2FAProvisioningResponse"
+        "400":
+          $ref: "#/components/responses/badRequest"
+  /pong/api/v1/auth/two-factor/register:
+    post:
+      summary: TOTPの確認と登録
+      description: TOTPの確認と登録
+      requestBody:
+        content:
+          "application/json":
+            schema:
+                $ref: "#/components/schemas/post2FARegisterRequest"
+        required: true
+      responses:
+        "200":
+          description: TOTPの確認と登録が成功
+          content:
+              "application/json":
+                schema:
+                  $ref: "#/components/schemas/post2FARegisterResponse"
+        "400":
+          $ref: "#/components/responses/badRequest"
+  /pong/api/v1/users/{uuid}:
+    get:
+      summary: ユーザー情報取得
+      description: ユーザー情報取得
+      parameters:
+        - name: uuid
+          in: path
+          description: ユーザーのUUID
+          required: true
+          schema:
+            type: string
+          example: b4cf1ef4-1cab-490b-a32c-f6528f95c796
+      responses:
+        "200":
+          description: ユーザー情報取得成功
+          content:
+              "application/json":
+                schema:
+                  $ref: "#/components/schemas/getUserResponse"
+        "400":
+          $ref: "#/components/responses/badRequest"
+        "404":
+          $ref: "#/components/responses/notFoundError"
+  /pong/api/v1/users/{uuid}/icon:
+    post:
+      summary: ユーザーアイコン画像アップロード
+      description: ユーザーアイコン画像アップロード
+      parameters:
+        - name: uuid
+          in: path
+          description: ユーザーのUUID
+          required: true
+          schema:
+            type: string
+          example: b4cf1ef4-1cab-490b-a32c-f6528f95c796
+      requestBody:
+        content:
+          "multipart/form-data":
+            schema:
+              type: object
+              properties:
+                icon:
+                  type: string
+                  format: binary
+        required: true
+      responses:
+        "201":
+          description: ユーザーアイコン画像のアップロード完了
+          content:
+              "application/json":
+                schema:
+                  $ref: "#/components/schemas/postUserIconResponse"
+        "400":
+          $ref: "#/components/responses/badRequest"
+        "404":
+          $ref: "#/components/responses/notFoundError"
+  /pong/api/v1/users/others/{name}:
+    get:
+      summary: 他のユーザー情報取得
+      description: 名前で他のユーザーの情報を取得
+      parameters:
+        - name: name
+          in: path
+          description: ユーザーの名前
+          required: true
+          schema:
+            type: string
+          example: ユーザー名
+      responses:
+        "200":
+          description: ユーザー情報取得成功
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/getOtherUser"
+        "400":
+          $ref: "#/components/responses/badRequest"
+        "404":
+          $ref: "#/components/responses/notFoundError"
+  /pong/api/v1/users/status/{name}:
+    get:
+      summary: オンラインステータスの取得
+      description: ユーザーのオンラインステータスを名前から取得
+      parameters:
+        - name: name
+          in: path
+          description: ユーザー名
+          required: true
+          schema:
+            type: string
+          example: ユーザー名
+      responses:
+        "200":
+          description: オンラインステータスの取得成功
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/getUserOnlineStatus"
+        "400":
+          $ref: "#/components/responses/badRequest"
+        "404":
+          $ref: "#/components/responses/notFoundError"
+  /pong/api/v1/friends/friends:
+    get:
+      summary: フレンドの取得
+      description: ユーザーのフレンド全員の情報取得
+      responses:
+        "200":
+          description: "フレンド情報の取得成功"
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/getFriends"
+        "400":
+          $ref: "#/components/responses/badRequest"
+        "401":
+          $ref: "#/components/responses/unauthorized"
+        "404":
+          $ref: "#/components/responses/notFoundError"
+  /pong/api/v1/friends/pending:
+    get:
+      summary: 申請済みフレンドの取得
+      description: ユーザーがフレンド申請をして承認されていないユーザーの情報取得
+      responses:
+        "200":
+          description: "申請済みユーザー情報の取得成功"
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/getPendingFriends"
+        "400":
+          $ref: "#/components/responses/badRequest"
+        "401":
+          $ref: "#/components/responses/unauthorized"
+        "404":
+          $ref: "#/components/responses/notFoundError"
+  /pong/api/v1/friends/requested:
+    get:
+      summary: フレンド承認待ちの取得
+      description: ユーザーがフレンド申請をされて承認されていないユーザーの情報取得
+      responses:
+        "200":
+          description: "承認待ちユーザー情報の取得成功"
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/getRequestedFriends"
+        "400":
+          $ref: "#/components/responses/badRequest"
+        "401":
+          $ref: "#/components/responses/unauthorized"
+        "404":
+          $ref: "#/components/responses/notFoundError"
+  /pong/api/v1/friends/request/send:
+    post:
+      summary: フレンド申請の送信
+      description: ユーザーがフレンド申請を送信
+      requestBody:
+        content:
+          "applications/json":
+            schema:
+              type: object
+              properties:
+                requested-user-name:
+                  type: string
+      responses:
+        "200":
+          description: "フレンド申請の成功"
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+        "400":
+          $ref: "#/components/responses/badRequest"
+        "401":
+          $ref: "#/components/responses/unauthorized"
+        "404":
+          $ref: "#/components/responses/notFoundError"
+        "409":
+          $ref: "#/components/responses/integrityError"
+  /pong/api/v1/friends/request/approve:
+    post:
+      summary: フレンド申請の承認
+      description: ユーザーがフレンド申請の承認を送信
+      requestBody:
+        content:
+          "applications/json":
+            schema:
+              type: object
+              properties:
+                request-user-name:
+                  type: string
+      responses:
+        "200":
+          description: "フレンド申請の承認が成功"
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+        "400":
+          $ref: "#/components/responses/badRequest"
+        "401":
+          $ref: "#/components/responses/unauthorized"
+        "404":
+          $ref: "#/components/responses/notFoundError"
+        "409":
+          $ref: "#/components/responses/integrityError"
+  /ponggame/api/v1/match-result/{uuid}:
+    post:
+      summary: ユーザーのPongGameの直近10試合の履歴の取得
+      parameters:
+        - name: uuid
+          in: path
+          description: ユーザーのUUID
+          required: true
+          schema:
+            type: string
+          example: b4cf1ef4-1cab-490b-a32c-f6528f95c796
+      responses:
+        "200":
+          description: 試合結果の取得成功
+          content:
+              "application/json":
+                schema:
+                  $ref: "#/components/schemas/getPongGameLast10MatchesResult"
+        "400":
+          $ref: "#/components/responses/badRequest"
+        "404":
+          $ref: "#/components/responses/notFoundError"
+  /typinggame/api/v1/match-result/{uuid}:
+      post:
+        summary: ユーザーのTypingGameの直近10試合の履歴の取得
+        parameters:
+        - name: uuid
+          in: path
+          description: ユーザーのUUID
+          required: true
+          schema:
+            type: string
+          example: b4cf1ef4-1cab-490b-a32c-f6528f95c796
+        responses:
+          "200":
+            description: 試合結果の取得成功
+            content:
+              "application/json":
+                schema:
+                  $ref: "#/components/schemas/getTypingGameLast10MatchesResult"
+          "400":
+            $ref: "#/components/responses/badRequest"
+          "404":
+            $ref: "#/components/responses/notFoundError"
 components:
   responses:
     badRequest:
@@ -102,6 +416,18 @@ components:
             $ref: "#/components/schemas/errorMessage"
     notFoundError:
       description: データが見つからない
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/errorMessage"
+    unauthorized:
+      description: 権限がない
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/errorMessage"
+    integrityError:
+      description: 整合性が取れない
       content:
         application/json:
           schema:
@@ -126,6 +452,14 @@ components:
         - name
         - email
         - password
+    getCallback42Response:
+      type: object
+      description: 42OAuthによるユーザー登録に成功
+      properties:
+        uuid:
+         type: string
+         description: 作成されたユーザーのUUID
+         example: b4cf1ef4-1cab-490b-a32c-f6528f95c796
     postRegisterResponse:
       type: object
       description: ユーザー登録に成功
@@ -156,6 +490,23 @@ components:
             type: string
             description: トークンが発行されたユーザーのUUID
             example: b4cf1ef4-1cab-490b-a32c-f6528f95c796
+    postTokenTotpRequest:
+      type: object
+      properties:
+        code:
+          type: string
+          description: 認証コード
+          example: 000000
+      required:
+        - code
+    postTokenTotpResponse:
+      type: object
+      description: 認証トークンとリフレッシュトークン発行成功
+      properties:
+          uuid:
+            type: string
+            description: トークンが発行されたユーザーのUUID
+            example: b4cf1ef4-1cab-490b-a32c-f6528f95c796
     postRefreshTokenResponse:
       type: object
       description: トークンのリフレッシュの成功
@@ -172,6 +523,136 @@ components:
             type: string
             description: ユーザーのUUID
             example: b4cf1ef4-1cab-490b-a32c-f6528f95c796
+    post2FAProvisioningResponse:
+      type: object
+      description: TOTPの登録とURIの生成
+      properties:
+          uri:
+            type: string
+            description: TOTPのURI
+            example: uri
+    post2FARegisterRequest:
+      type: object
+      properties:
+        code:
+          type: string
+          description: 6桁2FAコード
+          example: 000000
+    post2FARegisterResponse:
+      type: object
+      description:  TOTPの確認と登録
+      properties:
+        status:
+          type: string
+          description: 成功時ステータス
+          example: status
+        message:
+          type: string
+          description: 成功時メッセージ
+          example: message
+    getUserResponse:
+      type: object
+      description: ユーザー情報取得成功
+      properties:
+        uuid:
+          type: string
+          description: ユーザーのUUID
+          example: b4cf1ef4-1cab-490b-a32c-f6528f95c796
+        name:
+          type: string
+          description: ユーザー名
+          example: ユーザー名
+        email:
+          type: string
+          description: メールアドレス
+          example: example@email.com
+        is_2fa_active:
+          type: boolean
+          description: 2FAの状態
+          example: true
+    postUserIconResponse:
+      properties:
+        uuid:
+          type: string
+          description: ユーザーのUUID
+          example: b4cf1ef4-1cab-490b-a32c-f6528f95c796
+        name:
+          type: string
+          description: ユーザー名
+          example: ユーザー名
+        email:
+          type: string
+          description: メールアドレス
+          example: example@email.com
+        icon:
+          type: string
+          description: ユーザーアイコン画像のパス
+          example: icon
+    getPongGameLast10MatchesResult:
+      type: object
+      description: ユーザー試合結果情報取得成功
+      properties:
+        match-results:
+          type: array
+          description: 直近の試合を最大10件までarrayで取得
+          items:
+            oneOf:
+              - type: object
+                properties:
+                  id:
+                    description: 直近の試合が若い番号になる
+                    type: integer
+                  contents:
+                    type: object
+                    properties:
+                      player1:
+                        type: string
+                        description: player1の名前
+                      player2:
+                        type: string
+                        description: player2の名前
+                      player1-score:
+                        type: integer
+                      player2-score:
+                        type: integer
+    getTypingGameLast10MatchesResult:
+      type: object
+      description: ユーザーのTypingGame試合結果情報取得成功
+      properties:
+        match-results:
+          type: array
+          description: 直近の試合を最大10件までarrayで取得
+          items:
+            oneOf:
+              - type: object
+                properties:
+                  id:
+                    description: 直近の試合が若い番号になる
+                    type: integer
+                  contents:
+                    type: object
+                    properties:
+                      winner:
+                        type: string
+                        description: 試合の勝者の名前
+                      player1:
+                        type: string
+                        description: player1の名前
+                      player2:
+                        type: string
+                        description: player2の名前
+    getOtherUser:
+      type: object
+      description: 他のユーザー情報取得成功
+      properties:
+        name:
+          type: string
+          description: ユーザー名
+          example: ユーザー名
+        icon:
+          type: string
+          description: ユーザーアイコン画像のURL
+          example: http://example.com/path/to/icon.jpg
     errorMessage:
       type: object
       properties:
@@ -189,3 +670,69 @@ components:
       required:
         - message
         - status
+
+    getUserOnlineStatus:
+      type: object
+      description: ユーザーのオンラインステータスを取得
+      properties:
+        name:
+          type: string
+          description: ユーザー名
+          example: さとし
+        statis:
+          type: string
+          example: online
+          enum:
+            - online #ユーザーがオンラインの場合
+            - offline #ユーザーがオフラインの場合
+    getFriends:
+      type: object
+      description: ユーザーのフレンド取得
+      properties:
+        friends:
+          type: array
+          description: フレンドの情報のリスト
+          items:
+            oneOf:
+              - type: object
+                properties:
+                  name:
+                    type: string
+                    description: フレンドの名前
+                  icon:
+                    type: string
+                    description: フレンドのアイコンのurl
+    getPendingFriends:
+      type: object
+      description: ユーザーのフレンド申請済みユーザー取得
+      properties:
+        friends:
+          type: array
+          description: 申請済みフレンドの情報のリスト
+          items:
+            oneOf:
+              - type: object
+                properties:
+                  name:
+                    type: string
+                    description: 申請済みフレンドの名前
+                  icon:
+                    type: string
+                    description: 申請済みフレンドのアイコンのurl
+    getRequestedFriends:
+      type: object
+      description: ユーザーの承認待ちフレンド取得
+      properties:
+        friends:
+          type: array
+          description: 承認待ちフレンドの情報のリスト
+          items:
+            oneOf:
+              - type: object
+                properties:
+                  name:
+                    type: string
+                    description: 承認待ちフレンドの名前
+                  icon:
+                    type: string
+                    description: 承認待ちフレンドのアイコンのurl 

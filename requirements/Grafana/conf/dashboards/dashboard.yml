@@ -1,0 +1,9 @@
+apiVersion: 1
+
+providers:
+  - name: Default-Provider
+    folder: Services
+    type: file
+    options:
+      path:
+        /usr/share/grafana/conf/provisioning/dashboards

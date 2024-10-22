@@ -1,0 +1,79 @@
+main.home {
+  display: flex;
+  flex-direction: column;
+  height: 95vh;
+  width: 100vw;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: #e1e4e1;
+}
+
+main.home .home-container {
+  display: flex;
+  flex-direction: row;
+  height: 95vh;
+  min-width: 100%;
+  margin: auto;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border: solid 0.1px #ccc;
+}
+
+main.home .home-description,
+main.home .home-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background-color: #f0f4f8;
+  color: #333;
+  font-size: 1rem;
+  font-weight: normal;
+  border: solid 0.1px #ccc;
+}
+
+main.home .home-card {
+  border-right: none;
+}
+
+main.home .home-description h1,
+main.home .home-card h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+main.home .home-description p,
+main.home .home-card p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 30px;
+  padding: 0 20px;
+  color: #555;
+  text-align: center;
+}
+
+main.home button {
+  background-color: #778bf0;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  width: 100%;
+  max-width: 200px;
+  margin-top: 10px;
+}
+
+main.home button:hover {
+  background-color: #5a69b8;
+}
+
+main.home button:focus {
+  outline: none;
+}

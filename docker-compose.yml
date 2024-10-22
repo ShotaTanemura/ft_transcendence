@@ -1,0 +1,135 @@
+version: '3'
+services:
+  web:
+    build:
+      context: ./requirements/Nginx/
+      dockerfile: ./Containerfile
+    ports:
+      - "4443:443"
+      - "8000:80"
+    volumes:
+      - type: bind
+        source: ./requirements/Nginx/conf.d/
+        target: /etc/nginx/conf.d/
+      - type: bind
+        source: ./requirements/Nginx/certificate/
+        target: /etc/nginx/ssl/
+      - type: bind
+        source: ./pong/static
+        target: /usr/share/nginx/html/static
+      - type: bind
+        source: ./pong/media
+        target: /var/www/uploads
+    depends_on:
+      app:
+        condition: service_healthy
+    env_file:
+      - .env
+
+  app:
+    build:
+      context: ./requirements/Django/
+      dockerfile: ./Containerfile
+    volumes:
+      - type: bind
+        source: ./pong/
+        target: /app/code
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+          condition: service_healthy
+    env_file:
+      - .env
+
+  redis:
+    image: "redis:7.4-rc2"
+    ports:
+      - "6379:6379"
+    healthcheck:
+        test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+
+  db:
+    image: "postgres:15.2"
+    ports:
+      - "5432:5432"
+    volumes:
+      - type: volume
+        source: db_data
+        target: /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER:-postgres}"]
+      interval: 5s
+      timeout: 5s 
+      retries: 5
+    env_file:
+      - .env
+  
+  prometheus:
+    build:
+      context: ./requirements/Prometheus/
+      dockerfile: ./Containerfile
+    ports:
+      - "9090:9090"
+    volumes:
+      - type: volume
+        source: prometheus_data
+        target: /prometheus
+    depends_on:
+      app:
+        condition: service_healthy
+    restart: always
+    env_file:
+      - .env
+
+  grafana:
+    image: "grafana/grafana-oss"
+    ports:
+      - "3000:3000"
+    volumes:
+      - type: bind
+        source: ./requirements/Grafana/conf/
+        target: /usr/share/grafana/conf/provisioning/
+      - type: volume
+        source: grafana_data
+        target: /var/lib/grafana
+    environment:
+      - GF_PATHS_PROVISIONING=/usr/share/grafana/conf/provisioning
+    depends_on:
+      app:
+        condition: service_healthy
+    restart: always
+    env_file:
+      - .env
+  
+  alertmanager:
+    build:
+      context: ./requirements/Alertmanager/
+      dockerfile: ./Containerfile
+    ports:
+      - "9093:9093"
+    depends_on:
+      app:
+        condition: service_healthy
+    restart: always
+    env_file:
+      - .env
+
+  nginx-exporter:
+    image: "nginx/nginx-prometheus-exporter"
+    ports:
+      - "9113:9113"
+    entrypoint: nginx-prometheus-exporter -nginx.scrape-uri=https://web/nginx_status
+    restart: always
+
+
+volumes:
+  db_data: {}
+  grafana_data: {}
+  prometheus_data: {}
+

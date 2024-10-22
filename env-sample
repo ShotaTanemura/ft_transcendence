@@ -1,0 +1,17 @@
+POSTGRES_NAME=postgres
+POSTGRES_USER=postgres-prod
+POSTGRES_PASSWORD=postgres-prod
+DEBUG=False
+OAUTH_CALLBACK_42API=oauth_callback_42api
+CLIENT_ID_42API=client_id_42api
+CLIENT_SECRET_42API=client_secret_42api
+ADMIN_PANEL_URL=admin_panel_url
+DJANGO_SUPERUSER_USERNAME=django_superuser_username
+DJANGO_SUPERUSER_PASSWORD=django_superuser_password
+DJANGO_SUPERUSER_EMAIL=django_superuser_email
+NGINX_ORIGIN=nginx_origin
+DJANGO_2FA_ISSUER=2fa_issuer
+GF_SECURITY_ADMIN_USER="fuga"
+GF_SECURITY_ADMIN_PASSWORD="fuga"
+DISCORD_WEBHOOK="#TODO"
+

@@ -14,12 +14,19 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.contrib import admin
-from django.urls import path, include
-from pong.views.echo import echo
+from django.urls import path, re_path, include
+from django.conf import settings
+from pong.views.index import index
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('pong/', include('pong.urls')),
-    path('', echo, name='echo'),
+    path(settings.ADMIN_PANEL_URL, admin.site.urls),
+    path("pong/", include("pong.urls")),
+    path("metrics/", include("django_prometheus.urls")),
+    path("chat/", include("chat.urls")),
+    path("ponggame/", include("realtime_pong_game.urls")),
+    path("typinggame/", include("realtime_typing_game.urls")),
+    path("reactiongame/", include("reaction_game.urls")),
+    re_path(r"^.*$", index, name="index"),
 ]

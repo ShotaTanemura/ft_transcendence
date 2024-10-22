@@ -1,0 +1,17 @@
+name: eslint-prettier.yml
+on: push
+jobs:
+  eslint-prettier:
+    name: syntax-check-js
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.16.0'
+      - run: cp ./requirements/Django/*.json .
+      - run: cp ./requirements/Django/eslint.config.mjs .
+      - run: cp ./requirements/Django/.nvmrc .
+      - run: npm install
+      - run: npx eslint ./pong/pong
+      - run: npx prettier --check ./pong/pong

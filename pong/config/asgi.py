@@ -9,8 +9,41 @@ https://docs.djangoproject.com/en/5.0/howto/deployment/asgi/
 
 import os
 
+from channels.routing import ProtocolTypeRouter, URLRouter
+from channels.security.websocket import AllowedHostsOriginValidator
+from django.urls import re_path
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
+django_asgi_app = application = get_asgi_application()
 
-application = get_asgi_application()
+# import consumers here
+from pong.middleware.auth import ChannelsJWTAuthenticationMiddleware
+from realtime_pong_game.consumers import PlayerConsumer
+from realtime_typing_game.consumers import TypingPlayerConsumer
+import chat.routing
+import reaction_game.routing
+
+application = ProtocolTypeRouter(
+    {
+        "http": django_asgi_app,
+        "websocket": AllowedHostsOriginValidator(
+            ChannelsJWTAuthenticationMiddleware(
+                URLRouter(
+                    [
+                        re_path(
+                            r"realtime-pong/(?P<room_name>\w+)/(?P<user_role>\w+)/(?P<number_of_players>2|4)/$",
+                            PlayerConsumer.as_asgi(),
+                        ),
+                        re_path(
+                            r"realtime-typing/(?P<room_name>\w+)/$",
+                            TypingPlayerConsumer.as_asgi(),
+                        ),
+                        *chat.routing.websocket_urlpatterns,
+                        *reaction_game.routing.websocket_urlpatterns,
+                    ]
+                )
+            )
+        ),
+    }
+)
