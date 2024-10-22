@@ -113,7 +113,7 @@ export class PongGameHome extends Component {
           </div>
           <div class="number-of-players-selector-container p-3">
             <label for="number-of-players-selector">Select Number of Players:  <label>
-            <select name="number-of-players-selector" id="number-of-players-selecor" class="form-select">
+            <select name="number-of-players-selector" id="number-of-players-selector" class="form-select">
               <option value="2" selected>2</option>
               <option value="4">4</option>
             </select>
