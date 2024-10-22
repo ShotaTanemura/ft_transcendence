@@ -169,10 +169,6 @@ def searched_users(request, name):
             )
 
         users = User.objects.filter(name__icontains=name)
-        if not users:
-            return JsonResponse(
-                {"message": "Users not found", "status": "userNotFound"}, status=404
-            )
         hitted_user_list = []
         for user in users:
             friend_status = "stranger"
