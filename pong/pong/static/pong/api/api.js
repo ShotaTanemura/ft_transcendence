@@ -6,7 +6,6 @@ export async function getUuid() {
       credentials: "include",
     });
     const data = await response.json();
-    console.log(data);
     if (!response.ok) {
       throw new Error(data.message || "Failed to verify token");
     }
@@ -25,7 +24,6 @@ export async function getUserFromUuid(uuid) {
       credentials: "include",
     });
     const data = await response.json();
-    console.log(data);
     if (!response.ok) {
       throw new Error(data.message || "Failed to fetch user data");
     }
@@ -38,6 +36,9 @@ export async function getUserFromUuid(uuid) {
 
 export async function getUsersDataFromName(name) {
   try {
+    if (!name) {
+      return null;
+    }
     const response = await fetch(`/pong/api/v1/users/search/${name}`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
