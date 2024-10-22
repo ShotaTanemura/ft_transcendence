@@ -15,10 +15,10 @@ services:
         source: ./requirements/Nginx/certificate/
         target: /etc/nginx/ssl/
       - type: bind
-        source: ../pong/static
+        source: ./pong/static
         target: /usr/share/nginx/html/static
       - type: bind
-        source: ../pong/media
+        source: ./pong/media
         target: /var/www/uploads
     depends_on:
       app:
@@ -32,7 +32,7 @@ services:
       dockerfile: ./Containerfile
     volumes:
       - type: bind
-        source: ../pong/
+        source: ./pong/
         target: /app/code
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000"]
