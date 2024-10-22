@@ -9,9 +9,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20.16.0'
-      - run: cp .devcontainer/requirements/Django/*.json .
-      - run: cp .devcontainer/requirements/Django/eslint.config.mjs .
-      - run: cp .devcontainer/requirements/Django/.nvmrc .
+      - run: cp ./requirements/Django/*.json .
+      - run: cp ./requirements/Django/eslint.config.mjs .
+      - run: cp ./requirements/Django/.nvmrc .
       - run: npm install
       - run: npx eslint ./pong/pong
       - run: npx prettier --check ./pong/pong
