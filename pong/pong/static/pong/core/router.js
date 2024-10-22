@@ -58,7 +58,7 @@ export class Router {
     }
 
     if (path !== "/signin" && path !== "/signup" && path !== "/totp") {
-      this.verifyAndRefreshToken().catch((error) => {
+      this.verifyAndRefreshToken().catch(() => {
         path = "/signin";
         route = this.searchRouteFromPath("/signin");
         let component = new route.component(
