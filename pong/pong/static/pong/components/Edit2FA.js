@@ -25,7 +25,7 @@ export class Edit2FA extends Component {
     const formHTML = `
             <form class="totp-form">
                 <label for="totp-code">6桁の認証コード:</label>
-                <input type="text" class="totp-code" name="totp-code" maxlength="6" required>
+                <input type="text" id="totp-code" class="totp-code" name="totp-code" maxlength="6" required>
                 <br><br>
                 <button type="submit">送信</button>
             </form>
